@@ -14,21 +14,24 @@
 
   <nav>
     <a class="nav-marca" href="#">OMNIUS</a>
-    <a class="nav-cta" href="#bundle">GET THE BUNDLE</a>
+    <a class="nav-cta" href="#bundle" data-comprar>GET THE BUNDLE</a>
   </nav>
 
   <header class="hero">
     <div class="badge">CINEMATIC COLOR SYSTEM // DAVINCI RESOLVE</div>
-    <h1>Every frame,<br /><span class="cursiva">graded like a film.</span></h1>
+    <h1>
+      <span class="linea-cascada"><span class="palabra">Every</span> <span class="palabra">frame,</span></span>
+      <span class="linea-cascada cursiva"><span class="palabra">graded</span> <span class="palabra">like</span> <span class="palabra">a</span> <span class="palabra">film.</span></span>
+    </h1>
     <p class="hero-sub">The exact PowerGrade, LUTs and workflow behind my work — built to make any camera look cinematic, without the guesswork.</p>
-    <a class="btn-linea" href="#bundle">GET OMNIUS <span class="flecha">→</span></a>
+    <a class="btn-linea" href="#bundle" data-comprar>GET OMNIUS <span class="flecha">→</span></a>
     <div class="hero-nota">INSTANT DOWNLOAD // WORKS WITH RESOLVE FREE &amp; STUDIO</div>
   </header>
 
   <div class="comparador-hero reveal">
     <div class="comparador" data-comparador>
-      <img class="despues" src="https://picsum.photos/seed/omnius-hero/1600/700" alt="Graded" />
-      <img class="antes" src="https://picsum.photos/seed/omnius-hero/1600/700" alt="Ungraded" />
+      <img class="despues" src="https://picsum.photos/seed/omnius-hero/1600/700" alt="Frame with the OMNIUS grade applied" />
+      <img class="antes" src="https://picsum.photos/seed/omnius-hero/1600/700" alt="Same frame before grading (log)" />
       <div class="linea"></div>
       <div class="handle">◂ ▸</div>
       <div class="tag before">BEFORE</div>
@@ -57,9 +60,9 @@
           <li>Practice footage included</li>
           <li>Works with DaVinci Resolve Free &amp; Studio</li>
         </ul>
-        <!-- DEMO: checkout de Chema Bal solo para probar el overlay de Lemon Squeezy.
-             Reemplazar con el buy-link del producto OMNIUS al crear la tienda. -->
-        <a class="btn-solido lemonsqueezy-button" href="https://chemabal.lemonsqueezy.com/checkout/buy/b611cfc4-3244-4ddf-9037-02bae8931dbc?embed=1&media=0">GET OMNIUS <span class="flecha">→</span></a>
+        <!-- El buy-link real de Lemon Squeezy se configura en js/main.js (LEMON_URL).
+             Mientras sea placeholder, los CTAs solo anclan a #bundle. -->
+        <a class="btn-solido lemonsqueezy-button" href="#bundle" data-comprar>GET OMNIUS <span class="flecha">→</span></a>
         <div class="hero-nota" style="margin-top:16px;">SECURE CHECKOUT VIA LEMON SQUEEZY // CARDS, PAYPAL, APPLE PAY</div>
       </div>
     </div>
@@ -74,8 +77,8 @@
       <div class="lut-num">LUT // 01</div>
       <div class="lut-nombre">UNDERTOW</div>
       <div class="comparador" data-comparador>
-        <img class="despues" src="https://picsum.photos/seed/omnius-lut1/1400/800" alt="Graded" />
-        <img class="antes" src="https://picsum.photos/seed/omnius-lut1/1400/800" alt="Ungraded" />
+        <img loading="lazy" class="despues" src="https://picsum.photos/seed/omnius-lut1/1400/800" alt="Frame with the OMNIUS grade applied" />
+        <img loading="lazy" class="antes" src="https://picsum.photos/seed/omnius-lut1/1400/800" alt="Same frame before grading (log)" />
         <div class="linea"></div>
         <div class="handle">◂ ▸</div>
         <div class="tag before">BEFORE</div>
@@ -88,8 +91,8 @@
       <div class="lut-num">LUT // 02</div>
       <div class="lut-nombre">MAGIC HOUR</div>
       <div class="comparador" data-comparador>
-        <img class="despues" src="https://picsum.photos/seed/omnius-lut2/1400/800" alt="Graded" />
-        <img class="antes" src="https://picsum.photos/seed/omnius-lut2/1400/800" alt="Ungraded" />
+        <img loading="lazy" class="despues" src="https://picsum.photos/seed/omnius-lut2/1400/800" alt="Frame with the OMNIUS grade applied" />
+        <img loading="lazy" class="antes" src="https://picsum.photos/seed/omnius-lut2/1400/800" alt="Same frame before grading (log)" />
         <div class="linea"></div>
         <div class="handle">◂ ▸</div>
         <div class="tag before">BEFORE</div>
@@ -102,8 +105,8 @@
       <div class="lut-num">LUT // 03</div>
       <div class="lut-nombre">SALTWATER</div>
       <div class="comparador" data-comparador>
-        <img class="despues" src="https://picsum.photos/seed/omnius-lut3/1400/800" alt="Graded" />
-        <img class="antes" src="https://picsum.photos/seed/omnius-lut3/1400/800" alt="Ungraded" />
+        <img loading="lazy" class="despues" src="https://picsum.photos/seed/omnius-lut3/1400/800" alt="Frame with the OMNIUS grade applied" />
+        <img loading="lazy" class="antes" src="https://picsum.photos/seed/omnius-lut3/1400/800" alt="Same frame before grading (log)" />
         <div class="linea"></div>
         <div class="handle">◂ ▸</div>
         <div class="tag before">BEFORE</div>
@@ -116,8 +119,8 @@
       <div class="lut-num">LUT // 04</div>
       <div class="lut-nombre">LOW TIDE</div>
       <div class="comparador" data-comparador>
-        <img class="despues" src="https://picsum.photos/seed/omnius-lut4/1400/800" alt="Graded" />
-        <img class="antes" src="https://picsum.photos/seed/omnius-lut4/1400/800" alt="Ungraded" />
+        <img loading="lazy" class="despues" src="https://picsum.photos/seed/omnius-lut4/1400/800" alt="Frame with the OMNIUS grade applied" />
+        <img loading="lazy" class="antes" src="https://picsum.photos/seed/omnius-lut4/1400/800" alt="Same frame before grading (log)" />
         <div class="linea"></div>
         <div class="handle">◂ ▸</div>
         <div class="tag before">BEFORE</div>
@@ -193,25 +196,46 @@
     </div>
   </section>
 
+  <!-- REVIEWS: oculta hasta tener testimonios reales.
+       Para activarla: quitar el atributo `hidden` y reemplazar los placeholders. -->
+  <section class="seccion" id="reviews" hidden>
+    <div class="etiqueta reveal">REVIEWS</div>
+    <h2 class="titulo reveal" style="margin-bottom: 60px;">Trusted by filmmakers.</h2>
+    <div class="reviews-grid reveal">
+      <figure class="review">
+        <blockquote>"Placeholder — testimonio real aquí."</blockquote>
+        <figcaption>Nombre Apellido <span class="handle">@usuario</span></figcaption>
+      </figure>
+      <figure class="review">
+        <blockquote>"Placeholder — testimonio real aquí."</blockquote>
+        <figcaption>Nombre Apellido <span class="handle">@usuario</span></figcaption>
+      </figure>
+      <figure class="review">
+        <blockquote>"Placeholder — testimonio real aquí."</blockquote>
+        <figcaption>Nombre Apellido <span class="handle">@usuario</span></figcaption>
+      </figure>
+    </div>
+  </section>
+
   <section class="seccion angosta">
     <div class="etiqueta reveal">FAQ</div>
     <h2 class="titulo reveal" style="margin-bottom: 40px;">Common questions.</h2>
-    <div class="faq-item reveal">
-      <button class="faq-q">Do I need DaVinci Resolve Studio? <span class="mas">+</span></button>
+    <details class="faq-item reveal">
+      <summary class="faq-q">Do I need DaVinci Resolve Studio? <span class="mas">+</span></summary>
       <div class="faq-a"><p>No. The system works with both the Free and Studio versions of DaVinci Resolve. The LUTs also work in Premiere, Final Cut or any NLE that reads .cube files.</p></div>
-    </div>
-    <div class="faq-item reveal">
-      <button class="faq-q">Does it work with my camera? <span class="mas">+</span></button>
+    </details>
+    <details class="faq-item reveal">
+      <summary class="faq-q">Does it work with my camera? <span class="mas">+</span></summary>
       <div class="faq-a"><p>Yes. The PowerGrade is camera-agnostic, and premade versions for Sony, Canon, Fuji and DJI are included.</p></div>
-    </div>
-    <div class="faq-item reveal">
-      <button class="faq-q">Do I need to shoot in Log? <span class="mas">+</span></button>
+    </details>
+    <details class="faq-item reveal">
+      <summary class="faq-q">Do I need to shoot in Log? <span class="mas">+</span></summary>
       <div class="faq-a"><p>Ideally yes — Log gives you the most flexibility. But the tutorials also cover how to adapt the workflow to Rec.709 footage.</p></div>
-    </div>
-    <div class="faq-item reveal">
-      <button class="faq-q">How do I receive the files? <span class="mas">+</span></button>
+    </details>
+    <details class="faq-item reveal">
+      <summary class="faq-q">How do I receive the files? <span class="mas">+</span></summary>
       <div class="faq-a"><p>Instant download via Gumroad right after purchase, with free updates for this version.</p></div>
-    </div>
+    </details>
   </section>
 
   <footer>
