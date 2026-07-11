@@ -23,20 +23,20 @@
 - Create: `README.md`
 - Create: `img/luts/.gitkeep`
 
-- [ ] **Step 1: Portar el mockup separando responsabilidades.** Copiar del mockup: el `<style>` completo → `css/estilo.css`; el `<script>` final → `js/main.js`; el HTML restante → `index.html` con `<link rel="stylesheet" href="css/estilo.css">` y `<script src="js/main.js" defer></script>`. Mantener el `<script src="https://assets.lemonsqueezy.com/lemon.js" defer>` en el `<head>`.
+- [x] **Step 1: Portar el mockup separando responsabilidades.** Copiar del mockup: el `<style>` completo → `css/estilo.css`; el `<script>` final → `js/main.js`; el HTML restante → `index.html` con `<link rel="stylesheet" href="css/estilo.css">` y `<script src="js/main.js" defer></script>`. Mantener el `<script src="https://assets.lemonsqueezy.com/lemon.js" defer>` en el `<head>`.
 
-- [ ] **Step 2: README.md** con: qué es el proyecto, cómo previsualizar (`python3 -m http.server 4181`), convención de imágenes (`img/luts/0N-before.jpg`/`0N-after.jpg`, `img/hero-before.jpg`/`img/hero-after.jpg`), dónde cambiar el buy-link de Lemon Squeezy y el precio, y el workflow git (pull antes de editar, commit+push, nunca force-push).
+- [x] **Step 2: README.md** con: qué es el proyecto, cómo previsualizar (`python3 -m http.server 4181`), convención de imágenes (`img/luts/0N-before.jpg`/`0N-after.jpg`, `img/hero-before.jpg`/`img/hero-after.jpg`), dónde cambiar el buy-link de Lemon Squeezy y el precio, y el workflow git (pull antes de editar, commit+push, nunca force-push).
 
-- [ ] **Step 3: Verificar** sirviendo el sitio: la página se ve idéntica al mockup, consola sin errores.
+- [x] **Step 3: Verificar** sirviendo el sitio: la página se ve idéntica al mockup, consola sin errores.
 
-- [ ] **Step 4: Commit** `git add -A && git commit -m "Escafolding: portar mockup aprobado a index/css/js"`
+- [x] **Step 4: Commit** `git add -A && git commit -m "Escafolding: portar mockup aprobado a index/css/js"`
 
 ### Task 2: Deltas de HTML del spec
 
 **Files:**
 - Modify: `index.html`
 
-- [ ] **Step 1: Hero con cascada.** Envolver cada palabra del H1 en `<span class="palabra">` dentro de líneas `.intro-linea` (patrón del mastermind), p.ej.:
+- [x] **Step 1: Hero con cascada.** Envolver cada palabra del H1 en `<span class="palabra">` dentro de líneas `.intro-linea` (patrón del mastermind), p.ej.:
 
 ```html
 <h1 class="hero-titulo">
@@ -45,7 +45,7 @@
 </h1>
 ```
 
-- [ ] **Step 2: FAQ nativo.** Reemplazar los `button.faq-q` + `div.faq-a` por:
+- [x] **Step 2: FAQ nativo.** Reemplazar los `button.faq-q` + `div.faq-a` por:
 
 ```html
 <details class="faq-item">
@@ -54,22 +54,22 @@
 </details>
 ```
 
-- [ ] **Step 3: Sección reviews oculta.** Insertar antes del FAQ una sección `#reviews` con `hidden` en el tag y 3 tarjetas placeholder de testimonio (estructura: cita, nombre, handle), más comentario HTML explicando que se muestra quitando `hidden` cuando existan testimonios reales.
+- [x] **Step 3: Sección reviews oculta.** Insertar antes del FAQ una sección `#reviews` con `hidden` en el tag y 3 tarjetas placeholder de testimonio (estructura: cita, nombre, handle), más comentario HTML explicando que se muestra quitando `hidden` cuando existan testimonios reales.
 
-- [ ] **Step 4: Buy-link como constante visible.** El CTA queda `<a id="cta-comprar" class="btn-solido lemonsqueezy-button" href="TODO-LEMONSQUEEZY-URL">` y en `js/main.js` se define `const LEMON_URL = "TODO-LEMONSQUEEZY-URL"` aplicada a todos los `[data-comprar]` (nav, hero, producto) — un solo lugar para cambiarla. Ambos CTAs de nav y hero llevan `data-comprar` y ancla `#bundle` como fallback.
+- [x] **Step 4: Buy-link como constante visible.** El CTA queda `<a id="cta-comprar" class="btn-solido lemonsqueezy-button" href="TODO-LEMONSQUEEZY-URL">` y en `js/main.js` se define `const LEMON_URL = "TODO-LEMONSQUEEZY-URL"` aplicada a todos los `[data-comprar]` (nav, hero, producto) — un solo lugar para cambiarla. Ambos CTAs de nav y hero llevan `data-comprar` y ancla `#bundle` como fallback.
 
-- [ ] **Step 5: Lazy loading.** `loading="lazy"` en todas las imágenes salvo las del comparador hero. `alt` descriptivos.
+- [x] **Step 5: Lazy loading.** `loading="lazy"` en todas las imágenes salvo las del comparador hero. `alt` descriptivos.
 
-- [ ] **Step 6: Verificar** en navegador (estructura intacta, FAQ abre/cierra sin JS — probar con JS deshabilitado vía DevTools o quitando el script temporalmente).
+- [x] **Step 6: Verificar** en navegador (estructura intacta, FAQ abre/cierra sin JS — probar con JS deshabilitado vía DevTools o quitando el script temporalmente).
 
-- [ ] **Step 7: Commit** `git commit -am "HTML: cascada hero, FAQ details, reviews oculta, buy-link centralizado, lazy loading"`
+- [x] **Step 7: Commit** `git commit -am "HTML: cascada hero, FAQ details, reviews oculta, buy-link centralizado, lazy loading"`
 
 ### Task 3: Deltas de CSS del spec
 
 **Files:**
 - Modify: `css/estilo.css`
 
-- [ ] **Step 1: Animación cascada** (calcada del mastermind):
+- [x] **Step 1: Animación cascada** (calcada del mastermind):
 
 ```css
 .linea-cascada { display: block; }
@@ -86,11 +86,11 @@
 }
 ```
 
-- [ ] **Step 2: Estilos para `<details>/<summary>`** replicando el acordeón: `summary::-webkit-details-marker {display:none}`, `.faq-item[open] .mas {transform: rotate(45deg)}`, animación de apertura con `grid-template-rows` o transición de opacidad (aceptable sin animar altura).
+- [x] **Step 2: Estilos para `<details>/<summary>`** replicando el acordeón: `summary::-webkit-details-marker {display:none}`, `.faq-item[open] .mas {transform: rotate(45deg)}`, animación de apertura con `grid-template-rows` o transición de opacidad (aceptable sin animar altura).
 
-- [ ] **Step 3: Estilos de reviews** (tarjetas con borde 1px greige 0.15, cita en lino, handle en mono greige).
+- [x] **Step 3: Estilos de reviews** (tarjetas con borde 1px greige 0.15, cita en lino, handle en mono greige).
 
-- [ ] **Step 4: prefers-reduced-motion:**
+- [x] **Step 4: prefers-reduced-motion:**
 
 ```css
 @media (prefers-reduced-motion: reduce) {
@@ -100,16 +100,16 @@
 }
 ```
 
-- [ ] **Step 5: Verificar** en navegador: cascada al cargar, FAQ con + rotando, activar reduced motion (DevTools → Rendering → Emulate CSS prefers-reduced-motion) y confirmar que todo es visible sin animación.
+- [x] **Step 5: Verificar** en navegador: cascada al cargar, FAQ con + rotando, activar reduced motion (DevTools → Rendering → Emulate CSS prefers-reduced-motion) y confirmar que todo es visible sin animación.
 
-- [ ] **Step 6: Commit** `git commit -am "CSS: cascada, details FAQ, reviews, reduced-motion"`
+- [x] **Step 6: Commit** `git commit -am "CSS: cascada, details FAQ, reviews, reduced-motion"`
 
 ### Task 4: Deltas de JS del spec
 
 **Files:**
 - Modify: `js/main.js`
 
-- [ ] **Step 1: Delays de cascada** — asignar `--d` incremental por palabra al cargar:
+- [x] **Step 1: Delays de cascada** — asignar `--d` incremental por palabra al cargar:
 
 ```js
 document.querySelectorAll(".linea-cascada").forEach((linea, li) => {
@@ -119,7 +119,7 @@ document.querySelectorAll(".linea-cascada").forEach((linea, li) => {
 });
 ```
 
-- [ ] **Step 2: Slider accesible por teclado** — el contenedor `[data-comparador]` recibe `tabindex="0"`, `role="slider"`, `aria-label="Before and after comparison"`, `aria-valuemin/max/now`, y keydown:
+- [x] **Step 2: Slider accesible por teclado** — el contenedor `[data-comparador]` recibe `tabindex="0"`, `role="slider"`, `aria-label="Before and after comparison"`, `aria-valuemin/max/now`, y keydown:
 
 ```js
 comp.tabIndex = 0;
@@ -141,26 +141,26 @@ comp.addEventListener("keydown", (e) => {
 
 (refactorizar el handler de pointer para usar `setX` también)
 
-- [ ] **Step 3: Quitar el JS del FAQ** (ya es nativo con `<details>`).
+- [x] **Step 3: Quitar el JS del FAQ** (ya es nativo con `<details>`).
 
-- [ ] **Step 4: Constante `LEMON_URL`** al inicio del archivo con comentario `// TODO: reemplazar con el buy-link real de la tienda Lemon Squeezy (?embed=1&media=0)`, aplicada: `document.querySelectorAll("[data-comprar]").forEach(a => { if (!LEMON_URL.startsWith("TODO")) a.href = LEMON_URL; });` — si sigue en TODO, los CTAs quedan con su ancla `#bundle`.
+- [x] **Step 4: Constante `LEMON_URL`** al inicio del archivo con comentario `// TODO: reemplazar con el buy-link real de la tienda Lemon Squeezy (?embed=1&media=0)`, aplicada: `document.querySelectorAll("[data-comprar]").forEach(a => { if (!LEMON_URL.startsWith("TODO")) a.href = LEMON_URL; });` — si sigue en TODO, los CTAs quedan con su ancla `#bundle`.
 
-- [ ] **Step 5: Verificar** en navegador: Tab enfoca cada slider, flechas lo mueven; drag sigue funcionando; FAQ funciona; consola limpia.
+- [x] **Step 5: Verificar** en navegador: Tab enfoca cada slider, flechas lo mueven; drag sigue funcionando; FAQ funciona; consola limpia.
 
-- [ ] **Step 6: Commit** `git commit -am "JS: cascada, sliders accesibles, buy-link centralizado"`
+- [x] **Step 6: Commit** `git commit -am "JS: cascada, sliders accesibles, buy-link centralizado"`
 
 ### Task 5: Verificación integral (criterios de aceptación)
 
-- [ ] **Step 1: Desktop** — recorrer toda la página, consola sin errores, todos los reveals disparan.
-- [ ] **Step 2: Móvil 375px** — resize, verificar grids colapsan a 1 columna, sliders usables con touch, tipografía legible.
-- [ ] **Step 3: Overlay Lemon Squeezy** — con una URL demo temporal, click abre overlay encima de la página; restaurar placeholder después.
-- [ ] **Step 4: Reviews oculta** — confirmar que no se renderiza pero existe en el DOM.
-- [ ] **Step 5: Commit final** de ajustes si los hubo.
+- [x] **Step 1: Desktop** — recorrer toda la página, consola sin errores, todos los reveals disparan.
+- [x] **Step 2: Móvil 375px** — resize, verificar grids colapsan a 1 columna, sliders usables con touch, tipografía legible.
+- [x] **Step 3: Overlay Lemon Squeezy** — con una URL demo temporal, click abre overlay encima de la página; restaurar placeholder después.
+- [x] **Step 4: Reviews oculta** — confirmar que no se renderiza pero existe en el DOM.
+- [x] **Step 5: Commit final** de ajustes si los hubo.
 
 ### Task 6: Revisión general (pedida por el usuario)
 
-- [ ] **Step 1:** Ejecutar la skill de code-review sobre el repo para detectar bugs/inconsistencias/mejoras.
-- [ ] **Step 2:** Aplicar los hallazgos razonables, re-verificar en navegador, commit.
+- [x] **Step 1:** Ejecutar la skill de code-review sobre el repo para detectar bugs/inconsistencias/mejoras.
+- [x] **Step 2:** Aplicar los hallazgos razonables, re-verificar en navegador, commit.
 
 ### Task 7: Publicación en GitHub Pages
 
