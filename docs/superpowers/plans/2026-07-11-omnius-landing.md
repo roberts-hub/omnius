@@ -164,6 +164,6 @@ comp.addEventListener("keydown", (e) => {
 
 ### Task 7: Publicación en GitHub Pages
 
-- [ ] **Step 1:** `gh repo create` (cuenta de Roberto, público) + `git push -u origin main`. Si `gh` no está autenticado, dar instrucciones al usuario.
-- [ ] **Step 2:** Activar Pages (branch `main`, root) vía `gh api`.
-- [ ] **Step 3:** Verificar la URL pública renderiza correctamente.
+- [x] **Step 1:** `gh repo create` (cuenta de Roberto, público) + `git push -u origin main`. Si `gh` no está autenticado, dar instrucciones al usuario.
+- [x] **Step 2:** Activar Pages (branch `main`, root) vía `gh api`.
+- [x] **Step 3:** Verificar la URL pública renderiza correctamente.
