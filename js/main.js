@@ -4,12 +4,14 @@
 // formato: https://TIENDA.lemonsqueezy.com/checkout/buy/UUID?embed=1&media=0
 const LEMON_URL = "TODO-LEMONSQUEEZY-URL";
 
-// ── CTAs de compra: un solo lugar para el link ──
-// Mientras LEMON_URL sea placeholder, los CTAs conservan su ancla #bundle.
+// ── CTA de compra ──
+// Nav y hero siempre anclan a #bundle; solo el botón del producto compra.
+// Mientras LEMON_URL sea placeholder, el botón conserva su ancla y NO lleva la
+// clase lemonsqueezy-button (evita que lemon.js intercepte el clic sin URL real).
 if (!LEMON_URL.startsWith("TODO")) {
-  document.querySelectorAll("[data-comprar]").forEach((a) => {
-    a.href = LEMON_URL;
-  });
+  const cta = document.getElementById("cta-comprar");
+  cta.href = LEMON_URL;
+  cta.classList.add("lemonsqueezy-button");
 }
 
 // ── cascada del hero ──
@@ -25,6 +27,7 @@ document.querySelectorAll("[data-comparador]").forEach((comp) => {
     pct = Math.min(Math.max(pct, 0), 100);
     comp.style.setProperty("--x", pct + "%");
     comp.setAttribute("aria-valuenow", Math.round(pct));
+    comp.setAttribute("aria-valuetext", Math.round(pct) + "% before, rest graded");
   };
 
   comp.tabIndex = 0;
@@ -54,7 +57,8 @@ document.querySelectorAll("[data-comparador]").forEach((comp) => {
   });
 
   comp.addEventListener("keydown", (e) => {
-    const cur = parseFloat(comp.style.getPropertyValue("--x")) || 50;
+    let cur = parseFloat(comp.style.getPropertyValue("--x"));
+    if (Number.isNaN(cur)) cur = 50;
     if (e.key === "ArrowLeft") { setX(cur - 5); e.preventDefault(); }
     if (e.key === "ArrowRight") { setX(cur + 5); e.preventDefault(); }
   });

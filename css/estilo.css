@@ -143,7 +143,12 @@ nav {
   border-radius: 4px;
   cursor: ew-resize;
   user-select: none;
-  touch-action: none;
+  /* pan-y: el drag horizontal mueve el slider, el gesto vertical sigue scrolleando la página */
+  touch-action: pan-y;
+}
+.comparador:focus-visible {
+  outline: 1px solid var(--hueso);
+  outline-offset: 4px;
 }
 .comparador img {
   position: absolute;
@@ -154,9 +159,13 @@ nav {
   pointer-events: none;
 }
 .comparador .antes {
-  filter: saturate(0.45) contrast(0.82) brightness(1.08);
   clip-path: inset(0 calc(100% - var(--x, 50%)) 0 0);
   z-index: 2;
+}
+/* .simulado: placeholders sin frames reales — el "before" se finge con un filtro.
+   Al poner imágenes reales, quitar la clase `simulado` del comparador en el HTML. */
+.comparador.simulado .antes {
+  filter: saturate(0.45) contrast(0.82) brightness(1.08);
 }
 .comparador .linea {
   position: absolute;
@@ -269,7 +278,7 @@ nav {
   color: var(--rojo);
   margin-bottom: 20px;
 }
-.producto-info h3 {
+.producto-info h2 {
   font-size: clamp(28px, 3.5vw, 40px);
   font-weight: 700;
   letter-spacing: -0.04em;
@@ -435,6 +444,12 @@ footer a {
 }
 footer a:hover { color: var(--hueso); }
 
+/* espaciados de sección (antes inline) */
+.esp-80 { margin-bottom: 80px; }
+.esp-60 { margin-bottom: 60px; }
+.esp-40 { margin-bottom: 40px; }
+.nota-checkout { margin-top: 16px; }
+
 /* reveal */
 .reveal { opacity: 0; transform: translateY(26px); transition: opacity 0.9s cubic-bezier(0.22,1,0.36,1), transform 0.9s cubic-bezier(0.22,1,0.36,1); }
 .reveal.visto { opacity: 1; transform: none; }
@@ -445,7 +460,10 @@ footer a:hover { color: var(--hueso); }
   .inside { grid-template-columns: 1fr; }
   .reviews-grid { grid-template-columns: 1fr; }
   .comparador-hero { padding: 0 16px 80px; }
-  .comparador { aspect-ratio: 16/10; }
+  .comparador,
+  .lut-bloque .comparador { aspect-ratio: 16/10; }
+  .esp-80 { margin-bottom: 56px; }
+  .esp-60 { margin-bottom: 44px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -453,5 +471,4 @@ footer a:hover { color: var(--hueso); }
   .linea-cascada .palabra { animation: none; opacity: 1; transform: none; filter: none; }
   .reveal { opacity: 1; transform: none; transition: none; }
   .faq-a { animation: none; }
-  .scroll-dot { animation: none; }
 }

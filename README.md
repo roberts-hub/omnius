@@ -15,7 +15,8 @@ python3 -m http.server 4181
 
 | Qué | Dónde |
 |---|---|
-| Buy-link de Lemon Squeezy | `js/main.js`, constante `LEMON_URL` (usar el link `?embed=1&media=0`) |
+| Buy-link de Lemon Squeezy | `js/main.js`, constante `LEMON_URL` (usar el link `?embed=1&media=0`). Solo el botón del producto (`#cta-comprar`) abre el checkout; nav y hero anclan a `#bundle` |
+| OG image / canonical al publicar | `index.html`, comentario `TODO al publicar` en el `<head>` |
 | Precio y textos del producto | `index.html`, sección `#bundle` |
 | Nombres y descriptores de LUTs | `index.html`, sección THE LUTS |
 | Mostrar reviews | `index.html`, quitar `hidden` de `<section id="reviews">` |
@@ -34,7 +35,8 @@ img/luts/02-before.jpg  img/luts/02-after.jpg
 
 y actualizar los `src` de cada `[data-comparador]` en `index.html`
 (dos `<img>` por slider: `.antes` y `.despues`). Al usar imágenes reales,
-quitar el `filter` de `.comparador .antes` en `css/estilo.css`.
+**quitar la clase `simulado`** de ese comparador en el HTML (esa clase aplica
+un filtro CSS que finge el "before" mientras haya placeholders).
 
 ## Workflow git (dos Macs)
 

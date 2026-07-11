@@ -4,9 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OMNIUS — Cinematic Color System</title>
+  <meta name="description" content="The exact PowerGrade, LUTs and workflow behind Roberto Arechederra's work — a complete cinematic color system for DaVinci Resolve." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="OMNIUS — Cinematic Color System" />
+  <meta property="og:description" content="PowerGrade + signature LUTs + tutorials. Make any camera look cinematic, without the guesswork." />
+  <!-- TODO al publicar: agregar og:url, og:image (1200x630) y canonical con el dominio real -->
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,600;0,700;1,300&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <script src="https://assets.lemonsqueezy.com/lemon.js" defer></script>
   <link rel="stylesheet" href="css/estilo.css" />
 </head>
@@ -14,7 +20,7 @@
 
   <nav>
     <a class="nav-marca" href="#">OMNIUS</a>
-    <a class="nav-cta" href="#bundle" data-comprar>GET THE BUNDLE</a>
+    <a class="nav-cta" href="#bundle">GET THE BUNDLE</a>
   </nav>
 
   <header class="hero">
@@ -24,12 +30,12 @@
       <span class="linea-cascada cursiva"><span class="palabra">graded</span> <span class="palabra">like</span> <span class="palabra">a</span> <span class="palabra">film.</span></span>
     </h1>
     <p class="hero-sub">The exact PowerGrade, LUTs and workflow behind my work — built to make any camera look cinematic, without the guesswork.</p>
-    <a class="btn-linea" href="#bundle" data-comprar>GET OMNIUS <span class="flecha">→</span></a>
+    <a class="btn-linea" href="#bundle">GET OMNIUS <span class="flecha">→</span></a>
     <div class="hero-nota">INSTANT DOWNLOAD // WORKS WITH RESOLVE FREE &amp; STUDIO</div>
   </header>
 
   <div class="comparador-hero reveal">
-    <div class="comparador" data-comparador>
+    <div class="comparador simulado" data-comparador>
       <img class="despues" src="https://picsum.photos/seed/omnius-hero/1600/700" alt="Frame with the OMNIUS grade applied" />
       <img class="antes" src="https://picsum.photos/seed/omnius-hero/1600/700" alt="Same frame before grading (log)" />
       <div class="linea"></div>
@@ -47,7 +53,7 @@
       </div>
       <div class="producto-info">
         <div class="ventas">DIGITAL BUNDLE // INSTANT ACCESS</div>
-        <h3>The Omnius Bundle</h3>
+        <h2>The Omnius Bundle</h2>
         <div class="precio">
           <span class="actual">$79</span>
           <span class="anterior">$119</span>
@@ -61,9 +67,10 @@
           <li>Works with DaVinci Resolve Free &amp; Studio</li>
         </ul>
         <!-- El buy-link real de Lemon Squeezy se configura en js/main.js (LEMON_URL).
-             Mientras sea placeholder, los CTAs solo anclan a #bundle. -->
-        <a class="btn-solido lemonsqueezy-button" href="#bundle" data-comprar>GET OMNIUS <span class="flecha">→</span></a>
-        <div class="hero-nota" style="margin-top:16px;">SECURE CHECKOUT VIA LEMON SQUEEZY // CARDS, PAYPAL, APPLE PAY</div>
+             Mientras sea placeholder este botón ancla a #bundle; al poner la URL real,
+             main.js le asigna el href y la clase lemonsqueezy-button (overlay). -->
+        <a id="cta-comprar" class="btn-solido" href="#bundle">GET OMNIUS <span class="flecha">→</span></a>
+        <div class="hero-nota nota-checkout">SECURE CHECKOUT VIA LEMON SQUEEZY // CARDS, PAYPAL, APPLE PAY</div>
       </div>
     </div>
   </section>
@@ -71,12 +78,12 @@
   <section class="seccion">
     <div class="etiqueta reveal">THE LUTS</div>
     <h2 class="titulo reveal">Consistent cinematic color,<br />without the guesswork.</h2>
-    <p class="sub reveal" style="margin-bottom: 80px;">Drag the slider. Every LUT was built on top of the Omnius PowerGrade — one system, four distinct looks.</p>
+    <p class="sub reveal esp-80">Drag the slider. Every LUT was built on top of the Omnius PowerGrade — one system, four distinct looks.</p>
 
     <div class="lut-bloque reveal">
       <div class="lut-num">LUT // 01</div>
-      <div class="lut-nombre">UNDERTOW</div>
-      <div class="comparador" data-comparador>
+      <h3 class="lut-nombre">UNDERTOW</h3>
+      <div class="comparador simulado" data-comparador>
         <img loading="lazy" class="despues" src="https://picsum.photos/seed/omnius-lut1/1400/800" alt="Frame with the OMNIUS grade applied" />
         <img loading="lazy" class="antes" src="https://picsum.photos/seed/omnius-lut1/1400/800" alt="Same frame before grading (log)" />
         <div class="linea"></div>
@@ -89,8 +96,8 @@
 
     <div class="lut-bloque reveal">
       <div class="lut-num">LUT // 02</div>
-      <div class="lut-nombre">MAGIC HOUR</div>
-      <div class="comparador" data-comparador>
+      <h3 class="lut-nombre">MAGIC HOUR</h3>
+      <div class="comparador simulado" data-comparador>
         <img loading="lazy" class="despues" src="https://picsum.photos/seed/omnius-lut2/1400/800" alt="Frame with the OMNIUS grade applied" />
         <img loading="lazy" class="antes" src="https://picsum.photos/seed/omnius-lut2/1400/800" alt="Same frame before grading (log)" />
         <div class="linea"></div>
@@ -103,8 +110,8 @@
 
     <div class="lut-bloque reveal">
       <div class="lut-num">LUT // 03</div>
-      <div class="lut-nombre">SALTWATER</div>
-      <div class="comparador" data-comparador>
+      <h3 class="lut-nombre">SALTWATER</h3>
+      <div class="comparador simulado" data-comparador>
         <img loading="lazy" class="despues" src="https://picsum.photos/seed/omnius-lut3/1400/800" alt="Frame with the OMNIUS grade applied" />
         <img loading="lazy" class="antes" src="https://picsum.photos/seed/omnius-lut3/1400/800" alt="Same frame before grading (log)" />
         <div class="linea"></div>
@@ -117,8 +124,8 @@
 
     <div class="lut-bloque reveal">
       <div class="lut-num">LUT // 04</div>
-      <div class="lut-nombre">LOW TIDE</div>
-      <div class="comparador" data-comparador>
+      <h3 class="lut-nombre">LOW TIDE</h3>
+      <div class="comparador simulado" data-comparador>
         <img loading="lazy" class="despues" src="https://picsum.photos/seed/omnius-lut4/1400/800" alt="Frame with the OMNIUS grade applied" />
         <img loading="lazy" class="antes" src="https://picsum.photos/seed/omnius-lut4/1400/800" alt="Same frame before grading (log)" />
         <div class="linea"></div>
@@ -132,7 +139,7 @@
 
   <section class="seccion">
     <div class="etiqueta reveal">HOW IT WORKS</div>
-    <h2 class="titulo reveal" style="margin-bottom: 60px;">A complete color system.</h2>
+    <h2 class="titulo reveal esp-60">A complete color system.</h2>
     <div class="pasos reveal">
       <div class="paso">
         <div class="num">01</div>
@@ -159,7 +166,7 @@
 
   <section class="seccion">
     <div class="etiqueta reveal">WHAT'S INSIDE</div>
-    <h2 class="titulo reveal" style="margin-bottom: 60px;">Everything you get.</h2>
+    <h2 class="titulo reveal esp-60">Everything you get.</h2>
     <div class="inside reveal">
       <div class="inside-col">
         <div class="etiqueta">THE POWERGRADE</div>
@@ -190,7 +197,7 @@
         <ul>
           <li>Practice footage (Log)</li>
           <li>Free updates for V1</li>
-          <li>Instant delivery via Gumroad</li>
+          <li>Instant delivery via Lemon Squeezy</li>
         </ul>
       </div>
     </div>
@@ -200,7 +207,7 @@
        Para activarla: quitar el atributo `hidden` y reemplazar los placeholders. -->
   <section class="seccion" id="reviews" hidden>
     <div class="etiqueta reveal">REVIEWS</div>
-    <h2 class="titulo reveal" style="margin-bottom: 60px;">Trusted by filmmakers.</h2>
+    <h2 class="titulo reveal esp-60">Trusted by filmmakers.</h2>
     <div class="reviews-grid reveal">
       <figure class="review">
         <blockquote>"Placeholder — testimonio real aquí."</blockquote>
@@ -219,7 +226,7 @@
 
   <section class="seccion angosta">
     <div class="etiqueta reveal">FAQ</div>
-    <h2 class="titulo reveal" style="margin-bottom: 40px;">Common questions.</h2>
+    <h2 class="titulo reveal esp-40">Common questions.</h2>
     <details class="faq-item reveal">
       <summary class="faq-q">Do I need DaVinci Resolve Studio? <span class="mas">+</span></summary>
       <div class="faq-a"><p>No. The system works with both the Free and Studio versions of DaVinci Resolve. The LUTs also work in Premiere, Final Cut or any NLE that reads .cube files.</p></div>
@@ -234,7 +241,7 @@
     </details>
     <details class="faq-item reveal">
       <summary class="faq-q">How do I receive the files? <span class="mas">+</span></summary>
-      <div class="faq-a"><p>Instant download via Gumroad right after purchase, with free updates for this version.</p></div>
+      <div class="faq-a"><p>Instant download via Lemon Squeezy right after purchase, with free updates for this version.</p></div>
     </details>
   </section>
 
