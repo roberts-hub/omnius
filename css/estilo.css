@@ -253,11 +253,11 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
 
 .hero-velo {
   position: absolute;
-  inset: 0;
+  inset: 0 0 -2px 0; /* cubre también el último píxel: sin línea al terminar el video */
   /* el video es protagonista: casi sin velo. Solo una franja arriba para el header,
      una sombra suave detrás del texto, viñeta ligera y el roll-off inferior hacia el fondo */
   background:
-    linear-gradient(180deg, rgba(0, 0, 0, 0.32) 0%, transparent 16%, transparent 72%, rgba(11, 11, 10, 0.55) 88%, var(--fondo) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.32) 0%, transparent 16%, transparent 70%, rgba(11, 11, 10, 0.55) 86%, var(--fondo) 97%, var(--fondo) 100%),
     radial-gradient(ellipse 34% 26% at 50% 52%, rgba(0, 0, 0, 0.2), transparent 75%),
     radial-gradient(ellipse 95% 85% at 50% 50%, transparent 60%, rgba(0, 0, 0, 0.18) 100%);
 }
@@ -590,11 +590,52 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
 .cierre-corto { margin-top: 0; }
 .cierre-corto .cierre-pie { margin-top: 0; }
 
+/* ══════════ MARCAS (franja continua de logos, como en twowaves.mx) ══════════ */
+
+.marcas { padding: clamp(70px, 8vw, 110px) 0 0; }
+.marcas-titulo {
+  text-align: center;
+  padding: 0 var(--margen);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: var(--greige);
+}
+.marcas-franja {
+  margin-top: clamp(28px, 3.5vw, 44px);
+  overflow: hidden;
+  /* los logos entran y salen con desvanecido en las orillas */
+  --fade: clamp(40px, 9vw, 160px);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent);
+  mask-image: linear-gradient(to right, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent);
+}
+.marcas-pista {
+  display: flex;
+  align-items: center;
+  gap: clamp(48px, 6vw, 90px);
+  width: max-content;
+  padding-right: clamp(48px, 6vw, 90px);
+  animation: desfileMarcas 55s linear infinite;
+}
+.marcas-franja:hover .marcas-pista { animation-play-state: paused; }
+@keyframes desfileMarcas { to { transform: translateX(-50%); } }
+.marca-logo {
+  height: calc(clamp(24px, 2.8vw, 38px) * var(--escala, 1));
+  width: auto;
+  max-width: 220px;
+  object-fit: contain;
+  /* cualquier logo se pinta en un solo tono claro */
+  filter: brightness(0) invert(1);
+  opacity: 0.62;
+  transition: opacity 0.3s ease;
+}
+.marca-logo:hover { opacity: 0.95; }
+
 /* ══════════ CINEMATIC CONSISTENCY (encabeza el collage y los sliders) ══════════ */
 .consistencia {
   max-width: var(--ancho);
   margin: 0 auto;
-  padding: clamp(90px, 10vw, 150px) var(--margen) 0;
+  padding: clamp(80px, 9vw, 130px) var(--margen) 0;
 }
 .consistencia .looks-cabeza { margin-bottom: 0; }
 
@@ -983,6 +1024,8 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   .pagina-producto .producto.pagina { grid-template-columns: 1fr; padding-top: 92px; min-height: 0; }
   .pagina-producto .portada { width: 50%; }
   .pagina-producto .portada-escena { top: 0; }
+  .marcas-titulo { font-size: 9px; letter-spacing: 0.15em; }
+  .consistencia .nota-mono { letter-spacing: 0.1em; }
   .resenas-pista { grid-auto-columns: 86%; }
   .resenas-flecha { display: none; }
   .carrusel-pista .look { opacity: 0.4; }
@@ -1002,6 +1045,7 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   .grain { animation: none; }
   .js .reveal { opacity: 1; transform: none; transition: none; }
   .faq-a { animation: none; }
+  .marcas-pista { animation: none; }
   .carrusel-pista, .carrusel-pista .look { transition: none; }
   .comparador.deslizando .antes-marco,
   .comparador.deslizando .antes-marco .antes,
