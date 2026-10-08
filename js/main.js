@@ -31,7 +31,8 @@ if (loader) {
   const intro = loader.querySelector(".loader-intro");
   const glyphs = loader.querySelectorAll(".glyph");
   const lineas = [...intro.querySelectorAll(".intro-linea")];
-  const PASO = 360; // ms por icono (se funden uno en otro)
+  const PASO = 170; // ms por icono: cambio rápido
+  const VUELTAS = 2; // los iconos se repiten para llenar el mismo tiempo de antes
   const SOSTENER_MARCA = 750; // la marca OMNIUS se queda un momento antes de disolverse
   const timers = [];
   const despues = (ms, fn) => timers.push(setTimeout(fn, ms));
@@ -86,19 +87,20 @@ if (loader) {
         t += linea.children.length * 90 + 450;
       });
 
-      // la frase se desvanece y los iconos se funden uno en otro
+      // la frase se desvanece y los iconos pasan rápido, dos vueltas, terminando en la marca OMNIUS
       t += 1000;
       despues(t, () => {
         intro.classList.add("fuera");
         loader.classList.add("fase-iconos");
       });
-      glyphs.forEach((g, i) => {
+      const secuencia = Array.from({ length: glyphs.length * VUELTAS }, (_, k) => glyphs[k % glyphs.length]);
+      secuencia.forEach((g, i) => {
         despues(t + 500 + i * PASO, () => {
           glyphs.forEach((x) => x.classList.remove("activo"));
           g.classList.add("activo");
         });
       });
-      despues(t + 500 + (glyphs.length - 1) * PASO + SOSTENER_MARCA, cerrarIntro);
+      despues(t + 500 + (secuencia.length - 1) * PASO + SOSTENER_MARCA, cerrarIntro);
     });
 
     loader.addEventListener("click", cerrarIntro, { once: true });
