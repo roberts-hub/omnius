@@ -605,7 +605,7 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   margin-top: clamp(28px, 3.5vw, 44px);
   overflow: hidden;
   /* los logos entran y salen con desvanecido en las orillas */
-  --fade: clamp(40px, 9vw, 160px);
+  --fade: clamp(28px, 7vw, 140px); /* mismo desvanecido que twowaves.mx */
   -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent);
   mask-image: linear-gradient(to right, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent);
 }
