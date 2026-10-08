@@ -190,7 +190,9 @@ if (heroVideo) {
 // trackpad o pasar el cursor por encima no lo mueven.
 // En touch: gesto vertical = scroll de la página (el slider no se mueve); horizontal = arrastrar
 // (y la página no se mueve mientras tanto).
-const UMBRAL = 5; // px antes de decidir la intención en touch (bajo: decide antes de que la página empiece a moverse)
+// En touch se espera a 10 px de recorrido para decidir: con 5 px, un scroll con el pulgar que arranca
+// un poco de lado (muy común) se tomaba como arrastre y la página se quedaba "trabada".
+const UMBRAL = 10;
 const UMBRAL_MOUSE = 3; // px de arrastre real con el botón presionado
 
 // posición inicial: línea al 25% → se ve 3/4 del resultado final (after)
@@ -254,6 +256,7 @@ document.querySelectorAll("[data-comparador]").forEach((comp) => {
     const inicio = performance.now();
     const paso = (ahora) => {
       if (!pistaActiva) return;
+      if (gesto) { pistaActiva = false; return; } // la persona ya está tocando: la pista se retira
       const p = Math.min((ahora - inicio) / DURACION, 1);
       // un solo empujón suave hacia la derecha y de regreso a la posición inicial
       setX(X_INICIAL + AMPLITUD * Math.sin(Math.PI * p) ** 2);
@@ -269,7 +272,7 @@ document.querySelectorAll("[data-comparador]").forEach((comp) => {
     if (e.button !== 0) return;
     caja = comp.getBoundingClientRect();
     // solo se registra el inicio; el slider no se mueve hasta que haya arrastre real
-    gesto = { id: e.pointerId, x0: e.clientX, y0: e.clientY, tipo: e.pointerType, arrastrando: false };
+    gesto = { id: e.pointerId, x0: e.clientX, y0: e.clientY, tipo: e.pointerType, arrastrando: false, xInicial: pendiente ?? x };
     if (e.pointerType === "mouse") e.preventDefault(); // sin selección de texto ni arrastre de imagen
   });
 
@@ -284,7 +287,7 @@ document.querySelectorAll("[data-comparador]").forEach((comp) => {
       if (esMouse) {
         if (dx < UMBRAL_MOUSE) return;
       } else {
-        if (dx < UMBRAL && dy < UMBRAL) return;
+        if (Math.hypot(dx, dy) < UMBRAL) return;
         if (dy >= dx) { gesto = null; return; } // vertical: es scroll, el slider se queda quieto
       }
       gesto.arrastrando = true;
@@ -299,7 +302,11 @@ document.querySelectorAll("[data-comparador]").forEach((comp) => {
     soltar();
   };
   comp.addEventListener("pointerup", terminar);
-  comp.addEventListener("pointercancel", terminar);
+  // el navegador se quedó con el gesto (scroll): el slider regresa a donde estaba
+  comp.addEventListener("pointercancel", (e) => {
+    if (gesto && e.pointerId === gesto.id && gesto.arrastrando) setX(gesto.xInicial);
+    terminar(e);
+  });
   comp.addEventListener("lostpointercapture", terminar);
   window.addEventListener("blur", soltar);
 
