@@ -127,7 +127,7 @@ if (heroVideo) {
 // trackpad o pasar el cursor por encima no lo mueven.
 // En touch: gesto vertical = scroll de la página (el slider no se mueve); horizontal = arrastrar
 // (y la página no se mueve mientras tanto).
-const UMBRAL = 8; // px antes de decidir la intención en touch
+const UMBRAL = 5; // px antes de decidir la intención en touch (bajo: decide antes de que la página empiece a moverse)
 const UMBRAL_MOUSE = 3; // px de arrastre real con el botón presionado
 
 // posición inicial: línea al 25% → se ve 3/4 del resultado final (after)
@@ -272,6 +272,7 @@ if (carrusel) {
   const puntosCaja = carrusel.querySelector(".carrusel-puntos");
   let activo = 0; // índice "lógico" (orden original de los clips)
   let animando = false;
+  let terminarYa = null; // completa al instante la animación en curso
   let visible = false;
   slides.forEach((s, i) => { s._indice = i; });
 
@@ -327,10 +328,12 @@ if (carrusel) {
     };
     pista.addEventListener("transitionend", listo);
     setTimeout(listo, reduceMotion ? 0 : 900); // respaldo (pestaña oculta, sin transición)
+    terminarYa = () => listo();
   };
 
   const mover = (d) => {
-    if (animando || d === 0) return;
+    if (d === 0) return;
+    if (animando && terminarYa) terminarYa(); // toques rápidos: se encadenan en vez de ignorarse
     animando = true;
     activo = (((activo + d) % n) + n) % n;
     if (d > 0) {
@@ -353,6 +356,7 @@ if (carrusel) {
   flechas.forEach((f) => f.addEventListener("click", () => mover(Number(f.dataset.dir))));
   // clic en un clip vecino: lo trae al centro
   slides.forEach((s) => s.addEventListener("click", () => {
+    if (animando && terminarYa) terminarYa(); // posición real antes de calcular la distancia
     const d = [...pista.children].indexOf(s) - CENTRO;
     if (d !== 0) mover(d);
   }));

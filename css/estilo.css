@@ -130,6 +130,11 @@ img { display: block; }
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
   animation: grano 0.45s steps(4) infinite;
 }
+/* en celular el grano va quieto y del tamaño de la pantalla: animado era una capa enorme
+   redibujándose sin parar, y le quitaba fluidez a los sliders y al scroll */
+@media (hover: none), (max-width: 860px) {
+  .grain { inset: 0; animation: none; }
+}
 @keyframes grano {
   0% { transform: translate(0, 0); }
   25% { transform: translate(-2%, 3%); }
@@ -602,20 +607,24 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   color: var(--lino);
 }
 .marcas-franja {
+  position: relative;
   margin-top: clamp(28px, 3.5vw, 44px);
   overflow: hidden;
-  /* los logos entran y salen con desvanecido en las orillas */
-  /* desvanecido marcado en las orillas: los logos aparecen y desaparecen poco a poco */
-  --fade: clamp(70px, 18vw, 300px);
-  -webkit-mask-image: linear-gradient(to right,
-    transparent 0, rgba(0, 0, 0, 0.12) calc(var(--fade) * 0.35), rgba(0, 0, 0, 0.55) calc(var(--fade) * 0.7), #000 var(--fade),
-    #000 calc(100% - var(--fade)),
-    rgba(0, 0, 0, 0.55) calc(100% - var(--fade) * 0.7), rgba(0, 0, 0, 0.12) calc(100% - var(--fade) * 0.35), transparent 100%);
-  mask-image: linear-gradient(to right,
-    transparent 0, rgba(0, 0, 0, 0.12) calc(var(--fade) * 0.35), rgba(0, 0, 0, 0.55) calc(var(--fade) * 0.7), #000 var(--fade),
-    #000 calc(100% - var(--fade)),
-    rgba(0, 0, 0, 0.55) calc(100% - var(--fade) * 0.7), rgba(0, 0, 0, 0.12) calc(100% - var(--fade) * 0.35), transparent 100%);
+  /* desvanecido marcado en las orillas. Va como capas del color del fondo encima de la
+     pista (no como máscara): no se recalcula en cada cuadro y es más fluido en celular */
+  --fade: clamp(56px, 18vw, 300px);
 }
+.marcas-franja::before,
+.marcas-franja::after {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0;
+  z-index: 2;
+  width: var(--fade);
+  pointer-events: none;
+}
+.marcas-franja::before { left: 0; background: linear-gradient(to right, var(--fondo) 0%, rgba(11, 11, 10, 0.88) 35%, rgba(11, 11, 10, 0.45) 70%, rgba(11, 11, 10, 0) 100%); }
+.marcas-franja::after { right: 0; background: linear-gradient(to left, var(--fondo) 0%, rgba(11, 11, 10, 0.88) 35%, rgba(11, 11, 10, 0.45) 70%, rgba(11, 11, 10, 0) 100%); }
 .marcas-pista {
   display: flex;
   align-items: center;
@@ -623,17 +632,17 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   width: max-content;
   padding-right: clamp(3.5rem, 7vw, 6.5rem);
   animation: desfileMarcas 55s linear infinite;
+  will-change: transform;
 }
 .marcas-franja:hover .marcas-pista { animation-play-state: paused; }
-@keyframes desfileMarcas { to { transform: translateX(-50%); } }
+@keyframes desfileMarcas { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-50%, 0, 0); } }
 /* mismo tamaño que en twowaves.mx: base común × factor óptico de cada logo (según su forma) */
 .marca-logo {
   height: calc(var(--factor, 1) * clamp(2.2rem, 3.55vw, 3.25rem)); /* ~20% más chicos que en twowaves.mx */
   width: auto;
   max-width: 280px;
   object-fit: contain;
-  /* cualquier logo se pinta en un solo tono claro */
-  filter: brightness(0) invert(1);
+  /* los PNG ya vienen en blanco: sin filtro (un filtro en 40 logos en movimiento cuesta en celular) */
   opacity: 0.8;
   transition: opacity 0.3s ease;
 }
@@ -836,9 +845,8 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   z-index: 2;
   overflow: hidden;
   transform: translate3d(calc((var(--x) - 100) * 1%), 0, 0);
-  will-change: transform;
 }
-.antes-marco .antes { transform: translate3d(calc((100 - var(--x)) * 1%), 0, 0); will-change: transform; }
+.antes-marco .antes { transform: translate3d(calc((100 - var(--x)) * 1%), 0, 0); }
 
 /* capa del ancho del slider: la línea y la manija van centradas en ella y la capa se desplaza */
 .guia {
@@ -847,8 +855,11 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   z-index: 3;
   pointer-events: none;
   transform: translate3d(calc((var(--x) - 50) * 1%), 0, 0);
-  will-change: transform;
 }
+/* preparar capas de GPU solo en el clip activo: con los 8 a la vez, el iPhone se queda sin memoria gráfica */
+.look.activo .antes-marco,
+.look.activo .antes-marco .antes,
+.look.activo .guia { will-change: transform; }
 .guia .linea {
   position: absolute;
   top: 0; bottom: 0;
@@ -1124,6 +1135,8 @@ body:has(.barra-compra) .cierre { padding-bottom: 120px; }
   .pagina-producto .portada { width: 50%; }
   .pagina-producto .portada-escena { top: 0; }
   .marcas-titulo { font-size: 11px; letter-spacing: 0.18em; }
+  .marca-logo { height: calc(var(--factor, 1) * 1.7rem); }
+  .marcas-pista { gap: 2.4rem; padding-right: 2.4rem; animation-duration: 40s; }
   .consistencia .nota-mono { letter-spacing: 0.1em; }
   .resenas-pista { grid-auto-columns: 86%; }
   .resenas-flecha { display: none; }
