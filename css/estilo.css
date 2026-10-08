@@ -804,8 +804,6 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   color: var(--greige);
 }
 
-.looks-cta { display: flex; justify-content: center; margin-top: clamp(64px, 8vw, 110px); }
-
 /* ══════════ COMPARADOR (estilo Pordoi: 2:1, esquinas de 16px, manija sólida) ══════════
    Todo el movimiento es con transform (lo hace la GPU, sin repintar la foto):
    --x (0–100) desplaza el marco del "antes", su imagen en sentido contrario, y la guía. */
