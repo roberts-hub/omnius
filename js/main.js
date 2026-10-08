@@ -331,6 +331,17 @@ if (carrusel) {
   ir(0);
 }
 
+// ── vista previa de reseñas: index.html?resenas ──
+// La sección está oculta porque sus tarjetas son ejemplos. Con ?resenas en la URL se muestra
+// SOLO en ese navegador y cada tarjeta lleva la etiqueta SAMPLE (nunca se ve como reseña real).
+if (new URLSearchParams(location.search).has("resenas")) {
+  const sec = document.getElementById("reviews");
+  if (sec) {
+    sec.hidden = false;
+    sec.classList.add("modo-muestra");
+  }
+}
+
 // ── carrusel de reseñas (scroll nativo con snap: en celular se desliza con el dedo) ──
 const resenas = document.querySelector(".resenas-pista");
 if (resenas && !resenas.closest("[hidden]")) {

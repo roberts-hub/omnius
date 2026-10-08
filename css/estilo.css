@@ -886,6 +886,22 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
 .resena-titulo { margin-top: 14px; font-size: 16px; font-weight: 600; letter-spacing: -0.01em; color: var(--hueso); }
 .resena-texto { margin-top: 10px; font-size: 14.5px; font-weight: 300; line-height: 1.7; color: var(--greige); }
 
+/* vista previa (?resenas): cada tarjeta marcada como muestra */
+.modo-muestra .resena { position: relative; }
+.modo-muestra .resena::after {
+  content: "SAMPLE";
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  padding: 4px 8px;
+  border: 1px solid rgba(192, 57, 43, 0.6);
+  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--rojo);
+}
+
 /* flechas a los lados, como en Pordoi */
 .resenas-flecha { position: absolute; top: 50%; z-index: 2; margin-top: -23px; }
 .resenas-flecha[data-dir="-1"] { left: -23px; }
