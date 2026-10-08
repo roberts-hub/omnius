@@ -299,7 +299,6 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  margin-top: 34px;
   padding: 16px 28px;
   border: none;
   border-radius: 999px;
@@ -356,6 +355,19 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
 /* en celular no hay hover: al tocar, se oscurece un instante */
 .btn-pildora:active::before { opacity: 1; transition-duration: 0.12s; }
 
+/* los dos botones del hero: POWERGRADE y LUTS */
+.hero-acciones {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 12px;
+  margin-top: 34px;
+}
+.hero-acciones .btn-pildora { justify-content: center; }
+@media (max-width: 600px) {
+  .hero-acciones { grid-auto-flow: row; }
+}
+
 .hero-scroll {
   position: absolute;
   bottom: 30px;
@@ -394,12 +406,6 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
 .js .listo .hero-meta:nth-child(2) { transition-delay: 0.15s; }
 .js .listo .hero-meta:nth-child(3) { transition-delay: 0.35s; }
 .js .listo .hero-meta:nth-child(4) { transition-delay: 0.55s; }
-/* el botón conserva su transición de color además de la de entrada */
-.js .hero-meta.btn-pildora {
-  transition: opacity 1.4s var(--ease), transform 1.4s var(--ease), filter 1.4s var(--ease);
-}
-/* el retraso de la cascada solo aplica a la entrada, no al hover */
-.js .listo .hero-meta.btn-pildora:nth-child(4) { transition-delay: 0.55s; }
 .js .listo .hero-scroll { transition-delay: 0.9s; }
 .hero-scroll.hero-meta { transform: translateX(-50%) translateY(14px); }
 .js .listo .hero-scroll.hero-meta { transform: translateX(-50%); }
@@ -434,79 +440,182 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   scroll-margin-top: 80px;
 }
 
-/* escena: la portada flota sobre el resplandor B&N del mastermind */
-.portada-escena {
+/* ══════════ CAJA 3D (producto.html) — como el render de la caja de Pordoi ══════════
+   Escena de estudio oscura con luz de piso; la caja gira para mostrar el lomo (texto
+   vertical) y el frente (título sobre una foto + bandas de tomas gradeadas + swatches).
+   Todas las medidas en cqi: la caja escala con el ancho de la escena. */
+.caja-escena {
+  --w: 43cqi;                     /* ancho del frente */
+  --h: calc(var(--w) * 1.5);      /* alto */
+  --d: calc(var(--w) * 0.3);      /* grosor (lomo) */
+  container-type: inline-size;
   position: sticky;
-  top: 100px;
+  top: 96px;
   display: flex;
   align-items: center;
   justify-content: center;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 1.1 / 1;
   overflow: hidden;
+  perspective: 240cqi;
   background:
-    radial-gradient(ellipse 60% 50% at 50% 100%, rgba(250, 248, 244, 0.22), transparent 70%),
-    radial-gradient(ellipse 80% 70% at 50% 40%, rgba(234, 224, 197, 0.05), transparent 70%),
-    linear-gradient(180deg, #050505, #0e0e0d);
-  border: 1px solid var(--linea);
+    radial-gradient(ellipse 48% 22% at 52% 82%, rgba(160, 172, 182, 0.13), transparent 72%),
+    radial-gradient(ellipse 60% 55% at 30% 18%, rgba(120, 138, 152, 0.14), transparent 72%),
+    linear-gradient(180deg, #13171b 0%, #0c0e11 64%, #08090b 100%);
 }
-
-.portada {
+.caja {
   position: relative;
-  width: 62%;
-  aspect-ratio: 3 / 4;
-  display: flex;
-  flex-direction: column;
-  background: linear-gradient(160deg, #161614, #070707 60%);
-  border: 1px solid rgba(234, 224, 197, 0.18);
-  box-shadow:
-    0 40px 80px -20px rgba(0, 0, 0, 0.9),
-    0 0 0 1px rgba(0, 0, 0, 0.6),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  transform: perspective(1400px) rotateY(-9deg) rotateX(2deg);
-  transition: transform 1.2s var(--ease);
+  width: var(--w);
+  height: var(--h);
+  margin-left: var(--d);
+  transform-style: preserve-3d;
+  transform-origin: 50% 50% calc(var(--d) / -2);
+  transform: rotateY(27deg) rotateX(-2deg);
+  transition: transform 1.4s var(--ease);
 }
-.portada-escena:hover .portada { transform: perspective(1400px) rotateY(-3deg) rotateX(1deg); }
+@media (hover: hover) {
+  .caja-escena:hover .caja { transform: rotateY(20deg) rotateX(-1deg); }
+}
+.caja-frente,
+.caja-lomo { position: absolute; top: 0; height: 100%; backface-visibility: hidden; }
 
-.portada-top {
+.caja-lomo {
+  left: calc(var(--d) * -1);
+  width: var(--d);
+  transform-origin: right center;
+  transform: rotateY(-90deg);
   display: flex;
-  justify-content: space-between;
-  padding: 14px 16px;
-  font-family: var(--mono);
-  font-size: clamp(6px, 0.6vw, 8px);
-  letter-spacing: 0.3em;
-  color: var(--greige);
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: linear-gradient(180deg, #16181b, #0b0c0e 55%, #060708);
+  color: var(--hueso);
 }
-.portada-centro {
-  flex: 1;
+/* luz: el lomo queda en sombra respecto al frente */
+.caja-lomo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.15));
+  pointer-events: none;
+}
+.lomo-texto {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 10px;
-  text-align: center;
+  gap: 0.6cqi;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  margin-top: 35%;
+  white-space: nowrap;
 }
-.portada-icono { width: 26%; color: var(--hueso); opacity: 0.9; }
-.portada-nombre {
-  font-size: clamp(26px, 3.4vw, 46px);
+.lomo-titulo {
+  font-size: 3.7cqi;
   font-weight: 700;
-  letter-spacing: -0.05em;
+  letter-spacing: 0.06em;
   line-height: 1;
 }
-.portada-sub {
-  font-family: var(--mono);
-  font-size: clamp(6px, 0.6vw, 8px);
-  letter-spacing: 0.3em;
+.lomo-sub {
+  font-size: 1.15cqi;
+  font-weight: 400;
+  letter-spacing: 0.04em;
   color: var(--greige);
 }
-/* tira inferior de la portada: 5 tomas gradeadas, pegadas, sin títulos */
-.portada-tiras {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  height: 34%;
-  border-top: 1px solid rgba(234, 224, 197, 0.12);
+
+.caja-frente {
+  left: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #0a0a0a;
+  box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.16);
 }
-.tira { position: relative; overflow: hidden; }
-.tira img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* brillo de estudio: luz desde arriba a la izquierda */
+.caja-frente::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(105deg, rgba(255, 255, 255, 0.07), transparent 38%, rgba(0, 0, 0, 0.22)),
+    linear-gradient(180deg, transparent 70%, rgba(0, 0, 0, 0.18));
+  pointer-events: none;
+}
+.frente-banda { position: relative; flex: 1; overflow: hidden; }
+.frente-banda + .frente-banda { border-top: 1px solid rgba(0, 0, 0, 0.55); }
+.frente-banda img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.frente-cabeza { flex: 1.6; }
+.frente-cabeza::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(180deg, rgba(5, 8, 10, 0.55), rgba(5, 8, 10, 0.25) 60%, rgba(5, 8, 10, 0.4));
+}
+.frente-titulos {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9cqi;
+  text-align: center;
+  color: #f4efe2;
+}
+.frente-marca {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6cqi;
+  font-family: var(--mono);
+  font-size: 1cqi;
+  letter-spacing: 0.3em;
+  opacity: 0.9;
+}
+.frente-marca svg { width: 1.6cqi; height: 1.6cqi; }
+.frente-nombre {
+  font-size: 6.2cqi;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  text-shadow: 0 0.4cqi 2cqi rgba(0, 0, 0, 0.45);
+}
+.frente-sub {
+  font-family: var(--mono);
+  font-size: 1.25cqi;
+  letter-spacing: 0.4em;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
+  margin-right: -0.4em;
+}
+.frente-pie { flex: 1.05; }
+.frente-swatches {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: flex;
+  gap: 0.5cqi;
+  transform: translate(-50%, -50%);
+}
+.frente-swatches i {
+  width: 3.4cqi;
+  height: 1.3cqi;
+  background: var(--c);
+  box-shadow: 0 0.2cqi 0.8cqi rgba(0, 0, 0, 0.35);
+}
+/* sombra de contacto en el piso */
+.caja-sombra {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + var(--h) / 2 - 1.5cqi);
+  width: calc(var(--w) * 1.5);
+  height: 5cqi;
+  transform: translateX(-46%);
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.85), transparent);
+  filter: blur(6px);
+  pointer-events: none;
+  z-index: 0;
+}
+.caja { z-index: 1; }
 
 .producto-info { padding-top: clamp(0px, 2vw, 24px); }
 
@@ -561,46 +670,160 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
 }
 
 /* ══════════ PÁGINA DE PRODUCTO (producto.html) — estructura de Pordoi ══════════
-   Izquierda: la portada grande (~63%). Derecha: confianza, título, precio, línea,
-   botón de compra, métodos de pago, frase, párrafos y checklist. */
+   Izquierda: la caja 3D grande (~63%). Derecha (columna angosta): kicker, título,
+   precio, línea, edición, botón de compra + express, frase, párrafos y checklist. */
 
 .pagina-producto .producto.pagina {
-  grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
-  gap: clamp(32px, 5vw, 90px);
-  max-width: 1600px;
-  padding-top: calc(76px + clamp(24px, 3vw, 44px));
+  grid-template-columns: minmax(0, 1.95fr) minmax(0, 1fr);
+  gap: clamp(32px, 3.4vw, 56px);
+  max-width: 1440px;
+  padding-top: calc(76px + clamp(16px, 2vw, 28px));
   padding-bottom: clamp(60px, 8vw, 120px);
   min-height: 100vh;
 }
-.pagina-producto .portada-escena { top: 96px; aspect-ratio: 1 / 1; }
-.pagina-producto .portada { width: 52%; }
-.pagina-producto .producto-info { padding-top: clamp(8px, 2vw, 32px); }
+.pagina-producto .producto-info { max-width: 440px; padding-top: clamp(8px, 4vw, 64px); }
 .pagina-producto .producto-titulo {
-  margin-top: 16px;
-  font-size: clamp(32px, 3vw, 46px);
-  line-height: 1;
-  letter-spacing: -0.045em;
+  margin-top: 14px;
+  font-size: clamp(28px, 2.3vw, 34px);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
 }
-.pagina-producto .precio { margin-top: 20px; }
-.pagina-producto .btn-solido { margin-top: 32px; padding: 22px 40px; }
-.pagina-producto .nota-mono { letter-spacing: 0.12em; }
-.pagina-producto .lead { margin-top: 40px; font-size: 17px; }
-.pagina-producto .cuerpo { margin-top: 16px; font-size: 15px; }
+.pagina-producto .precio {
+  margin-top: 14px;
+  gap: 10px;
+  padding-bottom: 26px;
+  border-bottom-color: rgba(234, 224, 197, 0.32);
+}
+.pagina-producto .precio .actual { font-size: 16px; font-weight: 400; letter-spacing: 0; }
+.pagina-producto .precio .anterior { font-size: 14px; }
+
+/* selector de edición: tarjetas como las variantes de una tienda */
+.ediciones { margin-top: 24px; padding: 0; border: 0; display: grid; gap: 10px; min-width: 0; }
+.ediciones-titulo {
+  padding: 0;
+  margin-bottom: 10px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: var(--greige);
+}
+.edicion {
+  position: relative;
+  display: block;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(234, 224, 197, 0.16);
+  background: rgba(255, 255, 255, 0.02);
+  cursor: pointer;
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+.edicion input {
+  appearance: none;
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  border-radius: inherit;
+  cursor: pointer;
+}
+.edicion:hover { border-color: rgba(234, 224, 197, 0.34); }
+.edicion:has(input:checked) { border-color: var(--hueso); background: rgba(234, 224, 197, 0.06); }
+.edicion:has(input:focus-visible) { outline: 2px solid var(--hueso); outline-offset: 3px; }
+.edicion-linea {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--hueso);
+}
+/* punto de radio */
+.edicion-linea::before {
+  content: "";
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid rgba(234, 224, 197, 0.45);
+  transition: border-width 0.2s ease, border-color 0.2s ease;
+}
+.edicion:has(input:checked) .edicion-linea::before { border: 4px solid var(--hueso); }
+.edicion-nombre { flex: 1; }
+.edicion-precio { font-weight: 400; }
+.edicion-desc { display: block; margin-top: 4px; padding-left: 24px; font-size: 12.5px; line-height: 1.5; color: var(--greige); }
+
+/* botones como los de Pordoi: redondeados 14px, 52px de alto, a todo el ancho */
+.btn-compra,
+.btn-express {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 52px;
+  border-radius: 14px;
+  text-decoration: none;
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+.btn-compra {
+  margin-top: 20px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  color: var(--fondo);
+  background: var(--hueso);
+}
+.btn-compra .flecha { font-family: var(--sans); transition: transform 0.4s var(--ease); }
+.btn-express {
+  margin-top: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--hueso);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+.btn-express-metodos { font-weight: 300; color: var(--greige); }
+@media (hover: hover) {
+  .btn-compra:hover { background: #fff; }
+  .btn-compra:hover .flecha { transform: translateX(5px); }
+  .btn-express:hover { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.24); }
+}
+.pagos-nota { margin-top: 12px; text-align: center; font-size: 12px; color: var(--greige); }
+
+.pagina-producto .lead { margin-top: 34px; font-size: 15px; }
+.pagina-producto .cuerpo { margin-top: 14px; font-size: 14px; line-height: 1.65; }
 .pagina-producto .cuerpo strong { font-weight: 600; color: var(--hueso); }
 /* oferta agrupada (TOOLS / TRAINING / ACCESS), como en Reilin Joey */
-.pagina-producto .oferta-grupos { margin-top: 28px; }
+.pagina-producto .oferta-grupos { margin-top: 26px; }
 .pagina-producto .checklist-grupo {
-  margin-top: 22px;
+  margin-top: 20px;
   font-family: var(--mono);
   font-size: 10px;
   letter-spacing: 0.3em;
   color: var(--greige);
 }
 .pagina-producto .checklist-grupo:first-child { margin-top: 0; }
-.pagina-producto .oferta-grupos .checklist { margin-top: 8px; }
+.pagina-producto .oferta-grupos .checklist { margin-top: 6px; }
 /* checklist como Pordoi: lista simple con ✓, sin líneas entre renglones */
-.pagina-producto .checklist { margin-top: 24px; border-top: none; }
-.pagina-producto .checklist li { padding: 5px 0; border-bottom: none; font-size: 15px; }
+.pagina-producto .checklist { border-top: none; }
+.pagina-producto .checklist li { gap: 12px; padding: 4px 0; border-bottom: none; font-size: 14px; }
+.ediciones-cambio {
+  margin-top: 26px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: left;
+  color: var(--hueso);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(234, 224, 197, 0.4);
+  cursor: pointer;
+}
+.ediciones-cambio:hover { text-decoration-color: var(--hueso); }
+#luts { scroll-margin-top: 110px; }
 .cierre-corto { margin-top: 0; }
 .cierre-corto .cierre-pie { margin-top: 0; }
 
@@ -947,9 +1170,24 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   border: 1px solid rgba(255, 255, 255, 0.08);
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.015));
 }
-.resena-autor { display: flex; flex-direction: column; gap: 4px; }
+.resena-autor { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.resena-perfil { display: flex; align-items: center; gap: 12px; min-width: 0; text-decoration: none; }
+.resena-avatar {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: linear-gradient(160deg, #22211f, #121211);
+  box-shadow: 0 0 0 1px rgba(234, 224, 197, 0.16);
+}
+.resena-quien { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .resena-nombre { font-size: 15px; font-weight: 600; color: var(--hueso); }
-.resena-pais { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--rojo); }
+.resena-ig { font-size: 13px; font-weight: 300; color: var(--greige); }
+a.resena-perfil .resena-nombre { text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 3px; transition: text-decoration-color 0.3s ease; }
+a.resena-perfil:hover .resena-nombre { text-decoration-color: rgba(234, 224, 197, 0.5); }
+a.resena-perfil:focus-visible { outline: 1px solid var(--hueso); outline-offset: 4px; border-radius: 8px; }
+.resena-pais { flex-shrink: 0; margin-top: 4px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--rojo); }
 .resena-estrellas { margin-top: 18px; font-size: 17px; letter-spacing: 3px; color: var(--hueso); }
 .resena-titulo { margin-top: 14px; font-size: 16px; font-weight: 600; letter-spacing: -0.01em; color: var(--hueso); }
 .resena-texto { margin-top: 10px; font-size: 14.5px; font-weight: 300; line-height: 1.7; color: var(--greige); }
@@ -1031,6 +1269,16 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
 .cierre-links { display: flex; gap: 28px; }
 .cierre-links a { text-decoration: none; transition: color 0.3s ease; }
 .cierre-links a:hover { color: var(--hueso); }
+.cierre-powered { margin-top: 22px; text-align: center; }
+.cierre-powered a {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.35em;
+  text-decoration: none;
+  color: rgba(176, 165, 149, 0.6);
+  transition: color 0.3s ease;
+}
+.cierre-powered a:hover { color: var(--hueso); }
 
 /* ══════════ BARRA DE COMPRA FIJA (estilo Pordoi, con el vidrio de SPECTRE) ══════════ */
 
@@ -1059,7 +1307,7 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
 /* espacio al final para que la barra nunca tape el footer */
 body:has(.barra-compra) .cierre { padding-bottom: 120px; }
 
-/* miniatura: la portada en pequeño (marca + barras de color) */
+/* miniatura: solo el icono de SPECTRE */
 .barra-compra-mini {
   position: relative;
   flex-shrink: 0;
@@ -1071,9 +1319,7 @@ body:has(.barra-compra) .cierre { padding-bottom: 120px; }
   border: 1px solid rgba(234, 224, 197, 0.14);
   color: var(--hueso);
 }
-.barra-compra-mini svg { position: absolute; left: 50%; top: 12%; width: 42%; transform: translateX(-50%); }
-.barra-compra-tiras { position: absolute; left: 0; right: 0; bottom: 0; height: 38%; display: grid; grid-template-columns: repeat(5, 1fr); }
-.barra-compra-tiras img { width: 100%; height: 100%; object-fit: cover; }
+.barra-compra-mini svg { position: absolute; left: 50%; top: 50%; width: 54%; transform: translate(-50%, -50%); }
 
 .barra-compra-info { flex: 1; min-width: 0; }
 .barra-compra-nombre {
@@ -1086,8 +1332,6 @@ body:has(.barra-compra) .cierre { padding-bottom: 120px; }
   text-overflow: ellipsis;
 }
 .barra-compra-nombre span { font-weight: 300; font-style: italic; color: var(--greige); }
-.barra-compra-precio { margin-top: 2px; font-size: 14px; color: var(--hueso); }
-.barra-compra-precio s { margin-left: 6px; font-size: 12px; color: var(--greige); }
 
 .barra-compra-boton {
   flex-shrink: 0;
@@ -1120,7 +1364,7 @@ body:has(.barra-compra) .cierre { padding-bottom: 120px; }
   .barra-compra-boton { padding: 14px 16px; letter-spacing: 0.16em; }
 }
 @media (max-width: 380px) {
-  .barra-compra-nombre span, .barra-compra-precio s { display: none; }
+  .barra-compra-nombre span { display: none; }
 }
 
 /* ══════════ REVEAL ══════════ */
@@ -1141,8 +1385,9 @@ body:has(.barra-compra) .cierre { padding-bottom: 120px; }
 @media (max-width: 860px) {
   .producto { grid-template-columns: 1fr; }
   .pagina-producto .producto.pagina { grid-template-columns: 1fr; padding-top: 92px; min-height: 0; }
-  .pagina-producto .portada { width: 50%; }
-  .pagina-producto .portada-escena { top: 0; }
+  .caja-escena { position: relative; top: 0; aspect-ratio: 1 / 1; }
+  .caja-escena { --w: 46cqi; }
+  .pagina-producto .producto-info { max-width: none; padding-top: 0; }
   .marcas-titulo { font-size: 11px; letter-spacing: 0.18em; }
   .marca-logo { height: calc(var(--factor, 1) * 1.7rem); }
   .marcas-pista { gap: 2.4rem; padding-right: 2.4rem; animation-duration: 40s; }
@@ -1150,8 +1395,6 @@ body:has(.barra-compra) .cierre { padding-bottom: 120px; }
   .resenas-pista { grid-auto-columns: 86%; }
   .resenas-flecha { display: none; }
   .carrusel-pista .look { opacity: 0.4; }
-  .portada-escena { position: relative; top: 0; aspect-ratio: 4 / 3.4; }
-  .portada { width: 50%; }
   .introducing-tiras { grid-template-columns: 1fr 1.4fr 1fr; }
   .introducing-tiras img:nth-child(n+4) { display: none; }
   .comparador .tag.camara { font-size: 9px; bottom: 10px; }
@@ -1172,7 +1415,6 @@ body:has(.barra-compra) .cierre { padding-bottom: 120px; }
   .comparador.deslizando .antes-marco,
   .comparador.deslizando .antes-marco .antes,
   .comparador.deslizando .guia { transition: none; }
-  .portada { transition: none; }
   .hero-media video { animation: none; transition: none; }
   .scroll-dot { animation: none; }
   .js .hero-meta, .js .cabecera { opacity: 1; transform: none; filter: none; transition: none; }

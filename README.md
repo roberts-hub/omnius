@@ -15,7 +15,8 @@ python3 -m http.server 4181
 
 | Qué | Dónde |
 |---|---|
-| Buy-link de Lemon Squeezy | `js/main.js`, constante `LEMON_URL` (usar el link `?embed=1&media=0`). El botón `#cta-comprar` de `producto.html` abre el checkout encima de la página; los botones de la principal llevan a `producto.html` |
+| Buy-links de Lemon Squeezy | `js/main.js`, objeto `LEMON_URLS`: `completo` (Full System, $79) y `luts` (LUTs Only, $39). Usar el link `?embed=1&media=0` de cada producto. En `producto.html` los botones de compra abren el checkout de la edición elegida; el botón POWERGRADE del hero abre el Full System y el botón LUTS lleva a `producto.html?edition=luts#luts` |
+| Ediciones y precios | `producto.html`, `fieldset.ediciones`: los `data-*` de cada opción (precio, precio tachado, título, texto de la caja) y los bloques `[data-oferta-panel]` con la descripción de cada una |
 | OG image / canonical al publicar | `index.html`, comentario `TODO al publicar` en el `<head>` |
 | Precio, checklist y textos del producto | `producto.html` (página de compra). El precio también aparece en los botones "GET SPECTRE — $79" de `index.html` |
 | Frase de la intro | `index.html`, las `.intro-linea` dentro de `#loader` |
@@ -24,7 +25,7 @@ python3 -m http.server 4181
 | Nombres de los sliders | `index.html`, sección `#looks`  |
 | Crédito de cámara por LUT | `index.html`, `.tag.camara` de cada slider: escribir la cámara y quitar `hidden` |
 | Collage de tomas | `index.html`, `.introducing-tiras` (5 imágenes; se puede cambiar por un `<video>` del reel) |
-| Reseñas | `index.html`, sección `#reviews` (carrusel estilo Pordoi). Hoy con texto de relleno (lorem ipsum); reemplazar nombre, país, título y texto de cada `.resena` por reseñas reales |
+| Reseñas | `index.html`, sección `#reviews` (carrusel estilo Pordoi). Hoy con texto de relleno (lorem ipsum); reemplazar nombre, @usuario, link de Instagram, país, título y texto de cada `.resena`. Foto de perfil: `herramientas/avatar-instagram.sh usuario` la guarda en `img/resenas/usuario.jpg` |
 
 La intro (frase + iconos) solo se muestra en la primera visita de cada sesión
 del navegador. Para volver a verla: abrir una pestaña nueva o privada.

@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,300;0,400;0,600;0,700;1,300&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/estilo.css?v=20261008150048" />
+  <link rel="stylesheet" href="css/estilo.css?v=20261008151315" />
 </head>
 <body class="listo pagina-producto">
 
@@ -34,76 +34,137 @@
   <main>
     <!-- ══════════ PRODUCTO (estructura de la página de producto de Pordoi) ══════════ -->
     <section class="producto pagina" id="comprar">
-      <div class="portada-escena">
-        <div class="portada" aria-label="SPECTRE product cover">
-          <div class="portada-top">
-            <span>ROBERTO ARECHEDERRA</span>
-            <span>V1.0</span>
+      <!-- La caja 3D (como el render de Pordoi): lomo con texto vertical + frente con bandas de fotos -->
+      <div class="caja-escena" aria-label="SPECTRE product box">
+        <div class="caja">
+          <div class="caja-lomo" aria-hidden="true">
+            <span class="lomo-texto">
+              <span class="lomo-titulo">CINEMATIC</span>
+              <span class="lomo-sub" data-oferta-texto="lomo">Signature LUT · One-Click LUT · PowerGrade</span>
+            </span>
           </div>
-          <div class="portada-centro">
-            <svg class="portada-icono" viewBox="0 0 100 100" fill="none" aria-hidden="true">
-              <circle cx="50" cy="50" r="24" stroke="currentColor" stroke-width="2"/>
-              <line x1="50" y1="20" x2="50" y2="80" stroke="currentColor" stroke-width="1.2"/>
-            </svg>
-            <span class="portada-nombre">SPECTRE</span>
-            <span class="portada-sub">SIGNATURE LUT // POWERGRADE</span>
-          </div>
-          <div class="portada-tiras">
-            <div class="tira"><img src="img/looks/tira-03.jpg" alt="" /></div>
-            <div class="tira"><img src="img/looks/tira-05.jpg" alt="" /></div>
-            <div class="tira"><img src="img/looks/tira-01.jpg" alt="" /></div>
-            <div class="tira"><img src="img/looks/tira-06.jpg" alt="" /></div>
-            <div class="tira"><img src="img/looks/tira-08.jpg" alt="" /></div>
+          <div class="caja-frente">
+            <div class="frente-banda frente-cabeza">
+              <img src="img/looks/05-despues-1200.jpg" alt="" />
+              <div class="frente-titulos">
+                <span class="frente-marca">
+                  <svg viewBox="18 18 64 64" fill="none" aria-hidden="true"><circle cx="50" cy="50" r="24" stroke="currentColor" stroke-width="3"/><line x1="50" y1="20" x2="50" y2="80" stroke="currentColor" stroke-width="2"/></svg>
+                  ROBERTO ARECHEDERRA
+                </span>
+                <span class="frente-nombre">SPECTRE</span>
+                <span class="frente-sub" data-oferta-texto="caja">COLOR SYSTEM</span>
+              </div>
+            </div>
+            <div class="frente-banda"><img src="img/looks/03-despues-1200.jpg" alt="" /></div>
+            <div class="frente-banda"><img src="img/looks/06-despues-1200.jpg" alt="" /></div>
+            <div class="frente-banda frente-pie">
+              <img src="img/looks/01-despues-1200.jpg" alt="" />
+              <div class="frente-swatches" aria-hidden="true">
+                <i style="--c:#2c3a40"></i><i style="--c:#8e5a3a"></i><i style="--c:#c98a4a"></i><i style="--c:#5d6a55"></i><i style="--c:#e0c79a"></i>
+              </div>
+            </div>
           </div>
         </div>
+        <div class="caja-sombra" aria-hidden="true"></div>
       </div>
 
       <div class="producto-info">
         <p class="kicker">FOR FILMMAKERS &amp; CONTENT CREATORS</p>
-        <h1 class="producto-titulo">SPECTRE <span>Color System</span></h1>
+        <h1 class="producto-titulo">SPECTRE <span data-oferta-texto="titulo">Color System</span></h1>
 
         <div class="precio">
-          <span class="actual">$79</span>
-          <span class="anterior">$119</span>
+          <span class="actual" data-oferta-texto="precio">$79</span>
+          <span class="anterior" data-oferta-texto="anterior">$119</span>
           <span class="desc">LAUNCH PRICE</span>
         </div>
 
-        <!-- El buy-link real de Lemon Squeezy se configura en js/main.js (LEMON_URL).
-             Con la URL real, todo [data-checkout] abre el checkout encima de la página. -->
-        <a id="cta-comprar" class="btn-solido" href="#comprar" data-checkout data-oculta-barra>GET SPECTRE <span class="flecha">→</span></a>
-        <p class="nota-mono">SECURE CHECKOUT VIA LEMON SQUEEZY // CARDS, PAYPAL, APPLE PAY</p>
+        <!-- Dos ediciones; cada una con su propio buy-link de Lemon Squeezy (js/main.js → LEMON_URLS).
+             Los data-* de cada opción son los textos que cambian en la página al elegirla. -->
+        <fieldset class="ediciones" id="luts" data-ediciones>
+          <legend class="ediciones-titulo">EDITION</legend>
+          <label class="edicion">
+            <input type="radio" name="edicion" value="completo" checked
+              data-precio="$79" data-anterior="$119" data-titulo="Color System"
+              data-caja="COLOR SYSTEM" data-lomo="Signature LUT · One-Click LUT · PowerGrade" />
+            <span class="edicion-linea"><span class="edicion-nombre">Full System</span><span class="edicion-precio">$79</span></span>
+            <span class="edicion-desc">LUTs + node tree + tutorial · for DaVinci Resolve</span>
+          </label>
+          <label class="edicion">
+            <input type="radio" name="edicion" value="luts"
+              data-precio="$39" data-anterior="$59" data-titulo="LUT Pack"
+              data-caja="LUT PACK" data-lomo="Signature LUT · One-Click LUTs · Any editor" />
+            <span class="edicion-linea"><span class="edicion-nombre">LUTs Only</span><span class="edicion-precio">$39</span></span>
+            <span class="edicion-desc">No Resolve needed · Premiere, Final Cut, CapCut &amp; more</span>
+          </label>
+        </fieldset>
 
-        <p class="lead"><strong>One signature look. One system. Graded like film.</strong></p>
-        <p class="cuerpo">
-          The exact <strong>node tree and signature LUT</strong> behind my work — a
-          <strong>complete color system for DaVinci Resolve</strong> that gives you clean,
-          cinematic images on <strong>any camera</strong>.
-        </p>
-        <p class="cuerpo">
-          Built to help you <strong>grade faster</strong>, keep your look
-          <strong>consistent across every project</strong>, and deliver work that
-          <strong>feels like film</strong>.
-        </p>
+        <!-- Sin buy-link configurado los botones se quedan en #comprar; con él, abren el checkout aquí mismo. -->
+        <a id="cta-comprar" class="btn-compra" href="#comprar" data-checkout data-oculta-barra>GET SPECTRE <span class="flecha" aria-hidden="true">→</span></a>
+        <a class="btn-express" href="#comprar" data-checkout>Express checkout <span class="btn-express-metodos">Apple Pay · PayPal · Card</span></a>
+        <p class="pagos-nota">Secure checkout by Lemon Squeezy · Instant download</p>
 
-        <!-- Oferta agrupada como en Reilin Joey: herramientas, entrenamiento y acceso -->
-        <div class="oferta-grupos">
-          <p class="checklist-grupo">TOOLS</p>
-          <ul class="checklist">
-            <li>Signature LUT (.cube) — my finishing look</li>
-            <li>One-Click LUT — the full look in a single click</li>
-            <li>Node tree setup (PowerGrade) for DaVinci Resolve</li>
-            <li>Versions for Sony, Canon, Fuji &amp; DJI</li>
-          </ul>
-          <p class="checklist-grupo">TRAINING</p>
-          <ul class="checklist">
-            <li>In-depth video tutorial: how to use it correctly</li>
-            <li>Log practice footage to follow along</li>
-          </ul>
-          <p class="checklist-grupo">ACCESS</p>
-          <ul class="checklist">
-            <li>Instant download + free updates</li>
-            <li>DaVinci Resolve Free &amp; Studio — LUTs also in Premiere &amp; Final Cut</li>
-          </ul>
+        <div class="oferta-panel" data-oferta-panel="completo">
+          <p class="lead"><strong>One signature look. One system. Graded like film.</strong></p>
+          <p class="cuerpo">
+            The exact <strong>node tree and signature LUT</strong> behind my work — a
+            <strong>complete color system for DaVinci Resolve</strong> that gives you clean,
+            cinematic images on <strong>any camera</strong>.
+          </p>
+          <p class="cuerpo">
+            Built to help you <strong>grade faster</strong>, keep your look
+            <strong>consistent across every project</strong>, and deliver work that
+            <strong>feels like film</strong>.
+          </p>
+          <div class="oferta-grupos">
+            <p class="checklist-grupo">TOOLS</p>
+            <ul class="checklist">
+              <li>Signature LUT (.cube) — my finishing look</li>
+              <li>One-Click LUT — the full look in a single click</li>
+              <li>Node tree setup (PowerGrade) for DaVinci Resolve</li>
+              <li>Versions for Sony, Canon, Fuji &amp; DJI</li>
+            </ul>
+            <p class="checklist-grupo">TRAINING</p>
+            <ul class="checklist">
+              <li>In-depth video tutorial: how to use it correctly</li>
+              <li>Log practice footage to follow along</li>
+            </ul>
+            <p class="checklist-grupo">ACCESS</p>
+            <ul class="checklist">
+              <li>Instant download + free updates</li>
+              <li>DaVinci Resolve Free &amp; Studio — LUTs also in Premiere &amp; Final Cut</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="oferta-panel" data-oferta-panel="luts" hidden>
+          <p class="lead"><strong>The SPECTRE look. In any editor.</strong></p>
+          <p class="cuerpo">
+            My <strong>Signature LUT</strong> and <strong>One-Click LUTs</strong> as standard
+            .cube files — the same finishing look behind my work, ready for
+            <strong>Premiere Pro, Final Cut Pro, CapCut</strong> and any app that reads LUTs.
+          </p>
+          <p class="cuerpo">
+            No DaVinci Resolve needed: drop it on your footage and get a
+            <strong>clean, cinematic image in one click</strong>.
+          </p>
+          <div class="oferta-grupos">
+            <p class="checklist-grupo">LUTS</p>
+            <ul class="checklist">
+              <li>Signature LUT (.cube) — my finishing look</li>
+              <li>One-Click LUTs — Log to finished look in a single click</li>
+              <li>Versions for Sony, Canon, Fuji &amp; DJI</li>
+            </ul>
+            <p class="checklist-grupo">GUIDE</p>
+            <ul class="checklist">
+              <li>Quick install guide for Premiere, Final Cut, CapCut &amp; more</li>
+            </ul>
+            <p class="checklist-grupo">ACCESS</p>
+            <ul class="checklist">
+              <li>Instant download + free updates</li>
+              <li>Works in any editor that supports .cube LUTs</li>
+            </ul>
+          </div>
+          <button class="ediciones-cambio" type="button" data-elige-edicion="completo">Using DaVinci Resolve? Get the Full System with the node tree + tutorial →</button>
         </div>
       </div>
     </section>
@@ -118,6 +179,7 @@
       </span>
       <span>© 2026 ROBERTO ARECHEDERRA</span>
     </div>
+    <p class="cierre-powered"><a href="https://twowaves.mx" target="_blank" rel="noopener">POWERED BY TWO WAVES</a></p>
   </footer>
 
 
@@ -127,15 +189,13 @@
   <div class="barra-compra" data-barra-compra role="region" aria-label="Quick checkout" inert>
     <div class="barra-compra-mini" aria-hidden="true">
       <svg viewBox="18 18 64 64" fill="none"><circle cx="50" cy="50" r="24" stroke="currentColor" stroke-width="2.4"/><line x1="50" y1="20" x2="50" y2="80" stroke="currentColor" stroke-width="1.6"/></svg>
-      <span class="barra-compra-tiras"><img src="img/looks/tira-03.jpg" alt="" loading="lazy" /><img src="img/looks/tira-05.jpg" alt="" loading="lazy" /><img src="img/looks/tira-01.jpg" alt="" loading="lazy" /><img src="img/looks/tira-06.jpg" alt="" loading="lazy" /><img src="img/looks/tira-08.jpg" alt="" loading="lazy" /></span>
     </div>
     <div class="barra-compra-info">
-      <p class="barra-compra-nombre">SPECTRE <span>Color System</span></p>
-      <p class="barra-compra-precio"><span class="actual">$79</span> <s>$119</s></p>
+      <p class="barra-compra-nombre">SPECTRE <span data-oferta-texto="titulo">Color System</span></p>
     </div>
     <a class="barra-compra-boton" href="#comprar" data-checkout>GET SPECTRE <span class="flecha" aria-hidden="true">→</span></a>
   </div>
 
-  <script src="js/main.js?v=20261008150048" defer></script>
+  <script src="js/main.js?v=20261008151315" defer></script>
 </body>
 </html>

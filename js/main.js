@@ -1,25 +1,73 @@
 // ══════════ SPECTRE — main.js ══════════
 
-// TODO: reemplazar con el buy-link real de la tienda Lemon Squeezy,
+// TODO: reemplazar con los buy-links reales de la tienda Lemon Squeezy (un producto por edición),
 // formato: https://TIENDA.lemonsqueezy.com/checkout/buy/UUID?embed=1&media=0
-const LEMON_URL = "TODO-LEMONSQUEEZY-URL";
+const LEMON_URLS = {
+  completo: "TODO-LEMONSQUEEZY-URL-FULL-SYSTEM", // Full System (LUTs + node tree + tutorial) — $79
+  luts: "TODO-LEMONSQUEEZY-URL-LUTS-ONLY",       // LUTs Only (sin DaVinci Resolve) — $39
+};
+const urlLista = (u) => !!u && !u.startsWith("TODO");
+
+// ── Edición elegida (producto.html) ──
+// [data-checkout] vacío sigue la edición elegida; data-checkout="luts" fija una.
+// ?edition=luts en la URL abre la página con LUTs Only ya elegida.
+let edicion = "completo";
+const botonesCheckout = document.querySelectorAll("[data-checkout]");
+const urlDe = (b) => LEMON_URLS[b.dataset.checkout || edicion];
+const actualizarCheckout = () => botonesCheckout.forEach((b) => {
+  const u = urlDe(b);
+  if (urlLista(u)) b.href = u;
+});
+
+const selectorEdicion = document.querySelector("[data-ediciones]");
+if (selectorEdicion) {
+  const opciones = [...selectorEdicion.querySelectorAll('input[name="edicion"]')];
+  const elegir = (valor) => {
+    const opcion = opciones.find((o) => o.value === valor);
+    if (!opcion) return;
+    opcion.checked = true;
+    edicion = valor;
+    document.querySelectorAll("[data-oferta-texto]").forEach((el) => {
+      const texto = opcion.dataset[el.dataset.ofertaTexto];
+      if (texto) el.textContent = texto;
+    });
+    document.querySelectorAll("[data-oferta-panel]").forEach((p) => {
+      p.hidden = p.dataset.ofertaPanel !== valor;
+    });
+    actualizarCheckout();
+  };
+  opciones.forEach((o) => o.addEventListener("change", () => {
+    elegir(o.value);
+    const url = new URL(location.href);
+    if (o.value === "completo") url.searchParams.delete("edition");
+    else url.searchParams.set("edition", o.value);
+    history.replaceState(null, "", url);
+  }));
+  document.querySelectorAll("[data-elige-edicion]").forEach((b) => b.addEventListener("click", () => {
+    const o = opciones.find((x) => x.value === b.dataset.eligeEdicion);
+    if (o) { o.click(); selectorEdicion.scrollIntoView({ behavior: "smooth", block: "center" }); }
+  }));
+  elegir(new URLSearchParams(location.search).get("edition") === "luts" ? "luts" : "completo");
+}
 
 // ── Checkout (Lemon Squeezy) ──
-// Todo elemento con [data-checkout] abre el checkout encima de la página (overlay):
-// el botón del hero (compra rápida desde la principal) y el de producto.html.
-// Mientras LEMON_URL sea placeholder, los botones conservan su href (el del hero va a
-// producto.html) y lemon.js ni se descarga.
-const botonesCheckout = document.querySelectorAll("[data-checkout]");
-if (botonesCheckout.length && !LEMON_URL.startsWith("TODO")) {
-  botonesCheckout.forEach((b) => {
-    b.href = LEMON_URL;
-    b.classList.add("lemonsqueezy-button");
-  });
+// Con un buy-link real, [data-checkout] abre el checkout encima de la página (overlay) con la
+// URL de su edición. Sin buy-links, los botones conservan su href y lemon.js ni se descarga.
+if (botonesCheckout.length && Object.values(LEMON_URLS).some(urlLista)) {
+  actualizarCheckout();
   const s = document.createElement("script");
   s.src = "https://assets.lemonsqueezy.com/lemon.js";
   s.defer = true;
   s.onload = () => window.createLemonSqueezy && window.createLemonSqueezy();
   document.head.appendChild(s);
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-checkout]");
+    if (!b) return;
+    const u = urlDe(b);
+    if (!urlLista(u) || !window.LemonSqueezy) return;
+    e.preventDefault();
+    window.LemonSqueezy.Url.Open(u);
+  });
 }
 
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
