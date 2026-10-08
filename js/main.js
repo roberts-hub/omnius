@@ -130,8 +130,11 @@ if (heroVideo) {
 const UMBRAL = 8; // px antes de decidir la intención en touch
 const UMBRAL_MOUSE = 3; // px de arrastre real con el botón presionado
 
+// posición inicial: línea al 25% → se ve 3/4 del resultado final (after)
+const X_INICIAL = 25;
+
 document.querySelectorAll("[data-comparador]").forEach((comp) => {
-  let x = 50;
+  let x = X_INICIAL;
   let pendiente = null;
   let cuadro = 0;
 
@@ -161,7 +164,7 @@ document.querySelectorAll("[data-comparador]").forEach((comp) => {
   comp.setAttribute("aria-label", "Before and after comparison");
   comp.setAttribute("aria-valuemin", "0");
   comp.setAttribute("aria-valuemax", "100");
-  comp.setAttribute("aria-valuenow", "50");
+  comp.setAttribute("aria-valuenow", String(X_INICIAL));
 
   let caja = null;
   const pctDe = (clientX) => ((clientX - caja.left) / caja.width) * 100;
@@ -189,8 +192,8 @@ document.querySelectorAll("[data-comparador]").forEach((comp) => {
     const paso = (ahora) => {
       if (!pistaActiva) return;
       const p = Math.min((ahora - inicio) / DURACION, 1);
-      // un solo empujón suave a la izquierda y de regreso al centro
-      setX(50 - AMPLITUD * Math.sin(Math.PI * p) ** 2);
+      // un solo empujón suave hacia la derecha y de regreso a la posición inicial
+      setX(X_INICIAL + AMPLITUD * Math.sin(Math.PI * p) ** 2);
       if (p < 1) requestAnimationFrame(paso);
       else pistaActiva = false;
     };

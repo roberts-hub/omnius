@@ -795,7 +795,7 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
    --x (0–100) desplaza el marco del "antes", su imagen en sentido contrario, y la guía. */
 
 .comparador {
-  --x: 50;
+  --x: 25; /* debe coincidir con X_INICIAL en main.js: 3/4 del after a la vista */
   position: relative;
   width: 100%;
   aspect-ratio: 2 / 1;
