@@ -18,7 +18,9 @@ python3 -m http.server 4181
 | Buy-link de Lemon Squeezy | `js/main.js`, constante `LEMON_URL` (usar el link `?embed=1&media=0`). Solo el botón del producto (`#cta-comprar`) abre el checkout; el resto de los CTAs anclan a `#comprar` |
 | OG image / canonical al publicar | `index.html`, comentario `TODO al publicar` en el `<head>` |
 | Precio, checklist y textos del producto | `index.html`, sección `#comprar` (precio también en el header y en el botón bajo los LUTs) |
-| Frase de la intro | `index.html`, las tres `.intro-linea` dentro de `#loader` |
+| Frase de la intro | `index.html`, las `.intro-linea` dentro de `#loader` |
+| Ritmo de la intro | `js/main.js`, `PASO` (ms por icono) y `SOSTENER_MARCA` (cuánto se queda la marca OMNIUS antes de disolverse) |
+| Video del hero | Guardar como `video/hero.mp4` (+ opcional `video/hero.webm`) y descomentar las `<source>` en `.hero-video`. Specs: 1920×1080, H.264, sin audio, loop de 6–15 s, idealmente < 8 MB. El `poster` es la imagen que se ve mientras carga |
 | Nombres y descriptores de LUTs | `index.html`, sección `#looks` (y las franjas `.tira` de la portada) |
 | Crédito de cámara por LUT | `index.html`, `.tag.camara` de cada slider: escribir la cámara y quitar `hidden` |
 | Franja INTRODUCING | `index.html`, `.introducing-tiras` (5 imágenes; se puede cambiar por un `<video>` del reel) |

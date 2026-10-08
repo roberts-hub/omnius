@@ -26,11 +26,6 @@
       <p class="intro-linea">TO CREATE.</p>
     </div>
     <div class="loader-glyphs">
-      <!-- marca OMNIUS: círculo partido -->
-      <svg class="glyph" viewBox="0 0 100 100" fill="none">
-        <circle cx="50" cy="50" r="24" stroke="currentColor" stroke-width="2.5"/>
-        <line x1="50" y1="20" x2="50" y2="80" stroke="currentColor" stroke-width="1.5"/>
-      </svg>
       <!-- dos círculos entrelazados -->
       <svg class="glyph" viewBox="0 0 100 100" fill="none">
         <circle cx="50" cy="36" r="22" stroke="currentColor" stroke-width="1.5"/>
@@ -45,6 +40,11 @@
         <path d="M40 32 a24 24 0 0 0 0 36" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
         <path d="M60 32 a24 24 0 0 1 0 36" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
         <circle cx="50" cy="24" r="3" fill="currentColor"/>
+      </svg>
+      <!-- marca OMNIUS (va al final: se queda y se disuelve hacia el video) -->
+      <svg class="glyph" viewBox="0 0 100 100" fill="none">
+        <circle cx="50" cy="50" r="24" stroke="currentColor" stroke-width="2.5"/>
+        <line x1="50" y1="20" x2="50" y2="80" stroke="currentColor" stroke-width="1.5"/>
       </svg>
     </div>
     <button type="button" class="saltar" id="saltar">SKIP <span class="flecha">→</span></button>
@@ -65,6 +65,31 @@
   </header>
 
   <main>
+
+    <!-- ══════════ HERO: video de fondo a pantalla completa ══════════ -->
+    <section class="hero-video" aria-label="OMNIUS">
+      <div class="hero-media">
+        <!-- Video del hero: guardar como video/hero.mp4 (y opcional video/hero.webm)
+             y descomentar las <source>. Mientras tanto se ve el poster. -->
+        <video autoplay muted loop playsinline preload="auto" poster="https://picsum.photos/seed/omnius-hero/1920/1080" aria-hidden="true">
+          <!-- <source src="video/hero.webm" type="video/webm" /> -->
+          <!-- <source src="video/hero.mp4" type="video/mp4" /> -->
+        </video>
+      </div>
+      <div class="hero-velo" aria-hidden="true"></div>
+
+      <div class="hero-contenido">
+        <svg class="hero-icono hero-meta" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+          <circle cx="50" cy="50" r="24" stroke="currentColor" stroke-width="2"/>
+          <line x1="50" y1="20" x2="50" y2="80" stroke="currentColor" stroke-width="1.2"/>
+        </svg>
+        <p class="hero-marca hero-meta">OMNIUS</p>
+        <p class="hero-kicker hero-meta">CINEMATIC COLOR SYSTEM // DAVINCI RESOLVE</p>
+        <a class="btn-linea hero-meta" href="#comprar">GET OMNIUS — $79 <span class="flecha">→</span></a>
+      </div>
+
+      <div class="hero-scroll hero-meta" aria-hidden="true"><span class="scroll-dot"></span>SCROLL</div>
+    </section>
 
     <!-- ══════════ PRODUCTO (arriba, directo al grano) ══════════ -->
     <section class="producto" id="comprar">

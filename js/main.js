@@ -22,23 +22,27 @@ const loader = document.getElementById("loader");
 const intro = loader.querySelector(".loader-intro");
 const glyphs = loader.querySelectorAll(".glyph");
 const lineas = [...intro.querySelectorAll(".intro-linea")];
-const PASO = 210; // ms por icono
+const PASO = 360; // ms por icono (se funden uno en otro)
+const SOSTENER_MARCA = 750; // la marca OMNIUS se queda un momento antes de disolverse
 const timers = [];
 const despues = (ms, fn) => timers.push(setTimeout(fn, ms));
 
 let yaVisto = false;
 try { yaVisto = sessionStorage.getItem("omnius-intro") === "1"; } catch (e) {}
 
+// el loader se disuelve mientras el video "enfoca"; el contenido del hero entra al final
 const cerrarIntro = () => {
   timers.forEach(clearTimeout);
   loader.classList.add("fuera");
   document.body.classList.remove("cargando");
   try { sessionStorage.setItem("omnius-intro", "1"); } catch (e) {}
-  setTimeout(() => loader.remove(), 1000);
+  setTimeout(() => document.body.classList.add("listo"), 1100);
+  setTimeout(() => loader.remove(), 2000);
 };
 
 if (reduceMotion || yaVisto) {
   loader.remove();
+  requestAnimationFrame(() => document.body.classList.add("listo"));
 } else {
   document.body.classList.add("cargando");
 
@@ -62,19 +66,19 @@ if (reduceMotion || yaVisto) {
     t += linea.children.length * 90 + 450;
   });
 
-  // la frase se desvanece y parpadean los iconos
-  t += 1300;
+  // la frase se desvanece y los iconos se funden uno en otro
+  t += 1000;
   despues(t, () => {
     intro.classList.add("fuera");
     loader.classList.add("fase-iconos");
   });
   glyphs.forEach((g, i) => {
-    despues(t + 350 + i * PASO, () => {
+    despues(t + 500 + i * PASO, () => {
       glyphs.forEach((x) => x.classList.remove("activo"));
       g.classList.add("activo");
     });
   });
-  despues(t + 350 + glyphs.length * PASO + 400, cerrarIntro);
+  despues(t + 500 + (glyphs.length - 1) * PASO + SOSTENER_MARCA, cerrarIntro);
 
   loader.addEventListener("click", cerrarIntro, { once: true });
   document.addEventListener("keydown", function saltarConTecla() {
@@ -82,6 +86,14 @@ if (reduceMotion || yaVisto) {
     document.removeEventListener("keydown", saltarConTecla);
   });
 }
+
+// ── header: transparente sobre el video, sólido al pasar el hero ──
+const cabecera = document.querySelector(".cabecera");
+const heroVideo = document.querySelector(".hero-video");
+new IntersectionObserver(
+  ([e]) => cabecera.classList.toggle("solida", !e.isIntersecting),
+  { rootMargin: "-80px 0px 0px 0px" }
+).observe(heroVideo);
 
 // ── comparadores antes/después (drag + touch + teclado) ──
 document.querySelectorAll("[data-comparador]").forEach((comp) => {

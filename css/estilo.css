@@ -44,9 +44,9 @@ img { display: block; }
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.9s var(--ease), visibility 0.9s;
+  transition: opacity 1.8s cubic-bezier(0.45, 0, 0.2, 1), visibility 1.8s;
 }
-#loader.fuera { opacity: 0; visibility: hidden; }
+#loader.fuera { opacity: 0; visibility: hidden; pointer-events: none; }
 
 /* fase 1: la frase */
 .loader-intro {
@@ -90,17 +90,17 @@ img { display: block; }
   to { opacity: 1; transform: translateY(0); filter: blur(0); }
 }
 
-/* fase 2: iconos rápidos */
+/* fase 2: iconos — se funden uno en otro; el último (marca OMNIUS) se disuelve hacia el video */
 .loader-glyphs {
   position: relative;
   width: 88px;
   height: 88px;
   color: var(--hueso);
   opacity: 0;
-  transition: opacity 0.4s ease, transform 0.6s var(--ease);
+  transition: opacity 0.6s ease, transform 1.6s var(--ease), filter 1.6s var(--ease);
 }
 #loader.fase-iconos .loader-glyphs { opacity: 1; }
-#loader.fuera .loader-glyphs { opacity: 0; transform: scale(1.06); }
+#loader.fuera .loader-glyphs { opacity: 0; transform: scale(1.35); filter: blur(6px); }
 
 .glyph {
   position: absolute;
@@ -108,10 +108,11 @@ img { display: block; }
   width: 100%;
   height: 100%;
   opacity: 0;
-  transform: scale(0.94);
-  transition: opacity 0.22s ease, transform 0.3s var(--ease);
+  transform: scale(0.92);
+  filter: blur(3px);
+  transition: opacity 0.45s ease, transform 0.6s var(--ease), filter 0.45s ease;
 }
-.glyph.activo { opacity: 1; transform: scale(1); }
+.glyph.activo { opacity: 1; transform: scale(1); filter: blur(0); }
 
 .saltar {
   position: absolute;
@@ -200,18 +201,25 @@ img { display: block; }
 /* ══════════ HEADER ══════════ */
 
 .cabecera {
-  position: sticky;
-  top: 0;
+  position: fixed;
+  top: 0; left: 0; right: 0;
   z-index: 50;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 22px var(--margen);
-  background: linear-gradient(to bottom, rgba(11, 11, 10, 0.95), rgba(11, 11, 10, 0.75));
+  border-bottom: 1px solid transparent;
+  transition: background 0.6s ease, border-color 0.6s ease, backdrop-filter 0.6s ease;
+}
+/* sobre el video el header es transparente; al pasar el hero se vuelve sólido */
+.cabecera.solida {
+  background: rgba(11, 11, 10, 0.88);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--linea);
+  border-bottom-color: var(--linea);
 }
+.js .cabecera { opacity: 0; transition: opacity 1.2s var(--ease), background 0.6s ease, border-color 0.6s ease; }
+.js .listo .cabecera { opacity: 1; }
 .marca {
   display: inline-flex;
   align-items: center;
@@ -224,6 +232,129 @@ img { display: block; }
 }
 .marca-icono { width: 20px; height: 20px; }
 
+/* ══════════ HERO VIDEO (como Chema Bal: lo primero que ves) ══════════ */
+
+.hero-video {
+  position: relative;
+  height: 100vh;
+  height: 100svh;
+  min-height: 520px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+}
+.hero-media { position: absolute; inset: 0; }
+.hero-media video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: zoomLento 24s ease-in-out infinite alternate;
+  /* estado final: nítido. Mientras corre la intro está borroso y oscuro (abajo) */
+  transform: scale(1);
+  filter: blur(0) brightness(1);
+  transition: filter 2.6s cubic-bezier(0.45, 0, 0.2, 1);
+}
+@keyframes zoomLento { from { scale: 1; } to { scale: 1.08; } }
+
+/* el video "enfoca" desde el negro cuando se disuelve la intro */
+body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
+
+.hero-velo {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.15) 35%, rgba(0, 0, 0, 0.25) 65%, var(--fondo) 100%),
+    radial-gradient(ellipse 70% 60% at 50% 50%, transparent 30%, rgba(0, 0, 0, 0.45) 100%);
+}
+
+.hero-contenido {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 24px;
+}
+.hero-icono { width: 54px; height: 54px; color: var(--hueso); }
+.hero-marca {
+  margin-top: 22px;
+  font-size: clamp(52px, 10vw, 150px);
+  font-weight: 700;
+  letter-spacing: -0.06em;
+  line-height: 0.9;
+  text-shadow: 0 4px 40px rgba(0, 0, 0, 0.35);
+}
+.hero-kicker {
+  margin-top: 22px;
+  font-family: var(--mono);
+  font-size: clamp(9px, 1vw, 11px);
+  letter-spacing: 0.35em;
+  color: var(--lino);
+}
+.hero-contenido .btn-linea { margin-top: 44px; }
+
+.hero-scroll {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.4em;
+  color: var(--greige);
+}
+.scroll-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--greige);
+  animation: bajar 2.2s ease-in-out infinite;
+}
+@keyframes bajar {
+  0%, 100% { transform: translateY(0); opacity: 1; }
+  50% { transform: translateY(10px); opacity: 0.3; }
+}
+
+/* el contenido del hero entra en cascada cuando el video ya enfocó */
+.js .hero-meta {
+  opacity: 0;
+  transform: translateY(14px);
+  filter: blur(6px);
+  transition: opacity 1.4s var(--ease), transform 1.4s var(--ease), filter 1.4s var(--ease);
+}
+.js .listo .hero-meta { opacity: 1; transform: none; filter: blur(0); }
+.js .listo .hero-meta:nth-child(2) { transition-delay: 0.15s; }
+.js .listo .hero-meta:nth-child(3) { transition-delay: 0.35s; }
+.js .listo .hero-meta:nth-child(4) { transition-delay: 0.55s; }
+.js .listo .hero-scroll { transition-delay: 0.9s; }
+.hero-scroll.hero-meta { transform: translateX(-50%) translateY(14px); }
+.js .listo .hero-scroll.hero-meta { transform: translateX(-50%); }
+
+.btn-linea {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 4px 12px;
+  border-bottom: 1px solid rgba(234, 224, 197, 0.4);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-decoration: none;
+  transition: border-color 0.4s ease, letter-spacing 0.4s ease;
+}
+.btn-linea .flecha { font-family: var(--sans); transition: transform 0.4s var(--ease); }
+.btn-linea:hover { border-bottom-color: var(--hueso); letter-spacing: 0.38em; }
+.btn-linea:hover .flecha { transform: translateX(6px); }
+
 /* ══════════ PRODUCTO ══════════ */
 
 .producto {
@@ -232,7 +363,7 @@ img { display: block; }
   gap: clamp(32px, 5vw, 80px);
   max-width: var(--ancho);
   margin: 0 auto;
-  padding: clamp(32px, 4vw, 56px) var(--margen) 0;
+  padding: clamp(56px, 7vw, 110px) var(--margen) 0;
   align-items: start;
   scroll-margin-top: 80px;
 }
@@ -628,6 +759,7 @@ img { display: block; }
   .comparador { aspect-ratio: 4/3; }
   .reviews-grid { grid-template-columns: 1fr; }
   .cabecera .link-mono { font-size: 9px; letter-spacing: 0.2em; }
+  .hero-kicker { font-size: 8px; letter-spacing: 0.22em; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -636,4 +768,8 @@ img { display: block; }
   .js .reveal { opacity: 1; transform: none; transition: none; }
   .faq-a { animation: none; }
   .portada { transition: none; }
+  .hero-media video { animation: none; transition: none; }
+  .scroll-dot { animation: none; }
+  .js .hero-meta, .js .cabecera { opacity: 1; transform: none; filter: none; transition: none; }
+  .hero-scroll.hero-meta { transform: translateX(-50%); }
 }
