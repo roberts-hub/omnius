@@ -24,7 +24,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,300;0,400;0,600;0,700;1,300&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/estilo.css?v=20261008141715" />
+  <link rel="stylesheet" href="css/estilo.css?v=20261008143331" />
 </head>
 <body>
 
@@ -75,7 +75,7 @@
   <main>
 
     <!-- ══════════ HERO: video de fondo a pantalla completa ══════════ -->
-    <section class="hero-video" aria-label="OMNIUS">
+    <section class="hero-video" aria-label="OMNIUS" data-oculta-barra>
       <div class="hero-media">
         <!-- Video del hero (fuente: 4K). Cada dispositivo descarga solo una versión:
              - horizontal (computadora / celular acostado): 1080p
@@ -335,7 +335,7 @@
         </div>
       </div>
 
-      <div class="looks-cta reveal">
+      <div class="looks-cta reveal" data-oculta-barra>
         <a class="btn-solido" href="producto.html">GET OMNIUS — $79 <span class="flecha">→</span></a>
       </div>
     </section>
@@ -432,6 +432,22 @@
     </div>
   </footer>
 
-  <script src="js/main.js?v=20261008141715" defer></script>
+
+  <!-- ══════════ BARRA DE COMPRA FIJA (estilo Pordoi) ══════════
+       Aparece al pasar el botón principal de compra; se esconde cuando otro botón de compra está a la vista.
+       Con LEMON_URL configurado, [data-checkout] abre el checkout aquí mismo. -->
+  <div class="barra-compra" data-barra-compra role="region" aria-label="Quick checkout" inert>
+    <div class="barra-compra-mini" aria-hidden="true">
+      <svg viewBox="18 18 64 64" fill="none"><circle cx="50" cy="50" r="24" stroke="currentColor" stroke-width="2.4"/><line x1="50" y1="20" x2="50" y2="80" stroke="currentColor" stroke-width="1.6"/></svg>
+      <img src="img/portada-barras.jpg" alt="" loading="lazy" />
+    </div>
+    <div class="barra-compra-info">
+      <p class="barra-compra-nombre">OMNIUS <span>Color System</span></p>
+      <p class="barra-compra-precio"><span class="actual">$79</span> <s>$119</s></p>
+    </div>
+    <a class="barra-compra-boton" href="producto.html" data-checkout>GET OMNIUS <span class="flecha" aria-hidden="true">→</span></a>
+  </div>
+
+  <script src="js/main.js?v=20261008143331" defer></script>
 </body>
 </html>

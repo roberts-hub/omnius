@@ -420,6 +420,27 @@ if (resenas && !resenas.closest("[hidden]")) {
   pintarPuntos();
 }
 
+// ── barra de compra fija (estilo Pordoi) ──
+// Aparece cuando ya pasaste el primer botón de compra ([data-oculta-barra]) y se esconde
+// mientras cualquiera de esos botones está a la vista (nunca dos botones de compra juntos).
+const barraCompra = document.querySelector("[data-barra-compra]");
+const disparadoresBarra = [...document.querySelectorAll("[data-oculta-barra]")];
+if (barraCompra && disparadoresBarra.length && "IntersectionObserver" in window) {
+  const aLaVista = new Map();
+  const actualizarBarra = () => {
+    const algunoVisible = disparadoresBarra.some((d) => aLaVista.get(d));
+    const yaPaso = disparadoresBarra[0].getBoundingClientRect().bottom < 0;
+    const mostrar = !algunoVisible && yaPaso;
+    barraCompra.classList.toggle("visible", mostrar);
+    barraCompra.inert = !mostrar; // oculta: ni foco ni lectores de pantalla
+  };
+  const obsBarra = new IntersectionObserver((entradas) => {
+    entradas.forEach((e) => aLaVista.set(e.target, e.isIntersecting));
+    actualizarBarra();
+  });
+  disparadoresBarra.forEach((d) => obsBarra.observe(d));
+}
+
 // ── reveal on scroll ──
 if (reduceMotion) {
   document.querySelectorAll(".reveal").forEach((el) => el.classList.add("visto"));

@@ -1014,6 +1014,96 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
 .cierre-links a { text-decoration: none; transition: color 0.3s ease; }
 .cierre-links a:hover { color: var(--hueso); }
 
+/* ══════════ BARRA DE COMPRA FIJA (estilo Pordoi, con el vidrio de OMNIUS) ══════════ */
+
+.barra-compra {
+  position: fixed;
+  left: 50%;
+  bottom: 20px;
+  z-index: 60;
+  width: min(600px, calc(100vw - 24px));
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 9px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(14, 14, 13, 0.74);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  opacity: 0;
+  transform: translate(-50%, calc(100% + 40px));
+  transition: transform 0.5s var(--ease), opacity 0.35s ease;
+  pointer-events: none;
+}
+.barra-compra.visible { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+/* espacio al final para que la barra nunca tape el footer */
+body:has(.barra-compra) .cierre { padding-bottom: 120px; }
+
+/* miniatura: la portada en pequeño (marca + barras de color) */
+.barra-compra-mini {
+  position: relative;
+  flex-shrink: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 13px;
+  overflow: hidden;
+  background: linear-gradient(160deg, #1a1a18, #070707 70%);
+  border: 1px solid rgba(234, 224, 197, 0.14);
+  color: var(--hueso);
+}
+.barra-compra-mini svg { position: absolute; left: 50%; top: 12%; width: 42%; transform: translateX(-50%); }
+.barra-compra-mini img { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 36%; object-fit: cover; }
+
+.barra-compra-info { flex: 1; min-width: 0; }
+.barra-compra-nombre {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--hueso);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.barra-compra-nombre span { font-weight: 300; font-style: italic; color: var(--greige); }
+.barra-compra-precio { margin-top: 2px; font-size: 14px; color: var(--hueso); }
+.barra-compra-precio s { margin-left: 6px; font-size: 12px; color: var(--greige); }
+
+.barra-compra-boton {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 22px;
+  border-radius: 15px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-decoration: none;
+  color: var(--fondo);
+  background: var(--hueso);
+  transition: background 0.3s ease;
+}
+.barra-compra-boton .flecha { font-family: var(--sans); transition: transform 0.4s var(--ease); }
+@media (hover: hover) {
+  .barra-compra-boton:hover { background: #fff; }
+  .barra-compra-boton:hover .flecha { transform: translateX(4px); }
+}
+.barra-compra-boton:active { transform: scale(0.97); }
+.barra-compra-boton:focus-visible { outline: 1px solid var(--hueso); outline-offset: 3px; }
+
+@media (max-width: 600px) {
+  .barra-compra { bottom: 10px; gap: 11px; padding: 7px; border-radius: 19px; }
+  .barra-compra-mini { width: 44px; height: 44px; border-radius: 12px; }
+  .barra-compra-nombre { font-size: 14px; }
+  .barra-compra-boton { padding: 14px 16px; letter-spacing: 0.16em; }
+}
+@media (max-width: 380px) {
+  .barra-compra-nombre span, .barra-compra-precio s { display: none; }
+}
+
 /* ══════════ REVEAL ══════════ */
 
 .js .reveal {
@@ -1055,6 +1145,7 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   .grain { animation: none; }
   .js .reveal { opacity: 1; transform: none; transition: none; }
   .faq-a { animation: none; }
+  .barra-compra { transition: none; }
   .marcas-pista { animation: none; }
   .carrusel-pista, .carrusel-pista .look { transition: none; }
   .comparador.deslizando .antes-marco,
