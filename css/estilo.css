@@ -857,6 +857,53 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55), 0 0 16px rgba(0, 0, 0, 0.5);
 }
 
+/* ══════════ RESEÑAS (estructura de Pordoi) ══════════ */
+
+.resenas {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: clamp(110px, 12vw, 180px) var(--margen) 0;
+}
+.resenas .titulo { text-align: center; margin-bottom: clamp(40px, 5vw, 60px); }
+.resenas-carrusel { position: relative; }
+.resenas-pista {
+  --hueco-r: clamp(14px, 1.6vw, 22px);
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc((100% - 2 * var(--hueco-r)) / 3);
+  gap: var(--hueco-r);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.resenas-pista::-webkit-scrollbar { display: none; }
+.resenas-pista:focus-visible { outline: 1px solid var(--hueso); outline-offset: 6px; border-radius: 18px; }
+.resena {
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  min-height: 300px;
+  padding: 26px 24px 26px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.015));
+}
+.resena-autor { display: flex; flex-direction: column; gap: 4px; }
+.resena-nombre { font-size: 15px; font-weight: 600; color: var(--hueso); }
+.resena-pais { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--rojo); }
+.resena-estrellas { margin-top: 18px; font-size: 17px; letter-spacing: 3px; color: var(--hueso); }
+.resena-titulo { margin-top: 14px; font-size: 16px; font-weight: 600; letter-spacing: -0.01em; color: var(--hueso); }
+.resena-texto { margin-top: 10px; font-size: 14.5px; font-weight: 300; line-height: 1.7; color: var(--greige); }
+
+/* flechas a los lados, como en Pordoi */
+.resenas-flecha { position: absolute; top: 50%; z-index: 2; margin-top: -23px; }
+.resenas-flecha[data-dir="-1"] { left: -23px; }
+.resenas-flecha[data-dir="1"] { right: -23px; }
+.resenas-puntos { justify-content: center; margin-top: 28px; }
+
 /* ══════════ BLOQUES (reviews, FAQ) ══════════ */
 
 .bloque {
@@ -866,10 +913,6 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
 }
 .bloque .titulo { text-align: center; margin-bottom: clamp(44px, 5vw, 64px); }
 
-.reviews-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; }
-.review { display: flex; flex-direction: column; gap: 16px; }
-.review-meta, .review figcaption { font-family: var(--mono); font-size: 9px; letter-spacing: 0.2em; color: var(--greige); }
-.review blockquote { font-size: 16px; font-weight: 300; line-height: 1.6; color: var(--lino); }
 
 .faq-item { border-bottom: 1px solid var(--linea); }
 .faq-item:first-child { border-top: 1px solid var(--linea); }
@@ -942,6 +985,10 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
 }
 .js .reveal.visto { opacity: 1; transform: none; }
 
+@media (max-width: 1100px) and (min-width: 861px) {
+  .resenas-pista { grid-auto-columns: calc((100% - var(--hueco-r)) / 2); }
+}
+
 /* ══════════ MÓVIL ══════════ */
 
 @media (max-width: 860px) {
@@ -949,6 +996,8 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   .pagina-producto .producto.pagina { grid-template-columns: 1fr; padding-top: 92px; min-height: 0; }
   .pagina-producto .portada { width: 50%; }
   .pagina-producto .portada-escena { top: 0; }
+  .resenas-pista { grid-auto-columns: 86%; }
+  .resenas-flecha { display: none; }
   .carrusel-pista .look { opacity: 0.4; }
   .portada-escena { position: relative; top: 0; aspect-ratio: 4 / 3.4; }
   .portada { width: 50%; }
@@ -957,8 +1006,7 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   .comparador .tag.camara { font-size: 9px; bottom: 10px; }
   .guia .handle { width: 40px; height: 40px; margin: -20px 0 0 -20px; background-size: 26px 26px; }
   .look-nombre { font-size: 22px; }
-  .reviews-grid { grid-template-columns: 1fr; }
-  .cabecera .link-mono { font-size: 9px; letter-spacing: 0.2em; }
+    .cabecera .link-mono { font-size: 9px; letter-spacing: 0.2em; }
   .hero-kicker { font-size: 8px; letter-spacing: 0.22em; }
 }
 

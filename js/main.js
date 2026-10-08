@@ -332,6 +332,44 @@ if (carrusel) {
   ir(0);
 }
 
+// ── carrusel de reseñas (scroll nativo con snap: en celular se desliza con el dedo) ──
+const resenas = document.querySelector(".resenas-pista");
+if (resenas && !resenas.closest("[hidden]")) {
+  const tarjetas = [...resenas.children];
+  const flechasR = document.querySelectorAll(".resenas-flecha");
+  const puntosR = document.querySelector(".resenas-puntos");
+  const paso = () => tarjetas[0].getBoundingClientRect().width + (parseFloat(getComputedStyle(resenas).columnGap) || 0);
+  const visibles = () => Math.max(1, Math.round(resenas.clientWidth / paso()));
+  let dots = [];
+
+  const pintarPuntos = () => {
+    const paginas = tarjetas.length - visibles() + 1;
+    if (dots.length !== paginas) {
+      puntosR.innerHTML = "";
+      dots = Array.from({ length: paginas }, () => {
+        const d = document.createElement("span");
+        d.className = "carrusel-punto";
+        puntosR.appendChild(d);
+        return d;
+      });
+    }
+    const i = Math.round(resenas.scrollLeft / paso());
+    dots.forEach((d, k) => d.setAttribute("aria-selected", k === i ? "true" : "false"));
+    flechasR[0].disabled = resenas.scrollLeft <= 2;
+    flechasR[1].disabled = resenas.scrollLeft + resenas.clientWidth >= resenas.scrollWidth - 2;
+  };
+
+  flechasR.forEach((f) => f.addEventListener("click", () => {
+    resenas.scrollBy({ left: Number(f.dataset.dir) * paso(), behavior: reduceMotion ? "auto" : "smooth" });
+  }));
+  let cuadroR = 0;
+  resenas.addEventListener("scroll", () => {
+    if (!cuadroR) cuadroR = requestAnimationFrame(() => { cuadroR = 0; pintarPuntos(); });
+  }, { passive: true });
+  window.addEventListener("resize", pintarPuntos);
+  pintarPuntos();
+}
+
 // ── reveal on scroll ──
 if (reduceMotion) {
   document.querySelectorAll(".reveal").forEach((el) => el.classList.add("visto"));

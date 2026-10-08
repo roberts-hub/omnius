@@ -24,7 +24,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,300;0,400;0,600;0,700;1,300&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/estilo.css?v=202610081334" />
+  <link rel="stylesheet" href="css/estilo.css?v=202610081337" />
 </head>
 <body>
 
@@ -290,27 +290,55 @@
       </div>
     </section>
 
-    <!-- REVIEWS: oculta hasta tener testimonios reales.
-         Para activarla: quitar el atributo `hidden` y reemplazar los placeholders. -->
-    <section class="bloque" id="reviews" hidden>
-      <h2 class="titulo reveal">What creators say.</h2>
-      <div class="reviews-grid reveal">
-        <figure class="review">
-          <p class="review-meta">NOMBRE APELLIDO // PAÍS</p>
-          <blockquote>"Placeholder — testimonio real aquí."</blockquote>
-          <figcaption>LOOK FAVORITO: UNDERTOW</figcaption>
-        </figure>
-        <figure class="review">
-          <p class="review-meta">NOMBRE APELLIDO // PAÍS</p>
-          <blockquote>"Placeholder — testimonio real aquí."</blockquote>
-          <figcaption>LOOK FAVORITO: MAGIC HOUR</figcaption>
-        </figure>
-        <figure class="review">
-          <p class="review-meta">NOMBRE APELLIDO // PAÍS</p>
-          <blockquote>"Placeholder — testimonio real aquí."</blockquote>
-          <figcaption>LOOK FAVORITO: SALTWATER</figcaption>
-        </figure>
+    <!-- ══════════ RESEÑAS (estructura de Pordoi) ══════════
+         OCULTA a propósito: las reseñas de abajo son EJEMPLOS INVENTADOS solo para ver el diseño.
+         No mostrarlas así: publicar opiniones inventadas como reales es publicidad engañosa.
+         Para activarla: reemplazar cada tarjeta por una reseña real (nombre, país, texto) y quitar `hidden`. -->
+    <section class="resenas" id="reviews" aria-labelledby="titulo-resenas" hidden>
+      <h2 class="titulo reveal" id="titulo-resenas">What creators say.</h2>
+      <div class="resenas-carrusel reveal">
+        <button type="button" class="carrusel-flecha resenas-flecha" data-dir="-1" aria-label="Previous reviews"><span aria-hidden="true">←</span></button>
+        <div class="resenas-pista" tabindex="0">
+          <figure class="resena">
+            <figcaption class="resena-autor"><span class="resena-nombre">Daniela R.</span><span class="resena-pais">Mexico</span></figcaption>
+            <p class="resena-estrellas" aria-label="5 out of 5 stars">★★★★★</p>
+            <p class="resena-titulo">Finally consistent color across cameras</p>
+            <blockquote class="resena-texto">I mix FX3 and drone footage on almost every project. With the PowerGrade everything matches in minutes instead of an afternoon of tweaking.</blockquote>
+          </figure>
+          <figure class="resena">
+            <figcaption class="resena-autor"><span class="resena-nombre">Lucas M.</span><span class="resena-pais">Brazil</span></figcaption>
+            <p class="resena-estrellas" aria-label="5 out of 5 stars">★★★★★</p>
+            <p class="resena-titulo">Saved me hours on every edit</p>
+            <blockquote class="resena-texto">The node tree is so well organized that grading a full travel film went from two days to one evening. The LUTs are the cherry on top.</blockquote>
+          </figure>
+          <figure class="resena">
+            <figcaption class="resena-autor"><span class="resena-nombre">Sofía K.</span><span class="resena-pais">Spain</span></figcaption>
+            <p class="resena-estrellas" aria-label="5 out of 5 stars">★★★★★</p>
+            <p class="resena-titulo">Finally understand what I'm doing</p>
+            <blockquote class="resena-texto">The tutorials explain color management in a way that actually clicked. Now I know why my grades look the way they do.</blockquote>
+          </figure>
+          <figure class="resena">
+            <figcaption class="resena-autor"><span class="resena-nombre">James T.</span><span class="resena-pais">Canada</span></figcaption>
+            <p class="resena-estrellas" aria-label="5 out of 5 stars">★★★★★</p>
+            <p class="resena-titulo">Clean skin tones, every time</p>
+            <blockquote class="resena-texto">Skin always looked a bit off in my work. The PowerGrade keeps it natural even when I push the look hard.</blockquote>
+          </figure>
+          <figure class="resena">
+            <figcaption class="resena-autor"><span class="resena-nombre">Andrés P.</span><span class="resena-pais">Colombia</span></figcaption>
+            <p class="resena-estrellas" aria-label="5 out of 5 stars">★★★★★</p>
+            <p class="resena-titulo">Works great on Rec.709 too</p>
+            <blockquote class="resena-texto">Not everything I shoot is Log, and it still holds up. My phone and mirrorless clips cut together without anyone noticing.</blockquote>
+          </figure>
+          <figure class="resena">
+            <figcaption class="resena-autor"><span class="resena-nombre">Mia L.</span><span class="resena-pais">Germany</span></figcaption>
+            <p class="resena-estrellas" aria-label="5 out of 5 stars">★★★★★</p>
+            <p class="resena-titulo">My clients noticed the difference</p>
+            <blockquote class="resena-texto">Two clients asked what changed in my color after the first project I graded with OMNIUS. That says it all.</blockquote>
+          </figure>
+        </div>
+        <button type="button" class="carrusel-flecha resenas-flecha" data-dir="1" aria-label="Next reviews"><span aria-hidden="true">→</span></button>
       </div>
+      <div class="carrusel-puntos resenas-puntos" aria-hidden="true"></div>
     </section>
 
     <!-- ══════════ FAQ ══════════ -->
@@ -355,6 +383,6 @@
     </div>
   </footer>
 
-  <script src="js/main.js?v=202610081334" defer></script>
+  <script src="js/main.js?v=202610081337" defer></script>
 </body>
 </html>
