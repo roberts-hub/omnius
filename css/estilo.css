@@ -499,6 +499,39 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   color: var(--rojo);
 }
 
+/* ══════════ PÁGINA DE PRODUCTO (producto.html) — estructura de Pordoi ══════════
+   Izquierda: la portada grande (~63%). Derecha: confianza, título, precio, línea,
+   botón de compra, métodos de pago, frase, párrafos y checklist. */
+
+.pagina-producto .producto.pagina {
+  grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+  gap: clamp(32px, 5vw, 90px);
+  max-width: 1600px;
+  padding-top: calc(76px + clamp(24px, 3vw, 44px));
+  padding-bottom: clamp(60px, 8vw, 120px);
+  min-height: 100vh;
+}
+.pagina-producto .portada-escena { top: 96px; aspect-ratio: 1 / 1; }
+.pagina-producto .portada { width: 52%; }
+.pagina-producto .producto-info { padding-top: clamp(8px, 2vw, 32px); }
+.pagina-producto .producto-titulo {
+  margin-top: 16px;
+  font-size: clamp(32px, 3vw, 46px);
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+.pagina-producto .precio { margin-top: 20px; }
+.pagina-producto .btn-solido { margin-top: 32px; padding: 22px 40px; }
+.pagina-producto .nota-mono { letter-spacing: 0.12em; }
+.pagina-producto .lead { margin-top: 40px; font-size: 17px; }
+.pagina-producto .cuerpo { margin-top: 16px; font-size: 15px; }
+.pagina-producto .cuerpo strong { font-weight: 600; color: var(--hueso); }
+/* checklist como Pordoi: lista simple con ✓, sin líneas entre renglones */
+.pagina-producto .checklist { margin-top: 24px; border-top: none; }
+.pagina-producto .checklist li { padding: 5px 0; border-bottom: none; font-size: 15px; }
+.cierre-corto { margin-top: 0; }
+.cierre-corto .cierre-pie { margin-top: 0; }
+
 /* ══════════ INTRODUCING ══════════ */
 
 .introducing {
@@ -586,7 +619,7 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   aspect-ratio: 2 / 1;
   overflow: hidden;
   border-radius: 16px;
-  cursor: ew-resize;
+  cursor: grab;
   user-select: none;
   -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
@@ -647,8 +680,9 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   box-shadow: 1px 1px 1px rgba(8, 3, 3, 0.5);
   transition: transform 0.4s var(--ease);
 }
-.comparador:hover .handle,
+/* la manija solo reacciona mientras se arrastra (pasar el cursor por encima no cambia nada) */
 .comparador.arrastrando .handle { transform: scale(1.06); }
+.comparador.arrastrando { cursor: grabbing; }
 
 /* deslizamiento suave al tocar o usar el teclado (no durante el arrastre) */
 .comparador.deslizando .antes-marco,
@@ -759,6 +793,9 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
 
 @media (max-width: 860px) {
   .producto { grid-template-columns: 1fr; }
+  .pagina-producto .producto.pagina { grid-template-columns: 1fr; padding-top: 92px; min-height: 0; }
+  .pagina-producto .portada { width: 50%; }
+  .pagina-producto .portada-escena { top: 0; }
   .portada-escena { position: relative; top: 0; aspect-ratio: 4 / 3.4; }
   .portada { width: 50%; }
   .introducing-tiras { grid-template-columns: 1fr 1.4fr 1fr; }

@@ -4,12 +4,12 @@
 // formato: https://TIENDA.lemonsqueezy.com/checkout/buy/UUID?embed=1&media=0
 const LEMON_URL = "TODO-LEMONSQUEEZY-URL";
 
-// ── CTA de compra ──
-// Solo el botón del producto compra; el resto de los CTAs anclan a #comprar.
-// Mientras LEMON_URL sea placeholder, el botón conserva su ancla y NO lleva la
-// clase lemonsqueezy-button (evita que lemon.js intercepte el clic sin URL real).
-if (!LEMON_URL.startsWith("TODO")) {
-  const cta = document.getElementById("cta-comprar");
+// ── CTA de compra (solo en producto.html) ──
+// Los botones de la página principal llevan a producto.html; ahí este botón abre el checkout.
+// Mientras LEMON_URL sea placeholder, el botón no lleva la clase lemonsqueezy-button
+// (evita que lemon.js intercepte el clic sin URL real).
+const cta = document.getElementById("cta-comprar");
+if (cta && !LEMON_URL.startsWith("TODO")) {
   cta.href = LEMON_URL;
   cta.classList.add("lemonsqueezy-button");
 }
@@ -19,99 +19,106 @@ const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").match
 // ── INTRO: frase palabra por palabra → iconos rápidos → sitio (estilo mastermind) ──
 // Solo en la primera visita de la sesión; un clic o cualquier tecla la adelanta.
 const loader = document.getElementById("loader");
-const intro = loader.querySelector(".loader-intro");
-const glyphs = loader.querySelectorAll(".glyph");
-const lineas = [...intro.querySelectorAll(".intro-linea")];
-const PASO = 360; // ms por icono (se funden uno en otro)
-const SOSTENER_MARCA = 750; // la marca OMNIUS se queda un momento antes de disolverse
-const timers = [];
-const despues = (ms, fn) => timers.push(setTimeout(fn, ms));
+if (loader) {
+  const intro = loader.querySelector(".loader-intro");
+  const glyphs = loader.querySelectorAll(".glyph");
+  const lineas = [...intro.querySelectorAll(".intro-linea")];
+  const PASO = 360; // ms por icono (se funden uno en otro)
+  const SOSTENER_MARCA = 750; // la marca OMNIUS se queda un momento antes de disolverse
+  const timers = [];
+  const despues = (ms, fn) => timers.push(setTimeout(fn, ms));
 
-let yaVisto = false;
-try { yaVisto = sessionStorage.getItem("omnius-intro") === "1"; } catch (e) {}
+  let yaVisto = false;
+  try { yaVisto = sessionStorage.getItem("omnius-intro") === "1"; } catch (e) {}
 
-// el loader se disuelve mientras el video "enfoca"; el contenido del hero entra al final
-let introCerrada = false;
-const cerrarIntro = () => {
-  if (introCerrada) return;
-  introCerrada = true;
-  timers.forEach(clearTimeout);
-  loader.classList.add("fuera");
-  document.body.classList.remove("cargando");
-  try { sessionStorage.setItem("omnius-intro", "1"); } catch (e) {}
-  setTimeout(() => document.body.classList.add("listo"), 1100);
-  setTimeout(() => loader.remove(), 2000);
-};
-
-if (reduceMotion || yaVisto) {
-  loader.remove();
-  requestAnimationFrame(() => document.body.classList.add("listo"));
-} else {
-  document.body.classList.add("cargando");
-
-  // separa cada línea en palabras con delay en cascada (relativo a su línea)
-  lineas.forEach((linea) => {
-    const palabras = linea.textContent.trim().split(/\s+/);
-    linea.textContent = "";
-    palabras.forEach((palabra, i) => {
-      const span = document.createElement("span");
-      span.className = "palabra";
-      span.textContent = palabra;
-      span.style.setProperty("--d", i * 0.09 + "s");
-      linea.appendChild(span);
-    });
-  });
-
-  // espera a que Archivo esté cargada (máx. 1.2 s) para que la frase no cambie de fuente a medio animar
-  const fuenteLista = Promise.race([
-    document.fonts ? document.fonts.load('700 32px "Archivo"') : Promise.resolve(),
-    new Promise((r) => setTimeout(r, 1200)),
-  ]).catch(() => {});
-
-  fuenteLista.then(() => {
+  // el loader se disuelve mientras el video "enfoca"; el contenido del hero entra al final
+  let introCerrada = false;
+  const cerrarIntro = () => {
     if (introCerrada) return;
-    // las líneas entran una tras otra y se quedan apiladas
-    let t = 300;
-    lineas.forEach((linea) => {
-      despues(t, () => linea.classList.add("activa"));
-      t += linea.children.length * 90 + 450;
-    });
+    introCerrada = true;
+    timers.forEach(clearTimeout);
+    loader.classList.add("fuera");
+    document.body.classList.remove("cargando");
+    try { sessionStorage.setItem("omnius-intro", "1"); } catch (e) {}
+    setTimeout(() => document.body.classList.add("listo"), 1100);
+    setTimeout(() => loader.remove(), 2000);
+  };
 
-    // la frase se desvanece y los iconos se funden uno en otro
-    t += 1000;
-    despues(t, () => {
-      intro.classList.add("fuera");
-      loader.classList.add("fase-iconos");
-    });
-    glyphs.forEach((g, i) => {
-      despues(t + 500 + i * PASO, () => {
-        glyphs.forEach((x) => x.classList.remove("activo"));
-        g.classList.add("activo");
+  if (reduceMotion || yaVisto) {
+    loader.remove();
+    requestAnimationFrame(() => document.body.classList.add("listo"));
+  } else {
+    document.body.classList.add("cargando");
+
+    // separa cada línea en palabras con delay en cascada (relativo a su línea)
+    lineas.forEach((linea) => {
+      const palabras = linea.textContent.trim().split(/\s+/);
+      linea.textContent = "";
+      palabras.forEach((palabra, i) => {
+        const span = document.createElement("span");
+        span.className = "palabra";
+        span.textContent = palabra;
+        span.style.setProperty("--d", i * 0.09 + "s");
+        linea.appendChild(span);
       });
     });
-    despues(t + 500 + (glyphs.length - 1) * PASO + SOSTENER_MARCA, cerrarIntro);
-  });
 
-  loader.addEventListener("click", cerrarIntro, { once: true });
-  document.addEventListener("keydown", function saltarConTecla() {
-    if (document.body.classList.contains("cargando")) cerrarIntro();
-    document.removeEventListener("keydown", saltarConTecla);
-  });
+    // espera a que Archivo esté cargada (máx. 1.2 s) para que la frase no cambie de fuente a medio animar
+    const fuenteLista = Promise.race([
+      document.fonts ? document.fonts.load('700 32px "Archivo"') : Promise.resolve(),
+      new Promise((r) => setTimeout(r, 1200)),
+    ]).catch(() => {});
+
+    fuenteLista.then(() => {
+      if (introCerrada) return;
+      // las líneas entran una tras otra y se quedan apiladas
+      let t = 300;
+      lineas.forEach((linea) => {
+        despues(t, () => linea.classList.add("activa"));
+        t += linea.children.length * 90 + 450;
+      });
+
+      // la frase se desvanece y los iconos se funden uno en otro
+      t += 1000;
+      despues(t, () => {
+        intro.classList.add("fuera");
+        loader.classList.add("fase-iconos");
+      });
+      glyphs.forEach((g, i) => {
+        despues(t + 500 + i * PASO, () => {
+          glyphs.forEach((x) => x.classList.remove("activo"));
+          g.classList.add("activo");
+        });
+      });
+      despues(t + 500 + (glyphs.length - 1) * PASO + SOSTENER_MARCA, cerrarIntro);
+    });
+
+    loader.addEventListener("click", cerrarIntro, { once: true });
+    document.addEventListener("keydown", function saltarConTecla() {
+      if (document.body.classList.contains("cargando")) cerrarIntro();
+      document.removeEventListener("keydown", saltarConTecla);
+    });
+  }
 }
 
 // ── header: transparente sobre el video, sólido al pasar el hero ──
 const cabecera = document.querySelector(".cabecera");
 const heroVideo = document.querySelector(".hero-video");
-new IntersectionObserver(
-  ([e]) => cabecera.classList.toggle("solida", !e.isIntersecting),
-  { rootMargin: "-80px 0px 0px 0px" }
-).observe(heroVideo);
+if (heroVideo) {
+  new IntersectionObserver(
+    ([e]) => cabecera.classList.toggle("solida", !e.isIntersecting),
+    { rootMargin: "-80px 0px 0px 0px" }
+  ).observe(heroVideo);
+}
 
 // ── comparadores antes/después ──
 // Fluidez: el movimiento es solo transform (CSS, vía --x) y se actualiza una vez por cuadro.
-// En touch se decide la intención del gesto: vertical = scroll de la página (el slider no se mueve);
-// horizontal = arrastrar el slider (y la página no se mueve mientras tanto). Un toque desliza hasta ahí.
-const UMBRAL = 8; // px antes de decidir si el gesto es horizontal o vertical
+// El slider SOLO se mueve arrastrando (presionar + desplazar). Un clic, un toque suelto del
+// trackpad o pasar el cursor por encima no lo mueven.
+// En touch: gesto vertical = scroll de la página (el slider no se mueve); horizontal = arrastrar
+// (y la página no se mueve mientras tanto).
+const UMBRAL = 8; // px antes de decidir la intención en touch
+const UMBRAL_MOUSE = 3; // px de arrastre real con el botón presionado
 
 document.querySelectorAll("[data-comparador]").forEach((comp) => {
   let x = 50;
@@ -151,27 +158,36 @@ document.querySelectorAll("[data-comparador]").forEach((comp) => {
 
   let gesto = null; // { id, x0, y0, tipo, arrastrando }
 
+  const soltar = () => {
+    if (gesto && gesto.arrastrando) {
+      try { comp.releasePointerCapture(gesto.id); } catch (_) {}
+    }
+    gesto = null;
+    comp.classList.remove("arrastrando");
+  };
+
   comp.addEventListener("pointerdown", (e) => {
     if (e.button !== 0) return;
     caja = comp.getBoundingClientRect();
+    // solo se registra el inicio; el slider no se mueve hasta que haya arrastre real
     gesto = { id: e.pointerId, x0: e.clientX, y0: e.clientY, tipo: e.pointerType, arrastrando: false };
-    if (e.pointerType === "mouse") {
-      // con mouse no hay ambigüedad: arrastrar desde el primer clic
-      gesto.arrastrando = true;
-      try { comp.setPointerCapture(e.pointerId); } catch (_) {}
-      comp.classList.add("arrastrando");
-      setX(pctDe(e.clientX));
-      e.preventDefault();
-    }
+    if (e.pointerType === "mouse") e.preventDefault(); // sin selección de texto ni arrastre de imagen
   });
 
   comp.addEventListener("pointermove", (e) => {
     if (!gesto || e.pointerId !== gesto.id) return;
+    const esMouse = gesto.tipo === "mouse";
+    // botón ya suelto (p. ej. se soltó fuera de la ventana): se corta el arrastre
+    if (esMouse && e.buttons === 0) { soltar(); return; }
     if (!gesto.arrastrando) {
       const dx = Math.abs(e.clientX - gesto.x0);
       const dy = Math.abs(e.clientY - gesto.y0);
-      if (dx < UMBRAL && dy < UMBRAL) return;
-      if (dy >= dx) { gesto = null; return; } // vertical: es scroll, el slider se queda quieto
+      if (esMouse) {
+        if (dx < UMBRAL_MOUSE) return;
+      } else {
+        if (dx < UMBRAL && dy < UMBRAL) return;
+        if (dy >= dx) { gesto = null; return; } // vertical: es scroll, el slider se queda quieto
+      }
       gesto.arrastrando = true;
       try { comp.setPointerCapture(e.pointerId); } catch (_) {}
       comp.classList.add("arrastrando");
@@ -181,13 +197,12 @@ document.querySelectorAll("[data-comparador]").forEach((comp) => {
 
   const terminar = (e) => {
     if (!gesto || e.pointerId !== gesto.id) return;
-    const fueToque = !gesto.arrastrando && e.type === "pointerup";
-    if (fueToque) deslizarA(pctDe(e.clientX));
-    gesto = null;
-    comp.classList.remove("arrastrando");
+    soltar();
   };
   comp.addEventListener("pointerup", terminar);
   comp.addEventListener("pointercancel", terminar);
+  comp.addEventListener("lostpointercapture", terminar);
+  window.addEventListener("blur", soltar);
 
   // mientras se arrastra en horizontal, la página no se mueve (evita el temblor diagonal en celular)
   comp.addEventListener("touchmove", (e) => {
