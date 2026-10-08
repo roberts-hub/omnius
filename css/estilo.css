@@ -296,7 +296,7 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   gap: 12px;
   margin-top: 34px;
   padding: 16px 28px;
-  border: 1px solid rgba(234, 224, 197, 0.85);
+  border: none;
   border-radius: 999px;
   overflow: hidden;
   isolation: isolate;
@@ -306,53 +306,32 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   letter-spacing: 0.22em;
   text-decoration: none;
   color: var(--hueso);
-  /* liquid glass: vidrio esmerilado con más desenfoque y color, reflejo arriba y sombra suave */
-  border-color: rgba(255, 255, 255, 0.32);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.11) 0%, rgba(255, 255, 255, 0.03) 100%);
-  backdrop-filter: blur(11px) saturate(145%) brightness(1.03);
-  -webkit-backdrop-filter: blur(11px) saturate(145%) brightness(1.03);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.38),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.07),
-    inset 0 0 16px rgba(255, 255, 255, 0.04),
-    0 8px 24px rgba(0, 0, 0, 0.22);
+  /* vidrio translúcido y sin contorno: se ve el video a través */
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 100%);
+  backdrop-filter: blur(6px) saturate(120%);
+  -webkit-backdrop-filter: blur(6px) saturate(120%);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
   text-shadow: 0 1px 8px rgba(0, 0, 0, 0.45);
-  transition: color 0.45s var(--ease), border-color 0.45s ease, text-shadow 0.45s ease;
 }
-/* brillo especular en la mitad superior, como una gota de vidrio */
-.btn-pildora::after {
-  content: "";
-  position: absolute;
-  inset: 1px 1px 50% 1px;
-  z-index: -1;
-  border-radius: 999px 999px 40% 40% / 999px 999px 100% 100%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
-  pointer-events: none;
-  transition: opacity 0.45s ease;
-}
+/* al pasar el cursor: el vidrio se oscurece, pero los tonos del video siguen pasando */
 .btn-pildora::before {
   content: "";
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: var(--hueso);
-  transform: translateY(101%);
-  transition: transform 0.5s var(--ease);
+  background: rgba(8, 8, 7, 0.42);
+  opacity: 0;
+  transition: opacity 0.45s var(--ease);
 }
 .btn-pildora .flecha { font-family: var(--sans); transition: transform 0.45s var(--ease); }
-.btn-pildora:focus-visible { color: var(--fondo); border-color: var(--hueso); text-shadow: none; }
-.btn-pildora:focus-visible::before { transform: translateY(0); }
-.btn-pildora:focus-visible::after { opacity: 0.35; }
+.btn-pildora:focus-visible { outline: 1px solid rgba(234, 224, 197, 0.6); outline-offset: 3px; }
+.btn-pildora:focus-visible::before { opacity: 1; }
 @media (hover: hover) {
-  .btn-pildora:hover { color: var(--fondo); border-color: var(--hueso); text-shadow: none; }
-  .btn-pildora:hover::before { transform: translateY(0); }
-  .btn-pildora:hover::after { opacity: 0.35; }
+  .btn-pildora:hover::before { opacity: 1; }
   .btn-pildora:hover .flecha { transform: translateX(4px); }
 }
-.btn-pildora:focus-visible { outline: none; }
-/* en celular no hay hover: al tocar, relleno breve */
-.btn-pildora:active::before { transform: translateY(0); transition-duration: 0.15s; }
-.btn-pildora:active { color: var(--fondo); }
+/* en celular no hay hover: al tocar, se oscurece un instante */
+.btn-pildora:active::before { opacity: 1; transition-duration: 0.12s; }
 
 .hero-scroll {
   position: absolute;
@@ -394,11 +373,10 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
 .js .listo .hero-meta:nth-child(4) { transition-delay: 0.55s; }
 /* el botón conserva su transición de color además de la de entrada */
 .js .hero-meta.btn-pildora {
-  transition: opacity 1.4s var(--ease), transform 1.4s var(--ease), filter 1.4s var(--ease),
-              color 0.45s var(--ease), border-color 0.45s ease, text-shadow 0.45s ease;
+  transition: opacity 1.4s var(--ease), transform 1.4s var(--ease), filter 1.4s var(--ease);
 }
 /* el retraso de la cascada solo aplica a la entrada, no al hover */
-.js .listo .hero-meta.btn-pildora:nth-child(4) { transition-delay: 0.55s, 0.55s, 0.55s, 0s, 0s, 0s; }
+.js .listo .hero-meta.btn-pildora:nth-child(4) { transition-delay: 0.55s; }
 .js .listo .hero-scroll { transition-delay: 0.9s; }
 .hero-scroll.hero-meta { transform: translateX(-50%) translateY(14px); }
 .js .listo .hero-scroll.hero-meta { transform: translateX(-50%); }
