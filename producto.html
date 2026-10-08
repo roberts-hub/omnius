@@ -13,9 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,300;0,400;0,600;0,700;1,300&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <!-- Lemon Squeezy: abre el checkout encima de esta página (overlay) -->
-  <script src="https://assets.lemonsqueezy.com/lemon.js" defer></script>
-  <link rel="stylesheet" href="css/estilo.css?v=202610081308" />
+  <link rel="stylesheet" href="css/estilo.css?v=202610081312" />
 </head>
 <body class="listo pagina-producto">
 
@@ -70,9 +68,8 @@
         </div>
 
         <!-- El buy-link real de Lemon Squeezy se configura en js/main.js (LEMON_URL).
-             Mientras sea placeholder, el botón no lleva a ningún lado; al poner la URL real,
-             main.js le asigna el href y la clase lemonsqueezy-button (abre el checkout encima). -->
-        <a id="cta-comprar" class="btn-solido" href="#comprar">GET OMNIUS <span class="flecha">→</span></a>
+             Con la URL real, todo [data-checkout] abre el checkout encima de la página. -->
+        <a id="cta-comprar" class="btn-solido" href="#comprar" data-checkout>GET OMNIUS <span class="flecha">→</span></a>
         <p class="nota-mono">SECURE CHECKOUT VIA LEMON SQUEEZY // CARDS, PAYPAL, APPLE PAY</p>
 
         <p class="lead"><strong>Four looks. One system. Graded like film.</strong></p>
@@ -111,6 +108,6 @@
     </div>
   </footer>
 
-  <script src="js/main.js?v=202610081308" defer></script>
+  <script src="js/main.js?v=202610081312" defer></script>
 </body>
 </html>

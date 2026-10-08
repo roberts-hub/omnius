@@ -4,14 +4,22 @@
 // formato: https://TIENDA.lemonsqueezy.com/checkout/buy/UUID?embed=1&media=0
 const LEMON_URL = "TODO-LEMONSQUEEZY-URL";
 
-// ── CTA de compra (solo en producto.html) ──
-// Los botones de la página principal llevan a producto.html; ahí este botón abre el checkout.
-// Mientras LEMON_URL sea placeholder, el botón no lleva la clase lemonsqueezy-button
-// (evita que lemon.js intercepte el clic sin URL real).
-const cta = document.getElementById("cta-comprar");
-if (cta && !LEMON_URL.startsWith("TODO")) {
-  cta.href = LEMON_URL;
-  cta.classList.add("lemonsqueezy-button");
+// ── Checkout (Lemon Squeezy) ──
+// Todo elemento con [data-checkout] abre el checkout encima de la página (overlay):
+// el botón del hero (compra rápida desde la principal) y el de producto.html.
+// Mientras LEMON_URL sea placeholder, los botones conservan su href (el del hero va a
+// producto.html) y lemon.js ni se descarga.
+const botonesCheckout = document.querySelectorAll("[data-checkout]");
+if (botonesCheckout.length && !LEMON_URL.startsWith("TODO")) {
+  botonesCheckout.forEach((b) => {
+    b.href = LEMON_URL;
+    b.classList.add("lemonsqueezy-button");
+  });
+  const s = document.createElement("script");
+  s.src = "https://assets.lemonsqueezy.com/lemon.js";
+  s.defer = true;
+  s.onload = () => window.createLemonSqueezy && window.createLemonSqueezy();
+  document.head.appendChild(s);
 }
 
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;

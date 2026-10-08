@@ -289,7 +289,51 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   color: var(--lino);
   text-shadow: 0 1px 10px rgba(0, 0, 0, 0.7);
 }
-.hero-contenido .btn-linea { margin-top: 36px; text-shadow: 0 1px 10px rgba(0, 0, 0, 0.7); }
+/* botón píldora (estilo Eyre Films): contorno fino, al pasar el cursor el hueso sube desde abajo */
+.btn-pildora {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 34px;
+  padding: 16px 28px;
+  border: 1px solid rgba(234, 224, 197, 0.85);
+  border-radius: 999px;
+  overflow: hidden;
+  isolation: isolate;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-decoration: none;
+  color: var(--hueso);
+  background: rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+  transition: color 0.45s var(--ease), border-color 0.45s ease, text-shadow 0.45s ease;
+}
+.btn-pildora::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--hueso);
+  transform: translateY(101%);
+  transition: transform 0.5s var(--ease);
+}
+.btn-pildora .flecha { font-family: var(--sans); transition: transform 0.45s var(--ease); }
+.btn-pildora:focus-visible { color: var(--fondo); border-color: var(--hueso); text-shadow: none; }
+.btn-pildora:focus-visible::before { transform: translateY(0); }
+@media (hover: hover) {
+  .btn-pildora:hover { color: var(--fondo); border-color: var(--hueso); text-shadow: none; }
+  .btn-pildora:hover::before { transform: translateY(0); }
+  .btn-pildora:hover .flecha { transform: translateX(4px); }
+}
+.btn-pildora:focus-visible { outline: none; }
+/* en celular no hay hover: al tocar, relleno breve */
+.btn-pildora:active::before { transform: translateY(0); transition-duration: 0.15s; }
+.btn-pildora:active { color: var(--fondo); }
 
 .hero-scroll {
   position: absolute;
@@ -329,6 +373,13 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
 .js .listo .hero-meta:nth-child(2) { transition-delay: 0.15s; }
 .js .listo .hero-meta:nth-child(3) { transition-delay: 0.35s; }
 .js .listo .hero-meta:nth-child(4) { transition-delay: 0.55s; }
+/* el botón conserva su transición de color además de la de entrada */
+.js .hero-meta.btn-pildora {
+  transition: opacity 1.4s var(--ease), transform 1.4s var(--ease), filter 1.4s var(--ease),
+              color 0.45s var(--ease), border-color 0.45s ease, text-shadow 0.45s ease;
+}
+/* el retraso de la cascada solo aplica a la entrada, no al hover */
+.js .listo .hero-meta.btn-pildora:nth-child(4) { transition-delay: 0.55s, 0.55s, 0.55s, 0s, 0s, 0s; }
 .js .listo .hero-scroll { transition-delay: 0.9s; }
 .hero-scroll.hero-meta { transform: translateX(-50%) translateY(14px); }
 .js .listo .hero-scroll.hero-meta { transform: translateX(-50%); }
