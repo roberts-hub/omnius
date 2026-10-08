@@ -461,7 +461,9 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   transform-style: preserve-3d;
   transform-origin: 50% 50% calc(var(--d) / -2);
   /* --giro (0→1) lo pone js/main.js al hacer scroll: la caja gira un poco hacia el frente y sube */
+  /* translateX: centra el frente (lo que el ojo lee como "la caja"); el lomo oscuro queda a la izquierda */
   transform:
+    translateX(-2.4cqi)
     translateY(calc(var(--giro, 0) * -2.5cqi))
     rotateY(calc(27deg - var(--giro, 0) * 12deg - var(--hover, 0) * 7deg))
     rotateX(calc(-2deg + var(--giro, 0) * 3deg));
@@ -583,13 +585,13 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   margin-right: -0.4em;
 }
 .frente-pie { flex: 1.05; }
+/* muestras de color abajo a la izquierda, sobre el agua de la foto del yate */
 .frente-swatches {
   position: absolute;
-  left: 50%;
-  top: 50%;
+  left: 7%;
+  bottom: 14%;
   display: flex;
   gap: 0.5cqi;
-  transform: translate(-50%, -50%);
 }
 .frente-swatches i {
   width: 3.4cqi;
