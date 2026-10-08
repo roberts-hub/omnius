@@ -23,7 +23,7 @@ python3 -m http.server 4181
 | Video del hero | Correr `herramientas/video-hero.sh "/ruta/al/video.mov"`: genera 1080p y vertical (para celular), cada uno en HEVC (principal) y H.264 (respaldo), más el poster, en `video/`. Usa solo herramientas de macOS (Swift/AVFoundation). Fuente ideal: 4K, 10–15 s |
 | Nombres de los sliders | `index.html`, sección `#looks` (y las etiquetas de las franjas `.tira` de la portada) |
 | Crédito de cámara por LUT | `index.html`, `.tag.camara` de cada slider: escribir la cámara y quitar `hidden` |
-| Franja INTRODUCING | `index.html`, `.introducing-tiras` (5 imágenes; se puede cambiar por un `<video>` del reel) |
+| Collage de tomas | `index.html`, `.introducing-tiras` (5 imágenes; se puede cambiar por un `<video>` del reel) |
 | Mostrar reviews | `index.html`, quitar `hidden` de `<section id="reviews">` |
 
 La intro (frase + iconos) solo se muestra en la primera visita de cada sesión
@@ -42,7 +42,7 @@ sips -Z 1200 -s formatOptions 78 /tmp/c.jpg --out img/looks/01-despues-1200.jpg
 ```
 
 Nombres y títulos de cada slider: `index.html`, sección `#looks` (`POWERGRADE // 0N` + nombre).
-Las franjas de la portada (`tira-0N.jpg`) y de INTRODUCING (`reel-0N.jpg`) salen de los mismos stills gradeados.
+Las franjas de la portada (`tira-0N.jpg`) y del collage (`reel-0N*.jpg`) salen de los mismos stills gradeados.
 
 ## Caché del navegador
 

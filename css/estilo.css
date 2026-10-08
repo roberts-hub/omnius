@@ -611,7 +611,7 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
 }
 .consistencia .looks-cabeza { margin-bottom: 0; }
 
-/* ══════════ INTRODUCING ══════════ */
+/* ══════════ COLLAGE (clase .introducing) ══════════ */
 
 .introducing {
   position: relative;
@@ -625,22 +625,7 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   height: clamp(260px, 38vw, 520px);
   overflow: hidden;
 }
-.introducing-tiras img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.62) saturate(0.9); }
-.introducing-texto {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--mono);
-  font-size: clamp(14px, 2.4vw, 30px);
-  font-weight: 500;
-  letter-spacing: 0.7em;
-  padding-left: 0.7em;
-  color: var(--hueso);
-  text-shadow: 0 2px 30px rgba(0, 0, 0, 0.6);
-  pointer-events: none;
-}
+.introducing-tiras img { width: 100%; height: 100%; object-fit: cover; }
 
 /* ══════════ LOOKS ══════════ */
 
