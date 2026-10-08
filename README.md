@@ -42,7 +42,7 @@ sips -Z 1200 -s formatOptions 78 /tmp/c.jpg --out img/looks/01-despues-1200.jpg
 ```
 
 Nombres y títulos de cada slider: `index.html`, sección `#looks` (`POWERGRADE // 0N` + nombre).
-El collage (`reel-0N*.jpg`) sale de los mismos stills gradeados. La tira inferior de la portada en `producto.html` es `img/portada-barras.jpg`.
+El collage (`reel-0N*.jpg`) sale de los mismos stills gradeados. La tira inferior de la portada en `producto.html` (y la miniatura de la barra de compra) usa `img/looks/tira-0N.jpg`.
 
 ## Caché del navegador
 
