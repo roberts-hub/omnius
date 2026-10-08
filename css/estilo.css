@@ -587,6 +587,17 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
 .pagina-producto .lead { margin-top: 40px; font-size: 17px; }
 .pagina-producto .cuerpo { margin-top: 16px; font-size: 15px; }
 .pagina-producto .cuerpo strong { font-weight: 600; color: var(--hueso); }
+/* oferta agrupada (TOOLS / TRAINING / ACCESS), como en Reilin Joey */
+.pagina-producto .oferta-grupos { margin-top: 28px; }
+.pagina-producto .checklist-grupo {
+  margin-top: 22px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: var(--greige);
+}
+.pagina-producto .checklist-grupo:first-child { margin-top: 0; }
+.pagina-producto .oferta-grupos .checklist { margin-top: 8px; }
 /* checklist como Pordoi: lista simple con ✓, sin líneas entre renglones */
 .pagina-producto .checklist { margin-top: 24px; border-top: none; }
 .pagina-producto .checklist li { padding: 5px 0; border-bottom: none; font-size: 15px; }
