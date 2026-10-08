@@ -255,19 +255,25 @@ document.querySelectorAll("[data-comparador]").forEach((comp) => {
   });
 });
 
-// ── carrusel de sliders ──
-// Centra el clip activo; los vecinos se asoman. Flechas, rayitas o clic en un vecino cambian de clip.
-// La pista (empujón sutil) se reproduce una sola vez: cuando el carrusel aparece por primera vez.
+// ── carrusel de sliders (infinito) ──
+// El clip activo queda centrado con vecinos a ambos lados; al pasar del último sigue el primero.
+// Técnica: los clips se rotan en el DOM (el del extremo pasa al otro lado) sin transición,
+// y solo se anima el desplazamiento corto; así el movimiento siempre es continuo.
+// Flechas, rayitas o clic en un vecino cambian de clip. La pista (empujón sutil) solo la primera vez.
 const carrusel = document.querySelector(".carrusel");
 if (carrusel) {
   const ventana = carrusel.querySelector(".carrusel-ventana");
   const pista = carrusel.querySelector(".carrusel-pista");
   const slides = [...pista.querySelectorAll(".look")];
+  const n = slides.length;
+  const CENTRO = Math.floor((n - 1) / 2); // posición fija del clip activo dentro de la pista
   const flechas = carrusel.querySelectorAll(".carrusel-flecha");
   const contador = carrusel.querySelector(".carrusel-contador .actual");
   const puntosCaja = carrusel.querySelector(".carrusel-puntos");
-  let activo = 0;
+  let activo = 0; // índice "lógico" (orden original de los clips)
+  let animando = false;
   let visible = false;
+  slides.forEach((s, i) => { s._indice = i; });
 
   const puntos = slides.map((_, i) => {
     const b = document.createElement("button");
@@ -275,65 +281,105 @@ if (carrusel) {
     b.className = "carrusel-punto";
     b.setAttribute("role", "tab");
     b.setAttribute("aria-label", "Example " + (i + 1));
-    b.addEventListener("click", () => ir(i));
+    b.addEventListener("click", () => {
+      let d = (((i - activo) % n) + n) % n;
+      if (d > n / 2) d -= n; // camino más corto, hacia cualquier lado
+      mover(d);
+    });
     puntosCaja.appendChild(b);
     return b;
   });
 
-  const colocar = () => {
+  const colocar = (posicion, animar) => {
     const ancho = slides[0].offsetWidth;
     const hueco = parseFloat(getComputedStyle(pista).columnGap) || 0;
-    const desplazamiento = (ventana.clientWidth - ancho) / 2 - activo * (ancho + hueco);
-    pista.style.setProperty("--desplazamiento", desplazamiento + "px");
+    if (!animar) pista.style.transition = "none";
+    pista.style.setProperty("--desplazamiento", (ventana.clientWidth - ancho) / 2 - posicion * (ancho + hueco) + "px");
+    if (!animar) { void pista.offsetWidth; pista.style.transition = ""; }
   };
 
-  const pistaDelActivo = () => {
-    const comp = slides[activo].querySelector("[data-comparador]");
-    if (visible && comp && comp._pista && !reduceMotion) setTimeout(() => comp._pista(), 650);
-  };
-
-  const ir = (i) => {
-    activo = Math.max(0, Math.min(slides.length - 1, i));
-    slides.forEach((s, k) => {
-      s.classList.toggle("activo", k === activo);
-      s.setAttribute("aria-hidden", k === activo ? "false" : "true");
+  const marcar = () => {
+    const enPista = [...pista.children];
+    slides.forEach((s) => {
+      const esActivo = s._indice === activo;
+      s.classList.toggle("activo", esActivo);
+      s.setAttribute("aria-hidden", esActivo ? "false" : "true");
       const c = s.querySelector("[data-comparador]");
-      if (c) c.tabIndex = k === activo ? 0 : -1;
-      // los vecinos cargan antes de llegar al centro
-      if (Math.abs(k - activo) <= 1) s.querySelectorAll("img").forEach((img) => { img.loading = "eager"; });
+      if (c) c.tabIndex = esActivo ? 0 : -1;
+    });
+    // precarga: los dos clips a cada lado del activo
+    const pos = enPista.findIndex((s) => s._indice === activo);
+    enPista.forEach((s, k) => {
+      if (Math.abs(k - pos) <= 2) s.querySelectorAll("img").forEach((img) => { img.loading = "eager"; });
     });
     puntos.forEach((p, k) => p.setAttribute("aria-selected", k === activo ? "true" : "false"));
     contador.textContent = String(activo + 1).padStart(2, "0");
-    flechas[0].disabled = activo === 0;
-    flechas[1].disabled = activo === slides.length - 1;
-    colocar();
   };
 
-  flechas.forEach((f) => f.addEventListener("click", () => ir(activo + Number(f.dataset.dir))));
+  const alTerminar = (fn) => {
+    let hecho = false;
+    const listo = (e) => {
+      if (e && (e.target !== pista || e.propertyName !== "transform")) return;
+      if (hecho) return;
+      hecho = true;
+      pista.removeEventListener("transitionend", listo);
+      fn();
+    };
+    pista.addEventListener("transitionend", listo);
+    setTimeout(listo, reduceMotion ? 0 : 900); // respaldo (pestaña oculta, sin transición)
+  };
+
+  const mover = (d) => {
+    if (animando || d === 0) return;
+    animando = true;
+    activo = (((activo + d) % n) + n) % n;
+    if (d > 0) {
+      marcar();
+      colocar(CENTRO + d, true);
+      alTerminar(() => {
+        for (let k = 0; k < d; k++) pista.appendChild(pista.firstElementChild);
+        colocar(CENTRO, false);
+        animando = false;
+      });
+    } else {
+      for (let k = 0; k < -d; k++) pista.insertBefore(pista.lastElementChild, pista.firstElementChild);
+      colocar(CENTRO - d, false);
+      marcar();
+      colocar(CENTRO, true);
+      alTerminar(() => { animando = false; });
+    }
+  };
+
+  flechas.forEach((f) => f.addEventListener("click", () => mover(Number(f.dataset.dir))));
   // clic en un clip vecino: lo trae al centro
-  slides.forEach((s, i) => s.addEventListener("click", () => { if (i !== activo) ir(i); }));
+  slides.forEach((s) => s.addEventListener("click", () => {
+    const d = [...pista.children].indexOf(s) - CENTRO;
+    if (d !== 0) mover(d);
+  }));
   // flechas del teclado cuando el foco está en los controles
   carrusel.querySelector(".carrusel-controles").addEventListener("keydown", (e) => {
-    if (e.key === "ArrowLeft") { ir(activo - 1); e.preventDefault(); }
-    if (e.key === "ArrowRight") { ir(activo + 1); e.preventDefault(); }
+    if (e.key === "ArrowLeft") { mover(-1); e.preventDefault(); }
+    if (e.key === "ArrowRight") { mover(1); e.preventDefault(); }
   });
 
-  let espera = 0;
-  window.addEventListener("resize", () => {
-    clearTimeout(espera);
-    pista.style.transition = "none";
-    colocar();
-    espera = setTimeout(() => { pista.style.transition = ""; }, 100);
-  });
+  window.addEventListener("resize", () => colocar(CENTRO, false));
 
   if ("IntersectionObserver" in window) {
     const obsCarrusel = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting && !visible) { visible = true; pistaDelActivo(); obsCarrusel.disconnect(); }
+      if (e.isIntersecting && !visible) {
+        visible = true;
+        const comp = slides[activo].querySelector("[data-comparador]");
+        if (comp && comp._pista && !reduceMotion) setTimeout(() => comp._pista(), 650);
+        obsCarrusel.disconnect();
+      }
     }, { threshold: 0.5 });
     obsCarrusel.observe(ventana);
   }
 
-  ir(0);
+  // estado inicial: el primer clip al centro, los últimos a su izquierda
+  for (let k = 0; k < CENTRO; k++) pista.insertBefore(pista.lastElementChild, pista.firstElementChild);
+  marcar();
+  colocar(CENTRO, false);
 }
 
 // ── carrusel de reseñas (scroll nativo con snap: en celular se desliza con el dedo) ──
