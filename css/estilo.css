@@ -266,24 +266,24 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   text-align: center;
   padding: 0 24px;
 }
-.hero-icono { width: 54px; height: 54px; color: var(--hueso); filter: drop-shadow(0 1px 8px rgba(0, 0, 0, 0.5)); }
+.hero-icono { width: 40px; height: 40px; color: var(--hueso); filter: drop-shadow(0 1px 8px rgba(0, 0, 0, 0.5)); }
 .hero-marca {
-  margin-top: 22px;
-  font-size: clamp(52px, 10vw, 150px);
+  margin-top: 18px;
+  font-size: clamp(40px, 6vw, 92px);
   font-weight: 700;
-  letter-spacing: -0.06em;
+  letter-spacing: -0.05em;
   line-height: 0.9;
   text-shadow: 0 2px 24px rgba(0, 0, 0, 0.45), 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 .hero-kicker {
-  margin-top: 22px;
+  margin-top: 18px;
   font-family: var(--mono);
   font-size: clamp(9px, 1vw, 11px);
   letter-spacing: 0.35em;
   color: var(--lino);
   text-shadow: 0 1px 10px rgba(0, 0, 0, 0.7);
 }
-.hero-contenido .btn-linea { margin-top: 44px; text-shadow: 0 1px 10px rgba(0, 0, 0, 0.7); }
+.hero-contenido .btn-linea { margin-top: 36px; text-shadow: 0 1px 10px rgba(0, 0, 0, 0.7); }
 
 .hero-scroll {
   position: absolute;
