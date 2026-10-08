@@ -16,4 +16,5 @@ cd ../video
 "$TMP/frame" hero-1080.hevc.mp4 2 "$TMP/poster.jpg" >/dev/null
 sips -Z 1600 -s format jpeg -s formatOptions 65 "$TMP/poster.jpg" --out hero-poster.jpg >/dev/null
 rm -rf "$TMP"
+rm -f ./*.sb-* 2>/dev/null || true
 echo "Listo. Revisa el poster (segundo 2 del video) y publica."
