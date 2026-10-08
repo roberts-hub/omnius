@@ -308,15 +308,15 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   text-decoration: none;
   color: var(--hueso);
   /* liquid glass: vidrio esmerilado con más desenfoque y color, reflejo arriba y sombra suave */
-  border-color: rgba(255, 255, 255, 0.38);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.05) 100%);
-  backdrop-filter: blur(16px) saturate(170%) brightness(1.05);
-  -webkit-backdrop-filter: blur(16px) saturate(170%) brightness(1.05);
+  border-color: rgba(255, 255, 255, 0.32);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.11) 0%, rgba(255, 255, 255, 0.03) 100%);
+  backdrop-filter: blur(11px) saturate(145%) brightness(1.03);
+  -webkit-backdrop-filter: blur(11px) saturate(145%) brightness(1.03);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.5),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.1),
-    inset 0 0 20px rgba(255, 255, 255, 0.06),
-    0 10px 30px rgba(0, 0, 0, 0.28);
+    inset 0 1px 0 rgba(255, 255, 255, 0.38),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.07),
+    inset 0 0 16px rgba(255, 255, 255, 0.04),
+    0 8px 24px rgba(0, 0, 0, 0.22);
   text-shadow: 0 1px 8px rgba(0, 0, 0, 0.45);
   transition: color 0.45s var(--ease), border-color 0.45s ease, text-shadow 0.45s ease;
 }
@@ -327,7 +327,7 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   inset: 1px 1px 50% 1px;
   z-index: -1;
   border-radius: 999px 999px 40% 40% / 999px 999px 100% 100%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
   pointer-events: none;
   transition: opacity 0.45s ease;
 }
@@ -644,9 +644,14 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   margin-bottom: clamp(56px, 7vw, 96px);
 }
 
-/* cada look: columna centrada de 960px como en Pordoi — no llena la pantalla */
-.look { max-width: 960px; margin: 0 auto; }
-.look + .look { margin-top: clamp(24px, 3.5vw, 40px); }
+/* sliders en dos columnas (una sola en celular) */
+.looks-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(16px, 2vw, 28px);
+  max-width: 1200px;
+  margin: 0 auto;
+}
 .look-num {
   font-size: 14px;
   font-weight: 600;
@@ -860,6 +865,7 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   .pagina-producto .producto.pagina { grid-template-columns: 1fr; padding-top: 92px; min-height: 0; }
   .pagina-producto .portada { width: 50%; }
   .pagina-producto .portada-escena { top: 0; }
+  .looks-grid { grid-template-columns: 1fr; }
   .portada-escena { position: relative; top: 0; aspect-ratio: 4 / 3.4; }
   .portada { width: 50%; }
   .introducing-tiras { grid-template-columns: 1fr 1.4fr 1fr; }
