@@ -313,6 +313,24 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
   text-shadow: 0 1px 8px rgba(0, 0, 0, 0.45);
 }
+/* borde de vidrio (no una línea): aro tenue que capta luz arriba y abajo, difuminado */
+.btn-pildora::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: linear-gradient(170deg,
+    rgba(255, 255, 255, 0.32) 0%,
+    rgba(255, 255, 255, 0.07) 38%,
+    rgba(255, 255, 255, 0.04) 62%,
+    rgba(255, 255, 255, 0.2) 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  filter: blur(0.4px);
+  pointer-events: none;
+}
 /* al pasar el cursor: el vidrio se oscurece, pero los tonos del video siguen pasando */
 .btn-pildora::before {
   content: "";
