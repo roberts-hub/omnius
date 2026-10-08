@@ -17,7 +17,7 @@ if (!LEMON_URL.startsWith("TODO")) {
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 // ── INTRO: frase palabra por palabra → iconos rápidos → sitio (estilo mastermind) ──
-// Solo en la primera visita de la sesión; se puede saltar con clic, tecla o el botón SKIP.
+// Solo en la primera visita de la sesión; un clic o cualquier tecla la adelanta.
 const loader = document.getElementById("loader");
 const intro = loader.querySelector(".loader-intro");
 const glyphs = loader.querySelectorAll(".glyph");

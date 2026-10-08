@@ -114,23 +114,6 @@ img { display: block; }
 }
 .glyph.activo { opacity: 1; transform: scale(1); filter: blur(0); }
 
-.saltar {
-  position: absolute;
-  right: 8vw;
-  bottom: 40px;
-  display: inline-flex;
-  gap: 12px;
-  background: none;
-  border: none;
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.3em;
-  color: rgba(176, 165, 149, 0.6);
-  cursor: pointer;
-  transition: color 0.3s ease;
-}
-.saltar:hover { color: var(--hueso); }
-
 /* ══════════ GRANO ══════════ */
 
 .grain {
