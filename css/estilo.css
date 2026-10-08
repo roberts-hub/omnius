@@ -644,14 +644,98 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   margin-bottom: clamp(56px, 7vw, 96px);
 }
 
-/* sliders en dos columnas (una sola en celular) */
-.looks-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(16px, 2vw, 28px);
-  max-width: 1200px;
-  margin: 0 auto;
+/* ══════════ CARRUSEL DE SLIDERS ══════════
+   Cada clip mide 960px (el tamaño de Pordoi); los vecinos se asoman tenues a los lados.
+   La pista se mueve con transform; se navega con flechas, rayitas o tocando un vecino
+   (el arrastre horizontal sobre la foto es del slider antes/después). */
+
+.looks { max-width: none; padding-left: 0; padding-right: 0; }
+
+.carrusel { --ancho-slide: min(960px, calc(100vw - 2 * var(--margen))); --hueco: clamp(12px, 2vw, 28px); }
+.carrusel-ventana { overflow: hidden; }
+.carrusel-pista {
+  display: flex;
+  gap: var(--hueco);
+  transform: translate3d(var(--desplazamiento, 0px), 0, 0);
+  transition: transform 0.8s var(--ease);
+  will-change: transform;
 }
+.carrusel-pista .look {
+  flex: 0 0 var(--ancho-slide);
+  opacity: 0.32;
+  transform: scale(0.94);
+  transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+  cursor: pointer;
+}
+.carrusel-pista .look.activo { opacity: 1; transform: none; cursor: auto; }
+/* los vecinos no se arrastran: un clic los trae al centro */
+.carrusel-pista .look:not(.activo) .comparador { pointer-events: none; }
+
+.carrusel-controles {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(18px, 3vw, 36px);
+  margin-top: clamp(22px, 3vw, 34px);
+  padding: 0 var(--margen);
+}
+.carrusel-flecha {
+  position: relative;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  color: var(--hueso);
+  font-family: var(--sans);
+  font-size: 17px;
+  cursor: pointer;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.02));
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 6px 18px rgba(0, 0, 0, 0.25);
+  transition: background 0.4s ease, color 0.4s ease, border-color 0.4s ease, transform 0.4s var(--ease), opacity 0.4s ease;
+}
+@media (hover: hover) {
+  .carrusel-flecha:hover { background: var(--hueso); color: var(--fondo); border-color: var(--hueso); }
+  .carrusel-flecha[data-dir="-1"]:hover { transform: translateX(-2px); }
+  .carrusel-flecha[data-dir="1"]:hover { transform: translateX(2px); }
+}
+.carrusel-flecha:active { transform: scale(0.94); }
+.carrusel-flecha:disabled { opacity: 0.25; cursor: default; pointer-events: none; }
+.carrusel-flecha:focus-visible { outline: 1px solid var(--hueso); outline-offset: 3px; }
+
+.carrusel-centro { display: flex; flex-direction: column; align-items: center; gap: 12px; min-width: 150px; }
+.carrusel-contador {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  color: var(--greige);
+}
+.carrusel-contador .actual { color: var(--hueso); }
+.carrusel-puntos { display: flex; gap: 6px; }
+.carrusel-punto {
+  width: 16px;
+  height: 14px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  position: relative;
+}
+.carrusel-punto::before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; top: 50%;
+  height: 2px;
+  margin-top: -1px;
+  border-radius: 2px;
+  background: rgba(234, 224, 197, 0.25);
+  transition: background 0.4s ease, transform 0.4s var(--ease);
+}
+.carrusel-punto[aria-selected="true"]::before { background: var(--hueso); transform: scaleY(1.5); }
+@media (hover: hover) { .carrusel-punto:hover::before { background: rgba(234, 224, 197, 0.6); } }
+.carrusel-punto:focus-visible { outline: 1px solid var(--hueso); outline-offset: 2px; }
+
 .look-num {
   font-size: 14px;
   font-weight: 600;
@@ -865,7 +949,7 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   .pagina-producto .producto.pagina { grid-template-columns: 1fr; padding-top: 92px; min-height: 0; }
   .pagina-producto .portada { width: 50%; }
   .pagina-producto .portada-escena { top: 0; }
-  .looks-grid { grid-template-columns: 1fr; }
+  .carrusel-pista .look { opacity: 0.4; }
   .portada-escena { position: relative; top: 0; aspect-ratio: 4 / 3.4; }
   .portada { width: 50%; }
   .introducing-tiras { grid-template-columns: 1fr 1.4fr 1fr; }
@@ -883,6 +967,7 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   .grain { animation: none; }
   .js .reveal { opacity: 1; transform: none; transition: none; }
   .faq-a { animation: none; }
+  .carrusel-pista, .carrusel-pista .look { transition: none; }
   .comparador.deslizando .antes-marco,
   .comparador.deslizando .antes-marco .antes,
   .comparador.deslizando .guia { transition: none; }

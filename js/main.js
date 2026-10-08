@@ -250,16 +250,86 @@ document.querySelectorAll("[data-comparador]").forEach((comp) => {
   });
 });
 
-// ── pista de los sliders al aparecer en pantalla ──
-if (!reduceMotion && "IntersectionObserver" in window) {
-  const obsPista = new IntersectionObserver((entradas) => {
-    entradas.filter((e) => e.isIntersecting).forEach((e, i) => {
-      obsPista.unobserve(e.target);
-      // escalonado: si entran dos a la vez (dos columnas), el segundo arranca un poco después
-      setTimeout(() => e.target._pista && e.target._pista(), 350 + i * 220);
+// ── carrusel de sliders ──
+// Centra el clip activo; los vecinos se asoman. Flechas, rayitas o clic en un vecino cambian de clip.
+// La pista (izquierda → derecha → centro) se reproduce en cada clip la primera vez que queda al centro.
+const carrusel = document.querySelector(".carrusel");
+if (carrusel) {
+  const ventana = carrusel.querySelector(".carrusel-ventana");
+  const pista = carrusel.querySelector(".carrusel-pista");
+  const slides = [...pista.querySelectorAll(".look")];
+  const flechas = carrusel.querySelectorAll(".carrusel-flecha");
+  const contador = carrusel.querySelector(".carrusel-contador .actual");
+  const puntosCaja = carrusel.querySelector(".carrusel-puntos");
+  let activo = 0;
+  let visible = false;
+
+  const puntos = slides.map((_, i) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "carrusel-punto";
+    b.setAttribute("role", "tab");
+    b.setAttribute("aria-label", "Example " + (i + 1));
+    b.addEventListener("click", () => ir(i));
+    puntosCaja.appendChild(b);
+    return b;
+  });
+
+  const colocar = () => {
+    const ancho = slides[0].offsetWidth;
+    const hueco = parseFloat(getComputedStyle(pista).columnGap) || 0;
+    const desplazamiento = (ventana.clientWidth - ancho) / 2 - activo * (ancho + hueco);
+    pista.style.setProperty("--desplazamiento", desplazamiento + "px");
+  };
+
+  const pistaDelActivo = () => {
+    const comp = slides[activo].querySelector("[data-comparador]");
+    if (visible && comp && comp._pista && !reduceMotion) setTimeout(() => comp._pista(), 650);
+  };
+
+  const ir = (i) => {
+    activo = Math.max(0, Math.min(slides.length - 1, i));
+    slides.forEach((s, k) => {
+      s.classList.toggle("activo", k === activo);
+      s.setAttribute("aria-hidden", k === activo ? "false" : "true");
+      const c = s.querySelector("[data-comparador]");
+      if (c) c.tabIndex = k === activo ? 0 : -1;
+      // los vecinos cargan antes de llegar al centro
+      if (Math.abs(k - activo) <= 1) s.querySelectorAll("img").forEach((img) => { img.loading = "eager"; });
     });
-  }, { threshold: 0.6 });
-  document.querySelectorAll("[data-comparador]").forEach((c) => obsPista.observe(c));
+    puntos.forEach((p, k) => p.setAttribute("aria-selected", k === activo ? "true" : "false"));
+    contador.textContent = String(activo + 1).padStart(2, "0");
+    flechas[0].disabled = activo === 0;
+    flechas[1].disabled = activo === slides.length - 1;
+    colocar();
+    pistaDelActivo();
+  };
+
+  flechas.forEach((f) => f.addEventListener("click", () => ir(activo + Number(f.dataset.dir))));
+  // clic en un clip vecino: lo trae al centro
+  slides.forEach((s, i) => s.addEventListener("click", () => { if (i !== activo) ir(i); }));
+  // flechas del teclado cuando el foco está en los controles
+  carrusel.querySelector(".carrusel-controles").addEventListener("keydown", (e) => {
+    if (e.key === "ArrowLeft") { ir(activo - 1); e.preventDefault(); }
+    if (e.key === "ArrowRight") { ir(activo + 1); e.preventDefault(); }
+  });
+
+  let espera = 0;
+  window.addEventListener("resize", () => {
+    clearTimeout(espera);
+    pista.style.transition = "none";
+    colocar();
+    espera = setTimeout(() => { pista.style.transition = ""; }, 100);
+  });
+
+  if ("IntersectionObserver" in window) {
+    const obsCarrusel = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !visible) { visible = true; pistaDelActivo(); obsCarrusel.disconnect(); }
+    }, { threshold: 0.5 });
+    obsCarrusel.observe(ventana);
+  }
+
+  ir(0);
 }
 
 // ── reveal on scroll ──

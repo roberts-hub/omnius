@@ -24,7 +24,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,300;0,400;0,600;0,700;1,300&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/estilo.css?v=202610081326" />
+  <link rel="stylesheet" href="css/estilo.css?v=202610081332" />
 </head>
 <body>
 
@@ -125,159 +125,164 @@
 
     <!-- ══════════ LOOKS ══════════ -->
     <section class="looks" id="looks">
-      <div class="looks-grid">
-        <article class="look reveal">
-          <div class="comparador" data-comparador>
-            <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
-                 src="img/looks/01-despues-1920.jpg"
-                 srcset="img/looks/01-despues-1200.jpg 1200w, img/looks/01-despues-1920.jpg 1920w"
-                 sizes="(max-width: 860px) calc(100vw - 40px), (max-width: 1280px) 47vw, 590px"
-                 alt="Golden Harbor: frame graded with the OMNIUS PowerGrade" />
-            <div class="antes-marco">
-              <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
-                   src="img/looks/01-antes-1920.jpg"
-                   srcset="img/looks/01-antes-1200.jpg 1200w, img/looks/01-antes-1920.jpg 1920w"
-                   sizes="(max-width: 860px) calc(100vw - 40px), (max-width: 1280px) 47vw, 590px"
-                   alt="Golden Harbor: the same frame before grading (log)" />
+      <div class="carrusel reveal" aria-roledescription="carousel" aria-label="Before and after examples">
+        <div class="carrusel-ventana">
+          <div class="carrusel-pista">
+          <article class="look" role="group" aria-roledescription="slide" aria-label="1 of 8">
+            <div class="comparador" data-comparador>
+              <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
+                   src="img/looks/01-despues-1920.jpg"
+                   srcset="img/looks/01-despues-1200.jpg 1200w, img/looks/01-despues-1920.jpg 1920w"
+                   sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                   alt="Golden Harbor: frame graded with the OMNIUS PowerGrade" />
+              <div class="antes-marco">
+                <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
+                     src="img/looks/01-antes-1920.jpg"
+                     srcset="img/looks/01-antes-1200.jpg 1200w, img/looks/01-antes-1920.jpg 1920w"
+                     sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                     alt="Golden Harbor: the same frame before grading (log)" />
+              </div>
+              <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
+              <!-- crédito de cámara: escribir la cámara real y quitar `hidden` (aplica a todos los sliders) -->
+              <div class="tag camara" hidden>SHOT ON —</div>
             </div>
-            <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
-            <!-- crédito de cámara: escribir la cámara real y quitar `hidden` (aplica a todos los sliders) -->
-            <div class="tag camara" hidden>SHOT ON —</div>
-          </div>
-        </article>
-
-        <article class="look reveal">
-          <div class="comparador" data-comparador>
-            <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
-                 src="img/looks/02-despues-1920.jpg"
-                 srcset="img/looks/02-despues-1200.jpg 1200w, img/looks/02-despues-1920.jpg 1920w"
-                 sizes="(max-width: 860px) calc(100vw - 40px), (max-width: 1280px) 47vw, 590px"
-                 alt="Alpine Road: frame graded with the OMNIUS PowerGrade" />
-            <div class="antes-marco">
-              <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
-                   src="img/looks/02-antes-1920.jpg"
-                   srcset="img/looks/02-antes-1200.jpg 1200w, img/looks/02-antes-1920.jpg 1920w"
-                   sizes="(max-width: 860px) calc(100vw - 40px), (max-width: 1280px) 47vw, 590px"
-                   alt="Alpine Road: the same frame before grading (log)" />
+          </article>
+          <article class="look" role="group" aria-roledescription="slide" aria-label="2 of 8">
+            <div class="comparador" data-comparador>
+              <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
+                   src="img/looks/02-despues-1920.jpg"
+                   srcset="img/looks/02-despues-1200.jpg 1200w, img/looks/02-despues-1920.jpg 1920w"
+                   sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                   alt="Alpine Road: frame graded with the OMNIUS PowerGrade" />
+              <div class="antes-marco">
+                <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
+                     src="img/looks/02-antes-1920.jpg"
+                     srcset="img/looks/02-antes-1200.jpg 1200w, img/looks/02-antes-1920.jpg 1920w"
+                     sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                     alt="Alpine Road: the same frame before grading (log)" />
+              </div>
+              <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
+              <div class="tag camara" hidden>SHOT ON —</div>
             </div>
-            <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
-            <div class="tag camara" hidden>SHOT ON —</div>
-          </div>
-        </article>
-
-        <article class="look reveal">
-          <div class="comparador" data-comparador>
-            <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
-                 src="img/looks/03-despues-1920.jpg"
-                 srcset="img/looks/03-despues-1200.jpg 1200w, img/looks/03-despues-1920.jpg 1920w"
-                 sizes="(max-width: 860px) calc(100vw - 40px), (max-width: 1280px) 47vw, 590px"
-                 alt="Desert Drift: frame graded with the OMNIUS PowerGrade" />
-            <div class="antes-marco">
-              <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
-                   src="img/looks/03-antes-1920.jpg"
-                   srcset="img/looks/03-antes-1200.jpg 1200w, img/looks/03-antes-1920.jpg 1920w"
-                   sizes="(max-width: 860px) calc(100vw - 40px), (max-width: 1280px) 47vw, 590px"
-                   alt="Desert Drift: the same frame before grading (log)" />
+          </article>
+          <article class="look" role="group" aria-roledescription="slide" aria-label="3 of 8">
+            <div class="comparador" data-comparador>
+              <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
+                   src="img/looks/03-despues-1920.jpg"
+                   srcset="img/looks/03-despues-1200.jpg 1200w, img/looks/03-despues-1920.jpg 1920w"
+                   sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                   alt="Desert Drift: frame graded with the OMNIUS PowerGrade" />
+              <div class="antes-marco">
+                <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
+                     src="img/looks/03-antes-1920.jpg"
+                     srcset="img/looks/03-antes-1200.jpg 1200w, img/looks/03-antes-1920.jpg 1920w"
+                     sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                     alt="Desert Drift: the same frame before grading (log)" />
+              </div>
+              <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
+              <div class="tag camara" hidden>SHOT ON —</div>
             </div>
-            <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
-            <div class="tag camara" hidden>SHOT ON —</div>
-          </div>
-        </article>
-
-        <article class="look reveal">
-          <div class="comparador" data-comparador>
-            <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
-                 src="img/looks/04-despues-1920.jpg"
-                 srcset="img/looks/04-despues-1200.jpg 1200w, img/looks/04-despues-1920.jpg 1920w"
-                 sizes="(max-width: 860px) calc(100vw - 40px), (max-width: 1280px) 47vw, 590px"
-                 alt="Open Water: frame graded with the OMNIUS PowerGrade" />
-            <div class="antes-marco">
-              <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
-                   src="img/looks/04-antes-1920.jpg"
-                   srcset="img/looks/04-antes-1200.jpg 1200w, img/looks/04-antes-1920.jpg 1920w"
-                   sizes="(max-width: 860px) calc(100vw - 40px), (max-width: 1280px) 47vw, 590px"
-                   alt="Open Water: the same frame before grading (log)" />
+          </article>
+          <article class="look" role="group" aria-roledescription="slide" aria-label="4 of 8">
+            <div class="comparador" data-comparador>
+              <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
+                   src="img/looks/04-despues-1920.jpg"
+                   srcset="img/looks/04-despues-1200.jpg 1200w, img/looks/04-despues-1920.jpg 1920w"
+                   sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                   alt="Open Water: frame graded with the OMNIUS PowerGrade" />
+              <div class="antes-marco">
+                <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
+                     src="img/looks/04-antes-1920.jpg"
+                     srcset="img/looks/04-antes-1200.jpg 1200w, img/looks/04-antes-1920.jpg 1920w"
+                     sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                     alt="Open Water: the same frame before grading (log)" />
+              </div>
+              <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
+              <div class="tag camara" hidden>SHOT ON —</div>
             </div>
-            <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
-            <div class="tag camara" hidden>SHOT ON —</div>
-          </div>
-        </article>
-
-        <article class="look reveal">
-          <div class="comparador" data-comparador>
-            <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
-                 src="img/looks/05-despues-1920.jpg"
-                 srcset="img/looks/05-despues-1200.jpg 1200w, img/looks/05-despues-1920.jpg 1920w"
-                 sizes="(max-width: 860px) calc(100vw - 40px), (max-width: 1280px) 47vw, 590px"
-                 alt="Golden Swell: frame graded with the OMNIUS PowerGrade" />
-            <div class="antes-marco">
-              <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
-                   src="img/looks/05-antes-1920.jpg"
-                   srcset="img/looks/05-antes-1200.jpg 1200w, img/looks/05-antes-1920.jpg 1920w"
-                   sizes="(max-width: 860px) calc(100vw - 40px), (max-width: 1280px) 47vw, 590px"
-                   alt="Golden Swell: the same frame before grading (log)" />
+          </article>
+          <article class="look" role="group" aria-roledescription="slide" aria-label="5 of 8">
+            <div class="comparador" data-comparador>
+              <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
+                   src="img/looks/05-despues-1920.jpg"
+                   srcset="img/looks/05-despues-1200.jpg 1200w, img/looks/05-despues-1920.jpg 1920w"
+                   sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                   alt="Golden Swell: frame graded with the OMNIUS PowerGrade" />
+              <div class="antes-marco">
+                <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
+                     src="img/looks/05-antes-1920.jpg"
+                     srcset="img/looks/05-antes-1200.jpg 1200w, img/looks/05-antes-1920.jpg 1920w"
+                     sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                     alt="Golden Swell: the same frame before grading (log)" />
+              </div>
+              <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
+              <div class="tag camara" hidden>SHOT ON —</div>
             </div>
-            <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
-            <div class="tag camara" hidden>SHOT ON —</div>
-          </div>
-        </article>
-
-        <article class="look reveal">
-          <div class="comparador" data-comparador>
-            <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
-                 src="img/looks/06-despues-1920.jpg"
-                 srcset="img/looks/06-despues-1200.jpg 1200w, img/looks/06-despues-1920.jpg 1920w"
-                 sizes="(max-width: 860px) calc(100vw - 40px), (max-width: 1280px) 47vw, 590px"
-                 alt="Forest Trail: frame graded with the OMNIUS PowerGrade" />
-            <div class="antes-marco">
-              <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
-                   src="img/looks/06-antes-1920.jpg"
-                   srcset="img/looks/06-antes-1200.jpg 1200w, img/looks/06-antes-1920.jpg 1920w"
-                   sizes="(max-width: 860px) calc(100vw - 40px), (max-width: 1280px) 47vw, 590px"
-                   alt="Forest Trail: the same frame before grading (log)" />
+          </article>
+          <article class="look" role="group" aria-roledescription="slide" aria-label="6 of 8">
+            <div class="comparador" data-comparador>
+              <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
+                   src="img/looks/06-despues-1920.jpg"
+                   srcset="img/looks/06-despues-1200.jpg 1200w, img/looks/06-despues-1920.jpg 1920w"
+                   sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                   alt="Forest Trail: frame graded with the OMNIUS PowerGrade" />
+              <div class="antes-marco">
+                <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
+                     src="img/looks/06-antes-1920.jpg"
+                     srcset="img/looks/06-antes-1200.jpg 1200w, img/looks/06-antes-1920.jpg 1920w"
+                     sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                     alt="Forest Trail: the same frame before grading (log)" />
+              </div>
+              <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
+              <div class="tag camara" hidden>SHOT ON —</div>
             </div>
-            <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
-            <div class="tag camara" hidden>SHOT ON —</div>
-          </div>
-        </article>
-
-        <article class="look reveal">
-          <div class="comparador" data-comparador>
-            <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
-                 src="img/looks/07-despues-1920.jpg"
-                 srcset="img/looks/07-despues-1200.jpg 1200w, img/looks/07-despues-1920.jpg 1920w"
-                 sizes="(max-width: 860px) calc(100vw - 40px), (max-width: 1280px) 47vw, 590px"
-                 alt="Last Light: frame graded with the OMNIUS PowerGrade" />
-            <div class="antes-marco">
-              <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
-                   src="img/looks/07-antes-1920.jpg"
-                   srcset="img/looks/07-antes-1200.jpg 1200w, img/looks/07-antes-1920.jpg 1920w"
-                   sizes="(max-width: 860px) calc(100vw - 40px), (max-width: 1280px) 47vw, 590px"
-                   alt="Last Light: the same frame before grading (log)" />
+          </article>
+          <article class="look" role="group" aria-roledescription="slide" aria-label="7 of 8">
+            <div class="comparador" data-comparador>
+              <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
+                   src="img/looks/07-despues-1920.jpg"
+                   srcset="img/looks/07-despues-1200.jpg 1200w, img/looks/07-despues-1920.jpg 1920w"
+                   sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                   alt="Last Light: frame graded with the OMNIUS PowerGrade" />
+              <div class="antes-marco">
+                <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
+                     src="img/looks/07-antes-1920.jpg"
+                     srcset="img/looks/07-antes-1200.jpg 1200w, img/looks/07-antes-1920.jpg 1920w"
+                     sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                     alt="Last Light: the same frame before grading (log)" />
+              </div>
+              <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
+              <div class="tag camara" hidden>SHOT ON —</div>
             </div>
-            <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
-            <div class="tag camara" hidden>SHOT ON —</div>
-          </div>
-        </article>
-
-        <article class="look reveal">
-          <div class="comparador" data-comparador>
-            <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
-                 src="img/looks/08-despues-1920.jpg"
-                 srcset="img/looks/08-despues-1200.jpg 1200w, img/looks/08-despues-1920.jpg 1920w"
-                 sizes="(max-width: 860px) calc(100vw - 40px), (max-width: 1280px) 47vw, 590px"
-                 alt="Evening Swim: frame graded with the OMNIUS PowerGrade" />
-            <div class="antes-marco">
-              <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
-                   src="img/looks/08-antes-1920.jpg"
-                   srcset="img/looks/08-antes-1200.jpg 1200w, img/looks/08-antes-1920.jpg 1920w"
-                   sizes="(max-width: 860px) calc(100vw - 40px), (max-width: 1280px) 47vw, 590px"
-                   alt="Evening Swim: the same frame before grading (log)" />
+          </article>
+          <article class="look" role="group" aria-roledescription="slide" aria-label="8 of 8">
+            <div class="comparador" data-comparador>
+              <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
+                   src="img/looks/08-despues-1920.jpg"
+                   srcset="img/looks/08-despues-1200.jpg 1200w, img/looks/08-despues-1920.jpg 1920w"
+                   sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                   alt="Evening Swim: frame graded with the OMNIUS PowerGrade" />
+              <div class="antes-marco">
+                <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
+                     src="img/looks/08-antes-1920.jpg"
+                     srcset="img/looks/08-antes-1200.jpg 1200w, img/looks/08-antes-1920.jpg 1920w"
+                     sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                     alt="Evening Swim: the same frame before grading (log)" />
+              </div>
+              <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
+              <div class="tag camara" hidden>SHOT ON —</div>
             </div>
-            <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
-            <div class="tag camara" hidden>SHOT ON —</div>
+          </article>
           </div>
-        </article>
+        </div>
+        <div class="carrusel-controles">
+          <button type="button" class="carrusel-flecha" data-dir="-1" aria-label="Previous example"><span aria-hidden="true">←</span></button>
+          <div class="carrusel-centro">
+            <p class="carrusel-contador" aria-live="polite"><span class="actual">01</span> / 08</p>
+            <div class="carrusel-puntos" role="tablist" aria-label="Choose example"></div>
+          </div>
+          <button type="button" class="carrusel-flecha" data-dir="1" aria-label="Next example"><span aria-hidden="true">→</span></button>
+        </div>
       </div>
 
       <div class="looks-cta reveal">
@@ -350,6 +355,6 @@
     </div>
   </footer>
 
-  <script src="js/main.js?v=202610081326" defer></script>
+  <script src="js/main.js?v=202610081332" defer></script>
 </body>
 </html>
