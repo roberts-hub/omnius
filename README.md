@@ -1,6 +1,6 @@
-# OMNIUS — Cinematic Color System
+# SPECTRE — Cinematic Color System
 
-Landing de venta del bundle digital **OMNIUS** (PowerGrade de DaVinci Resolve +
+Landing de venta del bundle digital **SPECTRE** (PowerGrade de DaVinci Resolve +
 LUTs firmados + tutoriales) de Roberto Arechederra. Página estática sin build,
 publicada con GitHub Pages.
 
@@ -17,9 +17,9 @@ python3 -m http.server 4181
 |---|---|
 | Buy-link de Lemon Squeezy | `js/main.js`, constante `LEMON_URL` (usar el link `?embed=1&media=0`). El botón `#cta-comprar` de `producto.html` abre el checkout encima de la página; los botones de la principal llevan a `producto.html` |
 | OG image / canonical al publicar | `index.html`, comentario `TODO al publicar` en el `<head>` |
-| Precio, checklist y textos del producto | `producto.html` (página de compra). El precio también aparece en los botones "GET OMNIUS — $79" de `index.html` |
+| Precio, checklist y textos del producto | `producto.html` (página de compra). El precio también aparece en los botones "GET SPECTRE — $79" de `index.html` |
 | Frase de la intro | `index.html`, las `.intro-linea` dentro de `#loader` |
-| Ritmo de la intro | `js/main.js`, `PASO` (ms por icono) y `SOSTENER_MARCA` (cuánto se queda la marca OMNIUS antes de disolverse) |
+| Ritmo de la intro | `js/main.js`, `PASO` (ms por icono) y `SOSTENER_MARCA` (cuánto se queda la marca SPECTRE antes de disolverse) |
 | Video del hero | Correr `herramientas/video-hero.sh "/ruta/al/video.mov"`: genera 1080p y vertical (para celular), cada uno en HEVC (principal) y H.264 (respaldo), más el poster, en `video/`. Usa solo herramientas de macOS (Swift/AVFoundation). Fuente ideal: 4K, 10–15 s |
 | Nombres de los sliders | `index.html`, sección `#looks`  |
 | Crédito de cámara por LUT | `index.html`, `.tag.camara` de cada slider: escribir la cámara y quitar `hidden` |

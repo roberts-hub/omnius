@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════
-   OMNIUS — Roberto Arechederra
+   SPECTRE — Roberto Arechederra
    Estructura directa (página de producto) + sello Two Waves:
    intro tipográfica, iconos, grano, hueso sobre negro.
    ═══════════════════════════════════════════════ */
@@ -96,7 +96,7 @@ img { display: block; }
   to { opacity: 1; transform: translateY(0); filter: blur(0); }
 }
 
-/* fase 2: iconos — se funden uno en otro; el último (marca OMNIUS) se disuelve hacia el video */
+/* fase 2: iconos — se funden uno en otro; el último (marca SPECTRE) se disuelve hacia el video */
 .loader-glyphs {
   position: relative;
   width: clamp(96px, 9vw, 130px);
@@ -1014,7 +1014,7 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
 .cierre-links a { text-decoration: none; transition: color 0.3s ease; }
 .cierre-links a:hover { color: var(--hueso); }
 
-/* ══════════ BARRA DE COMPRA FIJA (estilo Pordoi, con el vidrio de OMNIUS) ══════════ */
+/* ══════════ BARRA DE COMPRA FIJA (estilo Pordoi, con el vidrio de SPECTRE) ══════════ */
 
 .barra-compra {
   position: fixed;

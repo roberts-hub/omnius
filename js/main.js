@@ -1,4 +1,4 @@
-// ══════════ OMNIUS — main.js ══════════
+// ══════════ SPECTRE — main.js ══════════
 
 // TODO: reemplazar con el buy-link real de la tienda Lemon Squeezy,
 // formato: https://TIENDA.lemonsqueezy.com/checkout/buy/UUID?embed=1&media=0
@@ -33,7 +33,7 @@ if (loader) {
   const lineas = [...intro.querySelectorAll(".intro-linea")];
   const PASO = 170; // ms por icono: cambio rápido
   const VUELTAS = 2; // los iconos se repiten para llenar el mismo tiempo de antes
-  const SOSTENER_MARCA = 750; // la marca OMNIUS se queda un momento antes de disolverse
+  const SOSTENER_MARCA = 750; // la marca SPECTRE se queda un momento antes de disolverse
   const timers = [];
   const despues = (ms, fn) => timers.push(setTimeout(fn, ms));
 
@@ -87,7 +87,7 @@ if (loader) {
         t += linea.children.length * 90 + 450;
       });
 
-      // la frase se desvanece y los iconos pasan rápido, dos vueltas, terminando en la marca OMNIUS
+      // la frase se desvanece y los iconos pasan rápido, dos vueltas, terminando en la marca SPECTRE
       t += 1000;
       despues(t, () => {
         intro.classList.add("fuera");
