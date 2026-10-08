@@ -174,21 +174,21 @@ document.querySelectorAll("[data-comparador]").forEach((comp) => {
     comp.classList.remove("arrastrando");
   };
 
-  // pista: al aparecer, la línea va a la izquierda, a la derecha y vuelve al centro (una sola vez).
+  // pista: un empujón sutil de la línea para sugerir que se puede arrastrar (una sola vez).
   // Se cancela en cuanto la persona toca, arrastra o usa el teclado.
   let pistaActiva = false;
   comp._pista = () => {
     if (pistaActiva || comp._pistaHecha) return;
     comp._pistaHecha = true;
     pistaActiva = true;
-    const DURACION = 1900;
-    const AMPLITUD = 13; // % hacia cada lado
+    const DURACION = 1400;
+    const AMPLITUD = 5; // % — un empujón sutil, no un vaivén
     const inicio = performance.now();
     const paso = (ahora) => {
       if (!pistaActiva) return;
       const p = Math.min((ahora - inicio) / DURACION, 1);
-      // seno suave: izquierda → derecha → centro, con el segundo vaivén un poco menor
-      setX(50 - AMPLITUD * Math.sin(2 * Math.PI * p) * (1 - 0.3 * p));
+      // un solo empujón suave a la izquierda y de regreso al centro
+      setX(50 - AMPLITUD * Math.sin(Math.PI * p) ** 2);
       if (p < 1) requestAnimationFrame(paso);
       else pistaActiva = false;
     };
@@ -252,7 +252,7 @@ document.querySelectorAll("[data-comparador]").forEach((comp) => {
 
 // ── carrusel de sliders ──
 // Centra el clip activo; los vecinos se asoman. Flechas, rayitas o clic en un vecino cambian de clip.
-// La pista (izquierda → derecha → centro) se reproduce en cada clip la primera vez que queda al centro.
+// La pista (empujón sutil) se reproduce una sola vez: cuando el carrusel aparece por primera vez.
 const carrusel = document.querySelector(".carrusel");
 if (carrusel) {
   const ventana = carrusel.querySelector(".carrusel-ventana");
@@ -302,7 +302,6 @@ if (carrusel) {
     flechas[0].disabled = activo === 0;
     flechas[1].disabled = activo === slides.length - 1;
     colocar();
-    pistaDelActivo();
   };
 
   flechas.forEach((f) => f.addEventListener("click", () => ir(activo + Number(f.dataset.dir))));

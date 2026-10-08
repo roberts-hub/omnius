@@ -21,7 +21,7 @@ python3 -m http.server 4181
 | Frase de la intro | `index.html`, las `.intro-linea` dentro de `#loader` |
 | Ritmo de la intro | `js/main.js`, `PASO` (ms por icono) y `SOSTENER_MARCA` (cuánto se queda la marca OMNIUS antes de disolverse) |
 | Video del hero | Correr `herramientas/video-hero.sh "/ruta/al/video.mov"`: genera 1080p y vertical (para celular), cada uno en HEVC (principal) y H.264 (respaldo), más el poster, en `video/`. Usa solo herramientas de macOS (Swift/AVFoundation). Fuente ideal: 4K, 10–15 s |
-| Nombres de los sliders | `index.html`, sección `#looks` (y las etiquetas de las franjas `.tira` de la portada) |
+| Nombres de los sliders | `index.html`, sección `#looks`  |
 | Crédito de cámara por LUT | `index.html`, `.tag.camara` de cada slider: escribir la cámara y quitar `hidden` |
 | Collage de tomas | `index.html`, `.introducing-tiras` (5 imágenes; se puede cambiar por un `<video>` del reel) |
 | Reseñas | `index.html`, sección `#reviews` (carrusel estilo Pordoi). **Oculta**: las tarjetas actuales son ejemplos inventados solo para ver el diseño. Reemplazar cada `.resena` por una reseña real (nombre, país, título, texto) y quitar `hidden` |
@@ -42,7 +42,7 @@ sips -Z 1200 -s formatOptions 78 /tmp/c.jpg --out img/looks/01-despues-1200.jpg
 ```
 
 Nombres y títulos de cada slider: `index.html`, sección `#looks` (`POWERGRADE // 0N` + nombre).
-Las franjas de la portada (`tira-0N.jpg`) y del collage (`reel-0N*.jpg`) salen de los mismos stills gradeados.
+El collage (`reel-0N*.jpg`) sale de los mismos stills gradeados. La tira inferior de la portada en `producto.html` es `img/portada-barras.jpg`.
 
 ## Caché del navegador
 
