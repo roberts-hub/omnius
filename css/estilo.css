@@ -469,14 +469,17 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   position: relative;
   width: var(--w);
   height: var(--h);
-  margin-left: var(--d);
   transform-style: preserve-3d;
   transform-origin: 50% 50% calc(var(--d) / -2);
-  transform: rotateY(27deg) rotateX(-2deg);
-  transition: transform 1.4s var(--ease);
+  /* --giro (0→1) lo pone js/main.js al hacer scroll: la caja gira un poco hacia el frente y sube */
+  transform:
+    translateY(calc(var(--giro, 0) * -2.5cqi))
+    rotateY(calc(27deg - var(--giro, 0) * 12deg - var(--hover, 0) * 7deg))
+    rotateX(calc(-2deg + var(--giro, 0) * 3deg));
+  transition: transform 0.7s var(--ease);
 }
 @media (hover: hover) {
-  .caja-escena:hover .caja { transform: rotateY(20deg) rotateX(-1deg); }
+  .caja-escena:hover .caja { --hover: 1; }
 }
 .caja-frente,
 .caja-lomo { position: absolute; top: 0; height: 100%; backface-visibility: hidden; }

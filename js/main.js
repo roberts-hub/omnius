@@ -50,6 +50,21 @@ if (selectorEdicion) {
   elegir(new URLSearchParams(location.search).get("edition") === "luts" ? "luts" : "completo");
 }
 
+// ── Caja 3D (producto.html): giro ligero al hacer scroll ──
+const caja = document.querySelector(".caja");
+if (caja && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  let pendiente = false;
+  const girar = () => {
+    pendiente = false;
+    const p = Math.min(Math.max(window.scrollY / (window.innerHeight * 0.8), 0), 1);
+    caja.style.setProperty("--giro", p.toFixed(3));
+  };
+  window.addEventListener("scroll", () => {
+    if (!pendiente) { pendiente = true; requestAnimationFrame(girar); }
+  }, { passive: true });
+  girar();
+}
+
 // ── Checkout (Lemon Squeezy) ──
 // Con un buy-link real, [data-checkout] abre el checkout encima de la página (overlay) con la
 // URL de su edición. Sin buy-links, los botones conservan su href y lemon.js ni se descarga.
