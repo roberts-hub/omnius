@@ -421,24 +421,36 @@ if (resenas && !resenas.closest("[hidden]")) {
 }
 
 // ── barra de compra fija (estilo Pordoi) ──
-// Aparece cuando ya pasaste el primer botón de compra ([data-oculta-barra]) y se esconde
-// mientras cualquiera de esos botones está a la vista (nunca dos botones de compra juntos).
+// Dos modos según la página:
+// · [data-muestra-barra] (principal): aparece cuando esa sección entra en pantalla
+//   —o si ya se pasó— y desde ahí no vuelve a esconderse.
+// · [data-oculta-barra] (producto): aparece al pasar ese botón de compra y se esconde
+//   mientras esté a la vista (nunca dos botones de compra juntos).
 const barraCompra = document.querySelector("[data-barra-compra]");
+const mostrarBarra = (si) => {
+  barraCompra.classList.toggle("visible", si);
+  barraCompra.inert = !si; // oculta: ni foco ni lectores de pantalla
+};
+const desdeSeccion = document.querySelector("[data-muestra-barra]");
 const disparadoresBarra = [...document.querySelectorAll("[data-oculta-barra]")];
-if (barraCompra && disparadoresBarra.length && "IntersectionObserver" in window) {
-  const aLaVista = new Map();
-  const actualizarBarra = () => {
-    const algunoVisible = disparadoresBarra.some((d) => aLaVista.get(d));
-    const yaPaso = disparadoresBarra[0].getBoundingClientRect().bottom < 0;
-    const mostrar = !algunoVisible && yaPaso;
-    barraCompra.classList.toggle("visible", mostrar);
-    barraCompra.inert = !mostrar; // oculta: ni foco ni lectores de pantalla
-  };
-  const obsBarra = new IntersectionObserver((entradas) => {
-    entradas.forEach((e) => aLaVista.set(e.target, e.isIntersecting));
-    actualizarBarra();
-  });
-  disparadoresBarra.forEach((d) => obsBarra.observe(d));
+if (barraCompra && "IntersectionObserver" in window) {
+  if (desdeSeccion) {
+    const obsDesde = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting || e.boundingClientRect.top < 0) {
+        mostrarBarra(true);
+        obsDesde.disconnect(); // ya no vuelve a desaparecer
+      }
+    });
+    obsDesde.observe(desdeSeccion);
+  } else if (disparadoresBarra.length) {
+    const aLaVista = new Map();
+    const obsBarra = new IntersectionObserver((entradas) => {
+      entradas.forEach((e) => aLaVista.set(e.target, e.isIntersecting));
+      const algunoVisible = disparadoresBarra.some((d) => aLaVista.get(d));
+      mostrarBarra(!algunoVisible && disparadoresBarra[0].getBoundingClientRect().bottom < 0);
+    });
+    disparadoresBarra.forEach((d) => obsBarra.observe(d));
+  }
 }
 
 // ── reveal on scroll ──

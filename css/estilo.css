@@ -493,26 +493,15 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   letter-spacing: 0.3em;
   color: var(--greige);
 }
-/* tira inferior de la portada: 4 tomas gradeadas */
+/* tira inferior de la portada: 5 tomas gradeadas, pegadas, sin títulos */
 .portada-tiras {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   height: 34%;
   border-top: 1px solid rgba(234, 224, 197, 0.12);
 }
 .tira { position: relative; overflow: hidden; }
-.tira + .tira { border-left: 1px solid rgba(0, 0, 0, 0.6); }
-.tira img { width: 100%; height: 100%; object-fit: cover; }
-.tira span {
-  position: absolute;
-  left: 0; right: 0; bottom: 8px;
-  text-align: center;
-  font-family: var(--mono);
-  font-size: clamp(5px, 0.45vw, 7px);
-  letter-spacing: 0.2em;
-  color: var(--hueso);
-  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
-}
+.tira img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 .producto-info { padding-top: clamp(0px, 2vw, 24px); }
 
@@ -1063,7 +1052,7 @@ body:has(.barra-compra) .cierre { padding-bottom: 120px; }
   color: var(--hueso);
 }
 .barra-compra-mini svg { position: absolute; left: 50%; top: 12%; width: 42%; transform: translateX(-50%); }
-.barra-compra-tiras { position: absolute; left: 0; right: 0; bottom: 0; height: 38%; display: grid; grid-template-columns: repeat(4, 1fr); }
+.barra-compra-tiras { position: absolute; left: 0; right: 0; bottom: 0; height: 38%; display: grid; grid-template-columns: repeat(5, 1fr); }
 .barra-compra-tiras img { width: 100%; height: 100%; object-fit: cover; }
 
 .barra-compra-info { flex: 1; min-width: 0; }
