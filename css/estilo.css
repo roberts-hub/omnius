@@ -646,7 +646,7 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
 
 /* cada look: columna centrada de 960px como en Pordoi — no llena la pantalla */
 .look { max-width: 960px; margin: 0 auto; }
-.look + .look { margin-top: 48px; }
+.look + .look { margin-top: clamp(24px, 3.5vw, 40px); }
 .look-num {
   font-size: 14px;
   font-weight: 600;
