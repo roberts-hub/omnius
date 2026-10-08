@@ -50,6 +50,9 @@ img { display: block; }
   transition: opacity 1.8s cubic-bezier(0.45, 0, 0.2, 1), visibility 1.8s;
 }
 #loader.fuera { opacity: 0; visibility: hidden; pointer-events: none; }
+.sin-intro #loader { display: none; }
+/* la frase no se pinta hasta que su línea entra (sin esto se ve completa un instante antes de animar) */
+.js .intro-linea:not(.activa) { visibility: hidden; }
 
 /* fase 1: la frase */
 .loader-intro {

@@ -31,7 +31,10 @@ let yaVisto = false;
 try { yaVisto = sessionStorage.getItem("omnius-intro") === "1"; } catch (e) {}
 
 // el loader se disuelve mientras el video "enfoca"; el contenido del hero entra al final
+let introCerrada = false;
 const cerrarIntro = () => {
+  if (introCerrada) return;
+  introCerrada = true;
   timers.forEach(clearTimeout);
   loader.classList.add("fuera");
   document.body.classList.remove("cargando");
@@ -59,26 +62,35 @@ if (reduceMotion || yaVisto) {
     });
   });
 
-  // las líneas entran una tras otra y se quedan apiladas
-  let t = 300;
-  lineas.forEach((linea) => {
-    despues(t, () => linea.classList.add("activa"));
-    t += linea.children.length * 90 + 450;
-  });
+  // espera a que Archivo esté cargada (máx. 1.2 s) para que la frase no cambie de fuente a medio animar
+  const fuenteLista = Promise.race([
+    document.fonts ? document.fonts.load('700 32px "Archivo"') : Promise.resolve(),
+    new Promise((r) => setTimeout(r, 1200)),
+  ]).catch(() => {});
 
-  // la frase se desvanece y los iconos se funden uno en otro
-  t += 1000;
-  despues(t, () => {
-    intro.classList.add("fuera");
-    loader.classList.add("fase-iconos");
-  });
-  glyphs.forEach((g, i) => {
-    despues(t + 500 + i * PASO, () => {
-      glyphs.forEach((x) => x.classList.remove("activo"));
-      g.classList.add("activo");
+  fuenteLista.then(() => {
+    if (introCerrada) return;
+    // las líneas entran una tras otra y se quedan apiladas
+    let t = 300;
+    lineas.forEach((linea) => {
+      despues(t, () => linea.classList.add("activa"));
+      t += linea.children.length * 90 + 450;
     });
+
+    // la frase se desvanece y los iconos se funden uno en otro
+    t += 1000;
+    despues(t, () => {
+      intro.classList.add("fuera");
+      loader.classList.add("fase-iconos");
+    });
+    glyphs.forEach((g, i) => {
+      despues(t + 500 + i * PASO, () => {
+        glyphs.forEach((x) => x.classList.remove("activo"));
+        g.classList.add("activo");
+      });
+    });
+    despues(t + 500 + (glyphs.length - 1) * PASO + SOSTENER_MARCA, cerrarIntro);
   });
-  despues(t + 500 + (glyphs.length - 1) * PASO + SOSTENER_MARCA, cerrarIntro);
 
   loader.addEventListener("click", cerrarIntro, { once: true });
   document.addEventListener("keydown", function saltarConTecla() {

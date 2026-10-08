@@ -10,12 +10,22 @@
   <meta property="og:description" content="PowerGrade + 4 signature LUTs + tutorials. A cinematic color system for DaVinci Resolve." />
   <!-- TODO al publicar: agregar og:url, og:image (1200x630) y canonical con el dominio real -->
   <link rel="icon" href="img/favicon.svg" type="image/svg+xml" />
-  <script>document.documentElement.classList.add("js");</script>
+  <script>
+    // Antes del primer pintado: marca JS y decide si la intro corre (evita parpadeos al cargar)
+    (function () {
+      var d = document.documentElement;
+      d.classList.add("js");
+      try {
+        if (sessionStorage.getItem("omnius-intro") === "1" ||
+            matchMedia("(prefers-reduced-motion: reduce)").matches) d.classList.add("sin-intro");
+      } catch (e) {}
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,300;0,400;0,600;0,700;1,300&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <script src="https://assets.lemonsqueezy.com/lemon.js" defer></script>
-  <link rel="stylesheet" href="css/estilo.css" />
+  <link rel="stylesheet" href="css/estilo.css?v=202610081220" />
 </head>
 <body>
 
@@ -303,6 +313,6 @@
     </div>
   </footer>
 
-  <script src="js/main.js" defer></script>
+  <script src="js/main.js?v=202610081220" defer></script>
 </body>
 </html>

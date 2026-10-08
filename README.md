@@ -45,6 +45,11 @@ y actualizar los `src` de cada `[data-comparador]` en `index.html`
 **quitar la clase `simulado`** de ese comparador en el HTML (esa clase aplica
 un filtro CSS que finge el "before" mientras haya placeholders).
 
+## Caché del navegador
+
+`index.html` carga `css/estilo.css?v=…` y `js/main.js?v=…`. Al cambiar el CSS o el JS,
+actualizar ese número (p. ej. fecha y hora) para que los visitantes no vean la versión vieja en caché.
+
 ## Workflow git (dos Macs)
 
 1. `git pull` **antes** de editar.
