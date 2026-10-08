@@ -367,7 +367,8 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
 }
 .hero-acciones .btn-pildora { justify-content: center; }
 @media (max-width: 600px) {
-  .hero-acciones { grid-auto-flow: row; }
+  .hero-acciones { gap: 10px; }
+  .hero-acciones .btn-pildora { padding: 14px 20px; gap: 10px; letter-spacing: 0.18em; }
 }
 
 .hero-scroll {
@@ -831,20 +832,16 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
 
 /* ══════════ MARCAS (franja continua de logos, como en twowaves.mx) ══════════ */
 
-.marcas { padding: clamp(80px, 9vw, 130px) 0 0; }
+.marcas { padding: clamp(110px, 12vw, 180px) 0 clamp(36px, 4.5vw, 64px); }
+/* misma tipografía que "Achieve cinematic consistency." (.titulo) */
 .marcas-titulo {
   text-align: center;
   padding: 0 var(--margen);
-  font-family: var(--mono);
-  font-size: clamp(11px, 1vw, 14px);
-  letter-spacing: 0.26em;
-  line-height: 1.7;
   text-wrap: balance;
-  color: var(--lino);
 }
 .marcas-franja {
   position: relative;
-  margin-top: clamp(28px, 3.5vw, 44px);
+  margin-top: clamp(40px, 5vw, 72px);
   overflow: hidden;
   /* desvanecido marcado en las orillas. Va como capas del color del fondo encima de la
      pista (no como máscara): no se recalcula en cada cuadro y es más fluido en celular */
@@ -1271,16 +1268,26 @@ a.resena-perfil:focus-visible { outline: 1px solid var(--hueso); outline-offset:
 .cierre-links { display: flex; gap: 28px; }
 .cierre-links a { text-decoration: none; transition: color 0.3s ease; }
 .cierre-links a:hover { color: var(--hueso); }
-.cierre-powered { margin-top: 22px; text-align: center; }
+/* crédito Two Waves: isotipo (T con punto) + texto, en una píldora tenue */
+.cierre-powered { margin-top: 40px; text-align: center; }
 .cierre-powered a {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 24px;
+  border-radius: 999px;
+  border: 1px solid rgba(234, 224, 197, 0.2);
   font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.35em;
+  font-size: 11px;
+  letter-spacing: 0.3em;
   text-decoration: none;
-  color: rgba(176, 165, 149, 0.6);
-  transition: color 0.3s ease;
+  color: var(--lino);
+  transition: color 0.3s ease, border-color 0.3s ease, background 0.3s ease;
 }
-.cierre-powered a:hover { color: var(--hueso); }
+.cierre-powered svg { width: 22px; height: auto; fill: currentColor; flex-shrink: 0; }
+.cierre-powered strong { font-weight: 500; color: var(--hueso); }
+.cierre-powered a:hover { color: var(--hueso); border-color: rgba(234, 224, 197, 0.5); background: rgba(234, 224, 197, 0.04); }
+.cierre-powered a:focus-visible { outline: 1px solid var(--hueso); outline-offset: 3px; }
 
 /* ══════════ BARRA DE COMPRA FIJA (estilo Pordoi, con el vidrio de SPECTRE) ══════════ */
 
@@ -1390,7 +1397,6 @@ body:has(.barra-compra) .cierre { padding-bottom: 120px; }
   .caja-escena { position: relative; top: 0; aspect-ratio: 1 / 1; }
   .caja-escena { --w: 46cqi; }
   .pagina-producto .producto-info { max-width: none; padding-top: 0; }
-  .marcas-titulo { font-size: 11px; letter-spacing: 0.18em; }
   .marca-logo { height: calc(var(--factor, 1) * 1.7rem); }
   .marcas-pista { gap: 2.4rem; padding-right: 2.4rem; animation-duration: 40s; }
   .consistencia .nota-mono { letter-spacing: 0.1em; }
