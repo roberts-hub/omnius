@@ -174,7 +174,30 @@ document.querySelectorAll("[data-comparador]").forEach((comp) => {
     comp.classList.remove("arrastrando");
   };
 
+  // pista: al aparecer, la línea va a la izquierda, a la derecha y vuelve al centro (una sola vez).
+  // Se cancela en cuanto la persona toca, arrastra o usa el teclado.
+  let pistaActiva = false;
+  comp._pista = () => {
+    if (pistaActiva || comp._pistaHecha) return;
+    comp._pistaHecha = true;
+    pistaActiva = true;
+    const DURACION = 1900;
+    const AMPLITUD = 13; // % hacia cada lado
+    const inicio = performance.now();
+    const paso = (ahora) => {
+      if (!pistaActiva) return;
+      const p = Math.min((ahora - inicio) / DURACION, 1);
+      // seno suave: izquierda → derecha → centro, con el segundo vaivén un poco menor
+      setX(50 - AMPLITUD * Math.sin(2 * Math.PI * p) * (1 - 0.3 * p));
+      if (p < 1) requestAnimationFrame(paso);
+      else pistaActiva = false;
+    };
+    requestAnimationFrame(paso);
+  };
+  const cancelarPista = () => { pistaActiva = false; };
+
   comp.addEventListener("pointerdown", (e) => {
+    cancelarPista();
     if (e.button !== 0) return;
     caja = comp.getBoundingClientRect();
     // solo se registra el inicio; el slider no se mueve hasta que haya arrastre real
@@ -218,6 +241,7 @@ document.querySelectorAll("[data-comparador]").forEach((comp) => {
   }, { passive: false });
 
   comp.addEventListener("keydown", (e) => {
+    cancelarPista();
     const actual = pendiente ?? x;
     if (e.key === "ArrowLeft") { deslizarA(actual - 5); e.preventDefault(); }
     if (e.key === "ArrowRight") { deslizarA(actual + 5); e.preventDefault(); }
@@ -225,6 +249,18 @@ document.querySelectorAll("[data-comparador]").forEach((comp) => {
     if (e.key === "End") { deslizarA(100); e.preventDefault(); }
   });
 });
+
+// ── pista de los sliders al aparecer en pantalla ──
+if (!reduceMotion && "IntersectionObserver" in window) {
+  const obsPista = new IntersectionObserver((entradas) => {
+    entradas.filter((e) => e.isIntersecting).forEach((e, i) => {
+      obsPista.unobserve(e.target);
+      // escalonado: si entran dos a la vez (dos columnas), el segundo arranca un poco después
+      setTimeout(() => e.target._pista && e.target._pista(), 350 + i * 220);
+    });
+  }, { threshold: 0.6 });
+  document.querySelectorAll("[data-comparador]").forEach((c) => obsPista.observe(c));
+}
 
 // ── reveal on scroll ──
 if (reduceMotion) {
