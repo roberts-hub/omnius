@@ -24,7 +24,7 @@ python3 -m http.server 4181
 | Nombres de los sliders | `index.html`, sección `#looks`  |
 | Crédito de cámara por LUT | `index.html`, `.tag.camara` de cada slider: escribir la cámara y quitar `hidden` |
 | Collage de tomas | `index.html`, `.introducing-tiras` (5 imágenes; se puede cambiar por un `<video>` del reel) |
-| Reseñas | `index.html`, sección `#reviews` (carrusel estilo Pordoi). **Oculta**: las tarjetas actuales son ejemplos inventados solo para ver el diseño. Reemplazar cada `.resena` por una reseña real (nombre, país, título, texto) y quitar `hidden` |
+| Reseñas | `index.html`, sección `#reviews` (carrusel estilo Pordoi). Hoy con texto de relleno (lorem ipsum); reemplazar nombre, país, título y texto de cada `.resena` por reseñas reales |
 
 La intro (frase + iconos) solo se muestra en la primera visita de cada sesión
 del navegador. Para volver a verla: abrir una pestaña nueva o privada.
