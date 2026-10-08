@@ -54,14 +54,16 @@ img { display: block; }
   inset: 0;
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
-  gap: 4px;
-  padding: 24px 8vw;
+  gap: 8px;
+  padding: 24px;
+  text-align: center;
   font-family: var(--sans);
-  font-size: clamp(50px, 8.4vw, 132px);
+  font-size: clamp(20px, 2.6vw, 32px);
   font-weight: 700;
-  letter-spacing: -0.055em;
-  line-height: 0.95;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
   color: var(--hueso);
   transition: opacity 0.6s ease, filter 0.6s ease;
 }
@@ -70,14 +72,15 @@ img { display: block; }
 .intro-linea {
   display: flex;
   flex-wrap: wrap;
-  column-gap: 0.24em;
+  justify-content: center;
+  column-gap: 0.26em;
 }
 /* cada palabra sube y se enfoca, en cascada */
 .intro-linea .palabra {
   display: inline-block;
   opacity: 0;
-  transform: translateY(0.5em);
-  filter: blur(14px);
+  transform: translateY(0.7em);
+  filter: blur(8px);
 }
 .intro-linea.activa .palabra {
   animation: palabraEntra 1s var(--ease) forwards;
