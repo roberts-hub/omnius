@@ -4,254 +4,276 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OMNIUS — Cinematic Color System</title>
-  <meta name="description" content="The exact PowerGrade, LUTs and workflow behind Roberto Arechederra's work — a complete cinematic color system for DaVinci Resolve." />
+  <meta name="description" content="OMNIUS — the exact PowerGrade, LUTs and workflow behind Roberto Arechederra's work. A cinematic color system for DaVinci Resolve." />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="OMNIUS — Cinematic Color System" />
-  <meta property="og:description" content="PowerGrade + signature LUTs + tutorials. Make any camera look cinematic, without the guesswork." />
+  <meta property="og:title" content="OMNIUS — You were created to create" />
+  <meta property="og:description" content="PowerGrade + 4 signature LUTs + tutorials. A cinematic color system for DaVinci Resolve." />
   <!-- TODO al publicar: agregar og:url, og:image (1200x630) y canonical con el dominio real -->
   <link rel="icon" href="img/favicon.svg" type="image/svg+xml" />
+  <script>document.documentElement.classList.add("js");</script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,600;0,700;1,300&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,300;0,400;0,600;0,700;1,300&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <script src="https://assets.lemonsqueezy.com/lemon.js" defer></script>
   <link rel="stylesheet" href="css/estilo.css" />
 </head>
 <body>
 
-  <nav>
-    <a class="nav-marca" href="#">OMNIUS</a>
-    <a class="nav-cta" href="#bundle">GET THE BUNDLE</a>
-  </nav>
-
-  <header class="hero">
-    <div class="badge">CINEMATIC COLOR SYSTEM // DAVINCI RESOLVE</div>
-    <h1>
-      <span class="linea-cascada"><span class="palabra">Every</span> <span class="palabra">frame,</span></span>
-      <span class="linea-cascada cursiva"><span class="palabra">graded</span> <span class="palabra">like</span> <span class="palabra">a</span> <span class="palabra">film.</span></span>
-    </h1>
-    <p class="hero-sub">The exact PowerGrade, LUTs and workflow behind my work — built to make any camera look cinematic, without the guesswork.</p>
-    <a class="btn-linea" href="#bundle">GET OMNIUS <span class="flecha">→</span></a>
-    <div class="hero-nota">INSTANT DOWNLOAD // WORKS WITH RESOLVE FREE &amp; STUDIO</div>
-  </header>
-
-  <div class="comparador-hero reveal">
-    <div class="comparador simulado" data-comparador>
-      <img class="despues" src="https://picsum.photos/seed/omnius-hero/1600/700" alt="Frame with the OMNIUS grade applied" />
-      <img class="antes" src="https://picsum.photos/seed/omnius-hero/1600/700" alt="Same frame before grading (log)" />
-      <div class="linea"></div>
-      <div class="handle">◂ ▸</div>
-      <div class="tag before">BEFORE</div>
-      <div class="tag after">AFTER</div>
+  <!-- ══════════ INTRO: frase palabra por palabra → iconos → sitio ══════════ -->
+  <div id="loader" aria-hidden="true">
+    <div class="loader-intro">
+      <p class="intro-linea">YOU WERE</p>
+      <p class="intro-linea">CREATED</p>
+      <p class="intro-linea">TO CREATE.</p>
     </div>
+    <div class="loader-glyphs">
+      <!-- marca OMNIUS: círculo partido -->
+      <svg class="glyph" viewBox="0 0 100 100" fill="none">
+        <circle cx="50" cy="50" r="24" stroke="currentColor" stroke-width="2.5"/>
+        <line x1="50" y1="20" x2="50" y2="80" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+      <!-- dos círculos entrelazados -->
+      <svg class="glyph" viewBox="0 0 100 100" fill="none">
+        <circle cx="50" cy="36" r="22" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="50" cy="64" r="22" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+      <!-- destello -->
+      <svg class="glyph" viewBox="0 0 100 100" fill="currentColor">
+        <path d="M50 8 C51.5 34 52 42 66 50 C52 58 51.5 66 50 92 C48.5 66 48 58 34 50 C48 42 48.5 34 50 8 Z"/>
+      </svg>
+      <!-- ( · ) dos mitades -->
+      <svg class="glyph" viewBox="0 0 100 100" fill="none">
+        <path d="M40 32 a24 24 0 0 0 0 36" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M60 32 a24 24 0 0 1 0 36" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="50" cy="24" r="3" fill="currentColor"/>
+      </svg>
+    </div>
+    <button type="button" class="saltar" id="saltar">SKIP <span class="flecha">→</span></button>
   </div>
 
-  <section class="seccion" id="bundle">
-    <div class="producto reveal">
-      <div class="producto-visual">
-        <div class="mini-marca">OMNIUS</div>
-        <div class="mini-sub">CINEMATIC COLOR SYSTEM // V1.0</div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- ══════════ HEADER ══════════ -->
+  <header class="cabecera">
+    <a class="marca" href="#">
+      <svg class="marca-icono" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+        <circle cx="50" cy="50" r="30" stroke="currentColor" stroke-width="5"/>
+        <line x1="50" y1="12" x2="50" y2="88" stroke="currentColor" stroke-width="3"/>
+      </svg>
+      OMNIUS
+    </a>
+    <a class="link-mono" href="#comprar">GET OMNIUS — $79</a>
+  </header>
+
+  <main>
+
+    <!-- ══════════ PRODUCTO (arriba, directo al grano) ══════════ -->
+    <section class="producto" id="comprar">
+      <div class="portada-escena">
+        <div class="portada" aria-label="OMNIUS product cover">
+          <div class="portada-top">
+            <span>ROBERTO ARECHEDERRA</span>
+            <span>V1.0</span>
+          </div>
+          <div class="portada-centro">
+            <svg class="portada-icono" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+              <circle cx="50" cy="50" r="24" stroke="currentColor" stroke-width="2"/>
+              <line x1="50" y1="20" x2="50" y2="80" stroke="currentColor" stroke-width="1.2"/>
+            </svg>
+            <span class="portada-nombre">OMNIUS</span>
+            <span class="portada-sub">CINEMATIC COLOR SYSTEM // 4 LOOKS</span>
+          </div>
+          <div class="portada-tiras">
+            <div class="tira"><img src="https://picsum.photos/seed/omnius-lut1/400/600" alt="" /><span>UNDERTOW</span></div>
+            <div class="tira"><img src="https://picsum.photos/seed/omnius-lut2/400/600" alt="" /><span>MAGIC HOUR</span></div>
+            <div class="tira"><img src="https://picsum.photos/seed/omnius-lut3/400/600" alt="" /><span>SALTWATER</span></div>
+            <div class="tira"><img src="https://picsum.photos/seed/omnius-lut4/400/600" alt="" /><span>LOW TIDE</span></div>
+          </div>
+        </div>
       </div>
+
       <div class="producto-info">
-        <div class="ventas">DIGITAL BUNDLE // INSTANT ACCESS</div>
-        <h2>The Omnius Bundle</h2>
+        <p class="kicker">FOR FILMMAKERS &amp; CONTENT CREATORS</p>
+        <h1 class="producto-titulo">OMNIUS<br /><span>Color System</span></h1>
+
         <div class="precio">
           <span class="actual">$79</span>
           <span class="anterior">$119</span>
-          <span class="desc">LAUNCH −34%</span>
+          <span class="desc">LAUNCH PRICE</span>
         </div>
-        <ul class="incluye">
-          <li>Professional PowerGrade node tree for any camera</li>
-          <li>4 signature finishing LUTs</li>
-          <li>Step-by-step video tutorials</li>
-          <li>Practice footage included</li>
-          <li>Works with DaVinci Resolve Free &amp; Studio</li>
-        </ul>
+
         <!-- El buy-link real de Lemon Squeezy se configura en js/main.js (LEMON_URL).
-             Mientras sea placeholder este botón ancla a #bundle; al poner la URL real,
+             Mientras sea placeholder este botón ancla a #looks; al poner la URL real,
              main.js le asigna el href y la clase lemonsqueezy-button (overlay). -->
-        <a id="cta-comprar" class="btn-solido" href="#bundle">GET OMNIUS <span class="flecha">→</span></a>
-        <div class="hero-nota nota-checkout">SECURE CHECKOUT VIA LEMON SQUEEZY // CARDS, PAYPAL, APPLE PAY</div>
-      </div>
-    </div>
-  </section>
+        <a id="cta-comprar" class="btn-solido" href="#looks">GET OMNIUS <span class="flecha">→</span></a>
+        <p class="nota-mono">SECURE CHECKOUT VIA LEMON SQUEEZY // CARDS, PAYPAL, APPLE PAY</p>
 
-  <section class="seccion">
-    <div class="etiqueta reveal">THE LUTS</div>
-    <h2 class="titulo reveal">Consistent cinematic color,<br />without the guesswork.</h2>
-    <p class="sub reveal esp-80">Drag the slider. Every LUT was built on top of the Omnius PowerGrade — one system, four distinct looks.</p>
+        <p class="lead"><strong>Four looks. One system. Graded like film.</strong></p>
+        <p class="cuerpo">
+          The exact PowerGrade, LUTs and workflow behind my work — built to give
+          you clean, cinematic color on any camera, without the guesswork.
+        </p>
 
-    <div class="lut-bloque reveal">
-      <div class="lut-num">LUT // 01</div>
-      <h3 class="lut-nombre">UNDERTOW</h3>
-      <div class="comparador simulado" data-comparador>
-        <img loading="lazy" class="despues" src="https://picsum.photos/seed/omnius-lut1/1400/800" alt="Frame with the OMNIUS grade applied" />
-        <img loading="lazy" class="antes" src="https://picsum.photos/seed/omnius-lut1/1400/800" alt="Same frame before grading (log)" />
-        <div class="linea"></div>
-        <div class="handle">◂ ▸</div>
-        <div class="tag before">BEFORE</div>
-        <div class="tag after">AFTER</div>
-      </div>
-      <div class="lut-desc">DEEP TEALS // CLEAN SKIN // NIGHT EXTERIORS</div>
-    </div>
-
-    <div class="lut-bloque reveal">
-      <div class="lut-num">LUT // 02</div>
-      <h3 class="lut-nombre">MAGIC HOUR</h3>
-      <div class="comparador simulado" data-comparador>
-        <img loading="lazy" class="despues" src="https://picsum.photos/seed/omnius-lut2/1400/800" alt="Frame with the OMNIUS grade applied" />
-        <img loading="lazy" class="antes" src="https://picsum.photos/seed/omnius-lut2/1400/800" alt="Same frame before grading (log)" />
-        <div class="linea"></div>
-        <div class="handle">◂ ▸</div>
-        <div class="tag before">BEFORE</div>
-        <div class="tag after">AFTER</div>
-      </div>
-      <div class="lut-desc">GOLDEN WARMTH // SOFT HIGHLIGHTS // SUNSET WORK</div>
-    </div>
-
-    <div class="lut-bloque reveal">
-      <div class="lut-num">LUT // 03</div>
-      <h3 class="lut-nombre">SALTWATER</h3>
-      <div class="comparador simulado" data-comparador>
-        <img loading="lazy" class="despues" src="https://picsum.photos/seed/omnius-lut3/1400/800" alt="Frame with the OMNIUS grade applied" />
-        <img loading="lazy" class="antes" src="https://picsum.photos/seed/omnius-lut3/1400/800" alt="Same frame before grading (log)" />
-        <div class="linea"></div>
-        <div class="handle">◂ ▸</div>
-        <div class="tag before">BEFORE</div>
-        <div class="tag after">AFTER</div>
-      </div>
-      <div class="lut-desc">COASTAL BLUES // FILM FADE // DOCUMENTARY</div>
-    </div>
-
-    <div class="lut-bloque reveal">
-      <div class="lut-num">LUT // 04</div>
-      <h3 class="lut-nombre">LOW TIDE</h3>
-      <div class="comparador simulado" data-comparador>
-        <img loading="lazy" class="despues" src="https://picsum.photos/seed/omnius-lut4/1400/800" alt="Frame with the OMNIUS grade applied" />
-        <img loading="lazy" class="antes" src="https://picsum.photos/seed/omnius-lut4/1400/800" alt="Same frame before grading (log)" />
-        <div class="linea"></div>
-        <div class="handle">◂ ▸</div>
-        <div class="tag before">BEFORE</div>
-        <div class="tag after">AFTER</div>
-      </div>
-      <div class="lut-desc">MUTED EARTH // TONAL // MOODY INTERIORS</div>
-    </div>
-  </section>
-
-  <section class="seccion">
-    <div class="etiqueta reveal">HOW IT WORKS</div>
-    <h2 class="titulo reveal esp-60">A complete color system.</h2>
-    <div class="pasos reveal">
-      <div class="paso">
-        <div class="num">01</div>
-        <h4>LEARN</h4>
-        <p>Watch the tutorials and understand the principles behind the system — color management, nodes and scopes, explained from zero.</p>
-      </div>
-      <div class="paso">
-        <div class="num">02</div>
-        <h4>APPLY</h4>
-        <p>Drop the Omnius PowerGrade into your timeline. One node tree, consistent across any camera — Sony, Canon, Fuji, DJI or iPhone.</p>
-      </div>
-      <div class="paso">
-        <div class="num">03</div>
-        <h4>REFINE</h4>
-        <p>Finish with one of the four signature LUTs, built to sit on top of the PowerGrade as intentional creative tools.</p>
-      </div>
-      <div class="paso">
-        <div class="num">04</div>
-        <h4>CREATE</h4>
-        <p>Follow along with the included practice footage, then apply the same workflow to your own projects with confidence.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="seccion">
-    <div class="etiqueta reveal">WHAT'S INSIDE</div>
-    <h2 class="titulo reveal esp-60">Everything you get.</h2>
-    <div class="inside reveal">
-      <div class="inside-col">
-        <div class="etiqueta">THE POWERGRADE</div>
-        <ul>
-          <li>Camera-agnostic node tree</li>
-          <li>Premade versions for Sony, Canon, Fuji &amp; DJI</li>
-          <li>Color-managed workflow setup</li>
+        <ul class="checklist">
+          <li>Instant download</li>
+          <li>PowerGrade + 4 signature LUTs (.cube)</li>
+          <li>Works across all cameras — Sony, Canon, Fuji, DJI &amp; iPhone</li>
+          <li>DaVinci Resolve Free &amp; Studio — LUTs also in Premiere &amp; Final Cut</li>
+          <li>Step-by-step video tutorials + practice footage</li>
+          <li>No advanced experience needed</li>
+          <li>Free updates</li>
         </ul>
       </div>
-      <div class="inside-col">
-        <div class="etiqueta">THE LUTS</div>
-        <ul>
-          <li>4 signature finishing LUTs (.cube)</li>
-          <li>Built to stack on the PowerGrade</li>
-          <li>Compatible with any NLE</li>
-        </ul>
-      </div>
-      <div class="inside-col">
-        <div class="etiqueta">THE TUTORIALS</div>
-        <ul>
-          <li>Setup &amp; color management</li>
-          <li>Grading walkthroughs, start to finish</li>
-          <li>Export settings that don't shift colors</li>
-        </ul>
-      </div>
-      <div class="inside-col">
-        <div class="etiqueta">THE EXTRAS</div>
-        <ul>
-          <li>Practice footage (Log)</li>
-          <li>Free updates for V1</li>
-          <li>Instant delivery via Lemon Squeezy</li>
-        </ul>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- REVIEWS: oculta hasta tener testimonios reales.
-       Para activarla: quitar el atributo `hidden` y reemplazar los placeholders. -->
-  <section class="seccion" id="reviews" hidden>
-    <div class="etiqueta reveal">REVIEWS</div>
-    <h2 class="titulo reveal esp-60">Trusted by filmmakers.</h2>
-    <div class="reviews-grid reveal">
-      <figure class="review">
-        <blockquote>"Placeholder — testimonio real aquí."</blockquote>
-        <figcaption>Nombre Apellido <span class="handle">@usuario</span></figcaption>
-      </figure>
-      <figure class="review">
-        <blockquote>"Placeholder — testimonio real aquí."</blockquote>
-        <figcaption>Nombre Apellido <span class="handle">@usuario</span></figcaption>
-      </figure>
-      <figure class="review">
-        <blockquote>"Placeholder — testimonio real aquí."</blockquote>
-        <figcaption>Nombre Apellido <span class="handle">@usuario</span></figcaption>
-      </figure>
-    </div>
-  </section>
+    <!-- ══════════ INTRODUCING (franja de looks; lista para cambiar por un reel en video) ══════════ -->
+    <section class="introducing reveal" aria-label="Introducing OMNIUS">
+      <div class="introducing-tiras" aria-hidden="true">
+        <img loading="lazy" src="https://picsum.photos/seed/omnius-reel1/600/800" alt="" />
+        <img loading="lazy" src="https://picsum.photos/seed/omnius-reel2/600/800" alt="" />
+        <img loading="lazy" src="https://picsum.photos/seed/omnius-reel3/600/800" alt="" />
+        <img loading="lazy" src="https://picsum.photos/seed/omnius-reel4/600/800" alt="" />
+        <img loading="lazy" src="https://picsum.photos/seed/omnius-reel5/600/800" alt="" />
+      </div>
+      <p class="introducing-texto">INTRODUCING</p>
+    </section>
 
-  <section class="seccion angosta">
-    <div class="etiqueta reveal">FAQ</div>
-    <h2 class="titulo reveal esp-40">Common questions.</h2>
-    <details class="faq-item reveal">
-      <summary class="faq-q">Do I need DaVinci Resolve Studio? <span class="mas">+</span></summary>
-      <div class="faq-a"><p>No. The system works with both the Free and Studio versions of DaVinci Resolve. The LUTs also work in Premiere, Final Cut or any NLE that reads .cube files.</p></div>
-    </details>
-    <details class="faq-item reveal">
-      <summary class="faq-q">Does it work with my camera? <span class="mas">+</span></summary>
-      <div class="faq-a"><p>Yes. The PowerGrade is camera-agnostic, and premade versions for Sony, Canon, Fuji and DJI are included.</p></div>
-    </details>
-    <details class="faq-item reveal">
-      <summary class="faq-q">Do I need to shoot in Log? <span class="mas">+</span></summary>
-      <div class="faq-a"><p>Ideally yes — Log gives you the most flexibility. But the tutorials also cover how to adapt the workflow to Rec.709 footage.</p></div>
-    </details>
-    <details class="faq-item reveal">
-      <summary class="faq-q">How do I receive the files? <span class="mas">+</span></summary>
-      <div class="faq-a"><p>Instant download via Lemon Squeezy right after purchase, with free updates for this version.</p></div>
-    </details>
-  </section>
+    <!-- ══════════ LOOKS ══════════ -->
+    <section class="looks" id="looks">
+      <header class="looks-cabeza reveal">
+        <h2 class="titulo">Cinematic consistency.</h2>
+        <p class="nota-mono">FREE UPDATES // NO ADVANCED EXPERIENCE REQUIRED</p>
+      </header>
 
-  <footer>
-    <div class="f-marca">OMNIUS</div>
-    <div class="f-links">
-      <a href="https://instagram.com/robert.arre" target="_blank" rel="noopener">@ROBERT.ARRE</a>
-      <a href="mailto:rareched@gmail.com">CONTACT</a>
+      <article class="look reveal">
+        <p class="look-num">LUT // 01</p>
+        <h3 class="look-nombre">UNDERTOW</h3>
+        <div class="comparador simulado" data-comparador>
+          <img loading="lazy" class="despues" src="https://picsum.photos/seed/omnius-lut1/1400/800" alt="Frame with the OMNIUS grade applied" />
+          <img loading="lazy" class="antes" src="https://picsum.photos/seed/omnius-lut1/1400/800" alt="Same frame before grading (log)" />
+          <div class="linea"></div>
+          <div class="handle" aria-hidden="true"></div>
+          <div class="tag before">BEFORE</div>
+          <!-- crédito de cámara: escribir la cámara real y quitar `hidden` -->
+          <div class="tag camara" hidden>SHOT ON —</div>
+          <div class="tag after">AFTER</div>
+        </div>
+        <p class="look-desc">DEEP TEALS // CLEAN SKIN // NIGHT EXTERIORS</p>
+      </article>
+
+      <article class="look reveal">
+        <p class="look-num">LUT // 02</p>
+        <h3 class="look-nombre">MAGIC HOUR</h3>
+        <div class="comparador simulado" data-comparador>
+          <img loading="lazy" class="despues" src="https://picsum.photos/seed/omnius-lut2/1400/800" alt="Frame with the OMNIUS grade applied" />
+          <img loading="lazy" class="antes" src="https://picsum.photos/seed/omnius-lut2/1400/800" alt="Same frame before grading (log)" />
+          <div class="linea"></div>
+          <div class="handle" aria-hidden="true"></div>
+          <div class="tag before">BEFORE</div>
+          <div class="tag camara" hidden>SHOT ON —</div>
+          <div class="tag after">AFTER</div>
+        </div>
+        <p class="look-desc">GOLDEN WARMTH // SOFT HIGHLIGHTS // SUNSET WORK</p>
+      </article>
+
+      <article class="look reveal">
+        <p class="look-num">LUT // 03</p>
+        <h3 class="look-nombre">SALTWATER</h3>
+        <div class="comparador simulado" data-comparador>
+          <img loading="lazy" class="despues" src="https://picsum.photos/seed/omnius-lut3/1400/800" alt="Frame with the OMNIUS grade applied" />
+          <img loading="lazy" class="antes" src="https://picsum.photos/seed/omnius-lut3/1400/800" alt="Same frame before grading (log)" />
+          <div class="linea"></div>
+          <div class="handle" aria-hidden="true"></div>
+          <div class="tag before">BEFORE</div>
+          <div class="tag camara" hidden>SHOT ON —</div>
+          <div class="tag after">AFTER</div>
+        </div>
+        <p class="look-desc">COASTAL BLUES // FILM FADE // DOCUMENTARY</p>
+      </article>
+
+      <article class="look reveal">
+        <p class="look-num">LUT // 04</p>
+        <h3 class="look-nombre">LOW TIDE</h3>
+        <div class="comparador simulado" data-comparador>
+          <img loading="lazy" class="despues" src="https://picsum.photos/seed/omnius-lut4/1400/800" alt="Frame with the OMNIUS grade applied" />
+          <img loading="lazy" class="antes" src="https://picsum.photos/seed/omnius-lut4/1400/800" alt="Same frame before grading (log)" />
+          <div class="linea"></div>
+          <div class="handle" aria-hidden="true"></div>
+          <div class="tag before">BEFORE</div>
+          <div class="tag camara" hidden>SHOT ON —</div>
+          <div class="tag after">AFTER</div>
+        </div>
+        <p class="look-desc">MUTED EARTH // TONAL // MOODY INTERIORS</p>
+      </article>
+
+      <div class="looks-cta reveal">
+        <a class="btn-solido" href="#comprar">GET ALL 4 LOOKS — $79 <span class="flecha">→</span></a>
+      </div>
+    </section>
+
+    <!-- REVIEWS: oculta hasta tener testimonios reales.
+         Para activarla: quitar el atributo `hidden` y reemplazar los placeholders. -->
+    <section class="bloque" id="reviews" hidden>
+      <h2 class="titulo reveal">What creators say.</h2>
+      <div class="reviews-grid reveal">
+        <figure class="review">
+          <p class="review-meta">NOMBRE APELLIDO // PAÍS</p>
+          <blockquote>"Placeholder — testimonio real aquí."</blockquote>
+          <figcaption>LOOK FAVORITO: UNDERTOW</figcaption>
+        </figure>
+        <figure class="review">
+          <p class="review-meta">NOMBRE APELLIDO // PAÍS</p>
+          <blockquote>"Placeholder — testimonio real aquí."</blockquote>
+          <figcaption>LOOK FAVORITO: MAGIC HOUR</figcaption>
+        </figure>
+        <figure class="review">
+          <p class="review-meta">NOMBRE APELLIDO // PAÍS</p>
+          <blockquote>"Placeholder — testimonio real aquí."</blockquote>
+          <figcaption>LOOK FAVORITO: SALTWATER</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ══════════ FAQ ══════════ -->
+    <section class="bloque faq">
+      <h2 class="titulo reveal">Frequently asked questions.</h2>
+      <div class="faq-lista">
+        <details class="faq-item reveal">
+          <summary class="faq-q">What's included? <span class="mas">+</span></summary>
+          <div class="faq-a"><p>The OMNIUS PowerGrade (with premade versions for Sony, Canon, Fuji and DJI), 4 signature finishing LUTs in .cube format, step-by-step video tutorials and Log practice footage to follow along.</p></div>
+        </details>
+        <details class="faq-item reveal">
+          <summary class="faq-q">What cameras does it work with? <span class="mas">+</span></summary>
+          <div class="faq-a"><p>Any camera. The PowerGrade is camera-agnostic, and premade versions for Sony, Canon, Fuji and DJI are included.</p></div>
+        </details>
+        <details class="faq-item reveal">
+          <summary class="faq-q">Which editing software does it work with? <span class="mas">+</span></summary>
+          <div class="faq-a"><p>The PowerGrade is built for DaVinci Resolve — Free and Studio. The LUTs work in any editor that reads .cube files: Premiere Pro, Final Cut Pro, CapCut and more.</p></div>
+        </details>
+        <details class="faq-item reveal">
+          <summary class="faq-q">Do I need advanced experience or Log footage? <span class="mas">+</span></summary>
+          <div class="faq-a"><p>No advanced experience needed — the tutorials start from zero. Log gives you the most flexibility, but the workflow also adapts to Rec.709 footage.</p></div>
+        </details>
+        <details class="faq-item reveal">
+          <summary class="faq-q">How do I receive the files? <span class="mas">+</span></summary>
+          <div class="faq-a"><p>Instant download via Lemon Squeezy right after purchase, with free updates for this version.</p></div>
+        </details>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ══════════ CIERRE ══════════ -->
+  <footer class="cierre">
+    <p class="cierre-frase reveal">You were created<br />to create.</p>
+    <div class="cierre-pie">
+      <span class="marca-texto">OMNIUS</span>
+      <span class="cierre-links">
+        <a href="https://instagram.com/robert.arre" target="_blank" rel="noopener">@ROBERT.ARRE</a>
+        <a href="mailto:rareched@gmail.com">CONTACT</a>
+      </span>
+      <span>© 2026 ROBERTO ARECHEDERRA</span>
     </div>
-    <div class="f-links"><a href="#">© 2026 ROBERTO ARECHEDERRA</a></div>
   </footer>
 
   <script src="js/main.js" defer></script>

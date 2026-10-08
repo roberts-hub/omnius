@@ -15,11 +15,17 @@ python3 -m http.server 4181
 
 | Qué | Dónde |
 |---|---|
-| Buy-link de Lemon Squeezy | `js/main.js`, constante `LEMON_URL` (usar el link `?embed=1&media=0`). Solo el botón del producto (`#cta-comprar`) abre el checkout; nav y hero anclan a `#bundle` |
+| Buy-link de Lemon Squeezy | `js/main.js`, constante `LEMON_URL` (usar el link `?embed=1&media=0`). Solo el botón del producto (`#cta-comprar`) abre el checkout; el resto de los CTAs anclan a `#comprar` |
 | OG image / canonical al publicar | `index.html`, comentario `TODO al publicar` en el `<head>` |
-| Precio y textos del producto | `index.html`, sección `#bundle` |
-| Nombres y descriptores de LUTs | `index.html`, sección THE LUTS |
+| Precio, checklist y textos del producto | `index.html`, sección `#comprar` (precio también en el header y en el botón bajo los LUTs) |
+| Frase de la intro | `index.html`, las tres `.intro-linea` dentro de `#loader` |
+| Nombres y descriptores de LUTs | `index.html`, sección `#looks` (y las franjas `.tira` de la portada) |
+| Crédito de cámara por LUT | `index.html`, `.tag.camara` de cada slider: escribir la cámara y quitar `hidden` |
+| Franja INTRODUCING | `index.html`, `.introducing-tiras` (5 imágenes; se puede cambiar por un `<video>` del reel) |
 | Mostrar reviews | `index.html`, quitar `hidden` de `<section id="reviews">` |
+
+La intro (frase + iconos) solo se muestra en la primera visita de cada sesión
+del navegador. Para volver a verla: abrir una pestaña nueva o privada.
 
 ## Imágenes antes/después
 
@@ -27,7 +33,6 @@ Los sliders usan placeholders (misma imagen con filtro CSS para simular el
 "before"). Para poner frames reales, exportar JPGs y guardarlos como:
 
 ```
-img/hero-before.jpg   img/hero-after.jpg    (comparador del hero, 21:9)
 img/luts/01-before.jpg  img/luts/01-after.jpg   (16:9, uno por LUT)
 img/luts/02-before.jpg  img/luts/02-after.jpg
 ...
