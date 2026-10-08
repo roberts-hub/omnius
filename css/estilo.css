@@ -597,17 +597,26 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   text-align: center;
   padding: 0 var(--margen);
   font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.3em;
-  color: var(--greige);
+  font-size: clamp(11px, 1vw, 14px);
+  letter-spacing: 0.26em;
+  line-height: 1.7;
+  text-wrap: balance;
+  color: var(--lino);
 }
 .marcas-franja {
   margin-top: clamp(28px, 3.5vw, 44px);
   overflow: hidden;
   /* los logos entran y salen con desvanecido en las orillas */
-  --fade: clamp(28px, 7vw, 140px); /* mismo desvanecido que twowaves.mx */
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent);
-  mask-image: linear-gradient(to right, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent);
+  /* desvanecido marcado en las orillas: los logos aparecen y desaparecen poco a poco */
+  --fade: clamp(70px, 18vw, 300px);
+  -webkit-mask-image: linear-gradient(to right,
+    transparent 0, rgba(0, 0, 0, 0.12) calc(var(--fade) * 0.35), rgba(0, 0, 0, 0.55) calc(var(--fade) * 0.7), #000 var(--fade),
+    #000 calc(100% - var(--fade)),
+    rgba(0, 0, 0, 0.55) calc(100% - var(--fade) * 0.7), rgba(0, 0, 0, 0.12) calc(100% - var(--fade) * 0.35), transparent 100%);
+  mask-image: linear-gradient(to right,
+    transparent 0, rgba(0, 0, 0, 0.12) calc(var(--fade) * 0.35), rgba(0, 0, 0, 0.55) calc(var(--fade) * 0.7), #000 var(--fade),
+    #000 calc(100% - var(--fade)),
+    rgba(0, 0, 0, 0.55) calc(100% - var(--fade) * 0.7), rgba(0, 0, 0, 0.12) calc(100% - var(--fade) * 0.35), transparent 100%);
 }
 .marcas-pista {
   display: flex;
@@ -621,7 +630,7 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
 @keyframes desfileMarcas { to { transform: translateX(-50%); } }
 /* mismo tamaño que en twowaves.mx: base común × factor óptico de cada logo (según su forma) */
 .marca-logo {
-  height: calc(var(--factor, 1) * clamp(2.7rem, 4.4vw, 4rem));
+  height: calc(var(--factor, 1) * clamp(2.2rem, 3.55vw, 3.25rem)); /* ~20% más chicos que en twowaves.mx */
   width: auto;
   max-width: 280px;
   object-fit: contain;
@@ -1025,7 +1034,7 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   .pagina-producto .producto.pagina { grid-template-columns: 1fr; padding-top: 92px; min-height: 0; }
   .pagina-producto .portada { width: 50%; }
   .pagina-producto .portada-escena { top: 0; }
-  .marcas-titulo { font-size: 9px; letter-spacing: 0.15em; }
+  .marcas-titulo { font-size: 11px; letter-spacing: 0.18em; }
   .consistencia .nota-mono { letter-spacing: 0.1em; }
   .resenas-pista { grid-auto-columns: 86%; }
   .resenas-flecha { display: none; }
