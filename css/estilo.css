@@ -248,6 +248,8 @@ img { display: block; }
   animation: zoomLento 24s ease-in-out infinite alternate;
   /* estado final: nítido. Mientras corre la intro está borroso y oscuro (abajo) */
   transform: scale(1);
+  /* 90% sobre el fondo negro del hero: un poco más de contraste para el texto */
+  opacity: 0.9;
   filter: blur(0) brightness(1);
   transition: filter 2.6s cubic-bezier(0.45, 0, 0.2, 1);
 }
