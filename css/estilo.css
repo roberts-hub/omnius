@@ -212,6 +212,8 @@ img { display: block; }
   transition: background 0.6s ease, border-color 0.6s ease, backdrop-filter 0.6s ease;
 }
 /* sobre el video el header es transparente; al pasar el hero se vuelve sólido */
+.cabecera:not(.solida) { text-shadow: 0 1px 8px rgba(0, 0, 0, 0.55); }
+.cabecera:not(.solida) .marca-icono { filter: drop-shadow(0 1px 6px rgba(0, 0, 0, 0.55)); }
 .cabecera.solida {
   background: rgba(11, 11, 10, 0.88);
   backdrop-filter: blur(10px);
@@ -264,9 +266,12 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
 .hero-velo {
   position: absolute;
   inset: 0;
+  /* el video es protagonista: casi sin velo. Solo una franja arriba para el header,
+     una sombra suave detrás del texto, viñeta ligera y el roll-off inferior hacia el fondo */
   background:
-    linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.15) 35%, rgba(0, 0, 0, 0.25) 65%, var(--fondo) 100%),
-    radial-gradient(ellipse 70% 60% at 50% 50%, transparent 30%, rgba(0, 0, 0, 0.45) 100%);
+    linear-gradient(180deg, rgba(0, 0, 0, 0.32) 0%, transparent 16%, transparent 72%, rgba(11, 11, 10, 0.55) 88%, var(--fondo) 100%),
+    radial-gradient(ellipse 34% 26% at 50% 52%, rgba(0, 0, 0, 0.2), transparent 75%),
+    radial-gradient(ellipse 95% 85% at 50% 50%, transparent 60%, rgba(0, 0, 0, 0.18) 100%);
 }
 
 .hero-contenido {
@@ -278,14 +283,14 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   text-align: center;
   padding: 0 24px;
 }
-.hero-icono { width: 54px; height: 54px; color: var(--hueso); }
+.hero-icono { width: 54px; height: 54px; color: var(--hueso); filter: drop-shadow(0 1px 8px rgba(0, 0, 0, 0.5)); }
 .hero-marca {
   margin-top: 22px;
   font-size: clamp(52px, 10vw, 150px);
   font-weight: 700;
   letter-spacing: -0.06em;
   line-height: 0.9;
-  text-shadow: 0 4px 40px rgba(0, 0, 0, 0.35);
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.45), 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 .hero-kicker {
   margin-top: 22px;
@@ -293,8 +298,9 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   font-size: clamp(9px, 1vw, 11px);
   letter-spacing: 0.35em;
   color: var(--lino);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.7);
 }
-.hero-contenido .btn-linea { margin-top: 44px; }
+.hero-contenido .btn-linea { margin-top: 44px; text-shadow: 0 1px 10px rgba(0, 0, 0, 0.7); }
 
 .hero-scroll {
   position: absolute;
