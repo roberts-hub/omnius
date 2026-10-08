@@ -69,11 +69,11 @@
     <!-- ══════════ HERO: video de fondo a pantalla completa ══════════ -->
     <section class="hero-video" aria-label="OMNIUS">
       <div class="hero-media">
-        <!-- Video del hero: guardar como video/hero.mp4 (y opcional video/hero.webm)
-             y descomentar las <source>. Mientras tanto se ve el poster. -->
-        <video autoplay muted loop playsinline preload="auto" poster="https://picsum.photos/seed/omnius-hero/1920/1080" aria-hidden="true">
-          <!-- <source src="video/hero.webm" type="video/webm" /> -->
-          <!-- <source src="video/hero.mp4" type="video/mp4" /> -->
+        <!-- Video del hero: video/hero.mp4 (1080p) y video/hero-720.mp4 (celulares).
+             Para cambiarlo, reemplazar esos archivos y el poster (primer fotograma). -->
+        <video autoplay muted loop playsinline preload="auto" poster="video/hero-poster.jpg" aria-hidden="true">
+          <source src="video/hero-720.mp4" type="video/mp4" media="(max-width: 860px)" />
+          <source src="video/hero.mp4" type="video/mp4" />
         </video>
       </div>
       <div class="hero-velo" aria-hidden="true"></div>
