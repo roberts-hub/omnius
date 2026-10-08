@@ -20,7 +20,7 @@ python3 -m http.server 4181
 | Precio, checklist y textos del producto | `index.html`, sección `#comprar` (precio también en el header y en el botón bajo los LUTs) |
 | Frase de la intro | `index.html`, las `.intro-linea` dentro de `#loader` |
 | Ritmo de la intro | `js/main.js`, `PASO` (ms por icono) y `SOSTENER_MARCA` (cuánto se queda la marca OMNIUS antes de disolverse) |
-| Video del hero | Guardar como `video/hero.mp4` (+ opcional `video/hero.webm`) y descomentar las `<source>` en `.hero-video`. Specs: 1920×1080, H.264, sin audio, loop de 6–15 s, idealmente < 8 MB. El `poster` es la imagen que se ve mientras carga |
+| Video del hero | Correr `herramientas/video-hero.sh "/ruta/al/video.mov"`: genera 1080p y vertical (para celular), cada uno en HEVC (principal) y H.264 (respaldo), más el poster, en `video/`. Usa solo herramientas de macOS (Swift/AVFoundation). Fuente ideal: 4K, 10–15 s |
 | Nombres y descriptores de LUTs | `index.html`, sección `#looks` (y las franjas `.tira` de la portada) |
 | Crédito de cámara por LUT | `index.html`, `.tag.camara` de cada slider: escribir la cámara y quitar `hidden` |
 | Franja INTRODUCING | `index.html`, `.introducing-tiras` (5 imágenes; se puede cambiar por un `<video>` del reel) |

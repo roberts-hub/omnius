@@ -68,11 +68,15 @@
     <!-- ══════════ HERO: video de fondo a pantalla completa ══════════ -->
     <section class="hero-video" aria-label="OMNIUS">
       <div class="hero-media">
-        <!-- Video del hero: video/hero.mp4 (1080p) y video/hero-720.mp4 (celulares).
-             Para cambiarlo, reemplazar esos archivos y el poster (primer fotograma). -->
+        <!-- Video del hero (fuente: 4K). Cada dispositivo descarga solo una versión:
+             - horizontal (computadora / celular acostado): 1080p
+             - celular vertical: recorte vertical 1080x1920 sacado del 4K (nítido a pantalla completa)
+             HEVC primero (mejor calidad por MB: Safari, Chrome, Edge, iPhone, Android); H.264 de respaldo (Firefox). -->
         <video autoplay muted loop playsinline preload="auto" poster="video/hero-poster.jpg" aria-hidden="true">
-          <source src="video/hero-720.mp4" type="video/mp4" media="(max-width: 860px)" />
-          <source src="video/hero.mp4" type="video/mp4" />
+          <source src="video/hero-1080.hevc.mp4" type='video/mp4; codecs="hvc1.1.6.L123.B0"' media="(min-width: 861px), (orientation: landscape)" />
+          <source src="video/hero-1080.h264.mp4" type='video/mp4; codecs="avc1.640028"' media="(min-width: 861px), (orientation: landscape)" />
+          <source src="video/hero-vertical.hevc.mp4" type='video/mp4; codecs="hvc1.1.6.L123.B0"' />
+          <source src="video/hero-vertical.h264.mp4" type='video/mp4; codecs="avc1.640028"' />
         </video>
       </div>
       <div class="hero-velo" aria-hidden="true"></div>
