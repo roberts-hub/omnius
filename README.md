@@ -15,7 +15,8 @@ python3 -m http.server 4181
 
 | Qué | Dónde |
 |---|---|
-| Buy-links de Lemon Squeezy | `js/main.js`, objeto `LEMON_URLS`: `completo` (Full System, $79) y `luts` (LUTs Only, $39). Usar el link `?embed=1&media=0` de cada producto. En `producto.html` los botones de compra abren el checkout de la edición elegida; el botón POWERGRADE del hero abre el Full System y el botón LUTS lleva a `producto.html?edition=luts#luts` |
+| Buy-links de Lemon Squeezy | `js/main.js`, objeto `LEMON_URLS`: `completo` (Full System, $79) y `luts` (LUTs Only, $39). Usar el link `?embed=1&media=0` de cada producto. En `producto.html` los botones de compra abren el checkout de la edición elegida; los botones de la principal llevan a `producto.html` para elegir edición (`producto.html?edition=luts#luts` abre con LUTs Only elegida) |
+| Términos y licencia | `terms.html` (titular: Roberto Arechederra como persona física). Link en el footer y debajo del botón de compra |
 | Ediciones y precios | `producto.html`, `fieldset.ediciones`: los `data-*` de cada opción (precio, precio tachado, título, texto de la caja) y los bloques `[data-oferta-panel]` con la descripción de cada una |
 | OG image / canonical al publicar | `index.html`, comentario `TODO al publicar` en el `<head>` |
 | Precio, checklist y textos del producto | `producto.html` (página de compra). El precio también aparece en los botones "GET SPECTRE — $79" de `index.html` |

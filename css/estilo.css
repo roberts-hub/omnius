@@ -303,6 +303,7 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   gap: 12px;
   padding: 16px 28px;
   border: none;
+  margin-top: 34px;
   border-radius: 999px;
   overflow: hidden;
   isolation: isolate;
@@ -357,19 +358,7 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
 /* en celular no hay hover: al tocar, se oscurece un instante */
 .btn-pildora:active::before { opacity: 1; transition-duration: 0.12s; }
 
-/* los dos botones del hero: POWERGRADE y LUTS */
-.hero-acciones {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 1fr;
-  gap: 12px;
-  margin-top: 34px;
-}
-.hero-acciones .btn-pildora { justify-content: center; }
-@media (max-width: 600px) {
-  .hero-acciones { gap: 10px; }
-  .hero-acciones .btn-pildora { padding: 14px 20px; gap: 10px; letter-spacing: 0.18em; }
-}
+
 
 .hero-scroll {
   position: absolute;
@@ -794,7 +783,32 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   .btn-compra:hover .flecha { transform: translateX(5px); }
   .btn-express:hover { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.24); }
 }
-.pagos-nota { margin-top: 12px; text-align: center; font-size: 12px; color: var(--greige); }
+.pagos-nota { margin-top: 12px; text-align: center; font-size: 12px; line-height: 1.7; color: var(--greige); }
+.pagos-nota a { color: var(--lino); text-underline-offset: 3px; }
+
+/* ══════════ TÉRMINOS (terms.html) ══════════ */
+.legal {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: calc(76px + clamp(48px, 7vw, 96px)) var(--margen) clamp(80px, 9vw, 130px);
+}
+.legal .titulo { margin-top: 18px; }
+.legal-intro { margin-top: 26px; font-size: 17px; line-height: 1.7; color: var(--lino); }
+.legal section { margin-top: 44px; padding-top: 28px; border-top: 1px solid var(--linea); }
+.legal h2 { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; color: var(--hueso); }
+.legal p { margin-top: 12px; font-size: 15px; font-weight: 300; line-height: 1.75; color: var(--greige); }
+.legal strong { font-weight: 600; color: var(--hueso); }
+.legal a { color: var(--hueso); text-underline-offset: 3px; }
+.legal-lista { margin-top: 12px; padding-left: 0; list-style: none; }
+.legal-lista li {
+  position: relative;
+  padding: 6px 0 6px 24px;
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.7;
+  color: var(--greige);
+}
+.legal-lista li::before { content: "✕"; position: absolute; left: 0; top: 7px; font-size: 11px; color: var(--rojo); }
 
 .pagina-producto .lead { margin-top: 34px; font-size: 15px; }
 .pagina-producto .cuerpo { margin-top: 14px; font-size: 14px; line-height: 1.65; }
