@@ -25,7 +25,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,300;0,400;0,600;0,700;1,300&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <script src="https://assets.lemonsqueezy.com/lemon.js" defer></script>
-  <link rel="stylesheet" href="css/estilo.css?v=202610081220" />
+  <link rel="stylesheet" href="css/estilo.css?v=202610081254" />
 </head>
 <body>
 
@@ -121,10 +121,10 @@
             <span class="portada-sub">CINEMATIC COLOR SYSTEM // 4 LOOKS</span>
           </div>
           <div class="portada-tiras">
-            <div class="tira"><img src="https://picsum.photos/seed/omnius-lut1/400/600" alt="" /><span>UNDERTOW</span></div>
-            <div class="tira"><img src="https://picsum.photos/seed/omnius-lut2/400/600" alt="" /><span>MAGIC HOUR</span></div>
-            <div class="tira"><img src="https://picsum.photos/seed/omnius-lut3/400/600" alt="" /><span>SALTWATER</span></div>
-            <div class="tira"><img src="https://picsum.photos/seed/omnius-lut4/400/600" alt="" /><span>LOW TIDE</span></div>
+            <div class="tira"><img src="img/looks/tira-03.jpg" alt="" /><span>UNDERTOW</span></div>
+            <div class="tira"><img src="img/looks/tira-05.jpg" alt="" /><span>MAGIC HOUR</span></div>
+            <div class="tira"><img src="img/looks/tira-06.jpg" alt="" /><span>SALTWATER</span></div>
+            <div class="tira"><img src="img/looks/tira-08.jpg" alt="" /><span>LOW TIDE</span></div>
           </div>
         </div>
       </div>
@@ -166,11 +166,11 @@
     <!-- ══════════ INTRODUCING (franja de looks; lista para cambiar por un reel en video) ══════════ -->
     <section class="introducing reveal" aria-label="Introducing OMNIUS">
       <div class="introducing-tiras" aria-hidden="true">
-        <img loading="lazy" src="https://picsum.photos/seed/omnius-reel1/600/800" alt="" />
-        <img loading="lazy" src="https://picsum.photos/seed/omnius-reel2/600/800" alt="" />
-        <img loading="lazy" src="https://picsum.photos/seed/omnius-reel3/600/800" alt="" />
-        <img loading="lazy" src="https://picsum.photos/seed/omnius-reel4/600/800" alt="" />
-        <img loading="lazy" src="https://picsum.photos/seed/omnius-reel5/600/800" alt="" />
+        <img loading="lazy" src="img/looks/reel-01.jpg" alt="" />
+        <img loading="lazy" src="img/looks/reel-02.jpg" alt="" />
+        <img loading="lazy" src="img/looks/reel-04.jpg" alt="" />
+        <img loading="lazy" src="img/looks/reel-07.jpg" alt="" />
+        <img loading="lazy" src="img/looks/reel-06.jpg" alt="" />
       </div>
       <p class="introducing-texto">INTRODUCING</p>
     </section>
@@ -183,68 +183,176 @@
       </header>
 
       <article class="look reveal">
-        <p class="look-num">LUT // 01</p>
-        <h3 class="look-nombre">UNDERTOW</h3>
-        <div class="comparador simulado" data-comparador>
-          <img loading="lazy" class="despues" src="https://picsum.photos/seed/omnius-lut1/1400/800" alt="Frame with the OMNIUS grade applied" />
-          <img loading="lazy" class="antes" src="https://picsum.photos/seed/omnius-lut1/1400/800" alt="Same frame before grading (log)" />
-          <div class="linea"></div>
-          <div class="handle" aria-hidden="true"></div>
-          <div class="tag before">BEFORE</div>
-          <!-- crédito de cámara: escribir la cámara real y quitar `hidden` -->
+        <p class="look-num">POWERGRADE // 01</p>
+        <h3 class="look-nombre">GOLDEN HARBOR</h3>
+        <div class="comparador" data-comparador>
+          <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
+               src="img/looks/01-despues-1920.jpg"
+               srcset="img/looks/01-despues-1200.jpg 1200w, img/looks/01-despues-1920.jpg 1920w"
+               sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+               alt="Golden Harbor: frame graded with the OMNIUS PowerGrade" />
+          <div class="antes-marco">
+            <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
+                 src="img/looks/01-antes-1920.jpg"
+                 srcset="img/looks/01-antes-1200.jpg 1200w, img/looks/01-antes-1920.jpg 1920w"
+                 sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                 alt="Golden Harbor: the same frame before grading (log)" />
+          </div>
+          <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
+          <!-- crédito de cámara: escribir la cámara real y quitar `hidden` (aplica a todos los sliders) -->
           <div class="tag camara" hidden>SHOT ON —</div>
-          <div class="tag after">AFTER</div>
         </div>
-        <p class="look-desc">DEEP TEALS // CLEAN SKIN // NIGHT EXTERIORS</p>
       </article>
 
       <article class="look reveal">
-        <p class="look-num">LUT // 02</p>
-        <h3 class="look-nombre">MAGIC HOUR</h3>
-        <div class="comparador simulado" data-comparador>
-          <img loading="lazy" class="despues" src="https://picsum.photos/seed/omnius-lut2/1400/800" alt="Frame with the OMNIUS grade applied" />
-          <img loading="lazy" class="antes" src="https://picsum.photos/seed/omnius-lut2/1400/800" alt="Same frame before grading (log)" />
-          <div class="linea"></div>
-          <div class="handle" aria-hidden="true"></div>
-          <div class="tag before">BEFORE</div>
+        <p class="look-num">POWERGRADE // 02</p>
+        <h3 class="look-nombre">ALPINE ROAD</h3>
+        <div class="comparador" data-comparador>
+          <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
+               src="img/looks/02-despues-1920.jpg"
+               srcset="img/looks/02-despues-1200.jpg 1200w, img/looks/02-despues-1920.jpg 1920w"
+               sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+               alt="Alpine Road: frame graded with the OMNIUS PowerGrade" />
+          <div class="antes-marco">
+            <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
+                 src="img/looks/02-antes-1920.jpg"
+                 srcset="img/looks/02-antes-1200.jpg 1200w, img/looks/02-antes-1920.jpg 1920w"
+                 sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                 alt="Alpine Road: the same frame before grading (log)" />
+          </div>
+          <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
           <div class="tag camara" hidden>SHOT ON —</div>
-          <div class="tag after">AFTER</div>
         </div>
-        <p class="look-desc">GOLDEN WARMTH // SOFT HIGHLIGHTS // SUNSET WORK</p>
       </article>
 
       <article class="look reveal">
-        <p class="look-num">LUT // 03</p>
-        <h3 class="look-nombre">SALTWATER</h3>
-        <div class="comparador simulado" data-comparador>
-          <img loading="lazy" class="despues" src="https://picsum.photos/seed/omnius-lut3/1400/800" alt="Frame with the OMNIUS grade applied" />
-          <img loading="lazy" class="antes" src="https://picsum.photos/seed/omnius-lut3/1400/800" alt="Same frame before grading (log)" />
-          <div class="linea"></div>
-          <div class="handle" aria-hidden="true"></div>
-          <div class="tag before">BEFORE</div>
+        <p class="look-num">POWERGRADE // 03</p>
+        <h3 class="look-nombre">DESERT DRIFT</h3>
+        <div class="comparador" data-comparador>
+          <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
+               src="img/looks/03-despues-1920.jpg"
+               srcset="img/looks/03-despues-1200.jpg 1200w, img/looks/03-despues-1920.jpg 1920w"
+               sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+               alt="Desert Drift: frame graded with the OMNIUS PowerGrade" />
+          <div class="antes-marco">
+            <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
+                 src="img/looks/03-antes-1920.jpg"
+                 srcset="img/looks/03-antes-1200.jpg 1200w, img/looks/03-antes-1920.jpg 1920w"
+                 sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                 alt="Desert Drift: the same frame before grading (log)" />
+          </div>
+          <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
           <div class="tag camara" hidden>SHOT ON —</div>
-          <div class="tag after">AFTER</div>
         </div>
-        <p class="look-desc">COASTAL BLUES // FILM FADE // DOCUMENTARY</p>
       </article>
 
       <article class="look reveal">
-        <p class="look-num">LUT // 04</p>
-        <h3 class="look-nombre">LOW TIDE</h3>
-        <div class="comparador simulado" data-comparador>
-          <img loading="lazy" class="despues" src="https://picsum.photos/seed/omnius-lut4/1400/800" alt="Frame with the OMNIUS grade applied" />
-          <img loading="lazy" class="antes" src="https://picsum.photos/seed/omnius-lut4/1400/800" alt="Same frame before grading (log)" />
-          <div class="linea"></div>
-          <div class="handle" aria-hidden="true"></div>
-          <div class="tag before">BEFORE</div>
+        <p class="look-num">POWERGRADE // 04</p>
+        <h3 class="look-nombre">OPEN WATER</h3>
+        <div class="comparador" data-comparador>
+          <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
+               src="img/looks/04-despues-1920.jpg"
+               srcset="img/looks/04-despues-1200.jpg 1200w, img/looks/04-despues-1920.jpg 1920w"
+               sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+               alt="Open Water: frame graded with the OMNIUS PowerGrade" />
+          <div class="antes-marco">
+            <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
+                 src="img/looks/04-antes-1920.jpg"
+                 srcset="img/looks/04-antes-1200.jpg 1200w, img/looks/04-antes-1920.jpg 1920w"
+                 sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                 alt="Open Water: the same frame before grading (log)" />
+          </div>
+          <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
           <div class="tag camara" hidden>SHOT ON —</div>
-          <div class="tag after">AFTER</div>
         </div>
-        <p class="look-desc">MUTED EARTH // TONAL // MOODY INTERIORS</p>
+      </article>
+
+      <article class="look reveal">
+        <p class="look-num">POWERGRADE // 05</p>
+        <h3 class="look-nombre">GOLDEN SWELL</h3>
+        <div class="comparador" data-comparador>
+          <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
+               src="img/looks/05-despues-1920.jpg"
+               srcset="img/looks/05-despues-1200.jpg 1200w, img/looks/05-despues-1920.jpg 1920w"
+               sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+               alt="Golden Swell: frame graded with the OMNIUS PowerGrade" />
+          <div class="antes-marco">
+            <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
+                 src="img/looks/05-antes-1920.jpg"
+                 srcset="img/looks/05-antes-1200.jpg 1200w, img/looks/05-antes-1920.jpg 1920w"
+                 sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                 alt="Golden Swell: the same frame before grading (log)" />
+          </div>
+          <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
+          <div class="tag camara" hidden>SHOT ON —</div>
+        </div>
+      </article>
+
+      <article class="look reveal">
+        <p class="look-num">POWERGRADE // 06</p>
+        <h3 class="look-nombre">FOREST TRAIL</h3>
+        <div class="comparador" data-comparador>
+          <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
+               src="img/looks/06-despues-1920.jpg"
+               srcset="img/looks/06-despues-1200.jpg 1200w, img/looks/06-despues-1920.jpg 1920w"
+               sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+               alt="Forest Trail: frame graded with the OMNIUS PowerGrade" />
+          <div class="antes-marco">
+            <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
+                 src="img/looks/06-antes-1920.jpg"
+                 srcset="img/looks/06-antes-1200.jpg 1200w, img/looks/06-antes-1920.jpg 1920w"
+                 sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                 alt="Forest Trail: the same frame before grading (log)" />
+          </div>
+          <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
+          <div class="tag camara" hidden>SHOT ON —</div>
+        </div>
+      </article>
+
+      <article class="look reveal">
+        <p class="look-num">POWERGRADE // 07</p>
+        <h3 class="look-nombre">LAST LIGHT</h3>
+        <div class="comparador" data-comparador>
+          <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
+               src="img/looks/07-despues-1920.jpg"
+               srcset="img/looks/07-despues-1200.jpg 1200w, img/looks/07-despues-1920.jpg 1920w"
+               sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+               alt="Last Light: frame graded with the OMNIUS PowerGrade" />
+          <div class="antes-marco">
+            <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
+                 src="img/looks/07-antes-1920.jpg"
+                 srcset="img/looks/07-antes-1200.jpg 1200w, img/looks/07-antes-1920.jpg 1920w"
+                 sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                 alt="Last Light: the same frame before grading (log)" />
+          </div>
+          <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
+          <div class="tag camara" hidden>SHOT ON —</div>
+        </div>
+      </article>
+
+      <article class="look reveal">
+        <p class="look-num">POWERGRADE // 08</p>
+        <h3 class="look-nombre">EVENING SWIM</h3>
+        <div class="comparador" data-comparador>
+          <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
+               src="img/looks/08-despues-1920.jpg"
+               srcset="img/looks/08-despues-1200.jpg 1200w, img/looks/08-despues-1920.jpg 1920w"
+               sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+               alt="Evening Swim: frame graded with the OMNIUS PowerGrade" />
+          <div class="antes-marco">
+            <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
+                 src="img/looks/08-antes-1920.jpg"
+                 srcset="img/looks/08-antes-1200.jpg 1200w, img/looks/08-antes-1920.jpg 1920w"
+                 sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                 alt="Evening Swim: the same frame before grading (log)" />
+          </div>
+          <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
+          <div class="tag camara" hidden>SHOT ON —</div>
+        </div>
       </article>
 
       <div class="looks-cta reveal">
-        <a class="btn-solido" href="#comprar">GET ALL 4 LOOKS — $79 <span class="flecha">→</span></a>
+        <a class="btn-solido" href="#comprar">GET OMNIUS — $79 <span class="flecha">→</span></a>
       </div>
     </section>
 
@@ -313,6 +421,6 @@
     </div>
   </footer>
 
-  <script src="js/main.js?v=202610081220" defer></script>
+  <script src="js/main.js?v=202610081254" defer></script>
 </body>
 </html>

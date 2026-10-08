@@ -107,13 +107,36 @@ new IntersectionObserver(
   { rootMargin: "-80px 0px 0px 0px" }
 ).observe(heroVideo);
 
-// ── comparadores antes/después (drag + touch + teclado) ──
+// ── comparadores antes/después ──
+// Fluidez: el movimiento es solo transform (CSS, vía --x) y se actualiza una vez por cuadro.
+// En touch se decide la intención del gesto: vertical = scroll de la página (el slider no se mueve);
+// horizontal = arrastrar el slider (y la página no se mueve mientras tanto). Un toque desliza hasta ahí.
+const UMBRAL = 8; // px antes de decidir si el gesto es horizontal o vertical
+
 document.querySelectorAll("[data-comparador]").forEach((comp) => {
+  let x = 50;
+  let pendiente = null;
+  let cuadro = 0;
+
+  const pintar = () => {
+    cuadro = 0;
+    if (pendiente === null) return;
+    x = pendiente;
+    pendiente = null;
+    comp.style.setProperty("--x", x.toFixed(2));
+    comp.setAttribute("aria-valuenow", Math.round(x));
+    comp.setAttribute("aria-valuetext", Math.round(x) + "% before, rest graded");
+  };
   const setX = (pct) => {
-    pct = Math.min(Math.max(pct, 0), 100);
-    comp.style.setProperty("--x", pct + "%");
-    comp.setAttribute("aria-valuenow", Math.round(pct));
-    comp.setAttribute("aria-valuetext", Math.round(pct) + "% before, rest graded");
+    pendiente = Math.min(Math.max(pct, 0), 100);
+    if (!cuadro) cuadro = requestAnimationFrame(pintar);
+  };
+  // salto con deslizamiento suave (toque o teclado)
+  const deslizarA = (pct) => {
+    comp.classList.add("deslizando");
+    setX(pct);
+    clearTimeout(comp._fin);
+    comp._fin = setTimeout(() => comp.classList.remove("deslizando"), 460);
   };
 
   comp.tabIndex = 0;
@@ -121,32 +144,62 @@ document.querySelectorAll("[data-comparador]").forEach((comp) => {
   comp.setAttribute("aria-label", "Before and after comparison");
   comp.setAttribute("aria-valuemin", "0");
   comp.setAttribute("aria-valuemax", "100");
-  setX(50);
+  comp.setAttribute("aria-valuenow", "50");
 
-  const moverA = (clientX) => {
-    const r = comp.getBoundingClientRect();
-    setX(((clientX - r.left) / r.width) * 100);
-  };
+  let caja = null;
+  const pctDe = (clientX) => ((clientX - caja.left) / caja.width) * 100;
+
+  let gesto = null; // { id, x0, y0, tipo, arrastrando }
 
   comp.addEventListener("pointerdown", (e) => {
-    comp.setPointerCapture(e.pointerId);
-    moverA(e.clientX);
-    const onMove = (ev) => moverA(ev.clientX);
-    const fin = () => {
-      comp.removeEventListener("pointermove", onMove);
-      comp.removeEventListener("pointerup", fin);
-      comp.removeEventListener("pointercancel", fin);
-    };
-    comp.addEventListener("pointermove", onMove);
-    comp.addEventListener("pointerup", fin);
-    comp.addEventListener("pointercancel", fin);
+    if (e.button !== 0) return;
+    caja = comp.getBoundingClientRect();
+    gesto = { id: e.pointerId, x0: e.clientX, y0: e.clientY, tipo: e.pointerType, arrastrando: false };
+    if (e.pointerType === "mouse") {
+      // con mouse no hay ambigüedad: arrastrar desde el primer clic
+      gesto.arrastrando = true;
+      try { comp.setPointerCapture(e.pointerId); } catch (_) {}
+      comp.classList.add("arrastrando");
+      setX(pctDe(e.clientX));
+      e.preventDefault();
+    }
   });
 
+  comp.addEventListener("pointermove", (e) => {
+    if (!gesto || e.pointerId !== gesto.id) return;
+    if (!gesto.arrastrando) {
+      const dx = Math.abs(e.clientX - gesto.x0);
+      const dy = Math.abs(e.clientY - gesto.y0);
+      if (dx < UMBRAL && dy < UMBRAL) return;
+      if (dy >= dx) { gesto = null; return; } // vertical: es scroll, el slider se queda quieto
+      gesto.arrastrando = true;
+      try { comp.setPointerCapture(e.pointerId); } catch (_) {}
+      comp.classList.add("arrastrando");
+    }
+    setX(pctDe(e.clientX));
+  });
+
+  const terminar = (e) => {
+    if (!gesto || e.pointerId !== gesto.id) return;
+    const fueToque = !gesto.arrastrando && e.type === "pointerup";
+    if (fueToque) deslizarA(pctDe(e.clientX));
+    gesto = null;
+    comp.classList.remove("arrastrando");
+  };
+  comp.addEventListener("pointerup", terminar);
+  comp.addEventListener("pointercancel", terminar);
+
+  // mientras se arrastra en horizontal, la página no se mueve (evita el temblor diagonal en celular)
+  comp.addEventListener("touchmove", (e) => {
+    if (gesto && gesto.arrastrando) e.preventDefault();
+  }, { passive: false });
+
   comp.addEventListener("keydown", (e) => {
-    let cur = parseFloat(comp.style.getPropertyValue("--x"));
-    if (Number.isNaN(cur)) cur = 50;
-    if (e.key === "ArrowLeft") { setX(cur - 5); e.preventDefault(); }
-    if (e.key === "ArrowRight") { setX(cur + 5); e.preventDefault(); }
+    const actual = pendiente ?? x;
+    if (e.key === "ArrowLeft") { deslizarA(actual - 5); e.preventDefault(); }
+    if (e.key === "ArrowRight") { deslizarA(actual + 5); e.preventDefault(); }
+    if (e.key === "Home") { deslizarA(0); e.preventDefault(); }
+    if (e.key === "End") { deslizarA(100); e.preventDefault(); }
   });
 });
 

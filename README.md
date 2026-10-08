@@ -21,7 +21,7 @@ python3 -m http.server 4181
 | Frase de la intro | `index.html`, las `.intro-linea` dentro de `#loader` |
 | Ritmo de la intro | `js/main.js`, `PASO` (ms por icono) y `SOSTENER_MARCA` (cuánto se queda la marca OMNIUS antes de disolverse) |
 | Video del hero | Correr `herramientas/video-hero.sh "/ruta/al/video.mov"`: genera 1080p y vertical (para celular), cada uno en HEVC (principal) y H.264 (respaldo), más el poster, en `video/`. Usa solo herramientas de macOS (Swift/AVFoundation). Fuente ideal: 4K, 10–15 s |
-| Nombres y descriptores de LUTs | `index.html`, sección `#looks` (y las franjas `.tira` de la portada) |
+| Nombres de los sliders | `index.html`, sección `#looks` (y las etiquetas de las franjas `.tira` de la portada) |
 | Crédito de cámara por LUT | `index.html`, `.tag.camara` de cada slider: escribir la cámara y quitar `hidden` |
 | Franja INTRODUCING | `index.html`, `.introducing-tiras` (5 imágenes; se puede cambiar por un `<video>` del reel) |
 | Mostrar reviews | `index.html`, quitar `hidden` de `<section id="reviews">` |
@@ -31,19 +31,18 @@ del navegador. Para volver a verla: abrir una pestaña nueva o privada.
 
 ## Imágenes antes/después
 
-Los sliders usan placeholders (misma imagen con filtro CSS para simular el
-"before"). Para poner frames reales, exportar JPGs y guardarlos como:
+Los 8 sliders usan `img/looks/NN-antes-{1920,1200}.jpg` y `NN-despues-{1920,1200}.jpg`
+(recorte 2:1 del still 4K; el navegador elige 1920 o 1200 según la pantalla).
+Para reemplazar uno, exportar el still desde Resolve y generar ambos tamaños:
 
-```
-img/luts/01-before.jpg  img/luts/01-after.jpg   (16:9, uno por LUT)
-img/luts/02-before.jpg  img/luts/02-after.jpg
-...
+```bash
+sips -c 1920 3840 still.jpg --out /tmp/c.jpg            # recorte 2:1 centrado (desde 3840x2160)
+sips -Z 1920 -s formatOptions 80 /tmp/c.jpg --out img/looks/01-despues-1920.jpg
+sips -Z 1200 -s formatOptions 78 /tmp/c.jpg --out img/looks/01-despues-1200.jpg
 ```
 
-y actualizar los `src` de cada `[data-comparador]` en `index.html`
-(dos `<img>` por slider: `.antes` y `.despues`). Al usar imágenes reales,
-**quitar la clase `simulado`** de ese comparador en el HTML (esa clase aplica
-un filtro CSS que finge el "before" mientras haya placeholders).
+Nombres y títulos de cada slider: `index.html`, sección `#looks` (`POWERGRADE // 0N` + nombre).
+Las franjas de la portada (`tira-0N.jpg`) y de INTRODUCING (`reel-0N.jpg`) salen de los mismos stills gradeados.
 
 ## Caché del navegador
 

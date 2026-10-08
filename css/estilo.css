@@ -575,9 +575,12 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
 
 .looks-cta { display: flex; justify-content: center; margin-top: clamp(64px, 8vw, 110px); }
 
-/* ══════════ COMPARADOR (réplica del de Pordoi: 2:1, esquinas de 16px, manija sólida) ══════════ */
+/* ══════════ COMPARADOR (estilo Pordoi: 2:1, esquinas de 16px, manija sólida) ══════════
+   Todo el movimiento es con transform (lo hace la GPU, sin repintar la foto):
+   --x (0–100) desplaza el marco del "antes", su imagen en sentido contrario, y la guía. */
 
 .comparador {
+  --x: 50;
   position: relative;
   width: 100%;
   aspect-ratio: 2 / 1;
@@ -585,10 +588,13 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   border-radius: 16px;
   cursor: ew-resize;
   user-select: none;
-  /* pan-y: el drag horizontal mueve el slider, el gesto vertical sigue scrolleando la página */
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  /* pan-y: el gesto vertical sigue scrolleando la página; el horizontal mueve el slider */
   touch-action: pan-y;
   background: #050505;
   isolation: isolate;
+  transform: translateZ(0); /* recorte de esquinas estable en Safari */
 }
 .comparador:focus-visible { outline: 1px solid var(--hueso); outline-offset: 4px; }
 
@@ -599,59 +605,69 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   height: 100%;
   object-fit: cover;
   pointer-events: none;
+  -webkit-user-drag: none;
 }
-.comparador .antes {
-  clip-path: inset(0 calc(100% - var(--x, 50%)) 0 0);
-  z-index: 2;
-}
-/* .simulado: placeholders sin frames reales — el "before" se finge con un filtro.
-   Al poner imágenes reales, quitar la clase `simulado` del comparador en el HTML. */
-.comparador.simulado .antes { filter: saturate(0.45) contrast(0.82) brightness(1.08); }
 
-.comparador .linea {
+.antes-marco {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  transform: translate3d(calc((var(--x) - 100) * 1%), 0, 0);
+  will-change: transform;
+}
+.antes-marco .antes { transform: translate3d(calc((100 - var(--x)) * 1%), 0, 0); will-change: transform; }
+
+/* capa del ancho del slider: la línea y la manija van centradas en ella y la capa se desplaza */
+.guia {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  transform: translate3d(calc((var(--x) - 50) * 1%), 0, 0);
+  will-change: transform;
+}
+.guia .linea {
   position: absolute;
   top: 0; bottom: 0;
-  left: var(--x, 50%);
+  left: 50%;
   width: 3px;
+  margin-left: -1.5px;
   background: var(--hueso);
-  z-index: 3;
-  transform: translateX(-50%);
 }
-.comparador .handle {
+.guia .handle {
   position: absolute;
   top: 50%;
-  left: var(--x, 50%);
-  z-index: 4;
+  left: 50%;
   width: 46px;
   height: 46px;
-  transform: translate(-50%, -50%);
+  margin: -23px 0 0 -23px;
   border-radius: 50%;
   background: var(--hueso) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30' fill='none' stroke='%230b0b0a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='15' y1='8' x2='15' y2='22'/%3E%3Cpolyline points='7 11 3 15 7 19'/%3E%3Cline x1='3' y1='15' x2='11' y2='15'/%3E%3Cpolyline points='23 11 27 15 23 19'/%3E%3Cline x1='19' y1='15' x2='27' y2='15'/%3E%3C/svg%3E") center / 30px 30px no-repeat;
   box-shadow: 1px 1px 1px rgba(8, 3, 3, 0.5);
   transition: transform 0.4s var(--ease);
 }
-.comparador:hover .handle { transform: translate(-50%, -50%) scale(1.06); }
+.comparador:hover .handle,
+.comparador.arrastrando .handle { transform: scale(1.06); }
 
-.comparador .tag {
+/* deslizamiento suave al tocar o usar el teclado (no durante el arrastre) */
+.comparador.deslizando .antes-marco,
+.comparador.deslizando .antes-marco .antes,
+.comparador.deslizando .guia { transition: transform 0.45s var(--ease); }
+
+.comparador .tag.camara {
   position: absolute;
   bottom: 14px;
-  z-index: 3;
-  font-family: var(--sans);
-  font-size: 17px;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  color: var(--hueso);
-  pointer-events: none;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55), 0 0 16px rgba(0, 0, 0, 0.5);
-}
-.comparador .tag.before { left: 16px; }
-.comparador .tag.after { right: 16px; }
-.comparador .tag.camara {
   left: 50%;
+  z-index: 3;
   transform: translateX(-50%);
   font-size: 12px;
+  font-weight: 500;
   letter-spacing: 0.08em;
+  color: var(--hueso);
   white-space: nowrap;
+  pointer-events: none;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55), 0 0 16px rgba(0, 0, 0, 0.5);
 }
 
 /* ══════════ BLOQUES (reviews, FAQ) ══════════ */
@@ -747,10 +763,8 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   .portada { width: 50%; }
   .introducing-tiras { grid-template-columns: 1fr 1.4fr 1fr; }
   .introducing-tiras img:nth-child(n+4) { display: none; }
-  .comparador .tag { font-size: 11px; bottom: 10px; }
-  .comparador .tag.before { left: 12px; }
-  .comparador .tag.after { right: 12px; }
-  .comparador .tag.camara { font-size: 9px; }
+  .comparador .tag.camara { font-size: 9px; bottom: 10px; }
+  .guia .handle { width: 40px; height: 40px; margin: -20px 0 0 -20px; background-size: 26px 26px; }
   .look-nombre { font-size: 22px; }
   .reviews-grid { grid-template-columns: 1fr; }
   .cabecera .link-mono { font-size: 9px; letter-spacing: 0.2em; }
@@ -762,6 +776,9 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   .grain { animation: none; }
   .js .reveal { opacity: 1; transform: none; transition: none; }
   .faq-a { animation: none; }
+  .comparador.deslizando .antes-marco,
+  .comparador.deslizando .antes-marco .antes,
+  .comparador.deslizando .guia { transition: none; }
   .portada { transition: none; }
   .hero-media video { animation: none; transition: none; }
   .scroll-dot { animation: none; }
