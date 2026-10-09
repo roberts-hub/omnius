@@ -2,7 +2,10 @@
 // El contenido llega cifrado (AES-GCM, llave derivada de la contraseña con PBKDF2-SHA256) y solo se
 // descifra aquí, en el navegador, con la contraseña correcta. Ver herramientas/miembros.mjs.
 
-const paquete = JSON.parse(document.getElementById("contenido-cifrado").textContent || "null");
+// Una bóveda por edición (Full System y LUT Pack), cada una con su propia contraseña:
+// la contraseña de una no puede descifrar la otra.
+const crudo = JSON.parse(document.getElementById("contenido-cifrado").textContent || "null");
+const paquetes = Array.isArray(crudo) ? crudo : crudo ? [crudo] : [];
 const candado = document.querySelector("[data-candado]");
 const form = document.querySelector("[data-acceso-form]");
 const error = document.querySelector("[data-acceso-error]");
@@ -16,7 +19,7 @@ const guardar = (valor) => { try { localStorage.setItem(GUARDADO, valor); } catc
 const leerGuardado = () => { try { return JSON.parse(localStorage.getItem(GUARDADO) || "null"); } catch (_) { return null; } };
 const olvidar = () => { try { localStorage.removeItem(GUARDADO); } catch (_) {} };
 
-async function llaveDe(clave, extraible) {
+async function llaveDe(clave, paquete, extraible) {
   const base = await crypto.subtle.importKey("raw", new TextEncoder().encode(clave), "PBKDF2", false, ["deriveKey"]);
   return crypto.subtle.deriveKey(
     { name: "PBKDF2", salt: deB64(paquete.sal), iterations: paquete.iter, hash: "SHA-256" },
@@ -24,9 +27,20 @@ async function llaveDe(clave, extraible) {
   );
 }
 
-async function abrir(llave) {
+async function abrir(llave, paquete) {
   const plano = await crypto.subtle.decrypt({ name: "AES-GCM", iv: deB64(paquete.iv) }, llave, deB64(paquete.datos));
   return JSON.parse(new TextDecoder().decode(plano));
+}
+
+// prueba la contraseña contra cada bóveda; devuelve la que abre (o null)
+async function probar(clave, extraible) {
+  for (const paquete of paquetes) {
+    try {
+      const llave = await llaveDe(clave, paquete, extraible);
+      return { paquete, llave, datos: await abrir(llave, paquete) };
+    } catch (_) {}
+  }
+  return null;
 }
 
 // ── pintar el contenido (todo con textContent: nada del JSON se interpreta como HTML) ──
@@ -79,7 +93,7 @@ function tarjetaVideo(v) {
 function pintar(datos) {
   destino.replaceChildren();
   const intro = el("header", "miembros-intro");
-  intro.append(el("p", "kicker", "MEMBERS AREA"), el("h1", "titulo", "Welcome to SPECTRE."));
+  intro.append(el("p", "kicker", "MEMBERS AREA" + (datos.edicion ? " // " + datos.edicion.toUpperCase() : "")), el("h1", "titulo", "Welcome to SPECTRE."));
   if (datos.bienvenida) intro.append(el("p", "acceso-texto", datos.bienvenida));
   destino.append(intro);
 
@@ -117,6 +131,16 @@ function pintar(datos) {
     destino.append(sec);
   }
 
+  // LUT Pack: invitación a la edición completa
+  if (datos.mejora) {
+    const m = el("section", "miembros-mejora");
+    m.append(el("p", "acceso-texto", datos.mejora.texto));
+    const b = el("a", "btn-compra", datos.mejora.boton || "UPGRADE");
+    b.href = datos.mejora.url || "/get";
+    m.append(b);
+    destino.append(m);
+  }
+
   const pie = el("section", "miembros-pie");
   const ayuda = el("p", "acceso-texto", "Need help? Write to me at ");
   const correo = el("a", "", datos.soporte || "roberto@arechederra.com");
@@ -135,7 +159,7 @@ function pintar(datos) {
 // ── entrar con contraseña ──
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
-  if (!paquete) return;
+  if (!paquetes.length) return;
   const boton = form.querySelector("button");
   const clave = form.clave.value.trim().toUpperCase();
   const recordar = form.recordar.checked;
@@ -143,10 +167,10 @@ form.addEventListener("submit", async (e) => {
   boton.disabled = true;
   boton.firstChild.textContent = "UNLOCKING… ";
   try {
-    const llave = await llaveDe(clave, recordar);
-    const datos = await abrir(llave);
-    if (recordar) guardar(JSON.stringify({ sal: paquete.sal, llave: aB64(await crypto.subtle.exportKey("raw", llave)) }));
-    pintar(datos);
+    const r = await probar(clave, recordar);
+    if (!r) throw new Error("no abre");
+    if (recordar) guardar(JSON.stringify({ sal: r.paquete.sal, llave: aB64(await crypto.subtle.exportKey("raw", r.llave)) }));
+    pintar(r.datos);
     window.scrollTo(0, 0);
   } catch (_) {
     error.hidden = false;
@@ -160,10 +184,11 @@ form.addEventListener("submit", async (e) => {
 // ── dispositivo recordado: se abre solo (si la contraseña cambió, se vuelve a pedir) ──
 (async () => {
   const g = leerGuardado();
-  if (!paquete || !g || g.sal !== paquete.sal) { if (g) olvidar(); return; }
+  const paquete = g && paquetes.find((p) => p.sal === g.sal);
+  if (!paquete) { if (g) olvidar(); return; }
   try {
     const llave = await crypto.subtle.importKey("raw", deB64(g.llave), "AES-GCM", false, ["decrypt"]);
-    pintar(await abrir(llave));
+    pintar(await abrir(llave, paquete));
   } catch (_) {
     olvidar();
   }

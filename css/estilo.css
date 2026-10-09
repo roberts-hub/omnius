@@ -1550,6 +1550,15 @@ body:has(.barra-compra) .cierre { padding-bottom: 120px; }
 }
 .descarga-boton:hover { background: #fff; }
 .descarga-boton.pronto { color: var(--greige); background: none; border: 1px solid rgba(234, 224, 197, 0.2); }
+.miembros-mejora {
+  margin-top: clamp(56px, 7vw, 88px);
+  padding: 28px;
+  border-radius: 16px;
+  border: 1px solid rgba(234, 224, 197, 0.18);
+  background: rgba(234, 224, 197, 0.03);
+}
+.miembros-mejora .acceso-texto { margin-top: 0; max-width: 560px; }
+.miembros-mejora .btn-compra { width: auto; display: inline-flex; padding: 0 26px; margin-top: 18px; }
 .miembros-pie { margin-top: clamp(56px, 7vw, 88px); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px; }
 .acceso-cerrar { background: none; border-top: 0; border-left: 0; border-right: 0; cursor: pointer; }
 @media (max-width: 600px) {

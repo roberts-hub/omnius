@@ -16,7 +16,7 @@ python3 -m http.server 4181
 | Qué | Dónde |
 |---|---|
 | Links de pago | `js/main.js`, objeto `CHECKOUT_URLS`: `completo` (Full System, $89) y `luts` (LUTs Only, $49). Acepta links de Lemon Squeezy (se abren encima de la página) o de Stripe Payment Links. Paso a paso en `PAGOS.md` |
-| Área de miembros | `access.html` (link ACCESS PRODUCTS en el footer). Contenido y contraseña en `privado/` (no se sube a GitHub); después de editarlos: `node herramientas/miembros.mjs` |
+| Área de miembros | `access.html` (URL /access, link ACCESS PRODUCTS en el footer). Dos bóvedas cifradas: Full System y LUT Pack, cada una con su contraseña. Contenido y contraseñas en `privado/` (no se sube a GitHub); después de editarlos: `node herramientas/miembros.mjs`. Detalle en `PAGOS.md` |
 | Términos y licencia | `terms.html` (titular: Roberto Arechederra como persona física). Link en el footer y debajo del botón de compra |
 | Ediciones y precios | `get.html` (URL: /get), `fieldset.ediciones`: los `data-*` de cada opción (precio, precio tachado, título, texto de la caja) y los bloques `[data-oferta-panel]` con la descripción de cada una |
 | OG image / canonical al publicar | `index.html`, comentario `TODO al publicar` en el `<head>` |

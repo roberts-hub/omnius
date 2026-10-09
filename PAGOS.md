@@ -74,14 +74,16 @@ Pídele a tu contador cómo facturarlos (normalmente CFDI a residente en el extr
 
 ---
 
-## Área de miembros (access.html)
+## Área de miembros (spectrecolor.com/access)
 
-- Contraseña: `privado/clave.txt`. Contenido (videos y descargas): `privado/miembros.json`.
-  **La carpeta `privado/` nunca se sube a GitHub** (respáldala tú, p. ej. en tu Drive).
-- Para cambiar videos, descargas o contraseña: edita esos archivos y corre
-  `node herramientas/miembros.mjs` → commit + push.
-- Videos: súbelos a YouTube como **No listados** y pega el link en `"youtube"`.
-  Descargas: links de Google Drive/Dropbox ("cualquiera con el enlace") en `"url"`.
-- Si cambias la contraseña, los dispositivos guardados vuelven a pedirla, y hay que actualizar el texto del recibo.
-- Límite honesto: es una contraseña compartida. Si alguien la comparte, se cambia en 1 minuto; los links de
-  YouTube no listados y de Drive también se pueden reenviar, como en cualquier curso.
+- **Dos ediciones, dos contraseñas, dos bóvedas cifradas por separado.** La contraseña del LUT Pack solo abre
+  el contenido de LUTs; la del Full System abre todo. Una no puede abrir la otra (ni leyendo el código).
+- Contraseñas: `privado/clave-full.txt` y `privado/clave-luts.txt`. Contenido: `privado/miembros-full.json`
+  y `privado/miembros-luts.json`. **La carpeta `privado/` nunca se sube a GitHub** (respáldala tú).
+- Cada link de pago de Stripe muestra SU contraseña en la página de después del pago.
+- Las contraseñas no deben seguir un patrón adivinable (si una es "unlockluts", alguien probaría "unlockspectre").
+- Para cambiar videos, descargas o contraseñas: edita esos archivos y corre `node herramientas/miembros.mjs`
+  → commit + push. Si cambias una contraseña, cámbiala también en el mensaje de su link de pago.
+- Videos: YouTube **No listados**. Descargas: links de Drive/Dropbox. Pon en cada edición solo lo que le toca.
+- Límite honesto: la contraseña de cada edición es compartida entre sus compradores; si alguien la filtra,
+  se cambia en 1 minuto. El siguiente nivel (una clave única por compra) requiere un pequeño servidor.
