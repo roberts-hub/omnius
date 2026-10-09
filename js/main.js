@@ -520,10 +520,11 @@ if (resenas && !resenas.closest("[hidden]")) {
 
 // ── barra de compra fija (estilo Pordoi) ──
 // Dos modos según la página:
-// · [data-muestra-barra] (principal): aparece cuando esa sección entra en pantalla
-//   —o si ya se pasó— y desde ahí no vuelve a esconderse.
+// · [data-muestra-barra] (principal): solo se ve mientras la pantalla está entre esa sección y el
+//   footer; arriba (hero, looks) y al llegar al footer se esconde. No se queda "pegada".
 // · [data-oculta-barra] (producto): aparece al pasar ese botón de compra y se esconde
 //   mientras esté a la vista (nunca dos botones de compra juntos).
+// En ambos casos se recalcula al volver a la página con "atrás" (pageshow).
 const barraCompra = document.querySelector("[data-barra-compra]");
 const mostrarBarra = (si) => {
   barraCompra.classList.toggle("visible", si);
@@ -531,23 +532,37 @@ const mostrarBarra = (si) => {
 };
 const desdeSeccion = document.querySelector("[data-muestra-barra]");
 const disparadoresBarra = [...document.querySelectorAll("[data-oculta-barra]")];
-if (barraCompra && "IntersectionObserver" in window) {
+if (barraCompra) {
+  let calcular = null;
   if (desdeSeccion) {
-    const obsDesde = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting || e.boundingClientRect.top < 0) {
-        mostrarBarra(true);
-        obsDesde.disconnect(); // ya no vuelve a desaparecer
-      }
-    });
-    obsDesde.observe(desdeSeccion);
+    const pie = document.querySelector(".cierre");
+    calcular = () => {
+      const alto = window.innerHeight;
+      const entro = desdeSeccion.getBoundingClientRect().top < alto * 0.75;
+      const enPie = pie && pie.getBoundingClientRect().top < alto - 60;
+      mostrarBarra(entro && !enPie);
+    };
   } else if (disparadoresBarra.length) {
-    const aLaVista = new Map();
-    const obsBarra = new IntersectionObserver((entradas) => {
-      entradas.forEach((e) => aLaVista.set(e.target, e.isIntersecting));
-      const algunoVisible = disparadoresBarra.some((d) => aLaVista.get(d));
+    calcular = () => {
+      const alto = window.innerHeight;
+      const algunoVisible = disparadoresBarra.some((d) => {
+        const r = d.getBoundingClientRect();
+        return r.bottom > 0 && r.top < alto;
+      });
       mostrarBarra(!algunoVisible && disparadoresBarra[0].getBoundingClientRect().bottom < 0);
-    });
-    disparadoresBarra.forEach((d) => obsBarra.observe(d));
+    };
+  }
+  if (calcular) {
+    let pendiente = false;
+    const programar = () => {
+      if (pendiente) return;
+      pendiente = true;
+      requestAnimationFrame(() => { pendiente = false; calcular(); });
+    };
+    window.addEventListener("scroll", programar, { passive: true });
+    window.addEventListener("resize", programar);
+    window.addEventListener("pageshow", calcular); // volver con "atrás" (caché del navegador)
+    calcular();
   }
 }
 
