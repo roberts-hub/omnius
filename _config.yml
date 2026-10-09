@@ -1,0 +1,8 @@
+# GitHub Pages: estos archivos son internos (guías, herramientas, notas) y NO se publican en spectrecolor.com.
+# Siguen en el repositorio para trabajar desde las dos Macs.
+exclude:
+  - PAGOS.md
+  - README.md
+  - docs
+  - herramientas
+  - .gitignore

@@ -93,7 +93,7 @@ Pídele a tu contador cómo facturarlos (normalmente CFDI a residente en el extr
 - Contraseñas: `privado/clave-full.txt` y `privado/clave-luts.txt`. Contenido: `privado/miembros-full.json`
   y `privado/miembros-luts.json`. **La carpeta `privado/` nunca se sube a GitHub** (respáldala tú).
 - Cada link de pago de Stripe muestra SU contraseña en la página de después del pago.
-- Las contraseñas no deben seguir un patrón adivinable (si una es "unlockluts", alguien probaría "unlockspectre").
+- Las contraseñas no deben seguir un patrón adivinable (que de una no se pueda deducir la otra).
 - Para cambiar videos, descargas o contraseñas: edita esos archivos y corre `node herramientas/miembros.mjs`
   → commit + push. Si cambias una contraseña, cámbiala también en el mensaje de su link de pago.
 - Videos: YouTube **No listados**. Descargas: links de Drive/Dropbox. Pon en cada edición solo lo que le toca.
