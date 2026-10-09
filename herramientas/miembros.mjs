@@ -11,7 +11,7 @@ const raiz = join(dirname(fileURLToPath(import.meta.url)), "..");
 const ITERACIONES = 600000; // PBKDF2-SHA256; debe coincidir con lo que lee js/miembros.js (va dentro del paquete)
 
 const clave = readFileSync(join(raiz, "privado/clave.txt"), "utf8").trim().toUpperCase(); // sin distinguir mayúsculas (la página hace lo mismo)
-if (clave.length < 12) throw new Error("La contraseña debe tener al menos 12 caracteres.");
+if (clave.length < 8) throw new Error("La contraseña debe tener al menos 8 caracteres.");
 const contenido = JSON.parse(readFileSync(join(raiz, "privado/miembros.json"), "utf8")); // valida el JSON
 
 const sal = crypto.getRandomValues(new Uint8Array(16));
