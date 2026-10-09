@@ -69,8 +69,7 @@ Pídele a tu contador cómo facturarlos (normalmente CFDI a residente en el extr
   pregunta opcional "Email me new looks and updates?", factura PDF por correo y mensaje con SU contraseña.
 - Factura (para las dos ediciones): nota con el link al área de miembros, sin contraseña; pie con los Términos.
 - Marca: logo e ícono en `img/marca/`, color #0b0b0a, acento #eae0c5.
-- **Todavía NO están conectados al sitio** (`CHECKOUT_URLS` en `js/main.js`): se conectan cuando estén
-  los archivos de descarga en el área de miembros.
+- Conectados al sitio desde 2026-10-09 (`CHECKOUT_URLS` en `js/main.js`) para probar antes del lanzamiento.
 - Base de clientes: Stripe → Customers (Export → CSV). Los que respondieron "Yes, keep me posted" aceptaron
   recibir correos de marketing.
 

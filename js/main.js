@@ -1,11 +1,11 @@
 // ══════════ SPECTRE — main.js ══════════
 
-// TODO: pegar aquí el link de pago de cada edición (ver PAGOS.md). Sirve cualquiera de los dos:
+// Link de pago de cada edición (ver PAGOS.md). Sirve cualquiera de los dos:
 // · Lemon Squeezy: https://TIENDA.lemonsqueezy.com/checkout/buy/UUID?embed=1&media=0  → abre encima de la página
 // · Stripe (Payment Link): https://buy.stripe.com/XXXXXXXX                            → abre la página de pago de Stripe
 const CHECKOUT_URLS = {
-  completo: "TODO-URL-FULL-SYSTEM", // Full System (LUTs + node tree + tutorial) — $89
-  luts: "TODO-URL-LUTS-ONLY",       // LUTs Only (sin DaVinci Resolve) — $49
+  completo: "https://buy.stripe.com/cNi00jc8J1D63Jqc2w1kA02", // Full System (LUTs + node tree + tutorial) — $89
+  luts: "https://buy.stripe.com/6oU9AT7St0z2fs82rW1kA03",     // LUTs Only (sin DaVinci Resolve) — $49
 };
 const urlLista = (u) => !!u && !u.startsWith("TODO");
 
