@@ -214,23 +214,22 @@ img { display: block; }
   border-bottom-color: var(--linea);
 }
 .cabecera-nav { display: flex; align-items: center; gap: 26px; }
-/* acceso para compradores: solo el ícono; al pasar el cursor se abre y aparece "ACCESS" */
+/* acceso para compradores: solo el ícono, sin círculo; al pasar el cursor aparece "ACCESS" */
 .link-acceso {
   display: inline-flex;
   align-items: center;
   height: 34px;
   padding: 0 9px;
-  border-radius: 999px;
-  border: 1px solid rgba(234, 224, 197, 0.28);
+  border: 0;
   font-family: var(--mono);
   font-size: 10px;
   letter-spacing: 0.22em;
   text-decoration: none;
   color: var(--hueso);
   overflow: hidden;
-  transition: border-color 0.4s ease, background 0.4s ease, padding 0.5s var(--ease);
+  transition: opacity 0.3s ease;
 }
-.link-acceso svg { width: 15px; height: 15px; flex-shrink: 0; }
+.link-acceso svg { width: 17px; height: 17px; flex-shrink: 0; }
 .link-acceso span {
   max-width: 0;
   opacity: 0;
@@ -238,7 +237,7 @@ img { display: block; }
   white-space: nowrap;
   transition: max-width 0.5s var(--ease), opacity 0.35s ease, margin-left 0.5s var(--ease);
 }
-.link-acceso:hover, .link-acceso:focus-visible { border-color: var(--hueso); background: rgba(234, 224, 197, 0.06); padding: 0 14px 0 11px; }
+.link-acceso:hover, .link-acceso:focus-visible { padding: 0 9px; }
 .link-acceso:hover span, .link-acceso:focus-visible span { max-width: 90px; opacity: 1; margin-left: 9px; transition-delay: 0s, 0.12s, 0s; }
 .link-acceso:focus-visible { outline: 1px solid var(--hueso); outline-offset: 3px; }
 @media (max-width: 480px) {
