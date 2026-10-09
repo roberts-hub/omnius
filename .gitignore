@@ -1,3 +1,6 @@
 # temporales del escritor de video de macOS
 *.sb-*
 .DS_Store
+
+# área de miembros: contenido y contraseña en claro (NUNCA subir; el sitio publica solo la versión cifrada)
+privado/

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Members — SPECTRE</title>
+  <meta name="description" content="Members area for SPECTRE owners: tutorials and downloads." />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml" />
+  <script>document.documentElement.classList.add("js", "sin-intro");</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,300;0,400;0,600;0,700;1,300&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/estilo.css?v=20261008183604" />
+</head>
+<body class="listo pagina-acceso">
+
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- ══════════ HEADER ══════════ -->
+  <header class="cabecera solida">
+    <a class="marca" href="index.html">
+      <svg class="marca-icono" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+        <circle cx="50" cy="50" r="30" stroke="currentColor" stroke-width="5"/>
+        <line x1="50" y1="12" x2="50" y2="88" stroke="currentColor" stroke-width="3"/>
+      </svg>
+      SPECTRE
+    </a>
+    <a class="link-mono" href="index.html">← BACK TO SPECTRE</a>
+  </header>
+
+  <!-- ══════════ ÁREA DE MIEMBROS ══════════
+       El contenido (videos y descargas) va CIFRADO en el bloque de abajo y solo se abre con la contraseña.
+       No editar a mano: se edita privado/miembros.json y se corre  node herramientas/miembros.mjs -->
+  <main class="acceso">
+    <section class="acceso-candado" data-candado>
+      <svg class="acceso-icono" viewBox="18 18 64 64" fill="none" aria-hidden="true">
+        <circle cx="50" cy="50" r="24" stroke="currentColor" stroke-width="2"/>
+        <line x1="50" y1="20" x2="50" y2="80" stroke="currentColor" stroke-width="1.2"/>
+      </svg>
+      <p class="kicker">MEMBERS AREA</p>
+      <h1 class="titulo">Access your products.</h1>
+      <p class="acceso-texto">Enter the password from your purchase email to watch the tutorials and download your files.</p>
+      <form class="acceso-form" data-acceso-form>
+        <label class="acceso-etiqueta" for="clave">PASSWORD</label>
+        <input id="clave" name="clave" type="password" autocomplete="current-password" autocapitalize="characters" spellcheck="false" required />
+        <label class="acceso-recordar"><input type="checkbox" name="recordar" checked /> Remember this device</label>
+        <button class="btn-compra" type="submit">UNLOCK <span class="flecha" aria-hidden="true">→</span></button>
+        <p class="acceso-error" data-acceso-error role="alert" hidden>That password doesn't match. Check your purchase email or write to <a href="mailto:roberto@arechederra.com">roberto@arechederra.com</a>.</p>
+      </form>
+      <p class="acceso-ayuda">Don't have SPECTRE yet? <a href="producto.html">Get it here</a>.</p>
+    </section>
+
+    <section class="acceso-contenido" data-contenido hidden></section>
+  </main>
+
+  <script type="application/json" id="contenido-cifrado">{"v":1,"iter":600000,"sal":"hdFZekMMyn07ddjcOFqD/Q==","iv":"jic1KvKVB7bGFolg","datos":"OwglazokXXsh3CkIq5eDhZIu9tjL+eXfmZpKJEt6MnDUKRHOgXOWQdwKO3cpCsDG6Acl+behnrt8QzNaiL0OkE6IY8l1mbXDf+9gi4vwRKJQtaS8HkkkPK32+7+ZK7KEyo3w6/FKQ/yLi+XcJmeWKfmaQ+rDYR+9ZqS1Z/LzsnWcoQHhOQxIjb0tcFlBrxl4c4JQD2GXMqvCCaiVI9ldYOXrybD5B7HKSWhhpXpkk46Bn2U/SAh1uAD3p7Ez/XtR8qvEzjAaUcRU1jUWTuOVBpspe+B3W2Sbhb0Vorx7yaeE6VNAUp34CKCLNgtiMyZbeNdGYRLWesp4S8BL0Ze1yXo2SPRicqQGIMRXrGh8aZe9bGrB17HbFdlsaXTYU6VjK+YlBLx/TqUPLlqL0rIckO7dMAAiJfs52HmAjUezKkDsV08GGY1CM0H1FyU+cwkVvkYNGYH+muW9AiOwnCP8rpXnuTTll9xT6UlDqNZ9612PSqW6KS9NqihVPrPW4Re3XyL4X28j7HhUPhdK/aQrdfD7NHahieinT9ujX2mO70rSe2yMGIY3l2jnhLPunWnJWN1g1LbbogWR39WyCV3GzJWFIeeXMdK2mOnU+G4ptt9YhsaH8raPlIGyzGb9QRBtOQKPu3zNINHczUTmxstIgeAZGFTX2HvM5PPDulrzmTDusM+uaLNJ88oLbetS32qVftB8VuMLE3k8K45ssuAknSk9IbtwMRevP02kPCRPsOMMMQL8/Xb7RX32kYfiJzlcpd96RRciOIyeLTHd7D+VPsS9h4+ntZdVR4kVUOPLlfKhUbdjTGk6oL1at+eZLItLAX4VtQrD3b0n/CxcXfd6zWDW1PNRAwN0hvGGoHq3KlX5DwHZcnE9wnHvfSw+EJdQuPcn7aNGI4+D9qRGK9KqnRDQqLUsasOTTYLj6GIaPGp+IqbKwqeDZqBMXscZ8ay9kY4FaZS62B/YKn6K+OlfMsmgPqVN/Y8C6RXvJNaY/GnL2s0xmiOxNzvdd6fWiTtYrHPMjXlXsvyQGpvisDbk2IE6/oItrkMc8ME0NDr6a4PA+l6ER9hhBSieQYf8tQ4Z1lp+3qrWd/rKQzCeElsqmw5XxW7sSSji72iRRzFDYlmW+6L5I5D/TsX35GTX8EnQ2bkLT47GJ2VKetEPS8M8Q4PW/Gz38b9qnDtoms/OycY4phJLBmAecvjpMoN2UvLOwcqUzKeihJRb/kQp452QnZNaH2GCnXzsoLSkoQO65MQWfFqKMC5AYAC0mHH1Zn9G+rBCzu2JebtI6O1zdPWr+QawAk0Oyge3+jKS/JnXQB3Tu8W+zID3e4I55KLBiIKw0b7Ysl9V9c3RyCCt3l3RTp4KfnpMslqNybOgQWXexDh0rCjsAzxOs0/WRLyH6VA/45vAuf5rM61412QTBs/omaeCkIJkDshh/Of2Rp/BSTyg/CCg3lBJMaEXor6dax6ZIStaCweY09nPVHyKb/5vGREP1Vobu/0fdKdaL/mcI/eI48/LwEAN6sR78jtn62aX9VHLcEDTxDJJjtA4jr9VMQo="}</script>
+
+  <footer class="cierre cierre-corto">
+    <div class="cierre-pie">
+      <span class="marca-texto">SPECTRE</span>
+      <span class="cierre-links">
+        <a href="https://instagram.com/robert.arre" target="_blank" rel="noopener">@ROBERT.ARRE</a>
+        <a href="mailto:roberto@arechederra.com">CONTACT</a>
+        <a href="terms.html">TERMS</a>
+        <a href="access.html">ACCESS PRODUCTS</a>
+      </span>
+      <span>© 2026 ROBERTO ARECHEDERRA</span>
+    </div>
+    <p class="cierre-powered"><a href="https://twowaves.mx" target="_blank" rel="noopener"><svg viewBox="0 0 41 34" aria-hidden="true"><rect x="0" y="0.8" width="29" height="6.2"/><rect x="10.7" y="0.8" width="7.6" height="33"/><circle cx="36.9" cy="3.9" r="3.9"/></svg><span>POWERED BY <strong>TWO WAVES</strong></span></a></p>
+  </footer>
+
+  <script src="js/miembros.js?v=20261008183604" defer></script>
+</body>
+</html>

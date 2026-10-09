@@ -1,10 +1,11 @@
 // ══════════ SPECTRE — main.js ══════════
 
-// TODO: reemplazar con los buy-links reales de la tienda Lemon Squeezy (un producto por edición),
-// formato: https://TIENDA.lemonsqueezy.com/checkout/buy/UUID?embed=1&media=0
-const LEMON_URLS = {
-  completo: "TODO-LEMONSQUEEZY-URL-FULL-SYSTEM", // Full System (LUTs + node tree + tutorial) — $79
-  luts: "TODO-LEMONSQUEEZY-URL-LUTS-ONLY",       // LUTs Only (sin DaVinci Resolve) — $39
+// TODO: pegar aquí el link de pago de cada edición (ver PAGOS.md). Sirve cualquiera de los dos:
+// · Lemon Squeezy: https://TIENDA.lemonsqueezy.com/checkout/buy/UUID?embed=1&media=0  → abre encima de la página
+// · Stripe (Payment Link): https://buy.stripe.com/XXXXXXXX                            → abre la página de pago de Stripe
+const CHECKOUT_URLS = {
+  completo: "TODO-URL-FULL-SYSTEM", // Full System (LUTs + node tree + tutorial) — $79
+  luts: "TODO-URL-LUTS-ONLY",       // LUTs Only (sin DaVinci Resolve) — $39
 };
 const urlLista = (u) => !!u && !u.startsWith("TODO");
 
@@ -13,7 +14,7 @@ const urlLista = (u) => !!u && !u.startsWith("TODO");
 // ?edition=luts en la URL abre la página con LUTs Only ya elegida.
 let edicion = "completo";
 const botonesCheckout = document.querySelectorAll("[data-checkout]");
-const urlDe = (b) => LEMON_URLS[b.dataset.checkout || edicion];
+const urlDe = (b) => CHECKOUT_URLS[b.dataset.checkout || edicion];
 const actualizarCheckout = () => botonesCheckout.forEach((b) => {
   const u = urlDe(b);
   if (urlLista(u)) b.href = u;
@@ -65,11 +66,13 @@ if (caja && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
   girar();
 }
 
-// ── Checkout (Lemon Squeezy) ──
-// Con un buy-link real, [data-checkout] abre el checkout encima de la página (overlay) con la
-// URL de su edición. Sin buy-links, los botones conservan su href y lemon.js ni se descarga.
-if (botonesCheckout.length && Object.values(LEMON_URLS).some(urlLista)) {
-  actualizarCheckout();
+// ── Checkout ──
+// Con un link real, [data-checkout] lleva al pago de su edición. Si es de Lemon Squeezy se abre
+// encima de la página (overlay, carga lemon.js); si es de Stripe, va a su página de pago.
+// Sin links, los botones conservan su href y no se descarga nada.
+const esLemon = (u) => urlLista(u) && /lemonsqueezy\.com/.test(u);
+if (botonesCheckout.length) actualizarCheckout();
+if (botonesCheckout.length && Object.values(CHECKOUT_URLS).some(esLemon)) {
   const s = document.createElement("script");
   s.src = "https://assets.lemonsqueezy.com/lemon.js";
   s.defer = true;
@@ -79,7 +82,7 @@ if (botonesCheckout.length && Object.values(LEMON_URLS).some(urlLista)) {
     const b = e.target.closest("[data-checkout]");
     if (!b) return;
     const u = urlDe(b);
-    if (!urlLista(u) || !window.LemonSqueezy) return;
+    if (!esLemon(u) || !window.LemonSqueezy) return;
     e.preventDefault();
     window.LemonSqueezy.Url.Open(u);
   });
