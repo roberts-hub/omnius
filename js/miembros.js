@@ -141,6 +141,9 @@ function pintar(datos) {
     destino.append(m);
   }
 
+  // Two Waves Academy: lista de espera (js/waitlist.js)
+  if (window.montarWaitlist) window.montarWaitlist(destino);
+
   const pie = el("section", "miembros-pie");
   const ayuda = el("p", "acceso-texto", "Need help? Write to me at ");
   const correo = el("a", "", datos.soporte || "roberto@arechederra.com");
