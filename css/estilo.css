@@ -782,7 +782,7 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
 }
 .legal .titulo { margin-top: 18px; }
 .legal-intro { margin-top: 26px; font-size: 17px; line-height: 1.7; color: var(--lino); }
-.legal section { margin-top: 44px; padding-top: 28px; border-top: 1px solid var(--linea); }
+.legal section { scroll-margin-top: 100px; margin-top: 44px; padding-top: 28px; border-top: 1px solid var(--linea); }
 .legal h2 { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; color: var(--hueso); }
 .legal p { margin-top: 12px; font-size: 15px; font-weight: 300; line-height: 1.75; color: var(--greige); }
 .legal strong { font-weight: 600; color: var(--hueso); }
