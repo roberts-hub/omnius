@@ -214,11 +214,12 @@ img { display: block; }
   border-bottom-color: var(--linea);
 }
 .cabecera-nav { display: flex; align-items: center; gap: 26px; }
+/* acceso para compradores: solo el ícono; al pasar el cursor se abre y aparece "ACCESS" */
 .link-acceso {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 7px 12px 7px 10px;
+  height: 34px;
+  padding: 0 9px;
   border-radius: 999px;
   border: 1px solid rgba(234, 224, 197, 0.28);
   font-family: var(--mono);
@@ -226,15 +227,22 @@ img { display: block; }
   letter-spacing: 0.22em;
   text-decoration: none;
   color: var(--hueso);
-  transition: border-color 0.3s ease, background 0.3s ease;
+  overflow: hidden;
+  transition: border-color 0.4s ease, background 0.4s ease, padding 0.5s var(--ease);
 }
 .link-acceso svg { width: 15px; height: 15px; flex-shrink: 0; }
-.link-acceso:hover { border-color: var(--hueso); background: rgba(234, 224, 197, 0.06); }
+.link-acceso span {
+  max-width: 0;
+  opacity: 0;
+  margin-left: 0;
+  white-space: nowrap;
+  transition: max-width 0.5s var(--ease), opacity 0.35s ease, margin-left 0.5s var(--ease);
+}
+.link-acceso:hover, .link-acceso:focus-visible { border-color: var(--hueso); background: rgba(234, 224, 197, 0.06); padding: 0 14px 0 11px; }
+.link-acceso:hover span, .link-acceso:focus-visible span { max-width: 90px; opacity: 1; margin-left: 9px; transition-delay: 0s, 0.12s, 0s; }
 .link-acceso:focus-visible { outline: 1px solid var(--hueso); outline-offset: 3px; }
 @media (max-width: 480px) {
   .cabecera-nav { gap: 14px; }
-  .link-acceso { padding: 7px; }
-  .link-acceso span { display: none; }
 }
 .js .cabecera { opacity: 0; transition: opacity 1.2s var(--ease), background 0.6s ease, border-color 0.6s ease; }
 .js .listo .cabecera { opacity: 1; }
