@@ -61,6 +61,19 @@ Pídele a tu contador cómo facturarlos (normalmente CFDI a residente en el extr
 
 ---
 
+## Estado actual en Stripe (cuenta real)
+
+- Full System $89 → https://buy.stripe.com/cNi00jc8J1D63Jqc2w1kA02
+- LUT Pack $49 → https://buy.stripe.com/6oU9AT7St0z2fs82rW1kA03
+- Cada link: nombre del cliente, códigos de promoción, número fiscal para empresas, sin impuesto automático,
+  pregunta opcional "Email me new looks and updates?", factura PDF por correo y mensaje con SU contraseña.
+- Factura (para las dos ediciones): nota con el link al área de miembros, sin contraseña; pie con los Términos.
+- Marca: logo e ícono en `img/marca/`, color #0b0b0a, acento #eae0c5.
+- **Todavía NO están conectados al sitio** (`CHECKOUT_URLS` en `js/main.js`): se conectan cuando estén
+  los archivos de descarga en el área de miembros.
+- Base de clientes: Stripe → Customers (Export → CSV). Los que respondieron "Yes, keep me posted" aceptaron
+  recibir correos de marketing.
+
 ## Stripe Payment Links (lo que se usa)
 
 1. Cuenta en https://dashboard.stripe.com/register — tipo de negocio **Persona física con actividad empresarial**,
