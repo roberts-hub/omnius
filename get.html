@@ -22,7 +22,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,300;0,400;0,600;0,700;1,300&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/estilo.css?v=20261008230124" />
+  <link rel="stylesheet" href="css/estilo.css?v=20261008230946" />
 </head>
 <body class="listo pagina-producto">
 
@@ -105,9 +105,10 @@
         </fieldset>
 
         <!-- Sin buy-link configurado los botones se quedan en #comprar; con él, abren el checkout aquí mismo. -->
-        <a id="cta-comprar" class="btn-compra" href="#comprar" data-checkout data-oculta-barra>GET SPECTRE <span class="flecha" aria-hidden="true">→</span></a>
-        <a class="btn-express" href="#comprar" data-checkout>Express checkout <span class="btn-express-metodos">Apple Pay · Google Pay · Card</span></a>
-        <p class="pagos-nota">Secure checkout by Stripe · Instant access<br />By purchasing you agree to the <a href="/terms">Terms &amp; License</a>.</p>
+        <!-- botón de compra con el morado oficial de Stripe (#635BFF), como el botón de Shop Pay en Pordoi -->
+        <a id="cta-comprar" class="btn-compra btn-stripe" href="#comprar" data-checkout data-oculta-barra><svg class="candado" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="4.5" y="10" width="15" height="11" rx="2.5" fill="currentColor"/></svg><span>Buy securely with</span> <b class="marca-stripe">stripe</b></a>
+        <p class="pagos-metodos">Apple Pay · Google Pay · Visa · Mastercard · Amex · Instant access</p>
+        <p class="pagos-nota">By purchasing you agree to the <a href="/terms">Terms &amp; License</a>.</p>
 
         <div class="oferta-panel" data-oferta-panel="completo">
           <p class="lead"><strong>One signature look. One system. Graded like film.</strong></p>
@@ -201,9 +202,9 @@
     <div class="barra-compra-info">
       <p class="barra-compra-nombre">SPECTRE <span data-oferta-texto="titulo">Color System</span></p>
     </div>
-    <a class="barra-compra-boton" href="#comprar" data-checkout>GET SPECTRE <span class="flecha" aria-hidden="true">→</span></a>
+    <a class="barra-compra-boton btn-stripe" href="#comprar" data-checkout><svg class="candado" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="4.5" y="10" width="15" height="11" rx="2.5" fill="currentColor"/></svg><span>Buy with</span> <b class="marca-stripe">stripe</b></a>
   </div>
 
-  <script src="js/main.js?v=20261008230124" defer></script>
+  <script src="js/main.js?v=20261008230946" defer></script>
 </body>
 </html>
