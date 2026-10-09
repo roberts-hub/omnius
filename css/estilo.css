@@ -434,7 +434,7 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
 
 /* ══════════ CAJA 3D (producto.html) — como el render de la caja de Pordoi ══════════
    Escena de estudio oscura con luz de piso; la caja gira para mostrar el lomo (texto
-   vertical) y el frente (título sobre una foto + bandas de tomas gradeadas + swatches).
+   vertical) y el frente (título sobre una foto + bandas de tomas gradeadas).
    Todas las medidas en cqi: la caja escala con el ancho de la escena. */
 .caja-escena {
   --w: 43cqi;                     /* ancho del frente */
@@ -585,20 +585,6 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   margin-right: -0.4em;
 }
 .frente-pie { flex: 1.05; }
-/* muestras de color abajo a la izquierda, sobre el agua de la foto del yate */
-.frente-swatches {
-  position: absolute;
-  left: 7%;
-  bottom: 14%;
-  display: flex;
-  gap: 0.5cqi;
-}
-.frente-swatches i {
-  width: 3.4cqi;
-  height: 1.3cqi;
-  background: var(--c);
-  box-shadow: 0 0.2cqi 0.8cqi rgba(0, 0, 0, 0.35);
-}
 /* sombra de contacto en el piso */
 .caja-sombra {
   position: absolute;
