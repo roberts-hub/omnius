@@ -185,15 +185,16 @@ if (heroVideo) {
 }
 
 // ── comparadores antes/después ──
-// Fluidez: el movimiento es solo transform (CSS, vía --x) y se actualiza una vez por cuadro.
-// El slider SOLO se mueve arrastrando (presionar + desplazar). Un clic, un toque suelto del
-// trackpad o pasar el cursor por encima no lo mueven.
-// En touch: gesto vertical = scroll de la página (el slider no se mueve); horizontal = arrastrar
-// (y la página no se mueve mientras tanto).
-// En touch se espera a 10 px de recorrido para decidir: con 5 px, un scroll con el pulgar que arranca
-// un poco de lado (muy común) se tomaba como arrastre y la página se quedaba "trabada".
-const UMBRAL = 10;
-const UMBRAL_MOUSE = 3; // px de arrastre real con el botón presionado
+// Fluidez en celular:
+// · el movimiento es solo transform (vía --x) y se pinta una vez por cuadro; nada se repinta al arrastrar
+// · la línea sigue al dedo de forma RELATIVA (desde donde estaba): nunca brinca a donde tocaste
+// · la dirección se decide rápido si el gesto es claramente horizontal; si es vertical o ambiguo, la
+//   página hace scroll normal (un scroll con el pulgar que arranca un poco de lado no se "roba")
+// · el slider SOLO se mueve arrastrando: un toque suelto o pasar el cursor no lo mueven
+const UMBRAL_TOUCH = 6;      // px mínimos antes de decidir en touch
+const UMBRAL_DUDOSO = 14;    // si a 6 px el gesto es ambiguo, se espera hasta aquí
+const RAZON_HORIZONTAL = 1.5; // dx debe superar a dy por este factor (ángulo < ~34°) para arrastrar de inmediato
+const UMBRAL_MOUSE = 3;
 
 // posición inicial: línea al 25% → se ve 3/4 del resultado final (after)
 const X_INICIAL = 25;
@@ -209,17 +210,21 @@ document.querySelectorAll("[data-comparador]").forEach((comp) => {
     x = pendiente;
     pendiente = null;
     comp.style.setProperty("--x", x.toFixed(2));
-    comp.setAttribute("aria-valuenow", Math.round(x));
-    comp.setAttribute("aria-valuetext", Math.round(x) + "% before, rest graded");
   };
   const setX = (pct) => {
     pendiente = Math.min(Math.max(pct, 0), 100);
     if (!cuadro) cuadro = requestAnimationFrame(pintar);
   };
-  // salto con deslizamiento suave (toque o teclado)
+  const anunciar = () => {
+    const v = Math.round(pendiente ?? x);
+    comp.setAttribute("aria-valuenow", v);
+    comp.setAttribute("aria-valuetext", v + "% before, rest graded");
+  };
+  // salto con deslizamiento suave (teclado)
   const deslizarA = (pct) => {
     comp.classList.add("deslizando");
     setX(pct);
+    anunciar();
     clearTimeout(comp._fin);
     comp._fin = setTimeout(() => comp.classList.remove("deslizando"), 460);
   };
@@ -231,21 +236,21 @@ document.querySelectorAll("[data-comparador]").forEach((comp) => {
   comp.setAttribute("aria-valuemax", "100");
   comp.setAttribute("aria-valuenow", String(X_INICIAL));
 
-  let caja = null;
-  const pctDe = (clientX) => ((clientX - caja.left) / caja.width) * 100;
-
-  let gesto = null; // { id, x0, y0, tipo, arrastrando }
+  let ancho = 1;
+  // { id, tipo, x0, y0, arrastrando, base, inicioX, xAntes }
+  let gesto = null;
 
   const soltar = () => {
     if (gesto && gesto.arrastrando) {
       try { comp.releasePointerCapture(gesto.id); } catch (_) {}
+      anunciar();
     }
     gesto = null;
     comp.classList.remove("arrastrando");
   };
 
   // pista: un empujón sutil de la línea para sugerir que se puede arrastrar (una sola vez).
-  // Se cancela en cuanto la persona toca, arrastra o usa el teclado.
+  // No arranca si la persona ya tocó el slider, y se retira en cuanto lo toca.
   let pistaActiva = false;
   comp._pista = () => {
     if (pistaActiva || comp._pistaHecha) return;
@@ -255,46 +260,56 @@ document.querySelectorAll("[data-comparador]").forEach((comp) => {
     const AMPLITUD = 5; // % — un empujón sutil, no un vaivén
     const inicio = performance.now();
     const paso = (ahora) => {
-      if (!pistaActiva) return;
-      if (gesto) { pistaActiva = false; return; } // la persona ya está tocando: la pista se retira
+      if (!pistaActiva || gesto) { pistaActiva = false; return; }
       const p = Math.min((ahora - inicio) / DURACION, 1);
-      // un solo empujón suave hacia la derecha y de regreso a la posición inicial
       setX(X_INICIAL + AMPLITUD * Math.sin(Math.PI * p) ** 2);
       if (p < 1) requestAnimationFrame(paso);
       else pistaActiva = false;
     };
     requestAnimationFrame(paso);
   };
-  const cancelarPista = () => { pistaActiva = false; };
+  const cancelarPista = () => {
+    comp._pistaHecha = true;
+    if (pistaActiva) { pistaActiva = false; setX(X_INICIAL); }
+  };
+
+  const empezarArrastre = (e) => {
+    gesto.arrastrando = true;
+    gesto.base = pendiente ?? x;   // la línea parte de donde está…
+    // …y se mueve lo mismo que el dedo desde aquí (sin brincos); con mouse, desde donde se presionó
+    gesto.inicioX = gesto.tipo === "mouse" ? gesto.x0 : e.clientX;
+    try { comp.setPointerCapture(e.pointerId); } catch (_) {}
+    comp.classList.add("arrastrando");
+  };
 
   comp.addEventListener("pointerdown", (e) => {
     cancelarPista();
     if (e.button !== 0) return;
-    caja = comp.getBoundingClientRect();
-    // solo se registra el inicio; el slider no se mueve hasta que haya arrastre real
-    gesto = { id: e.pointerId, x0: e.clientX, y0: e.clientY, tipo: e.pointerType, arrastrando: false, xInicial: pendiente ?? x };
+    ancho = comp.getBoundingClientRect().width || 1;
+    gesto = { id: e.pointerId, tipo: e.pointerType, x0: e.clientX, y0: e.clientY, arrastrando: false, xAntes: pendiente ?? x };
     if (e.pointerType === "mouse") e.preventDefault(); // sin selección de texto ni arrastre de imagen
   });
 
   comp.addEventListener("pointermove", (e) => {
     if (!gesto || e.pointerId !== gesto.id) return;
-    const esMouse = gesto.tipo === "mouse";
-    // botón ya suelto (p. ej. se soltó fuera de la ventana): se corta el arrastre
-    if (esMouse && e.buttons === 0) { soltar(); return; }
     if (!gesto.arrastrando) {
       const dx = Math.abs(e.clientX - gesto.x0);
       const dy = Math.abs(e.clientY - gesto.y0);
-      if (esMouse) {
+      if (gesto.tipo === "mouse") {
+        if (e.buttons === 0) { soltar(); return; }
         if (dx < UMBRAL_MOUSE) return;
       } else {
-        if (Math.hypot(dx, dy) < UMBRAL) return;
-        if (dy >= dx) { gesto = null; return; } // vertical: es scroll, el slider se queda quieto
+        const d = Math.hypot(dx, dy);
+        if (d < UMBRAL_TOUCH) return;
+        const horizontal = dx > dy * RAZON_HORIZONTAL;
+        if (!horizontal) {
+          if (dy >= dx) { gesto = null; return; }   // vertical: es scroll de la página
+          if (d < UMBRAL_DUDOSO) return;           // ambiguo: un poco más de recorrido
+        }
       }
-      gesto.arrastrando = true;
-      try { comp.setPointerCapture(e.pointerId); } catch (_) {}
-      comp.classList.add("arrastrando");
+      empezarArrastre(e);
     }
-    setX(pctDe(e.clientX));
+    setX(gesto.base + ((e.clientX - gesto.inicioX) / ancho) * 100);
   });
 
   const terminar = (e) => {
@@ -304,15 +319,17 @@ document.querySelectorAll("[data-comparador]").forEach((comp) => {
   comp.addEventListener("pointerup", terminar);
   // el navegador se quedó con el gesto (scroll): el slider regresa a donde estaba
   comp.addEventListener("pointercancel", (e) => {
-    if (gesto && e.pointerId === gesto.id && gesto.arrastrando) setX(gesto.xInicial);
+    if (gesto && e.pointerId === gesto.id && gesto.arrastrando) setX(gesto.xAntes);
     terminar(e);
   });
-  comp.addEventListener("lostpointercapture", terminar);
+  // solo cuenta si el que pierde la captura es el slider: lostpointercapture burbujea desde las capas
+  // internas, y tomarlo como "se soltó" congelaba el arrastre al empezar del lado del antes
+  comp.addEventListener("lostpointercapture", (e) => { if (e.target === comp) terminar(e); });
   window.addEventListener("blur", soltar);
 
   // mientras se arrastra en horizontal, la página no se mueve (evita el temblor diagonal en celular)
   comp.addEventListener("touchmove", (e) => {
-    if (gesto && gesto.arrastrando) e.preventDefault();
+    if (gesto && gesto.arrastrando && e.cancelable) e.preventDefault();
   }, { passive: false });
 
   comp.addEventListener("keydown", (e) => {
@@ -381,7 +398,11 @@ if (carrusel) {
     // precarga: los dos clips a cada lado del activo
     const pos = enPista.findIndex((s) => s._indice === activo);
     enPista.forEach((s, k) => {
-      if (Math.abs(k - pos) <= 2) s.querySelectorAll("img").forEach((img) => { img.loading = "eager"; });
+      if (Math.abs(k - pos) <= 2) s.querySelectorAll("img").forEach((img) => {
+        img.loading = "eager";
+        // decodificar antes de que se vea: así el primer arrastre no espera a que el teléfono descomprima la foto
+        if (img.decode) img.decode().catch(() => {});
+      });
     });
     puntos.forEach((p, k) => p.setAttribute("aria-selected", k === activo ? "true" : "false"));
     contador.textContent = String(activo + 1).padStart(2, "0");

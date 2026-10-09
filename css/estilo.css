@@ -1096,6 +1096,7 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   inset: 0;
   z-index: 2;
   overflow: hidden;
+  pointer-events: none; /* el toque siempre cae en el slider, no en esta capa */
   transform: translate3d(calc((var(--x) - 100) * 1%), 0, 0);
 }
 .antes-marco .antes { transform: translate3d(calc((100 - var(--x)) * 1%), 0, 0); }
@@ -1130,10 +1131,9 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   border-radius: 50%;
   background: var(--hueso) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30' fill='none' stroke='%230b0b0a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='15' y1='8' x2='15' y2='22'/%3E%3Cpolyline points='7 11 3 15 7 19'/%3E%3Cline x1='3' y1='15' x2='11' y2='15'/%3E%3Cpolyline points='23 11 27 15 23 19'/%3E%3Cline x1='19' y1='15' x2='27' y2='15'/%3E%3C/svg%3E") center / 30px 30px no-repeat;
   box-shadow: 1px 1px 1px rgba(8, 3, 3, 0.5);
-  transition: transform 0.4s var(--ease);
 }
-/* la manija solo reacciona mientras se arrastra (pasar el cursor por encima no cambia nada) */
-.comparador.arrastrando .handle { transform: scale(1.06); }
+/* sin animar la manija al arrastrar: escalarla repintaba toda la capa de la guía cuadro por cuadro
+   en celular, justo al empezar cada arrastre */
 .comparador.arrastrando { cursor: grabbing; }
 
 /* deslizamiento suave al tocar o usar el teclado (no durante el arrastre) */
