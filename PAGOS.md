@@ -17,7 +17,7 @@ Roberto eligió Stripe directo el 2026-10-08: una sola cuenta, depósitos en MXN
 | Quién es el vendedor ante el cliente | Lemon Squeezy (*merchant of record*) | Tú |
 | Impuestos de otros países (IVA de Europa, sales tax, GST…) | Los cobra y los paga Lemon Squeezy | Te tocan a ti |
 | Comisión | 5% + 50¢ (puede sumar un extra en pagos internacionales) | 3.6% + $3 MXN, +0.5% tarjeta internacional, +2% conversión, + IVA sobre la comisión |
-| En una venta de $79 | ≈ $4.45 – $5.60 USD | ≈ $5.00 – $5.80 USD |
+| En una venta de $89 | ≈ $4.45 – $5.60 USD | ≈ $5.00 – $5.80 USD |
 | Entrega de archivos y correo con la contraseña | Incluida (sube los archivos, nota en el recibo) | Solo mensaje en la página de confirmación |
 | Te paga | En USD a tu banco mexicano (México está en su lista de pagos bancarios), 2 veces al mes | En MXN a tu CLABE |
 | En el sitio | Se abre encima de la página | Va a la página de pago de Stripe |
@@ -41,8 +41,8 @@ Pídele a tu contador cómo facturarlos (normalmente CFDI a residente en el extr
    - pagos: **Bank payout** a tu cuenta mexicana (CLABE; puedes elegir recibir en MXN).
    - En la revisión describe el producto: "Digital color grading tools (LUTs and DaVinci Resolve PowerGrade) and video tutorials, delivered as downloads."
 3. **Crear el producto** (Store → Products → New product): nombre `SPECTRE Color System`, con **dos variantes**:
-   - `Full System` — $79 — sube el .zip (PowerGrade .drx + LUTs .cube + footage).
-   - `LUTs Only` — $39 — sube el .zip (LUTs .cube).
+   - `Full System` — $89 — sube el .zip (PowerGrade .drx + LUTs .cube + footage).
+   - `LUTs Only` — $49 — sube el .zip (LUTs .cube).
 4. **Nota del recibo / pantalla de gracias** (en el producto → *Confirmation modal* y *Email receipt*): pega
    el texto de abajo, cambiando `[CONTRASEÑA]` por la de `privado/clave.txt`.
 5. **Copiar los links**: en cada variante → *Share* → *Checkout link* → activa **Checkout overlay**.
@@ -65,7 +65,7 @@ Pídele a tu contador cómo facturarlos (normalmente CFDI a residente en el extr
 
 1. Cuenta en https://dashboard.stripe.com/register — tipo de negocio **Persona física con actividad empresarial**,
    RFC personal (13 caracteres) en el representante, dirección y teléfono en México, CLABE de tu banco.
-2. Productos → crear `SPECTRE Full System` ($79 USD) y `SPECTRE LUT Pack` ($39 USD).
+2. Productos → crear `SPECTRE Full System` ($89 USD) y `SPECTRE LUT Pack` ($49 USD).
 3. Para cada uno: **Payment Link** → *After payment* → **Show confirmation page** con el texto del recibo de arriba
    (así la contraseña solo la ve quien pagó). Activa los correos de recibo en Settings → Emails.
 4. Copia los dos links (`https://buy.stripe.com/...`) y mándamelos.
