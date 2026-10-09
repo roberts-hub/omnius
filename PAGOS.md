@@ -4,7 +4,13 @@ Situación: Roberto, persona física con actividad empresarial (RFC) en México,
 digital en dólares a clientes de todo el mundo. El sitio ya está listo: solo falta pegar **dos links de pago**
 (uno por edición) en `js/main.js` → `CHECKOUT_URLS`.
 
-## Recomendación: Lemon Squeezy (plan A) — Stripe Payment Links (plan B)
+## Decisión: Stripe directo (Payment Links)
+
+Roberto eligió Stripe directo el 2026-10-08: una sola cuenta, depósitos en MXN a su CLABE y entrega por el
+área de miembros. Los pasos están abajo en "Stripe Payment Links". Lemon Squeezy queda como alternativa
+(el sitio acepta sus links igual), por si algún día conviene que otro se encargue de los impuestos de otros países.
+
+### Comparación (referencia)
 
 | | Lemon Squeezy | Stripe directo (Payment Links) |
 |---|---|---|
@@ -26,7 +32,7 @@ Pídele a tu contador cómo facturarlos (normalmente CFDI a residente en el extr
 
 ---
 
-## Plan A — Lemon Squeezy
+## Alternativa — Lemon Squeezy
 
 1. **Crear cuenta y tienda** en https://app.lemonsqueezy.com — nombre de tienda: `SPECTRE`, moneda USD.
 2. **Activar la tienda** (Settings → General / Payouts):
@@ -55,7 +61,7 @@ Pídele a tu contador cómo facturarlos (normalmente CFDI a residente en el extr
 
 ---
 
-## Plan B — Stripe Payment Links
+## Stripe Payment Links (lo que se usa)
 
 1. Cuenta en https://dashboard.stripe.com/register — tipo de negocio **Persona física con actividad empresarial**,
    RFC personal (13 caracteres) en el representante, dirección y teléfono en México, CLABE de tu banco.
@@ -63,8 +69,8 @@ Pídele a tu contador cómo facturarlos (normalmente CFDI a residente en el extr
 3. Para cada uno: **Payment Link** → *After payment* → **Show confirmation page** con el texto del recibo de arriba
    (así la contraseña solo la ve quien pagó). Activa los correos de recibo en Settings → Emails.
 4. Copia los dos links (`https://buy.stripe.com/...`) y mándamelos.
-5. Avísame si usas Stripe: hay que cambiar en los Términos y en la página de compra "Lemon Squeezy" por "Stripe",
-   y tú quedas como vendedor ante el cliente (impuestos de otros países: consúltalo con tu contador).
+5. Los Términos y la página de compra ya dicen Stripe. Tú eres el vendedor ante el cliente: IVA 16% en ventas
+   a México (CFDI si lo piden), exportación al extranjero; revisa con tu contador.
 
 ---
 

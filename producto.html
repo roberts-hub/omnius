@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,300;0,400;0,600;0,700;1,300&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/estilo.css?v=20261008211732" />
+  <link rel="stylesheet" href="css/estilo.css?v=20261008212838" />
 </head>
 <body class="listo pagina-producto">
 
@@ -75,7 +75,7 @@
           <span class="desc">LAUNCH PRICE</span>
         </div>
 
-        <!-- Dos ediciones; cada una con su propio buy-link de Lemon Squeezy (js/main.js → LEMON_URLS).
+        <!-- Dos ediciones; cada una con su propio link de pago de Stripe (js/main.js → CHECKOUT_URLS).
              Los data-* de cada opción son los textos que cambian en la página al elegirla. -->
         <fieldset class="ediciones" id="luts" data-ediciones>
           <legend class="ediciones-titulo">EDITION</legend>
@@ -97,8 +97,8 @@
 
         <!-- Sin buy-link configurado los botones se quedan en #comprar; con él, abren el checkout aquí mismo. -->
         <a id="cta-comprar" class="btn-compra" href="#comprar" data-checkout data-oculta-barra>GET SPECTRE <span class="flecha" aria-hidden="true">→</span></a>
-        <a class="btn-express" href="#comprar" data-checkout>Express checkout <span class="btn-express-metodos">Apple Pay · PayPal · Card</span></a>
-        <p class="pagos-nota">Secure checkout by Lemon Squeezy · Instant download<br />By purchasing you agree to the <a href="terms.html">Terms &amp; License</a>.</p>
+        <a class="btn-express" href="#comprar" data-checkout>Express checkout <span class="btn-express-metodos">Apple Pay · Google Pay · Card</span></a>
+        <p class="pagos-nota">Secure checkout by Stripe · Instant access<br />By purchasing you agree to the <a href="terms.html">Terms &amp; License</a>.</p>
 
         <div class="oferta-panel" data-oferta-panel="completo">
           <p class="lead"><strong>One signature look. One system. Graded like film.</strong></p>
@@ -184,7 +184,7 @@
 
   <!-- ══════════ BARRA DE COMPRA FIJA (estilo Pordoi) ══════════
        Aparece al pasar el botón principal de compra; se esconde cuando otro botón de compra está a la vista.
-       Con LEMON_URL configurado, [data-checkout] abre el checkout aquí mismo. -->
+       Con los links de CHECKOUT_URLS configurados, [data-checkout] lleva al pago de la edición elegida. -->
   <div class="barra-compra" data-barra-compra role="region" aria-label="Quick checkout" inert>
     <div class="barra-compra-mini" aria-hidden="true">
       <svg viewBox="18 18 64 64" fill="none"><circle cx="50" cy="50" r="24" stroke="currentColor" stroke-width="2.4"/><line x1="50" y1="20" x2="50" y2="80" stroke="currentColor" stroke-width="1.6"/></svg>
@@ -195,6 +195,6 @@
     <a class="barra-compra-boton" href="#comprar" data-checkout>GET SPECTRE <span class="flecha" aria-hidden="true">→</span></a>
   </div>
 
-  <script src="js/main.js?v=20261008211732" defer></script>
+  <script src="js/main.js?v=20261008212838" defer></script>
 </body>
 </html>
