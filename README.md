@@ -18,9 +18,9 @@ python3 -m http.server 4181
 | Links de pago | `js/main.js`, objeto `CHECKOUT_URLS`: `completo` (Full System, $79) y `luts` (LUTs Only, $39). Acepta links de Lemon Squeezy (se abren encima de la página) o de Stripe Payment Links. Paso a paso en `PAGOS.md` |
 | Área de miembros | `access.html` (link ACCESS PRODUCTS en el footer). Contenido y contraseña en `privado/` (no se sube a GitHub); después de editarlos: `node herramientas/miembros.mjs` |
 | Términos y licencia | `terms.html` (titular: Roberto Arechederra como persona física). Link en el footer y debajo del botón de compra |
-| Ediciones y precios | `producto.html`, `fieldset.ediciones`: los `data-*` de cada opción (precio, precio tachado, título, texto de la caja) y los bloques `[data-oferta-panel]` con la descripción de cada una |
+| Ediciones y precios | `get.html` (URL: /get), `fieldset.ediciones`: los `data-*` de cada opción (precio, precio tachado, título, texto de la caja) y los bloques `[data-oferta-panel]` con la descripción de cada una |
 | OG image / canonical al publicar | `index.html`, comentario `TODO al publicar` en el `<head>` |
-| Precio, checklist y textos del producto | `producto.html` (página de compra). El precio también aparece en los botones "GET SPECTRE — $79" de `index.html` |
+| Precio, checklist y textos del producto | `get.html` (URL: /get) (página de compra). El precio también aparece en los botones "GET SPECTRE — $79" de `index.html` |
 | Frase de la intro | `index.html`, las `.intro-linea` dentro de `#loader` |
 | Ritmo de la intro | `js/main.js`, `PASO` (ms por icono) y `SOSTENER_MARCA` (cuánto se queda la marca SPECTRE antes de disolverse) |
 | Video del hero | Correr `herramientas/video-hero.sh "/ruta/al/video.mov"`: genera 1080p y vertical (para celular), cada uno en HEVC (principal) y H.264 (respaldo), más el poster, en `video/`. Usa solo herramientas de macOS (Swift/AVFoundation). Fuente ideal: 4K, 10–15 s |
@@ -45,7 +45,7 @@ sips -Z 1200 -s formatOptions 78 /tmp/c.jpg --out img/looks/01-despues-1200.jpg
 ```
 
 Nombres y títulos de cada slider: `index.html`, sección `#looks` (`POWERGRADE // 0N` + nombre).
-El collage (`reel-0N*.jpg`) sale de los mismos stills gradeados. La tira inferior de la portada en `producto.html` (y la miniatura de la barra de compra) usa `img/looks/tira-0N.jpg`.
+El collage (`reel-0N*.jpg`) sale de los mismos stills gradeados. La tira inferior de la portada en `get.html` (URL: /get) (y la miniatura de la barra de compra) usa `img/looks/tira-0N.jpg`.
 
 ## Caché del navegador
 

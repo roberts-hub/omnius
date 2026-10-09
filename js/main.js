@@ -9,7 +9,7 @@ const CHECKOUT_URLS = {
 };
 const urlLista = (u) => !!u && !u.startsWith("TODO");
 
-// ── Edición elegida (producto.html) ──
+// ── Edición elegida (get.html → /get) ──
 // [data-checkout] vacío sigue la edición elegida; data-checkout="luts" fija una.
 // ?edition=luts en la URL abre la página con LUTs Only ya elegida.
 let edicion = "completo";
@@ -51,7 +51,7 @@ if (selectorEdicion) {
   elegir(new URLSearchParams(location.search).get("edition") === "luts" ? "luts" : "completo");
 }
 
-// ── Caja 3D (producto.html): giro ligero al hacer scroll ──
+// ── Caja 3D (get.html → /get): giro ligero al hacer scroll ──
 const caja = document.querySelector(".caja");
 if (caja && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
   let pendiente = false;

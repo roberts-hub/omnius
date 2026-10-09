@@ -54,7 +54,7 @@ Pídele a tu contador cómo facturarlos (normalmente CFDI a residente en el extr
 
 > **Welcome to SPECTRE.**
 > Your files are ready to download. Tutorials and downloads are always available in the members area:
-> **https://roberts-hub.github.io/omnius/access.html**
+> **https://spectrecolor.com/access**
 > Password: **[CONTRASEÑA]**
 > Please keep it private — it's part of your personal license (see the Terms).
 > Questions? roberto@arechederra.com
