@@ -1704,3 +1704,8 @@ body:has(.barra-compra) .cierre { padding-bottom: 120px; }
 @media (prefers-reduced-motion: reduce) {
   .modal-video_fondo, .modal-video_caja { transition: none; }
 }
+
+/* reseñas en rotación continua (js/main.js): sin snap, sin flechas ni puntos */
+.resenas-pista.rodando { scroll-snap-type: none; scroll-behavior: auto; cursor: pointer; }
+.resenas-pista.rodando .resena { scroll-snap-align: none; }
+.resenas-continuas .resenas-flecha, .resenas-continuas .resenas-puntos { display: none; }

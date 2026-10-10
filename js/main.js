@@ -517,26 +517,51 @@ if (resenas && !resenas.closest("[hidden]")) {
   window.addEventListener("resize", pintarPuntos);
   pintarPuntos();
 
-  // avance automático: una reseña cada 4.5 s, en ciclo (al llegar al final vuelve a la primera).
-  // Se detiene mientras no está en pantalla, con el cursor encima o el dedo tocando, y espera
-  // 8 s después de que la persona la mueva por su cuenta.
-  if (!reduceMotion) {
-    const CADA = 4500;
-    let enPantalla = false;
-    let encima = false;
-    let ultimoToque = 0;
-    const tocar = () => { ultimoToque = Date.now(); };
-    new IntersectionObserver(([e]) => { enPantalla = e.isIntersecting; }, { threshold: 0.4 }).observe(resenas);
-    resenas.addEventListener("pointerenter", (e) => { if (e.pointerType === "mouse") encima = true; });
-    resenas.addEventListener("pointerleave", () => { encima = false; });
-    ["pointerdown", "wheel", "touchstart", "keydown"].forEach((ev) => resenas.addEventListener(ev, tocar, { passive: true }));
-    flechasR.forEach((f) => f.addEventListener("click", tocar));
-    setInterval(() => {
-      if (!enPantalla || encima || document.hidden || Date.now() - ultimoToque < 8000) return;
-      const alFinal = resenas.scrollLeft + resenas.clientWidth >= resenas.scrollWidth - 4;
-      if (alFinal) resenas.scrollTo({ left: 0, behavior: "smooth" });
-      else resenas.scrollBy({ left: paso(), behavior: "smooth" });
-    }, CADA);
+  // rotación continua (como la franja de logos): las tarjetas se duplican para que el ciclo no tenga
+  // corte. Un clic sobre una reseña la detiene y otro la reanuda; con el dedo se puede arrastrar
+  // (mientras se arrastra se pausa). Fuera de pantalla o con la pestaña oculta no corre.
+  if (!reduceMotion && tarjetas.length > 1) {
+    const VELOCIDAD = 32; // px por segundo
+    tarjetas.forEach((t) => {
+      const c = t.cloneNode(true);
+      c.setAttribute("aria-hidden", "true");
+      c.querySelectorAll("a").forEach((x) => { x.tabIndex = -1; });
+      resenas.appendChild(c);
+    });
+    resenas.classList.add("rodando");
+    resenas.closest(".resenas").classList.add("resenas-continuas");
+    const ciclo = () => tarjetas.length * paso(); // ancho de un juego completo de tarjetas
+    let pos = 0, antes = 0, detenido = false, arrastrando = false, enPantalla = false, inicio = null;
+    new IntersectionObserver(([e]) => { enPantalla = e.isIntersecting; }).observe(resenas);
+    const cuadro = (t) => {
+      const dt = antes ? Math.min(t - antes, 64) / 1000 : 0;
+      antes = t;
+      if (!detenido && !arrastrando && enPantalla && !document.hidden) {
+        pos += VELOCIDAD * dt;
+        const c = ciclo();
+        if (pos >= c) pos -= c;
+        resenas.scrollLeft = pos;
+      }
+      requestAnimationFrame(cuadro);
+    };
+    requestAnimationFrame(cuadro);
+    // arrastre con el dedo o trackpad: pausa mientras dura y retoma desde donde quedó
+    resenas.addEventListener("pointerdown", (e) => { arrastrando = true; inicio = { x: e.clientX, y: e.clientY }; });
+    const soltar = (e) => {
+      if (!arrastrando) return;
+      arrastrando = false;
+      const c = ciclo();
+      pos = ((resenas.scrollLeft % c) + c) % c;
+      // clic (sin arrastre) sobre una reseña: detener / reanudar
+      if (inicio && e && Math.hypot(e.clientX - inicio.x, e.clientY - inicio.y) < 6 && e.target.closest(".resena") && !e.target.closest("a")) {
+        detenido = !detenido;
+        resenas.classList.toggle("detenido", detenido);
+      }
+      inicio = null;
+    };
+    resenas.addEventListener("pointerup", soltar);
+    resenas.addEventListener("pointercancel", () => { arrastrando = false; pos = resenas.scrollLeft % ciclo(); });
+    resenas.addEventListener("wheel", () => { pos = resenas.scrollLeft % ciclo(); }, { passive: true });
   }
 }
 
