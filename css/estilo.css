@@ -876,17 +876,20 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
 /* ══════════ MARCAS (franja continua de logos, como en twowaves.mx) ══════════ */
 
 .marcas { padding: clamp(110px, 12vw, 180px) 0 clamp(36px, 4.5vw, 64px); }
-/* misma tipografía que "Achieve cinematic consistency." (.titulo), a la mitad de tamaño */
+/* etiqueta discreta (mono, como los textos pequeños del sitio): los logos son los protagonistas */
 .marcas-titulo {
   text-align: center;
   padding: 0 var(--margen);
-  font-size: clamp(22px, 2.3vw, 32px);
-  letter-spacing: -0.035em;
-  text-wrap: balance;
+  font-family: var(--mono);
+  font-size: clamp(10px, 0.95vw, 12px);
+  font-weight: 400;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--greige);
 }
 .marcas-franja {
   position: relative;
-  margin-top: clamp(40px, 5vw, 72px);
+  margin-top: clamp(28px, 3.4vw, 48px);
   overflow: hidden;
   /* desvanecido marcado en las orillas. Va como capas del color del fondo encima de la
      pista (no como máscara): no se recalcula en cada cuadro y es más fluido en celular */
@@ -1734,23 +1737,19 @@ body:has(.barra-compra) .cierre { padding-bottom: 120px; }
   mask-image: linear-gradient(90deg, transparent 0, #000 var(--fade-r), #000 calc(100% - var(--fade-r)), transparent 100%);
 }
 
-/* ══════════ LA CLASE (portada) ══════════ */
+/* ══════════ LA CLASE (portada) ══════════
+   Centrada y al mismo ancho que el slider de looks, para que tenga la misma escala que el resto */
 .clase {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
-  align-items: center;
-  gap: clamp(32px, 5vw, 80px);
-  max-width: var(--ancho);
+  width: min(960px, calc(100vw - 2 * var(--margen)));
   margin: 0 auto;
-  padding: clamp(90px, 10vw, 150px) var(--margen) 0;
+  padding-top: clamp(110px, 12vw, 180px);
+  text-align: center;
 }
-.clase .titulo { margin-top: 0; font-size: clamp(30px, 3.6vw, 52px); }
-.clase-desc { margin-top: 18px; max-width: 46ch; font-size: 15px; font-weight: 300; line-height: 1.7; color: var(--greige); }
-.clase-lista { margin-top: 22px; border-top: none; }
-.clase-lista li { padding: 5px 0; border-bottom: none; }
-.clase .clase-boton { margin-top: 30px; }
+.clase .titulo { margin-top: 0; text-wrap: balance; }
+.clase-desc { margin: 18px auto 0; max-width: 46ch; font-size: 15px; font-weight: 300; line-height: 1.7; color: var(--greige); text-wrap: balance; }
 .clase-video {
   position: relative;
+  margin-top: clamp(36px, 4.5vw, 60px);
   aspect-ratio: 16 / 9;
   border-radius: 16px;
   overflow: hidden;
@@ -1758,9 +1757,12 @@ body:has(.barra-compra) .cierre { padding-bottom: 120px; }
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
 }
 .clase-video video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.clase-pie { display: flex; flex-direction: column; align-items: center; }
+.clase-lista { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 32px; margin-top: 30px; border-top: none; }
+.clase-lista li { padding: 0; border-bottom: none; gap: 10px; }
+.clase .clase-boton { margin-top: 32px; }
 @media (max-width: 860px) {
-  .clase { grid-template-columns: 1fr; }
-  .clase-video { order: -1; }
+  .clase-lista { flex-direction: column; align-items: flex-start; gap: 8px; }
 }
 /* carrusel de reseñas de borde a borde de la pantalla (más tarjetas visibles, difuminado en los extremos) */
 .resenas-continuas .resenas-carrusel { margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); }
@@ -1768,3 +1770,6 @@ body:has(.barra-compra) .cierre { padding-bottom: 120px; }
 @media (max-width: 860px) {
   .resenas-continuas .resenas-pista { grid-auto-columns: 78vw; }
 }
+
+/* texto solo para lectores de pantalla y buscadores */
+.solo-lectores{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}

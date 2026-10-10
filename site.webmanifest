@@ -1,0 +1,11 @@
+{
+  "name": "SPECTRE Color System",
+  "short_name": "SPECTRE",
+  "icons": [
+    { "src": "/img/marca/icono-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/img/marca/icono-512.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "theme_color": "#0b0b0a",
+  "background_color": "#0b0b0a",
+  "display": "browser"
+}
