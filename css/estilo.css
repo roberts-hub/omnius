@@ -1737,19 +1737,23 @@ body:has(.barra-compra) .cierre { padding-bottom: 120px; }
   mask-image: linear-gradient(90deg, transparent 0, #000 var(--fade-r), #000 calc(100% - var(--fade-r)), transparent 100%);
 }
 
-/* ══════════ LA CLASE (portada) ══════════
-   Centrada y al mismo ancho que el slider de looks, para que tenga la misma escala que el resto */
+/* ══════════ LA CLASE (portada) ══════════ */
 .clase {
-  width: min(960px, calc(100vw - 2 * var(--margen)));
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+  align-items: center;
+  gap: clamp(32px, 5vw, 80px);
+  max-width: var(--ancho);
   margin: 0 auto;
-  padding-top: clamp(110px, 12vw, 180px);
-  text-align: center;
+  padding: clamp(90px, 10vw, 150px) var(--margen) 0;
 }
-.clase .titulo { margin-top: 0; text-wrap: balance; }
-.clase-desc { margin: 18px auto 0; max-width: 46ch; font-size: 15px; font-weight: 300; line-height: 1.7; color: var(--greige); text-wrap: balance; }
+.clase .titulo { margin-top: 0; font-size: clamp(30px, 3.6vw, 52px); }
+.clase-desc { margin-top: 18px; max-width: 46ch; font-size: 15px; font-weight: 300; line-height: 1.7; color: var(--greige); }
+.clase-lista { margin-top: 22px; border-top: none; }
+.clase-lista li { padding: 5px 0; border-bottom: none; }
+.clase .clase-boton { margin-top: 30px; }
 .clase-video {
   position: relative;
-  margin-top: clamp(36px, 4.5vw, 60px);
   aspect-ratio: 16 / 9;
   border-radius: 16px;
   overflow: hidden;
@@ -1757,12 +1761,9 @@ body:has(.barra-compra) .cierre { padding-bottom: 120px; }
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
 }
 .clase-video video { width: 100%; height: 100%; object-fit: cover; display: block; }
-.clase-pie { display: flex; flex-direction: column; align-items: center; }
-.clase-lista { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 32px; margin-top: 30px; border-top: none; }
-.clase-lista li { padding: 0; border-bottom: none; gap: 10px; }
-.clase .clase-boton { margin-top: 32px; }
 @media (max-width: 860px) {
-  .clase-lista { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .clase { grid-template-columns: 1fr; }
+  .clase-video { order: -1; }
 }
 /* carrusel de reseñas de borde a borde de la pantalla (más tarjetas visibles, difuminado en los extremos) */
 .resenas-continuas .resenas-carrusel { margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); }
