@@ -1802,3 +1802,9 @@ body:has(.barra-compra) .cierre { padding-bottom: 120px; }
   .clase { grid-template-columns: 1fr; }
   .clase-video { order: -1; }
 }
+/* carrusel de reseñas de borde a borde de la pantalla (más tarjetas visibles, difuminado en los extremos) */
+.resenas-continuas .resenas-carrusel { margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); }
+.resenas-continuas .resenas-pista { grid-auto-columns: clamp(300px, 26vw, 400px); padding: 0 var(--margen); }
+@media (max-width: 860px) {
+  .resenas-continuas .resenas-pista { grid-auto-columns: 78vw; }
+}
