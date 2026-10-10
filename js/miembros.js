@@ -57,6 +57,60 @@ const idYoutube = (valor) => {
   return m ? m[1] : /^[\w-]{11}$/.test(valor) ? valor : "";
 };
 
+// ── reproductor a pantalla completa (mismo estilo que twowaves.mx) ──
+let modalVideo = null;
+function crearModal() {
+  const d = document.createElement("dialog");
+  d.className = "modal-video";
+  d.innerHTML = `
+    <div class="modal-video_fondo" data-cerrar-modal></div>
+    <div class="modal-video_contenido">
+      <span class="modal-video_etiqueta"></span>
+      <button class="modal-video_cerrar" type="button" data-cerrar-modal>Close ✕</button>
+      <div class="modal-video_caja">
+        <div class="modal-video_marco"></div>
+        <div class="modal-video_info">
+          <h3 class="modal-video_titulo"></h3>
+          <p class="modal-video_descripcion"></p>
+        </div>
+      </div>
+    </div>`;
+  document.body.append(d);
+  d.addEventListener("click", (e) => {
+    if (e.target.closest("[data-cerrar-modal]") || e.target === d || e.target.classList.contains("modal-video_contenido")) cerrarVideo();
+  });
+  d.addEventListener("cancel", (e) => { e.preventDefault(); cerrarVideo(); }); // tecla Esc
+  return d;
+}
+function abrirVideo(id, v) {
+  modalVideo = modalVideo || crearModal();
+  const d = modalVideo;
+  d.querySelector(".modal-video_etiqueta").textContent = v.titulo;
+  d.querySelector(".modal-video_titulo").textContent = v.titulo;
+  const desc = d.querySelector(".modal-video_descripcion");
+  desc.textContent = v.descripcion || "";
+  desc.hidden = !v.descripcion;
+  const f = document.createElement("iframe");
+  f.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
+  f.title = v.titulo;
+  f.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
+  f.allowFullscreen = true;
+  d.querySelector(".modal-video_marco").replaceChildren(f);
+  document.documentElement.classList.add("con-modal");
+  d.showModal();
+  requestAnimationFrame(() => d.classList.add("abierto"));
+}
+function cerrarVideo() {
+  const d = modalVideo;
+  if (!d || !d.open) return;
+  d.classList.remove("abierto");
+  setTimeout(() => {
+    d.querySelector(".modal-video_marco").replaceChildren(); // detiene la reproducción
+    d.close();
+    document.documentElement.classList.remove("con-modal");
+  }, 380);
+}
+
 function tarjetaVideo(v) {
   const art = el("article", "video");
   const marco = el("div", "video-marco");
@@ -71,14 +125,7 @@ function tarjetaVideo(v) {
     img.alt = "";
     img.loading = "lazy";
     play.append(img, el("span", "video-play-icono"));
-    play.addEventListener("click", () => {
-      const f = document.createElement("iframe");
-      f.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
-      f.title = v.titulo;
-      f.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
-      f.allowFullscreen = true;
-      marco.replaceChildren(f);
-    });
+    play.addEventListener("click", () => abrirVideo(id, v));
     marco.append(play);
   } else {
     marco.classList.add("pronto");
