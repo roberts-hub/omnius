@@ -35,10 +35,13 @@ if (selectorEdicion) {
     document.querySelectorAll("[data-oferta-panel]").forEach((p) => {
       p.hidden = p.dataset.ofertaPanel !== valor;
     });
+    // Umami: los clics de compra se registran con la edición elegida
+    botonesCheckout.forEach((b) => b.setAttribute("data-umami-event-edicion", valor === "luts" ? "luts" : "full"));
     actualizarCheckout();
   };
   opciones.forEach((o) => o.addEventListener("change", () => {
     elegir(o.value);
+    if (window.umami) window.umami.track("edicion", { edicion: o.value === "luts" ? "luts" : "full" });
     const url = new URL(location.href);
     if (o.value === "completo") url.searchParams.delete("edition");
     else url.searchParams.set("edition", o.value);

@@ -15,7 +15,7 @@
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://assets.lemonsqueezy.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://i.ytimg.com; media-src 'self'; frame-src https://www.youtube-nocookie.com https://*.lemonsqueezy.com; connect-src 'self' https://*.lemonsqueezy.com; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://assets.lemonsqueezy.com https://cloud.umami.is; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://i.ytimg.com; media-src 'self'; frame-src https://www.youtube-nocookie.com https://*.lemonsqueezy.com; connect-src 'self' https://*.lemonsqueezy.com https://gateway.umami.is https://cloud.umami.is; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
   <link rel="icon" href="img/favicon.svg" type="image/svg+xml" />
   <script>
@@ -32,7 +32,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,300;0,400;0,600;0,700;1,300&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/estilo.css?v=20261009191116" />
+  <link rel="stylesheet" href="css/estilo.css?v=20261009235040" />
+  <!-- Umami: analítica sin cookies (cloud.umami.is) — visitas, clics de checkout y embudo -->
+  <script defer src="https://cloud.umami.is/script.js" data-website-id="add40efe-f309-476f-95a6-6367262a4434" data-domains="spectrecolor.com"></script>
 </head>
 <body>
 
@@ -78,9 +80,9 @@
       SPECTRE
     </a>
     <nav class="cabecera-nav">
-      <a class="link-mono" href="/get">GET SPECTRE</a>
+      <a class="link-mono" href="/get" data-umami-event="ver-producto" data-umami-event-boton="header">GET SPECTRE</a>
       <!-- acceso para quienes ya compraron: lleva al área de miembros -->
-      <a class="link-acceso" href="/access" aria-label="Access your products"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.6"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>ACCESS</span></a>
+      <a class="link-acceso" href="/access" data-umami-event="access-header" aria-label="Access your products"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.6"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>ACCESS</span></a>
     </nav>
   </header>
 
@@ -110,7 +112,7 @@
         <p class="hero-marca hero-meta">SPECTRE</p>
         <p class="hero-kicker hero-meta">COLOR SYSTEM // BY ROBERTO ARECHEDERRA</p>
         <!-- Lleva a producto.html, donde se elige la edición (Full System o LUTs Only) -->
-        <a class="btn-pildora hero-meta" href="/get"><span class="btn-pildora-texto">GET SPECTRE</span><span class="flecha" aria-hidden="true">→</span></a>
+        <a class="btn-pildora hero-meta" href="/get" data-umami-event="ver-producto" data-umami-event-boton="hero"><span class="btn-pildora-texto">GET SPECTRE</span><span class="flecha" aria-hidden="true">→</span></a>
       </div>
 
       <div class="hero-scroll hero-meta" aria-hidden="true"><span class="scroll-dot"></span>SCROLL</div>
@@ -352,7 +354,7 @@
     <!-- ══════════ RESEÑAS (estructura de Pordoi) ══════════
          Reseñas reales de creadores. El título de cada una es una frase de su propio texto.
          Para agregar foto y link de Instagram: herramientas/avatar-instagram.sh usuario → img/resenas/usuario.jpg
-         y cambiar el <span class="resena-perfil"> por <a class="resena-perfil" href="https://www.instagram.com/usuario/">. -->
+         y cambiar el <span class="resena-perfil"> por <a class="resena-perfil" data-umami-event="resena-instagram" href="https://www.instagram.com/usuario/">. -->
     <section class="resenas" id="reviews" aria-labelledby="titulo-resenas" data-muestra-barra>
       <h2 class="titulo reveal" id="titulo-resenas">What creators say.</h2>
       <div class="resenas-carrusel reveal">
@@ -360,7 +362,7 @@
         <div class="resenas-pista" tabindex="0">
           <figure class="resena">
             <figcaption class="resena-autor">
-              <a class="resena-perfil" href="https://www.instagram.com/vic.villagomez/" target="_blank" rel="noopener">
+              <a class="resena-perfil" data-umami-event="resena-instagram" href="https://www.instagram.com/vic.villagomez/" target="_blank" rel="noopener">
                 <img class="resena-avatar" src="img/resenas/vic.villagomez.jpg" alt="" width="44" height="44" loading="lazy" />
                 <span class="resena-quien"><span class="resena-nombre">Vic Villagomez</span><span class="resena-ig">@vic.villagomez</span></span>
               </a>
@@ -371,7 +373,7 @@
           </figure>
           <figure class="resena">
             <figcaption class="resena-autor">
-              <a class="resena-perfil" href="https://www.instagram.com/roger.rpgfpv/" target="_blank" rel="noopener">
+              <a class="resena-perfil" data-umami-event="resena-instagram" href="https://www.instagram.com/roger.rpgfpv/" target="_blank" rel="noopener">
                 <img class="resena-avatar" src="img/resenas/roger.rpgfpv.jpg" alt="" width="44" height="44" loading="lazy" />
                 <span class="resena-quien"><span class="resena-nombre">Rogelio Perez</span><span class="resena-ig">@roger.rpgfpv</span></span>
               </a>
@@ -382,7 +384,7 @@
           </figure>
           <figure class="resena">
             <figcaption class="resena-autor">
-              <a class="resena-perfil" href="https://www.instagram.com/pabloesteves/" target="_blank" rel="noopener">
+              <a class="resena-perfil" data-umami-event="resena-instagram" href="https://www.instagram.com/pabloesteves/" target="_blank" rel="noopener">
                 <img class="resena-avatar" src="img/resenas/pabloesteves.jpg" alt="" width="44" height="44" loading="lazy" />
                 <span class="resena-quien"><span class="resena-nombre">Pablo Esteves</span><span class="resena-ig">@pabloesteves</span></span>
               </a>
@@ -393,7 +395,7 @@
           </figure>
           <figure class="resena">
             <figcaption class="resena-autor">
-              <a class="resena-perfil" href="https://www.instagram.com/jp.garay/" target="_blank" rel="noopener">
+              <a class="resena-perfil" data-umami-event="resena-instagram" href="https://www.instagram.com/jp.garay/" target="_blank" rel="noopener">
                 <img class="resena-avatar" src="img/resenas/jp.garay.jpg" alt="" width="44" height="44" loading="lazy" />
                 <span class="resena-quien"><span class="resena-nombre">JP Garay</span><span class="resena-ig">@jp.garay</span></span>
               </a>
@@ -404,7 +406,7 @@
           </figure>
           <figure class="resena">
             <figcaption class="resena-autor">
-              <a class="resena-perfil" href="https://www.instagram.com/eltorreslanda/" target="_blank" rel="noopener">
+              <a class="resena-perfil" data-umami-event="resena-instagram" href="https://www.instagram.com/eltorreslanda/" target="_blank" rel="noopener">
                 <img class="resena-avatar" src="img/resenas/eltorreslanda.jpg" alt="" width="44" height="44" loading="lazy" />
                 <span class="resena-quien"><span class="resena-nombre">Esteban Torreslanda</span><span class="resena-ig">@eltorreslanda</span></span>
               </a>
@@ -415,7 +417,7 @@
           </figure>
           <figure class="resena">
             <figcaption class="resena-autor">
-              <a class="resena-perfil" href="https://www.instagram.com/dimitri.fafutis/" target="_blank" rel="noopener">
+              <a class="resena-perfil" data-umami-event="resena-instagram" href="https://www.instagram.com/dimitri.fafutis/" target="_blank" rel="noopener">
                 <img class="resena-avatar" src="img/resenas/dimitri.fafutis.jpg" alt="" width="44" height="44" loading="lazy" />
                 <span class="resena-quien"><span class="resena-nombre">Dimitri Fafutis</span><span class="resena-ig">@dimitri.fafutis</span></span>
               </a>
@@ -486,9 +488,9 @@
     <div class="barra-compra-info">
       <p class="barra-compra-nombre">SPECTRE <span>Color System</span></p>
     </div>
-    <a class="barra-compra-boton" href="/get">GET SPECTRE <span class="flecha" aria-hidden="true">→</span></a>
+    <a class="barra-compra-boton" href="/get" data-umami-event="ver-producto" data-umami-event-boton="barra">GET SPECTRE <span class="flecha" aria-hidden="true">→</span></a>
   </div>
 
-  <script src="js/main.js?v=20261009191116" defer></script>
+  <script src="js/main.js?v=20261009235040" defer></script>
 </body>
 </html>

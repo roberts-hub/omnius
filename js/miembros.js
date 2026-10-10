@@ -218,8 +218,10 @@ form.addEventListener("submit", async (e) => {
     if (!r) throw new Error("no abre");
     if (recordar) guardar(JSON.stringify({ sal: r.paquete.sal, llave: aB64(await crypto.subtle.exportKey("raw", r.llave)) }));
     pintar(r.datos);
+    if (window.umami) window.umami.track("miembros-entra", { edicion: r.datos.edicion || "" });
     window.scrollTo(0, 0);
   } catch (_) {
+    if (window.umami) window.umami.track("miembros-clave-incorrecta");
     error.hidden = false;
     form.clave.select();
   } finally {
