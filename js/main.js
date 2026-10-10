@@ -516,6 +516,28 @@ if (resenas && !resenas.closest("[hidden]")) {
   }, { passive: true });
   window.addEventListener("resize", pintarPuntos);
   pintarPuntos();
+
+  // avance automático: una reseña cada 4.5 s, en ciclo (al llegar al final vuelve a la primera).
+  // Se detiene mientras no está en pantalla, con el cursor encima o el dedo tocando, y espera
+  // 8 s después de que la persona la mueva por su cuenta.
+  if (!reduceMotion) {
+    const CADA = 4500;
+    let enPantalla = false;
+    let encima = false;
+    let ultimoToque = 0;
+    const tocar = () => { ultimoToque = Date.now(); };
+    new IntersectionObserver(([e]) => { enPantalla = e.isIntersecting; }, { threshold: 0.4 }).observe(resenas);
+    resenas.addEventListener("pointerenter", (e) => { if (e.pointerType === "mouse") encima = true; });
+    resenas.addEventListener("pointerleave", () => { encima = false; });
+    ["pointerdown", "wheel", "touchstart", "keydown"].forEach((ev) => resenas.addEventListener(ev, tocar, { passive: true }));
+    flechasR.forEach((f) => f.addEventListener("click", tocar));
+    setInterval(() => {
+      if (!enPantalla || encima || document.hidden || Date.now() - ultimoToque < 8000) return;
+      const alFinal = resenas.scrollLeft + resenas.clientWidth >= resenas.scrollWidth - 4;
+      if (alFinal) resenas.scrollTo({ left: 0, behavior: "smooth" });
+      else resenas.scrollBy({ left: paso(), behavior: "smooth" });
+    }, CADA);
+  }
 }
 
 // ── barra de compra fija (estilo Pordoi) ──
