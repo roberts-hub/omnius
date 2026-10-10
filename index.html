@@ -32,7 +32,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,300;0,400;0,600;0,700;1,300&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/estilo.css?v=20261010003422" />
+  <link rel="stylesheet" href="css/estilo.css?v=20261010003606" />
   <!-- Umami: analítica sin cookies (cloud.umami.is) — visitas, clics de checkout y embudo -->
   <script defer src="https://cloud.umami.is/script.js" data-website-id="add40efe-f309-476f-95a6-6367262a4434" data-domains="spectrecolor.com"></script>
 </head>
@@ -352,11 +352,10 @@
     </section>
 
     <!-- ══════════ LA CLASE (incluida en Full System) ══════════
-         Montaje corto en loop, sin sonido de inicio; el botón de vidrio activa el audio.
+         Montaje corto en loop, sin sonido.
          Video: video/clase-1080.hevc.mp4 (escritorio) y clase-720.h264.mp4 (respaldo); se carga al acercarse. -->
     <section class="clase" aria-labelledby="titulo-clase">
       <div class="clase-texto reveal">
-        <p class="kicker">THE CLASS · INCLUDED WITH FULL SYSTEM</p>
         <h2 class="titulo" id="titulo-clase">Learn my exact color grading process.</h2>
         <p class="clase-desc">An in-depth class where I break down, step by step, how I grade my films with SPECTRE.</p>
         <ul class="checklist clase-lista">
@@ -364,19 +363,13 @@
           <li>How I adapt the look to every shot</li>
           <li>Grading real footage, start to finish</li>
         </ul>
-        <a class="btn-linea" href="/get" data-umami-event="ver-producto" data-umami-event-boton="clase">GET THE FULL SYSTEM <span class="flecha" aria-hidden="true">→</span></a>
+        <a class="btn-pildora clase-boton" href="/get" data-umami-event="ver-producto" data-umami-event-boton="clase"><span class="btn-pildora-texto">GET THE FULL SYSTEM</span><span class="flecha" aria-hidden="true">→</span></a>
       </div>
       <div class="clase-video reveal" data-clase>
         <video muted loop playsinline preload="none" poster="video/clase-poster.jpg" aria-label="Preview of the SPECTRE class">
           <source data-src="video/clase-1080.hevc.mp4" type='video/mp4; codecs="hvc1"' media="(min-width: 861px)" />
           <source data-src="video/clase-720.h264.mp4" type="video/mp4" />
         </video>
-        <span class="clase-etiqueta">PREVIEW</span>
-        <button class="clase-sonido" type="button" aria-pressed="false" aria-label="Turn sound on">
-          <svg class="icono-mudo" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z" fill="currentColor"/><path d="M16 9.5l5 5M21 9.5l-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
-          <svg class="icono-sonido" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z" fill="currentColor"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
-          <span>SOUND</span>
-        </button>
       </div>
     </section>
 
@@ -384,7 +377,7 @@
          Reseñas reales de creadores. El título de cada una es una frase de su propio texto.
          Para agregar foto y link de Instagram: herramientas/avatar-instagram.sh usuario → img/resenas/usuario.jpg
          y cambiar el <span class="resena-perfil"> por <a class="resena-perfil" data-umami-event="resena-instagram" href="https://www.instagram.com/usuario/">. -->
-    <section class="resenas" id="reviews" aria-labelledby="titulo-resenas" data-muestra-barra>
+    <section class="resenas" id="reviews" aria-labelledby="titulo-resenas">
       <h2 class="titulo reveal" id="titulo-resenas">What creators say.</h2>
       <div class="resenas-carrusel reveal">
         <button type="button" class="carrusel-flecha resenas-flecha" data-dir="-1" aria-label="Previous reviews"><span aria-hidden="true">←</span></button>
@@ -507,19 +500,7 @@
   </footer>
 
 
-  <!-- ══════════ BARRA DE COMPRA FIJA (estilo Pordoi) ══════════
-       En esta página aparece cuando "What creators say" entra en pantalla y ya no se esconde.
-       Lleva a producto.html para elegir edición. -->
-  <div class="barra-compra" data-barra-compra role="region" aria-label="Quick checkout" inert>
-    <div class="barra-compra-mini" aria-hidden="true">
-      <svg viewBox="18 18 64 64" fill="none"><circle cx="50" cy="50" r="24" stroke="currentColor" stroke-width="2.4"/><line x1="50" y1="20" x2="50" y2="80" stroke="currentColor" stroke-width="1.6"/></svg>
-    </div>
-    <div class="barra-compra-info">
-      <p class="barra-compra-nombre">SPECTRE <span>Color System</span></p>
-    </div>
-    <a class="barra-compra-boton" href="/get" data-umami-event="ver-producto" data-umami-event-boton="barra">GET SPECTRE <span class="flecha" aria-hidden="true">→</span></a>
-  </div>
 
-  <script src="js/main.js?v=20261010003422" defer></script>
+  <script src="js/main.js?v=20261010003606" defer></script>
 </body>
 </html>
