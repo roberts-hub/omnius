@@ -32,7 +32,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,300;0,400;0,600;0,700;1,300&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/estilo.css?v=20261009185623" />
+  <link rel="stylesheet" href="css/estilo.css?v=20261009190011" />
 </head>
 <body>
 
@@ -350,9 +350,9 @@
     </section>
 
     <!-- ══════════ RESEÑAS (estructura de Pordoi) ══════════
-         Por ahora con texto de relleno (lorem ipsum) para ver el formato publicado.
-         Cuando haya reseñas reales: reemplazar nombre, @usuario, link, país, título y texto de cada .resena.
-         Foto de perfil: herramientas/avatar-instagram.sh usuario → img/resenas/usuario.jpg -->
+         Reseñas reales de creadores. El título de cada una es una frase de su propio texto.
+         Para agregar foto y link de Instagram: herramientas/avatar-instagram.sh usuario → img/resenas/usuario.jpg
+         y cambiar el <span class="resena-perfil"> por <a class="resena-perfil" href="https://www.instagram.com/usuario/">. -->
     <section class="resenas" id="reviews" aria-labelledby="titulo-resenas" data-muestra-barra>
       <h2 class="titulo reveal" id="titulo-resenas">What creators say.</h2>
       <div class="resenas-carrusel reveal">
@@ -360,75 +360,58 @@
         <div class="resenas-pista" tabindex="0">
           <figure class="resena">
             <figcaption class="resena-autor">
-              <a class="resena-perfil" href="https://www.instagram.com/robert.arre/" target="_blank" rel="noopener">
-                <img class="resena-avatar" src="img/resenas/robert.arre.jpg" alt="" width="44" height="44" loading="lazy" />
-                <span class="resena-quien"><span class="resena-nombre">Roberto Arechederra</span><span class="resena-ig">@robert.arre</span></span>
-              </a>
-              <span class="resena-pais">Mexico</span>
+              <span class="resena-perfil">
+                <span class="resena-avatar resena-iniciales" aria-hidden="true">VV</span>
+                <span class="resena-quien"><span class="resena-nombre">Vic Villagomez</span></span>
+              </span>
             </figcaption>
             <p class="resena-estrellas" aria-label="5 out of 5 stars">★★★★★</p>
-            <p class="resena-titulo">Lorem ipsum dolor sit amet</p>
-            <blockquote class="resena-texto">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</blockquote>
+            <p class="resena-titulo">A great starting point</p>
+            <blockquote class="resena-texto">I really like how the colors come out with these LUTs. They give the footage a nice cinematic look without making everything feel too processed. It's a great starting point for my grades and saves me time in post.</blockquote>
           </figure>
           <figure class="resena">
             <figcaption class="resena-autor">
               <span class="resena-perfil">
-                <span class="resena-avatar" aria-hidden="true"></span>
-                <span class="resena-quien"><span class="resena-nombre">Creator Name</span><span class="resena-ig">@instagram</span></span>
+                <span class="resena-avatar resena-iniciales" aria-hidden="true">RG</span>
+                <span class="resena-quien"><span class="resena-nombre">Rogelio Perez Gonzalez</span></span>
               </span>
-              <span class="resena-pais">Country</span>
             </figcaption>
             <p class="resena-estrellas" aria-label="5 out of 5 stars">★★★★★</p>
-            <p class="resena-titulo">Consectetur adipiscing elit</p>
-            <blockquote class="resena-texto">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</blockquote>
+            <p class="resena-titulo">The look feels natural</p>
+            <blockquote class="resena-texto">I've tried a lot of different LUTs and what I like about SPECTRE is that the look feels natural. Skin tones still look good and the image has more depth without having to push everything too far. Definitely something I'd use on future projects.</blockquote>
           </figure>
           <figure class="resena">
             <figcaption class="resena-autor">
               <span class="resena-perfil">
-                <span class="resena-avatar" aria-hidden="true"></span>
-                <span class="resena-quien"><span class="resena-nombre">Creator Name</span><span class="resena-ig">@instagram</span></span>
+                <span class="resena-avatar resena-iniciales" aria-hidden="true">PE</span>
+                <span class="resena-quien"><span class="resena-nombre">Pablo Esteves</span></span>
               </span>
-              <span class="resena-pais">Country</span>
             </figcaption>
             <p class="resena-estrellas" aria-label="5 out of 5 stars">★★★★★</p>
-            <p class="resena-titulo">Sed do eiusmod tempor</p>
-            <blockquote class="resena-texto">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</blockquote>
+            <p class="resena-titulo">Clean and cinematic</p>
+            <blockquote class="resena-texto">SPECTRE has made my color grading workflow a lot easier. I can get close to the look I'm going for pretty quickly and then make a few adjustments depending on the project. The results feel clean and cinematic without losing the original look of the footage.</blockquote>
           </figure>
           <figure class="resena">
             <figcaption class="resena-autor">
               <span class="resena-perfil">
-                <span class="resena-avatar" aria-hidden="true"></span>
-                <span class="resena-quien"><span class="resena-nombre">Creator Name</span><span class="resena-ig">@instagram</span></span>
+                <span class="resena-avatar resena-iniciales" aria-hidden="true">JG</span>
+                <span class="resena-quien"><span class="resena-nombre">JP Garay</span></span>
               </span>
-              <span class="resena-pais">Country</span>
             </figcaption>
             <p class="resena-estrellas" aria-label="5 out of 5 stars">★★★★★</p>
-            <p class="resena-titulo">Ut labore et dolore magna</p>
-            <blockquote class="resena-texto">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</blockquote>
+            <p class="resena-titulo">Room to make the image my own</p>
+            <blockquote class="resena-texto">What I like most is that the LUTs don't feel overly stylized. The contrast and colors look great while still leaving room to make the image my own. It's a solid starting point when I want to get a good look without spending too much time building everything from scratch.</blockquote>
           </figure>
           <figure class="resena">
             <figcaption class="resena-autor">
               <span class="resena-perfil">
-                <span class="resena-avatar" aria-hidden="true"></span>
-                <span class="resena-quien"><span class="resena-nombre">Creator Name</span><span class="resena-ig">@instagram</span></span>
+                <span class="resena-avatar resena-iniciales" aria-hidden="true">ET</span>
+                <span class="resena-quien"><span class="resena-nombre">Esteban Torreslanda</span></span>
               </span>
-              <span class="resena-pais">Country</span>
             </figcaption>
             <p class="resena-estrellas" aria-label="5 out of 5 stars">★★★★★</p>
-            <p class="resena-titulo">Quis nostrud exercitation</p>
-            <blockquote class="resena-texto">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.</blockquote>
-          </figure>
-          <figure class="resena">
-            <figcaption class="resena-autor">
-              <span class="resena-perfil">
-                <span class="resena-avatar" aria-hidden="true"></span>
-                <span class="resena-quien"><span class="resena-nombre">Creator Name</span><span class="resena-ig">@instagram</span></span>
-              </span>
-              <span class="resena-pais">Country</span>
-            </figcaption>
-            <p class="resena-estrellas" aria-label="5 out of 5 stars">★★★★★</p>
-            <p class="resena-titulo">Duis aute irure dolor</p>
-            <blockquote class="resena-texto">Curabitur blandit tempus porttitor. Maecenas sed diam eget risus varius blandit sit amet non magna.</blockquote>
+            <p class="resena-titulo">Balanced and natural</p>
+            <blockquote class="resena-texto">I've been looking for LUTs that give my footage a cinematic look without making it feel overdone. SPECTRE does a really good job with that. The colors feel balanced and the image keeps its natural look, which makes it easy to adapt to different projects.</blockquote>
           </figure>
         </div>
         <button type="button" class="carrusel-flecha resenas-flecha" data-dir="1" aria-label="Next reviews"><span aria-hidden="true">→</span></button>
@@ -495,6 +478,6 @@
     <a class="barra-compra-boton" href="/get">GET SPECTRE <span class="flecha" aria-hidden="true">→</span></a>
   </div>
 
-  <script src="js/main.js?v=20261009185623" defer></script>
+  <script src="js/main.js?v=20261009190011" defer></script>
 </body>
 </html>

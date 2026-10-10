@@ -1225,6 +1225,15 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   background: linear-gradient(160deg, #22211f, #121211);
   box-shadow: 0 0 0 1px rgba(234, 224, 197, 0.16);
 }
+.resena-iniciales {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--lino);
+}
 .resena-quien { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .resena-nombre { font-size: 15px; font-weight: 600; color: var(--hueso); }
 .resena-ig { font-size: 13px; font-weight: 300; color: var(--greige); }
