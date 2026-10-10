@@ -203,6 +203,67 @@ function pintar(datos) {
   destino.hidden = false;
 }
 
+// ── intro al abrir el área de miembros (la misma animación de la portada: palabras + iconos) ──
+const INTRO_VISTA = "spectre-miembros-intro";
+const GLIFOS = [
+  '<svg class="glyph" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="36" r="22" stroke="currentColor" stroke-width="1.5"/><circle cx="50" cy="64" r="22" stroke="currentColor" stroke-width="1.5"/></svg>',
+  '<svg class="glyph" viewBox="0 0 100 100" fill="currentColor"><path d="M50 8 C51.5 34 52 42 66 50 C52 58 51.5 66 50 92 C48.5 66 48 58 34 50 C48 42 48.5 34 50 8 Z"/></svg>',
+  '<svg class="glyph" viewBox="0 0 100 100" fill="none"><path d="M40 32 a24 24 0 0 0 0 36" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><path d="M60 32 a24 24 0 0 1 0 36" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><circle cx="50" cy="24" r="3" fill="currentColor"/></svg>',
+  '<svg class="glyph" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="24" stroke="currentColor" stroke-width="2.5"/><line x1="50" y1="20" x2="50" y2="80" stroke="currentColor" stroke-width="1.5"/></svg>',
+];
+function introMiembros(edicion) {
+  const sinMovimiento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let vista = false;
+  try { vista = sessionStorage.getItem(INTRO_VISTA) === "1"; } catch (_) {}
+  if (sinMovimiento || vista) return;
+  try { sessionStorage.setItem(INTRO_VISTA, "1"); } catch (_) {}
+
+  const lineasTexto = ["WELCOME TO SPECTRE", (edicion || "MEMBERS AREA").toUpperCase()];
+  const capa = document.createElement("div");
+  capa.id = "loader";
+  capa.setAttribute("aria-hidden", "true");
+  capa.innerHTML = `<div class="loader-intro">${lineasTexto.map(() => '<p class="intro-linea"></p>').join("")}</div><div class="loader-glyphs">${GLIFOS.join("")}</div>`;
+  const lineas = [...capa.querySelectorAll(".intro-linea")];
+  lineas.forEach((linea, k) => {
+    lineasTexto[k].split(/\s+/).forEach((palabra, i) => {
+      const span = el("span", "palabra", palabra);
+      span.style.setProperty("--d", i * 0.09 + "s");
+      linea.append(span);
+    });
+  });
+  document.documentElement.classList.remove("sin-intro");
+  document.body.append(capa);
+
+  const timers = [];
+  const despues = (ms, fn) => timers.push(setTimeout(fn, ms));
+  let cerrada = false;
+  const cerrar = () => {
+    if (cerrada) return;
+    cerrada = true;
+    timers.forEach(clearTimeout);
+    capa.classList.add("fuera");
+    setTimeout(() => capa.remove(), 1200);
+  };
+  const intro = capa.querySelector(".loader-intro");
+  const glyphs = capa.querySelectorAll(".glyph");
+  let t = 250;
+  lineas.forEach((linea) => {
+    despues(t, () => linea.classList.add("activa"));
+    t += linea.children.length * 90 + 420;
+  });
+  t += 700;
+  despues(t, () => { intro.classList.add("fuera"); capa.classList.add("fase-iconos"); });
+  const PASO = 160;
+  const secuencia = [...glyphs, ...glyphs];
+  secuencia.forEach((g, i) => despues(t + 450 + i * PASO, () => {
+    glyphs.forEach((x) => x.classList.remove("activo"));
+    g.classList.add("activo");
+  }));
+  despues(t + 450 + (secuencia.length - 1) * PASO + 650, cerrar);
+  capa.addEventListener("click", cerrar, { once: true });
+  document.addEventListener("keydown", cerrar, { once: true });
+}
+
 // ── entrar con contraseña ──
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -217,6 +278,7 @@ form.addEventListener("submit", async (e) => {
     const r = await probar(clave, recordar);
     if (!r) throw new Error("no abre");
     if (recordar) guardar(JSON.stringify({ sal: r.paquete.sal, llave: aB64(await crypto.subtle.exportKey("raw", r.llave)) }));
+    introMiembros(r.datos.edicion);
     pintar(r.datos);
     if (window.umami) window.umami.track("miembros-entra", { edicion: r.datos.edicion || "" });
     window.scrollTo(0, 0);
@@ -237,7 +299,9 @@ form.addEventListener("submit", async (e) => {
   if (!paquete) { if (g) olvidar(); return; }
   try {
     const llave = await crypto.subtle.importKey("raw", deB64(g.llave), "AES-GCM", false, ["decrypt"]);
-    pintar(await abrir(llave, paquete));
+    const datos = await abrir(llave, paquete);
+    introMiembros(datos.edicion);
+    pintar(datos);
   } catch (_) {
     olvidar();
   }
