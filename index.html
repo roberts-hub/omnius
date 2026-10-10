@@ -32,7 +32,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,300;0,400;0,600;0,700;1,300&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/estilo.css?v=20261010000551" />
+  <link rel="stylesheet" href="css/estilo.css?v=20261010003224" />
   <!-- Umami: analítica sin cookies (cloud.umami.is) — visitas, clics de checkout y embudo -->
   <script defer src="https://cloud.umami.is/script.js" data-website-id="add40efe-f309-476f-95a6-6367262a4434" data-domains="spectrecolor.com"></script>
 </head>
@@ -351,6 +351,35 @@
 
     </section>
 
+    <!-- ══════════ LA CLASE (incluida en Full System) ══════════
+         Montaje corto en loop, sin sonido de inicio; el botón de vidrio activa el audio.
+         Video: video/clase-1080.hevc.mp4 (escritorio) y clase-720.h264.mp4 (respaldo); se carga al acercarse. -->
+    <section class="clase" aria-labelledby="titulo-clase">
+      <div class="clase-texto reveal">
+        <p class="kicker">THE CLASS · INCLUDED WITH FULL SYSTEM</p>
+        <h2 class="titulo" id="titulo-clase">Learn my exact color grading process.</h2>
+        <p class="clase-desc">An in-depth class where I break down, step by step, how I grade my films with SPECTRE.</p>
+        <ul class="checklist clase-lista">
+          <li>The full node tree, explained</li>
+          <li>How I adapt the look to every shot</li>
+          <li>Grading real footage, start to finish</li>
+        </ul>
+        <a class="btn-linea" href="/get" data-umami-event="ver-producto" data-umami-event-boton="clase">GET THE FULL SYSTEM <span class="flecha" aria-hidden="true">→</span></a>
+      </div>
+      <div class="clase-video reveal" data-clase>
+        <video muted loop playsinline preload="none" poster="video/clase-poster.jpg" aria-label="Preview of the SPECTRE class">
+          <source data-src="video/clase-1080.hevc.mp4" type='video/mp4; codecs="hvc1"' media="(min-width: 861px)" />
+          <source data-src="video/clase-720.h264.mp4" type="video/mp4" />
+        </video>
+        <span class="clase-etiqueta">PREVIEW</span>
+        <button class="clase-sonido" type="button" aria-pressed="false" aria-label="Turn sound on">
+          <svg class="icono-mudo" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z" fill="currentColor"/><path d="M16 9.5l5 5M21 9.5l-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+          <svg class="icono-sonido" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z" fill="currentColor"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+          <span>SOUND</span>
+        </button>
+      </div>
+    </section>
+
     <!-- ══════════ RESEÑAS (estructura de Pordoi) ══════════
          Reseñas reales de creadores. El título de cada una es una frase de su propio texto.
          Para agregar foto y link de Instagram: herramientas/avatar-instagram.sh usuario → img/resenas/usuario.jpg
@@ -491,6 +520,6 @@
     <a class="barra-compra-boton" href="/get" data-umami-event="ver-producto" data-umami-event-boton="barra">GET SPECTRE <span class="flecha" aria-hidden="true">→</span></a>
   </div>
 
-  <script src="js/main.js?v=20261010000551" defer></script>
+  <script src="js/main.js?v=20261010003224" defer></script>
 </body>
 </html>

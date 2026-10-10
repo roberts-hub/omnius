@@ -568,6 +568,36 @@ if (resenas && !resenas.closest("[hidden]")) {
   }
 }
 
+// ── la clase: montaje en loop; se carga al acercarse y se pausa fuera de pantalla ──
+const clase = document.querySelector("[data-clase]");
+if (clase) {
+  const v = clase.querySelector("video");
+  const boton = clase.querySelector(".clase-sonido");
+  let cargado = false;
+  const cargar = () => {
+    if (cargado) return;
+    cargado = true;
+    v.querySelectorAll("source[data-src]").forEach((s) => { s.src = s.dataset.src; });
+    v.load();
+  };
+  new IntersectionObserver(([e]) => {
+    if (e.isIntersecting) {
+      cargar();
+      if (!reduceMotion || !v.muted) v.play().catch(() => {});
+    } else if (cargado) {
+      v.pause();
+    }
+  }, { rootMargin: "300px 0px" }).observe(clase);
+  boton.addEventListener("click", () => {
+    cargar();
+    v.muted = !v.muted;
+    if (!v.muted) { v.currentTime = 0; v.play().catch(() => {}); }
+    boton.setAttribute("aria-pressed", String(!v.muted));
+    boton.setAttribute("aria-label", v.muted ? "Turn sound on" : "Turn sound off");
+    if (window.umami && !v.muted) window.umami.track("clase-sonido");
+  });
+}
+
 // ── barra de compra fija (estilo Pordoi) ──
 // Dos modos según la página:
 // · [data-muestra-barra] (principal): solo se ve mientras la pantalla está entre esa sección y el
