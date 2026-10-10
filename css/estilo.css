@@ -1709,3 +1709,9 @@ body:has(.barra-compra) .cierre { padding-bottom: 120px; }
 .resenas-pista.rodando { scroll-snap-type: none; scroll-behavior: auto; cursor: pointer; }
 .resenas-pista.rodando .resena { scroll-snap-align: none; }
 .resenas-continuas .resenas-flecha, .resenas-continuas .resenas-puntos { display: none; }
+/* bordes del carrusel de reseñas: se desvanecen en lugar de cortar en seco */
+.resenas-pista.rodando {
+  --fade-r: clamp(48px, 12vw, 180px);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 var(--fade-r), #000 calc(100% - var(--fade-r)), transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 var(--fade-r), #000 calc(100% - var(--fade-r)), transparent 100%);
+}
