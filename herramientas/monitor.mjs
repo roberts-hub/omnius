@@ -3,6 +3,8 @@
 // y el certificado HTTPS. Si algo falla, el proceso termina con error y el workflow abre un aviso (issue).
 // Uso local: node herramientas/monitor.mjs
 import tls from "node:tls";
+import { execFileSync } from "node:child_process";
+import { existsSync } from "node:fs";
 import { appendFileSync } from "node:fs";
 
 const SITIO = "https://spectrecolor.com";
@@ -28,6 +30,16 @@ async function pedir(url, opciones = {}, intentos = 3) {
     } catch (e) { ultimo = e; await new Promise((ok) => setTimeout(ok, 3000)); }
   }
   throw ultimo;
+}
+
+function verComoCliente(url) {
+  const candidatos = [process.env.CHROME, "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", "/usr/bin/google-chrome", "/usr/bin/google-chrome-stable", "/usr/bin/chromium", "/usr/bin/chromium-browser"].filter(Boolean);
+  const chrome = candidatos.find((c) => existsSync(c));
+  if (!chrome) return null;
+  try {
+    const dom = execFileSync(chrome, ["--headless=new", "--disable-gpu", "--no-sandbox", "--virtual-time-budget=20000", "--dump-dom", url], { encoding: "utf8", timeout: 60000, maxBuffer: 50e6, stdio: ["ignore", "pipe", "ignore"] });
+    return dom.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/g, "").replace(/<[^>]+>/g, " ").replace(/&amp;/g, "&").replace(/\s+/g, " ");
+  } catch { return null; }
 }
 
 // 1. páginas y todo lo que cargan (css, js, imágenes, videos)
@@ -69,9 +81,16 @@ try {
     const { r: s, ms } = await pedir(url);
     const pagina = await s.text();
     if (s.status !== 200) falla(`Checkout ${edicion}: Stripe respondió ${s.status}`);
-    else if (/\/error\b|deactivated/.test(s.url)) falla(`Checkout ${edicion}: Stripe manda a una página de error (${s.url})`);
     else if (!/<title>Stripe Checkout/i.test(pagina)) falla(`Checkout ${edicion}: la página de pago no cargó como se esperaba`);
-    else bien(`Checkout ${edicion} en Stripe (${ms} ms)`);
+    else {
+      // la página de Stripe se arma con JavaScript: un link desactivado responde igual que uno activo.
+      // Se abre en Chrome sin ventana y se lee lo que vería el cliente.
+      const visto = verComoCliente(url);
+      if (visto === null) aviso(`Checkout ${edicion}: no hay Chrome para comprobar que el link esté activo`);
+      else if (/no longer active|link is inactive|deactivated/i.test(visto)) falla(`Checkout ${edicion}: el link de pago está DESACTIVADO en Stripe (nadie puede comprar)`);
+      else if (!/SPECTRE/.test(visto) || !/\$\s?\d/.test(visto)) falla(`Checkout ${edicion}: la página de pago no muestra el producto ni el precio`);
+      else bien(`Checkout ${edicion} activo en Stripe: ${(visto.match(/SPECTRE (Full System|LUT Pack) \S+/) || [""])[0]} (${ms} ms)`);
+    }
   }
 } catch (e) { falla(`Checkout: no pude revisarlo (${e.message})`); }
 
