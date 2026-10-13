@@ -63,13 +63,13 @@ Pídele a tu contador cómo facturarlos (normalmente CFDI a residente en el extr
 
 ## Estado actual en Stripe (cuenta real)
 
-- Full System $89 → https://buy.stripe.com/cNi00jc8J1D63Jqc2w1kA02
-- LUT Pack $49 → https://buy.stripe.com/6oU9AT7St0z2fs82rW1kA03
+- Full System $89 → https://buy.stripe.com/7sY7sL3Cd81u6VCgiM1kA05
+- LUT Pack $49 → https://buy.stripe.com/5kQ5kD0q181u7ZG0jO1kA04
 - Cada link: nombre del cliente, códigos de promoción, número fiscal para empresas, sin impuesto automático,
   pregunta opcional "Email me new looks and updates?", factura PDF por correo y mensaje con SU contraseña.
 - Factura (para las dos ediciones): nota con el link al área de miembros, sin contraseña; pie con los Términos.
 - Marca: logo e ícono en `img/marca/`, color #0b0b0a, acento #eae0c5.
-- Conectados al sitio desde 2026-10-09 (`CHECKOUT_URLS` en `js/main.js`) para probar antes del lanzamiento.
+- Links actuales desde 2026-10-13: precio en USD con opción en MXN ($1,634 y $899) porque Stripe México solo cobra tarjetas mexicanas (y Amex) en pesos. Los links del 8 de octubre (solo USD) quedan desactivados.
 - Base de clientes: Stripe → Customers (Export → CSV). Los que respondieron "Yes, keep me posted" aceptaron
   recibir correos de marketing.
 

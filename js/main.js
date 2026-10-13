@@ -4,8 +4,8 @@
 // · Lemon Squeezy: https://TIENDA.lemonsqueezy.com/checkout/buy/UUID?embed=1&media=0  → abre encima de la página
 // · Stripe (Payment Link): https://buy.stripe.com/XXXXXXXX                            → abre la página de pago de Stripe
 const CHECKOUT_URLS = {
-  completo: "https://buy.stripe.com/cNi00jc8J1D63Jqc2w1kA02", // Full System (LUTs + node tree + tutorial) — $89
-  luts: "https://buy.stripe.com/6oU9AT7St0z2fs82rW1kA03",     // LUTs Only (sin DaVinci Resolve) — $49
+  completo: "https://buy.stripe.com/7sY7sL3Cd81u6VCgiM1kA05", // Full System (LUTs + node tree + tutorial) — $89
+  luts: "https://buy.stripe.com/5kQ5kD0q181u7ZG0jO1kA04",     // LUTs Only (sin DaVinci Resolve) — $49
 };
 const urlLista = (u) => !!u && !u.startsWith("TODO");
 
