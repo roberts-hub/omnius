@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SPECTRE | LUTs cinematográficos y PowerGrade para DaVinci Resolve (S-Log3, D-Log, C-Log)</title>
+  <meta name="description" content="Un sistema de color cinematográfico del filmmaker Roberto Arechederra (Ford, Audi, Red Bull). PowerGrade + LUTs para Sony S-Log3, DJI D-Log, Canon C-Log, RED y Rec.709. Funciona en DaVinci Resolve gratis." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="SPECTRE: LUTs cinematográficos y PowerGrade para DaVinci Resolve" />
+  <meta property="og:description" content="Un sistema de color cinematográfico del filmmaker Roberto Arechederra (Ford, Audi, Red Bull). PowerGrade + LUTs para Sony S-Log3, DJI D-Log, Canon C-Log, RED y Rec.709. Funciona en DaVinci Resolve gratis." />
+  <link rel="alternate" hreflang="en" href="https://spectrecolor.com/" />
+  <link rel="alternate" hreflang="es" href="https://spectrecolor.com/es/" />
+  <link rel="alternate" hreflang="x-default" href="https://spectrecolor.com/" />
+  <link rel="canonical" href="https://spectrecolor.com/es/" />
+  <meta property="og:url" content="https://spectrecolor.com/es/" />
+  <meta property="og:site_name" content="SPECTRE" />
+  <meta property="og:image" content="https://spectrecolor.com/img/og-spectre.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://assets.lemonsqueezy.com https://cloud.umami.is; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://i.ytimg.com; media-src 'self'; frame-src https://www.youtube-nocookie.com https://*.lemonsqueezy.com; connect-src 'self' https://*.lemonsqueezy.com https://gateway.umami.is https://cloud.umami.is; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" href="/img/marca/icono-48.png" type="image/png" sizes="48x48" />
+  <link rel="icon" href="/img/marca/icono-96.png" type="image/png" sizes="96x96" />
+  <link rel="icon" href="/img/marca/icono-192.png" type="image/png" sizes="192x192" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <meta name="theme-color" content="#0b0b0a" />
+  <script>
+    // Antes del primer pintado: marca JS y decide si la intro corre (evita parpadeos al cargar)
+    (function () {
+      var d = document.documentElement;
+      d.classList.add("js");
+      try {
+        if (sessionStorage.getItem("omnius-intro") === "1" ||
+            matchMedia("(prefers-reduced-motion: reduce)").matches) d.classList.add("sin-intro");
+      } catch (e) {}
+    })();
+  </script>
+  <!-- con internet lento la portada del video se pinta antes que todo lo demás -->
+  <link rel="preload" as="image" href="/video/hero-poster.jpg" fetchpriority="high" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,300;0,400;0,600;0,700;1,300&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/estilo.css?v=20261013111912" />
+  <!-- Umami: analítica sin cookies (cloud.umami.is) — visitas, clics de checkout y embudo -->
+  <script defer src="https://cloud.umami.is/script.js" data-website-id="add40efe-f309-476f-95a6-6367262a4434" data-domains="spectrecolor.com"></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://spectrecolor.com/#spectre","name":"SPECTRE","alternateName":"SPECTRE Color System","url":"https://spectrecolor.com/","logo":"https://spectrecolor.com/img/marca/icono-512.png","founder":{"@id":"https://spectrecolor.com/#roberto"},"email":"roberto@arechederra.com","sameAs":["https://www.instagram.com/robert.arre/"]},{"@type":"Person","@id":"https://spectrecolor.com/#roberto","name":"Roberto Arechederra","jobTitle":"Filmmaker & colorist","url":"https://spectrecolor.com/","sameAs":["https://www.instagram.com/robert.arre/","https://www.twowaves.mx"]},{"@type":"WebSite","@id":"https://spectrecolor.com/#web","name":"SPECTRE","url":"https://spectrecolor.com/es/","publisher":{"@id":"https://spectrecolor.com/#spectre"},"inLanguage":"es"},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"¿Qué incluye?","acceptedAnswer":{"@type":"Answer","text":"El Signature LUT de SPECTRE (.cube), cinco One-Click LUTs que llevan tu material en Log al look final en un solo clic, el árbol de nodos completo (PowerGrade) para DaVinci Resolve con versiones para Sony S-Log, DJI D-Log, Canon C-Log, RED y Rec.709, una masterclass de 50 minutos y clips en Log para practicar."}},{"@type":"Question","name":"¿Con qué cámaras funciona?","acceptedAnswer":{"@type":"Answer","text":"SPECTRE funciona con cualquier cámara. Incluye versiones hechas específicamente para Sony S-Log, DJI D-Log, Canon C-Log y RED (como la Komodo), además de una versión Rec.709 para material sin Log. Con el PowerGrade puedes adaptar el look al material de cualquier otra cámara."}},{"@type":"Question","name":"¿Con qué programas de edición funciona?","acceptedAnswer":{"@type":"Answer","text":"The node tree (PowerGrade) is built for DaVinci Resolve — Free and Studio. The Signature LUT and the One-Click LUT work in any editor that reads .cube files: Premiere Pro, Final Cut Pro, CapCut and more. Not using Resolve? Get the LUTs Only edition."}},{"@type":"Question","name":"¿Necesito experiencia avanzada o material en Log?","acceptedAnswer":{"@type":"Answer","text":"No necesitas experiencia avanzada: la masterclass te guía paso a paso. El Log te da más flexibilidad, pero el flujo también se adapta a material en Rec.709."}},{"@type":"Question","name":"¿Cómo recibo los archivos?","acceptedAnswer":{"@type":"Answer","text":"Al instante. Justo después de pagar tienes acceso al área de miembros, donde descargas tus archivos y ves los tutoriales. Incluye actualizaciones gratis de esta versión."}},{"@type":"Question","name":"¿Qué es un PowerGrade?","acceptedAnswer":{"@type":"Answer","text":"Un PowerGrade es un árbol de nodos guardado de DaVinci Resolve: la corrección completa, nodo por nodo, lista para aplicar a tus clips. El PowerGrade de SPECTRE es la estructura exacta que uso en mis películas, así que puedes ver y ajustar cada paso en lugar de depender de un solo LUT."}},{"@type":"Question","name":"¿Qué diferencia hay entre el Full System y el LUT Pack?","acceptedAnswer":{"@type":"Answer","text":"El Full System incluye los LUTs, el árbol de nodos PowerGrade para DaVinci Resolve, la masterclass de 50 minutos y clips en Log para practicar. El LUT Pack incluye el Signature LUT y los One-Click LUTs en archivos .cube para cualquier editor, como Premiere Pro, Final Cut Pro o CapCut."}},{"@type":"Question","name":"¿Incluye una clase de corrección de color?","acceptedAnswer":{"@type":"Answer","text":"Sí. El Full System incluye una masterclass de 50 minutos donde explico, paso a paso, mi proceso exacto de corrección de color con SPECTRE, desde el árbol de nodos hasta corregir material real."}}]}]}</script>
+</head>
+<body>
+
+  <!-- ══════════ INTRO: frase palabra por palabra → iconos → sitio ══════════ -->
+  <div id="loader" aria-hidden="true">
+    <div class="loader-intro">
+      <p class="intro-linea">NACISTE</p>
+      <p class="intro-linea">PARA CREAR</p>
+    </div>
+    <div class="loader-glyphs">
+      <!-- dos círculos entrelazados -->
+      <svg class="glyph" viewBox="0 0 100 100" fill="none">
+        <circle cx="50" cy="36" r="22" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="50" cy="64" r="22" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+      <!-- destello -->
+      <svg class="glyph" viewBox="0 0 100 100" fill="currentColor">
+        <path d="M50 8 C51.5 34 52 42 66 50 C52 58 51.5 66 50 92 C48.5 66 48 58 34 50 C48 42 48.5 34 50 8 Z"/>
+      </svg>
+      <!-- ( · ) dos mitades -->
+      <svg class="glyph" viewBox="0 0 100 100" fill="none">
+        <path d="M40 32 a24 24 0 0 0 0 36" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M60 32 a24 24 0 0 1 0 36" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="50" cy="24" r="3" fill="currentColor"/>
+      </svg>
+      <!-- marca SPECTRE (va al final: se queda y se disuelve hacia el video) -->
+      <svg class="glyph" viewBox="0 0 100 100" fill="none">
+        <circle cx="50" cy="50" r="24" stroke="currentColor" stroke-width="2.5"/>
+        <line x1="50" y1="20" x2="50" y2="80" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- ══════════ HEADER ══════════ -->
+  <header class="cabecera">
+    <a class="marca" href="#">
+      <svg class="marca-icono" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+        <circle cx="50" cy="50" r="30" stroke="currentColor" stroke-width="5"/>
+        <line x1="50" y1="12" x2="50" y2="88" stroke="currentColor" stroke-width="3"/>
+      </svg>
+      SPECTRE
+    </a>
+    <nav class="cabecera-nav">
+      <a class="link-mono" href="/es/get" data-umami-event="ver-producto" data-umami-event-boton="header">OBTÉN SPECTRE</a>
+      <!-- acceso para quienes ya compraron: lleva al área de miembros -->
+      <a class="link-idioma" href="/" hreflang="en" lang="en" data-umami-event="idioma" data-umami-event-idioma="en" aria-label="View in English">EN</a>
+      <a class="link-acceso" href="/access" data-umami-event="access-header" aria-label="Accede a tus productos"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.6"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>ACCESO</span></a>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- ══════════ HERO: video de fondo a pantalla completa ══════════ -->
+    <section class="hero-video" aria-label="SPECTRE">
+      <div class="hero-media">
+        <!-- Video del hero (fuente: 4K). Cada dispositivo descarga solo una versión:
+             - horizontal (computadora / celular acostado): 1080p
+             - celular vertical: recorte vertical 1080x1920 sacado del 4K (nítido a pantalla completa)
+             HEVC primero (mejor calidad por MB: Safari, Chrome, Edge, iPhone, Android); H.264 de respaldo (Firefox). -->
+        <video autoplay muted loop playsinline preload="auto" poster="/video/hero-poster.jpg" aria-hidden="true">
+          <source src="/video/hero-1080.hevc.mp4" type='video/mp4; codecs="hvc1.1.6.L123.B0"' media="(min-width: 861px), (orientation: landscape)" />
+          <source src="/video/hero-1080.h264.mp4" type='video/mp4; codecs="avc1.640028"' media="(min-width: 861px), (orientation: landscape)" />
+          <source src="/video/hero-vertical.hevc.mp4" type='video/mp4; codecs="hvc1.1.6.L123.B0"' />
+          <source src="/video/hero-vertical.h264.mp4" type='video/mp4; codecs="avc1.640028"' />
+        </video>
+        <script>
+          // Internet lento: versión ligera del video (720p, ~2 MB en vez de 7-10 MB). Se decide antes de que
+          // empiece la descarga si el navegador avisa que la conexión es lenta o hay ahorro de datos; si no
+          // avisa (Safari) y a los 4 s el video sigue sin poder reproducirse, se cambia a la ligera.
+          (function () {
+            var v = document.currentScript.previousElementSibling;
+            var vertical = window.matchMedia("(max-width: 860px) and (orientation: portrait)").matches;
+            var ligera = function () {
+              if (v.dataset.ligera) return;
+              v.dataset.ligera = "1";
+              while (v.firstChild) v.removeChild(v.firstChild);
+              var s = document.createElement("source");
+              s.src = vertical ? "/video/hero-vertical-lite.h264.mp4" : "/video/hero-lite.h264.mp4";
+              s.type = "video/mp4";
+              v.appendChild(s);
+              v.load();
+              var p = v.play(); if (p && p.catch) p.catch(function () {});
+            };
+            var c = navigator.connection;
+            if (c && (c.saveData || /2g|3g/.test(c.effectiveType || "") || (c.downlink && c.downlink < 1.5))) ligera();
+            else setTimeout(function () { if (v.readyState < 3 && !v.error) ligera(); }, 4000);
+          })();
+        </script>
+      </div>
+      <div class="hero-velo" aria-hidden="true"></div>
+
+      <div class="hero-contenido">
+        <svg class="hero-icono hero-meta" viewBox="18 18 64 64" fill="none" aria-hidden="true">
+          <circle cx="50" cy="50" r="24" stroke="currentColor" stroke-width="2"/>
+          <line x1="50" y1="20" x2="50" y2="80" stroke="currentColor" stroke-width="1.2"/>
+        </svg>
+        <h1 class="hero-marca hero-meta">SPECTRE<span class="solo-lectores"> : LUTs cinematográficos y PowerGrade para DaVinci Resolve</span></h1>
+        <p class="hero-kicker hero-meta">SISTEMA DE COLOR // POR ROBERTO ARECHEDERRA</p>
+        <!-- Lleva a producto.html, donde se elige la edición (Full System o LUTs Only) -->
+        <a class="btn-pildora hero-meta" href="/es/get" data-umami-event="ver-producto" data-umami-event-boton="hero"><span class="btn-pildora-texto">OBTÉN SPECTRE</span><span class="flecha" aria-hidden="true">→</span></a>
+      </div>
+
+      <div class="hero-scroll hero-meta" aria-hidden="true"><span class="scroll-dot"></span>DESLIZA</div>
+    </section>
+
+    <!-- ══════════ CINEMATIC CONSISTENCY (encabezado del collage y los sliders) ══════════ -->
+    <div class="consistencia">
+      <header class="looks-cabeza reveal">
+        <h2 class="titulo">Consigue consistencia cinematográfica.</h2>
+        <p class="nota-mono">COLOR COHERENTE EN TODA TU PELÍCULA</p>
+      </header>
+    </div>
+
+    <!-- ══════════ COLLAGE (franja de tomas gradeadas; lista para cambiar por un reel en video) ══════════ -->
+    <section class="introducing reveal" aria-label="Fotogramas corregidos con SPECTRE">
+      <div class="introducing-tiras" aria-hidden="true">
+        <img loading="lazy" src="/img/looks/reel-01.jpg" alt="" />
+        <img loading="lazy" src="/img/looks/reel-02.jpg" alt="" />
+        <img loading="lazy" src="/img/looks/reel-04.jpg" alt="" />
+        <img loading="lazy" src="/img/looks/reel-isla.jpg" alt="" />
+        <img loading="lazy" src="/img/looks/reel-06.jpg" alt="" />
+      </div>
+    </section>
+
+    <!-- ══════════ MARCAS (los mismos logos de twowaves.mx) ══════════
+         Franja continua; la pista va duplicada para que el loop no tenga saltos. -->
+    <section class="marcas" aria-label="Marcas">
+      <h2 class="marcas-titulo reveal">El color detrás de nuestro trabajo para</h2>
+      <div class="marcas-franja reveal">
+        <div class="marcas-pista">
+          <img class="marca-logo" src="/img/logos/ford.png" alt="Ford" style="--factor: 0.845" />
+          <img class="marca-logo" src="/img/logos/audi.png" alt="Audi" style="--factor: 0.812" />
+          <img class="marca-logo" src="/img/logos/cupra.png" alt="Cupra" style="--factor: 1.118" />
+          <img class="marca-logo" src="/img/logos/lamborghini.png" alt="Lamborghini" style="--factor: 0.67" />
+          <img class="marca-logo" src="/img/logos/red-bull.png" alt="Red Bull" style="--factor: 1.061" />
+          <img class="marca-logo" src="/img/logos/alo-yoga.png" alt="Alo Yoga" style="--factor: 1.141" />
+          <img class="marca-logo" src="/img/logos/skechers.png" alt="Skechers" style="--factor: 0.344" />
+          <img class="marca-logo" src="/img/logos/kerastase.png" alt="Kérastase" style="--factor: 0.732" />
+          <img class="marca-logo" src="/img/logos/longines.png" alt="Longines" style="--factor: 0.688" />
+          <img class="marca-logo" src="/img/logos/beautiful-destinations.png" alt="Beautiful Destinations" style="--factor: 1.367" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/ford.png" alt="" style="--factor: 0.845" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/audi.png" alt="" style="--factor: 0.812" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/cupra.png" alt="" style="--factor: 1.118" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/lamborghini.png" alt="" style="--factor: 0.67" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/red-bull.png" alt="" style="--factor: 1.061" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/alo-yoga.png" alt="" style="--factor: 1.141" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/skechers.png" alt="" style="--factor: 0.344" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/kerastase.png" alt="" style="--factor: 0.732" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/longines.png" alt="" style="--factor: 0.688" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/beautiful-destinations.png" alt="" style="--factor: 1.367" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/ford.png" alt="" style="--factor: 0.845" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/audi.png" alt="" style="--factor: 0.812" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/cupra.png" alt="" style="--factor: 1.118" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/lamborghini.png" alt="" style="--factor: 0.67" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/red-bull.png" alt="" style="--factor: 1.061" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/alo-yoga.png" alt="" style="--factor: 1.141" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/skechers.png" alt="" style="--factor: 0.344" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/kerastase.png" alt="" style="--factor: 0.732" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/longines.png" alt="" style="--factor: 0.688" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/beautiful-destinations.png" alt="" style="--factor: 1.367" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/ford.png" alt="" style="--factor: 0.845" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/audi.png" alt="" style="--factor: 0.812" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/cupra.png" alt="" style="--factor: 1.118" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/lamborghini.png" alt="" style="--factor: 0.67" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/red-bull.png" alt="" style="--factor: 1.061" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/alo-yoga.png" alt="" style="--factor: 1.141" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/skechers.png" alt="" style="--factor: 0.344" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/kerastase.png" alt="" style="--factor: 0.732" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/longines.png" alt="" style="--factor: 0.688" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/beautiful-destinations.png" alt="" style="--factor: 1.367" />
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ LOOKS ══════════ -->
+    <section class="looks" id="looks">
+      <div class="carrusel reveal" aria-roledescription="carousel" aria-label="Ejemplos de antes y después">
+        <div class="carrusel-ventana">
+          <div class="carrusel-pista">
+          <article class="look" role="group" aria-roledescription="slide" aria-label="1 de 10">
+            <div class="comparador" data-comparador>
+              <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
+                   src="/img/looks/09-despues-1920.jpg"
+                   srcset="/img/looks/09-despues-1200.jpg 1200w, /img/looks/09-despues-1920.jpg 1920w"
+                   sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                   alt="Hidden Cove: fotograma corregido con el PowerGrade de SPECTRE" />
+              <div class="antes-marco">
+                <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
+                     src="/img/looks/09-antes-1920.jpg"
+                     srcset="/img/looks/09-antes-1200.jpg 1200w, /img/looks/09-antes-1920.jpg 1920w"
+                     sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                     alt="Hidden Cove: el mismo fotograma antes de corregir" />
+              </div>
+              <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
+              <div class="tag camara" hidden>GRABADO CON</div>
+            </div>
+          </article>
+          <article class="look" role="group" aria-roledescription="slide" aria-label="2 de 10">
+            <div class="comparador" data-comparador>
+              <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
+                   src="/img/looks/03-despues-1920.jpg"
+                   srcset="/img/looks/03-despues-1200.jpg 1200w, /img/looks/03-despues-1920.jpg 1920w"
+                   sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                   alt="Desert Drift: fotograma corregido con el PowerGrade de SPECTRE" />
+              <div class="antes-marco">
+                <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
+                     src="/img/looks/03-antes-1920.jpg"
+                     srcset="/img/looks/03-antes-1200.jpg 1200w, /img/looks/03-antes-1920.jpg 1920w"
+                     sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                     alt="Desert Drift: el mismo fotograma antes de corregir (log)" />
+              </div>
+              <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
+              <div class="tag camara" hidden>GRABADO CON</div>
+            </div>
+          </article>
+          <article class="look" role="group" aria-roledescription="slide" aria-label="3 de 10">
+            <div class="comparador" data-comparador>
+              <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
+                   src="/img/looks/02-despues-1920.jpg"
+                   srcset="/img/looks/02-despues-1200.jpg 1200w, /img/looks/02-despues-1920.jpg 1920w"
+                   sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                   alt="Alpine Road: fotograma corregido con el PowerGrade de SPECTRE" />
+              <div class="antes-marco">
+                <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
+                     src="/img/looks/02-antes-1920.jpg"
+                     srcset="/img/looks/02-antes-1200.jpg 1200w, /img/looks/02-antes-1920.jpg 1920w"
+                     sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                     alt="Alpine Road: el mismo fotograma antes de corregir (log)" />
+              </div>
+              <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
+              <div class="tag camara" hidden>GRABADO CON</div>
+            </div>
+          </article>
+          <article class="look" role="group" aria-roledescription="slide" aria-label="4 de 10">
+            <div class="comparador" data-comparador>
+              <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
+                   src="/img/looks/04-despues-1920.jpg"
+                   srcset="/img/looks/04-despues-1200.jpg 1200w, /img/looks/04-despues-1920.jpg 1920w"
+                   sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                   alt="Open Water: fotograma corregido con el PowerGrade de SPECTRE" />
+              <div class="antes-marco">
+                <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
+                     src="/img/looks/04-antes-1920.jpg"
+                     srcset="/img/looks/04-antes-1200.jpg 1200w, /img/looks/04-antes-1920.jpg 1920w"
+                     sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                     alt="Open Water: el mismo fotograma antes de corregir (log)" />
+              </div>
+              <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
+              <div class="tag camara" hidden>GRABADO CON</div>
+            </div>
+          </article>
+          <article class="look" role="group" aria-roledescription="slide" aria-label="5 de 10">
+            <div class="comparador" data-comparador>
+              <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
+                   src="/img/looks/05-despues-1920.jpg"
+                   srcset="/img/looks/05-despues-1200.jpg 1200w, /img/looks/05-despues-1920.jpg 1920w"
+                   sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                   alt="Golden Swell: fotograma corregido con el PowerGrade de SPECTRE" />
+              <div class="antes-marco">
+                <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
+                     src="/img/looks/05-antes-1920.jpg"
+                     srcset="/img/looks/05-antes-1200.jpg 1200w, /img/looks/05-antes-1920.jpg 1920w"
+                     sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                     alt="Golden Swell: el mismo fotograma antes de corregir (log)" />
+              </div>
+              <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
+              <div class="tag camara" hidden>GRABADO CON</div>
+            </div>
+          </article>
+          <article class="look" role="group" aria-roledescription="slide" aria-label="6 de 10">
+            <div class="comparador" data-comparador>
+              <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
+                   src="/img/looks/06-despues-1920.jpg"
+                   srcset="/img/looks/06-despues-1200.jpg 1200w, /img/looks/06-despues-1920.jpg 1920w"
+                   sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                   alt="Forest Trail: fotograma corregido con el PowerGrade de SPECTRE" />
+              <div class="antes-marco">
+                <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
+                     src="/img/looks/06-antes-1920.jpg"
+                     srcset="/img/looks/06-antes-1200.jpg 1200w, /img/looks/06-antes-1920.jpg 1920w"
+                     sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                     alt="Forest Trail: el mismo fotograma antes de corregir (log)" />
+              </div>
+              <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
+              <div class="tag camara" hidden>GRABADO CON</div>
+            </div>
+          </article>
+          <article class="look" role="group" aria-roledescription="slide" aria-label="7 de 10">
+            <div class="comparador" data-comparador>
+              <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
+                   src="/img/looks/07-despues-1920.jpg"
+                   srcset="/img/looks/07-despues-1200.jpg 1200w, /img/looks/07-despues-1920.jpg 1920w"
+                   sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                   alt="Last Light: fotograma corregido con el PowerGrade de SPECTRE" />
+              <div class="antes-marco">
+                <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
+                     src="/img/looks/07-antes-1920.jpg"
+                     srcset="/img/looks/07-antes-1200.jpg 1200w, /img/looks/07-antes-1920.jpg 1920w"
+                     sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                     alt="Last Light: el mismo fotograma antes de corregir (log)" />
+              </div>
+              <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
+              <div class="tag camara" hidden>GRABADO CON</div>
+            </div>
+          </article>
+          <article class="look" role="group" aria-roledescription="slide" aria-label="8 de 10">
+            <div class="comparador" data-comparador>
+              <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
+                   src="/img/looks/08-despues-1920.jpg"
+                   srcset="/img/looks/08-despues-1200.jpg 1200w, /img/looks/08-despues-1920.jpg 1920w"
+                   sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                   alt="Evening Swim: fotograma corregido con el PowerGrade de SPECTRE" />
+              <div class="antes-marco">
+                <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
+                     src="/img/looks/08-antes-1920.jpg"
+                     srcset="/img/looks/08-antes-1200.jpg 1200w, /img/looks/08-antes-1920.jpg 1920w"
+                     sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                     alt="Evening Swim: el mismo fotograma antes de corregir (log)" />
+              </div>
+              <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
+              <div class="tag camara" hidden>GRABADO CON</div>
+            </div>
+          </article>
+          <article class="look" role="group" aria-roledescription="slide" aria-label="9 de 10">
+            <div class="comparador" data-comparador>
+              <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
+                   src="/img/looks/01-despues-1920.jpg"
+                   srcset="/img/looks/01-despues-1200.jpg 1200w, /img/looks/01-despues-1920.jpg 1920w"
+                   sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                   alt="Golden Harbor: fotograma corregido con el PowerGrade de SPECTRE" />
+              <div class="antes-marco">
+                <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
+                     src="/img/looks/01-antes-1920.jpg"
+                     srcset="/img/looks/01-antes-1200.jpg 1200w, /img/looks/01-antes-1920.jpg 1920w"
+                     sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                     alt="Golden Harbor: el mismo fotograma antes de corregir (log)" />
+              </div>
+              <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
+              <!-- crédito de cámara: escribir la cámara real y quitar `hidden` (aplica a todos los sliders) -->
+              <div class="tag camara" hidden>GRABADO CON</div>
+            </div>
+          </article>
+          <article class="look" role="group" aria-roledescription="slide" aria-label="10 de 10">
+            <div class="comparador" data-comparador>
+              <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
+                   src="/img/looks/10-despues-1920.jpg"
+                   srcset="/img/looks/10-despues-1200.jpg 1200w, /img/looks/10-despues-1920.jpg 1920w"
+                   sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                   alt="Desert Noir: fotograma corregido con el PowerGrade de SPECTRE" />
+              <div class="antes-marco">
+                <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
+                     src="/img/looks/10-antes-1920.jpg"
+                     srcset="/img/looks/10-antes-1200.jpg 1200w, /img/looks/10-antes-1920.jpg 1920w"
+                     sizes="(max-width: 1000px) calc(100vw - 40px), 960px"
+                     alt="Desert Noir: el mismo fotograma antes de corregir" />
+              </div>
+              <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
+              <div class="tag camara" hidden>GRABADO CON</div>
+            </div>
+          </article>
+          </div>
+        </div>
+        <div class="carrusel-controles">
+          <button type="button" class="carrusel-flecha" data-dir="-1" aria-label="Ejemplo anterior"><span aria-hidden="true">←</span></button>
+          <div class="carrusel-centro">
+            <p class="carrusel-contador" aria-live="polite"><span class="actual">01</span> / 10</p>
+            <div class="carrusel-puntos" role="tablist" aria-label="Elige un ejemplo"></div>
+          </div>
+          <button type="button" class="carrusel-flecha" data-dir="1" aria-label="Siguiente ejemplo"><span aria-hidden="true">→</span></button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ══════════ LA CLASE (incluida en Full System) ══════════
+         Montaje corto en loop, sin sonido.
+         Video: video/clase-1080.hevc.mp4 (escritorio) y clase-720.h264.mp4 (respaldo); se carga al acercarse. -->
+    <section class="clase" aria-labelledby="titulo-clase">
+      <div class="clase-texto reveal">
+        <h2 class="titulo" id="titulo-clase">Aprende mi proceso exacto de corrección de color.</h2>
+        <p class="clase-desc">Una masterclass de 50 minutos donde explico, paso a paso, cómo corrijo el color de mis películas con SPECTRE.</p>
+        <ul class="checklist clase-lista">
+          <li>El árbol de nodos completo, explicado</li>
+          <li>Cómo adapto el look a cada toma</li>
+          <li>Corrección de material real, de principio a fin</li>
+        </ul>
+        <a class="btn-pildora clase-boton" href="/es/get" data-umami-event="ver-producto" data-umami-event-boton="clase"><span class="btn-pildora-texto">OBTÉN EL FULL SYSTEM</span><span class="flecha" aria-hidden="true">→</span></a>
+      </div>
+      <div class="clase-video reveal" data-clase>
+        <video muted loop playsinline preload="none" poster="/video/clase-poster.jpg" aria-label="Adelanto de la clase de SPECTRE">
+          <source data-src="/video/clase-1080.hevc.mp4?v=20261013111912" type='video/mp4; codecs="hvc1"' media="(min-width: 861px)" />
+          <source data-src="/video/clase-720.h264.mp4?v=20261013111912" type="video/mp4" />
+        </video>
+      </div>
+    </section>
+
+    <!-- ══════════ RESEÑAS (estructura de Pordoi) ══════════
+         Reseñas reales de creadores. El título de cada una es una frase de su propio texto.
+         Para agregar foto y link de Instagram: herramientas/avatar-instagram.sh usuario → img/resenas/usuario.jpg
+         y cambiar el <span class="resena-perfil"> por <a class="resena-perfil" data-umami-event="resena-instagram" href="https://www.instagram.com/usuario/">. -->
+    <section class="resenas" id="reviews" aria-labelledby="titulo-resenas">
+      <h2 class="titulo reveal" id="titulo-resenas">Lo que dicen los creadores.</h2>
+      <div class="resenas-carrusel reveal">
+        <button type="button" class="carrusel-flecha resenas-flecha" data-dir="-1" aria-label="Reseñas anteriores"><span aria-hidden="true">←</span></button>
+        <div class="resenas-pista" tabindex="0">
+          <figure class="resena">
+            <figcaption class="resena-autor">
+              <a class="resena-perfil" data-umami-event="resena-instagram" href="https://www.instagram.com/vic.villagomez/" target="_blank" rel="noopener">
+                <img class="resena-avatar" src="/img/resenas/vic.villagomez.jpg" alt="" width="44" height="44" loading="lazy" />
+                <span class="resena-quien"><span class="resena-nombre">Vic Villagomez</span><span class="resena-ig">@vic.villagomez</span></span>
+              </a>
+            </figcaption>
+            <p class="resena-estrellas" aria-label="5 de 5 estrellas">★★★★★</p>
+            <p class="resena-titulo">Un gran punto de partida</p>
+            <blockquote class="resena-texto">Me gusta mucho cómo salen los colores con estos LUTs. Le dan al material un look cinematográfico sin que todo se vea demasiado procesado. Es un gran punto de partida para mis correcciones y me ahorra tiempo en post.</blockquote>
+          </figure>
+          <figure class="resena">
+            <figcaption class="resena-autor">
+              <a class="resena-perfil" data-umami-event="resena-instagram" href="https://www.instagram.com/roger.rpgfpv/" target="_blank" rel="noopener">
+                <img class="resena-avatar" src="/img/resenas/roger.rpgfpv.jpg" alt="" width="44" height="44" loading="lazy" />
+                <span class="resena-quien"><span class="resena-nombre">Rogelio Perez</span><span class="resena-ig">@roger.rpgfpv</span></span>
+              </a>
+            </figcaption>
+            <p class="resena-estrellas" aria-label="5 de 5 estrellas">★★★★★</p>
+            <p class="resena-titulo">El look se siente natural</p>
+            <blockquote class="resena-texto">He probado muchos LUTs y lo que me gusta de SPECTRE es que el look se siente natural. Los tonos de piel se siguen viendo bien y la imagen tiene más profundidad sin tener que forzar todo. Sin duda lo usaría en proyectos futuros.</blockquote>
+          </figure>
+          <figure class="resena">
+            <figcaption class="resena-autor">
+              <a class="resena-perfil" data-umami-event="resena-instagram" href="https://www.instagram.com/pabloesteves/" target="_blank" rel="noopener">
+                <img class="resena-avatar" src="/img/resenas/pabloesteves.jpg" alt="" width="44" height="44" loading="lazy" />
+                <span class="resena-quien"><span class="resena-nombre">Pablo Esteves</span><span class="resena-ig">@pabloesteves</span></span>
+              </a>
+            </figcaption>
+            <p class="resena-estrellas" aria-label="5 de 5 estrellas">★★★★★</p>
+            <p class="resena-titulo">Limpio y cinematográfico</p>
+            <blockquote class="resena-texto">SPECTRE me ha facilitado mucho el flujo de corrección de color. Llego bastante rápido al look que busco y luego hago unos ajustes según el proyecto. El resultado se siente limpio y cinematográfico sin perder el look original del material.</blockquote>
+          </figure>
+          <figure class="resena">
+            <figcaption class="resena-autor">
+              <a class="resena-perfil" data-umami-event="resena-instagram" href="https://www.instagram.com/jp.garay/" target="_blank" rel="noopener">
+                <img class="resena-avatar" src="/img/resenas/jp.garay.jpg" alt="" width="44" height="44" loading="lazy" />
+                <span class="resena-quien"><span class="resena-nombre">JP Garay</span><span class="resena-ig">@jp.garay</span></span>
+              </a>
+            </figcaption>
+            <p class="resena-estrellas" aria-label="5 de 5 estrellas">★★★★★</p>
+            <p class="resena-titulo">Espacio para hacer la imagen mía</p>
+            <blockquote class="resena-texto">Lo que más me gusta es que los LUTs no se sienten exagerados. El contraste y los colores se ven muy bien y aún dejan espacio para hacer la imagen mía. Es un punto de partida sólido cuando quiero un buen look sin pasar mucho tiempo armándolo desde cero.</blockquote>
+          </figure>
+          <figure class="resena">
+            <figcaption class="resena-autor">
+              <a class="resena-perfil" data-umami-event="resena-instagram" href="https://www.instagram.com/eltorreslanda/" target="_blank" rel="noopener">
+                <img class="resena-avatar" src="/img/resenas/eltorreslanda.jpg" alt="" width="44" height="44" loading="lazy" />
+                <span class="resena-quien"><span class="resena-nombre">Esteban Torreslanda</span><span class="resena-ig">@eltorreslanda</span></span>
+              </a>
+            </figcaption>
+            <p class="resena-estrellas" aria-label="5 de 5 estrellas">★★★★★</p>
+            <p class="resena-titulo">Equilibrado y natural</p>
+            <blockquote class="resena-texto">Buscaba LUTs que le dieran a mi material un look cinematográfico sin que se sintiera exagerado. SPECTRE lo logra muy bien. Los colores se sienten equilibrados y la imagen conserva su look natural, así que es fácil adaptarlo a distintos proyectos.</blockquote>
+          </figure>
+          <figure class="resena">
+            <figcaption class="resena-autor">
+              <a class="resena-perfil" data-umami-event="resena-instagram" href="https://www.instagram.com/dimitri.fafutis/" target="_blank" rel="noopener">
+                <img class="resena-avatar" src="/img/resenas/dimitri.fafutis.jpg" alt="" width="44" height="44" loading="lazy" />
+                <span class="resena-quien"><span class="resena-nombre">Dimitri Fafutis</span><span class="resena-ig">@dimitri.fafutis</span></span>
+              </a>
+            </figcaption>
+            <p class="resena-estrellas" aria-label="5 de 5 estrellas">★★★★★</p>
+            <p class="resena-titulo">Cinematográfico pero natural</p>
+            <blockquote class="resena-texto">He usado SPECTRE en varios proyectos y me gusta mucho cómo quedan los colores. El look se siente cinematográfico pero natural, justo lo que busco en un LUT. Me da un buen punto de partida sin limitar cómo quiero corregir el material.</blockquote>
+          </figure>
+        </div>
+        <button type="button" class="carrusel-flecha resenas-flecha" data-dir="1" aria-label="Siguientes reseñas"><span aria-hidden="true">→</span></button>
+      </div>
+      <div class="carrusel-puntos resenas-puntos" aria-hidden="true"></div>
+    </section>
+
+    <!-- ══════════ FAQ ══════════ -->
+    <section class="bloque faq">
+      <h2 class="titulo reveal">Preguntas frecuentes.</h2>
+      <div class="faq-lista">
+        <details class="faq-item reveal">
+          <summary class="faq-q">¿Qué incluye? <span class="mas">+</span></summary>
+          <div class="faq-a"><p>El Signature LUT de SPECTRE (.cube), cinco One-Click LUTs que llevan tu material en Log al look final en un solo clic, el árbol de nodos completo (PowerGrade) para DaVinci Resolve con versiones para Sony S-Log, DJI D-Log, Canon C-Log, RED y Rec.709, una masterclass de 50 minutos y clips en Log para practicar.</p></div>
+        </details>
+        <details class="faq-item reveal">
+          <summary class="faq-q">¿Con qué cámaras funciona? <span class="mas">+</span></summary>
+          <div class="faq-a"><p>SPECTRE funciona con cualquier cámara. Incluye versiones hechas específicamente para Sony S-Log, DJI D-Log, Canon C-Log y RED (como la Komodo), además de una versión Rec.709 para material sin Log. Con el PowerGrade puedes adaptar el look al material de cualquier otra cámara.</p></div>
+        </details>
+        <details class="faq-item reveal">
+          <summary class="faq-q">¿Con qué programas de edición funciona? <span class="mas">+</span></summary>
+          <div class="faq-a"><p>El árbol de nodos (PowerGrade) está hecho para DaVinci Resolve, en su versión gratis y Studio. El Signature LUT y los One-Click LUTs funcionan en cualquier editor que lea archivos .cube: Premiere Pro, Final Cut Pro, CapCut y más. ¿No usas Resolve? Elige la <a href="/get?edition=luts#luts">edición LUTs Only</a>.</p></div>
+        </details>
+        <details class="faq-item reveal">
+          <summary class="faq-q">¿Necesito experiencia avanzada o material en Log? <span class="mas">+</span></summary>
+          <div class="faq-a"><p>No necesitas experiencia avanzada: la masterclass te guía paso a paso. El Log te da más flexibilidad, pero el flujo también se adapta a material en Rec.709.</p></div>
+        </details>
+        <details class="faq-item reveal">
+          <summary class="faq-q">¿Cómo recibo los archivos? <span class="mas">+</span></summary>
+          <div class="faq-a"><p>Al instante. Justo después de pagar tienes acceso al área de miembros, donde descargas tus archivos y ves los tutoriales. Incluye actualizaciones gratis de esta versión.</p></div>
+        </details>
+        <details class="faq-item reveal">
+          <summary class="faq-q">¿Qué es un PowerGrade? <span class="mas">+</span></summary>
+          <div class="faq-a"><p>Un PowerGrade es un árbol de nodos guardado de DaVinci Resolve: la corrección completa, nodo por nodo, lista para aplicar a tus clips. El PowerGrade de SPECTRE es la estructura exacta que uso en mis películas, así que puedes ver y ajustar cada paso en lugar de depender de un solo LUT.</p></div>
+        </details>
+        <details class="faq-item reveal">
+          <summary class="faq-q">¿Qué diferencia hay entre el Full System y el LUT Pack? <span class="mas">+</span></summary>
+          <div class="faq-a"><p>El Full System incluye los LUTs, el árbol de nodos PowerGrade para DaVinci Resolve, la masterclass de 50 minutos y clips en Log para practicar. El LUT Pack incluye el Signature LUT y los One-Click LUTs en archivos .cube para cualquier editor, como Premiere Pro, Final Cut Pro o CapCut.</p></div>
+        </details>
+        <details class="faq-item reveal">
+          <summary class="faq-q">¿Incluye una clase de corrección de color? <span class="mas">+</span></summary>
+          <div class="faq-a"><p>Sí. El Full System incluye una masterclass de 50 minutos donde explico, paso a paso, mi proceso exacto de corrección de color con SPECTRE, desde el árbol de nodos hasta corregir material real.</p></div>
+        </details>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ══════════ CIERRE ══════════ -->
+  <footer class="cierre">
+    <p class="cierre-frase reveal">Naciste<br />para crear.</p>
+    <div class="cierre-pie">
+      <span class="marca-texto">SPECTRE</span>
+      <span class="cierre-links">
+        <a href="https://instagram.com/robert.arre" target="_blank" rel="noopener">@ROBERT.ARRE</a>
+        <a href="mailto:roberto@arechederra.com">CONTACTO</a>
+        <a href="/terms">TÉRMINOS</a>
+        <a href="/access">ACCEDE A TUS PRODUCTOS</a>
+      </span>
+      <span>© 2026 ROBERTO ARECHEDERRA</span>
+    </div>
+    <p class="cierre-powered"><a href="https://twowaves.mx" target="_blank" rel="noopener"><svg viewBox="0 0 41 34" aria-hidden="true"><rect x="0" y="0.8" width="29" height="6.2"/><rect x="10.7" y="0.8" width="7.6" height="33"/><circle cx="36.9" cy="3.9" r="3.9"/></svg><span>HECHO POR <strong>TWO WAVES</strong></span></a></p>
+  </footer>
+
+
+
+  <script src="/js/main.js?v=20261013111912" defer></script>
+</body>
+</html>

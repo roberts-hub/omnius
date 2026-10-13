@@ -1830,3 +1830,7 @@ button.btn-pildora { border: 0; cursor: pointer; }
   .caja-escena { aspect-ratio: 5 / 4; }
 }
 .prueba-texto { text-decoration: underline; text-decoration-color: rgba(176,165,149,.35); text-underline-offset: 4px; white-space: nowrap; }
+
+/* botón de idioma EN | ES en el encabezado */
+.link-idioma { display: inline-flex; align-items: center; height: 34px; padding: 0 8px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em; color: var(--greige); text-decoration: none; transition: color 0.3s ease; }
+.link-idioma:hover { color: var(--hueso); }
