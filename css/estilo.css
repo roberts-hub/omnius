@@ -1868,3 +1868,13 @@ button.descarga-boton.bloqueado { opacity: 0.45; }
   .looks.todos .looks-rejilla .look:nth-child(n+5) { display: block; }
 }
 section.looks { max-width: var(--ancho); margin: 0 auto; padding: clamp(80px, 9vw, 130px) var(--margen) 0; }
+
+/* área de miembros: recién comprado */
+.compra-ok { margin-top: clamp(32px, 4vw, 48px); padding: clamp(24px, 3vw, 36px); border: 1px solid rgba(234, 224, 197, 0.35); border-radius: 18px; background: rgba(234, 224, 197, 0.05); }
+.compra-titulo { margin-top: 10px; font-size: clamp(24px, 2.6vw, 34px); font-weight: 700; letter-spacing: -0.03em; color: var(--hueso); }
+.compra-etiqueta { margin-top: 22px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.26em; color: var(--greige); }
+.compra-clave-fila { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 10px; }
+.compra-clave { font-family: var(--mono); font-size: clamp(22px, 3vw, 30px); font-weight: 600; letter-spacing: 0.06em; color: var(--hueso); padding: 10px 16px; border-radius: 10px; background: rgba(0, 0, 0, 0.35); user-select: all; -webkit-user-select: all; }
+.compra-copiar { padding: 12px 18px; border: 0; border-radius: 10px; background: var(--hueso); color: var(--fondo); font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; cursor: pointer; }
+.compra-nota { margin-top: 14px; font-size: 14px; line-height: 1.6; color: var(--lino); font-weight: 300; }
+.compra-nota + .compra-nota { margin-top: 6px; color: var(--greige); }
