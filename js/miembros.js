@@ -196,23 +196,11 @@ function pintar(datos, compra) {
   if (datos.bienvenida) intro.append(el("p", "acceso-texto", datos.bienvenida));
   destino.append(intro);
 
-  // recién pagado (Stripe redirige aquí con la contraseña): gracias + contraseña bien visible
-  if (compra && compra.clave) {
+  // recién pagado (Stripe redirige aquí ya con acceso): solo el agradecimiento; la contraseña va en su correo
+  if (compra) {
     const c = el("section", "compra-ok");
     c.append(el("p", "kicker", "PAYMENT CONFIRMED"), el("h2", "compra-titulo", "Thank you for your purchase."));
-    c.append(el("p", "compra-etiqueta", "YOUR PASSWORD"));
-    const fila = el("div", "compra-clave-fila");
-    const clave = el("strong", "compra-clave", compra.clave);
-    const copiar = el("button", "compra-copiar", "COPY");
-    copiar.type = "button";
-    copiar.addEventListener("click", async () => {
-      try { await navigator.clipboard.writeText(compra.clave); copiar.textContent = "COPIED ✓"; } catch (_) { copiar.textContent = "SELECT & COPY"; }
-      setTimeout(() => { copiar.textContent = "COPY"; }, 2500);
-    });
-    fila.append(clave, copiar);
-    c.append(fila);
-    c.append(el("p", "compra-nota", "Save this password: you'll need it to log in from another device. This browser will remember you."));
-    c.append(el("p", "compra-nota", "Your receipt is on its way to your email. Questions? roberto@arechederra.com"));
+    c.append(el("p", "compra-nota", "Your receipt and your password are on their way to your email: keep it to log in from any device. This browser will remember you."));
     destino.append(c);
   }
 
@@ -441,7 +429,7 @@ if (compraClave) history.replaceState(null, "", location.pathname + (new URLSear
       if (r) {
         guardar(JSON.stringify({ sal: r.paquete.sal, llave: aB64(await crypto.subtle.exportKey("raw", r.llave)) }));
         introMiembros(r.datos.edicion);
-        pintar(r.datos, { clave: compraClave });
+        pintar(r.datos, true);
         if (window.umami) window.umami.track("miembros-compra", { edicion: r.datos.edicion || "" });
         return;
       }
