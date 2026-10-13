@@ -107,7 +107,7 @@ def guia_resolve():
         "Drag the whole <span class='ruta'>SPECTRE LUTs</span> folder inside it.",
     ], f'<div style="position:relative">{finder}<div class="soltar">↓ DROP SPECTRE LUTs HERE</div></div>' + rutas(
         "/Library/Application Support/Blackmagic Design/DaVinci Resolve/LUT/",
-        "C:\\ProgramData\\Blackmagic Design\\DaVinci Resolve\\Support\\LUT\\")), G, S, 1, 2, T))
+        "C:\\ProgramData\\Blackmagic Design\\DaVinci Resolve\\Support\\LUT\\"), nota("BEFORE YOU START", "Set your project to <b>DaVinci YRGB · DaVinci WG/Intermediate · Rec.709-A</b>. Guide 03 shows exactly where.")), G, S, 1, 2, T))
 
     lado = "".join(f'<div class="{"on" if x == "SPECTRE LUTs" else ""}">{x}</div>' for x in ["Blackmagic Design", "DJI", "Film Looks", "Sony", "SPECTRE LUTs", "VFX IO"])
     minis = f'<div class="mini on"><div class="img"><img src="{FOTO(5)}"></div>SPECTRE LUT</div>' + \
@@ -232,15 +232,16 @@ def guia_ajustes():
 
     resolve = '''<div class="ventana"><div class="barra"><i></i><i></i><i></i><b>Project Settings · Color Management</b></div><div class="panel-ui">
       <div class="ajuste"><span>Color science</span><span class="selector">DaVinci YRGB ⌄</span></div>
-      <div class="ajuste"><span>Timeline color space</span><span class="selector">Rec.709 Gamma 2.4 ⌄</span></div>
-      <div class="ajuste"><span>Output color space</span><span class="selector">Same as Timeline ⌄</span></div>
+      <div class="ajuste"><span>Use separate color space and gamma</span><span class="casilla"></span></div>
+      <div class="ajuste"><span>Timeline color space</span><span class="selector">DaVinci WG/Intermediate ⌄</span></div>
+      <div class="ajuste"><span>Output color space</span><span class="selector">Rec.709-A ⌄</span></div>
       <div class="seccion" style="margin-top:16px;border:0;padding:0">Preferences · General</div>
       <div class="ajuste"><span>Use Mac display color profiles for viewers</span><span class="casilla si"></span></div></div></div>'''
     p.append(hoja("paso", paso(2, "STEP 02 · DAVINCI RESOLVE", "Set up Resolve once.", [
-        "In <b>Project Settings → Color Management</b>, use <b>DaVinci YRGB</b> (not color managed). The PowerGrade already handles the conversion from your camera.",
-        "Keep the timeline in <b>Rec.709 Gamma 2.4</b>.",
+        "In <b>Project Settings → Color Management</b>, set <b>Color science</b> to <b>DaVinci YRGB</b> and leave <b>Use separate color space and gamma</b> off.",
+        "Set <b>Timeline color space</b> to <b>DaVinci WG/Intermediate</b> and <b>Output color space</b> to <b>Rec.709-A</b>. This is the exact setup the SPECTRE PowerGrade was built in.",
         "In <b>DaVinci Resolve → Preferences → General</b>, turn on <b>Use Mac display color profiles for viewers</b>.",
-    ], resolve, nota("WHY", "With Resolve Color Management or ACES on, the image gets converted twice and the look shifts.")), G, S, 2, 3, T))
+    ], resolve, nota("WHY REC.709-A", "It tags your export so it looks the same in QuickTime, Instagram and on phones as it did in Resolve. Avoid Resolve Color Managed and ACES: the image would be converted twice.")), G, S, 2, 3, T))
 
     premiere = '''<div class="ventana"><div class="barra"><i></i><i></i><i></i><b>Lumetri Color · Settings</b></div><div class="panel-ui">
       <div class="ajuste"><span>3D LUT Interpolation</span><span class="selector">Tetrahedral ⌄</span></div>
