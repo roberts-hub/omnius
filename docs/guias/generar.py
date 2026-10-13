@@ -139,6 +139,6 @@ def imprimir(nombre, contenido):
 
 
 if __name__ == "__main__":
-    imprimir("SPECTRE - 01 DaVinci Resolve Installation", documento("SPECTRE DaVinci Resolve Installation", guia_resolve()))
-    imprimir("SPECTRE - 02 LUT Installation", documento("SPECTRE LUT Installation", guia_luts()))
-    imprimir("SPECTRE - 03 Color Settings", documento("SPECTRE Color Settings", guia_ajustes()))
+    imprimir("DaVinci Installation", documento("SPECTRE DaVinci Resolve Installation", guia_resolve()))
+    imprimir("LUT Installation", documento("SPECTRE LUT Installation", guia_luts()))
+    imprimir("Color Settings", documento("SPECTRE Color Settings", guia_ajustes()))
