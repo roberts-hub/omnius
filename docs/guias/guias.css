@@ -325,3 +325,4 @@ body { font-family: var(--ancho); }
 .dv { width: 100%; }
 .captura { max-height: 600px; width: auto; max-width: 100%; margin-left: auto; }
 .portada .titulo { line-height: 1.08; }
+.enlace { margin-top: 10px; display: inline-block; padding: 14px 30px; border: 1px solid var(--hueso); border-radius: 999px; font-family: var(--mono); font-size: 15px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--hueso); text-decoration: none; }

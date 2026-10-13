@@ -50,7 +50,7 @@ def rutas(mac, win):
 
 
 def guia_resolve():
-    T = 6
+    T = 7
     fotos = [FOTO(n) for n in [3, 4, 6, 1, 7]]
     return [
         hoja("portada", portada("SPECTRE<br>in DaVinci Resolve", "Set it up once. Grade with it forever."), 1, T),
@@ -68,7 +68,10 @@ def guia_resolve():
         hoja("paso", paso("Step 4: Apply",
             "Select your clip, right-click the PowerGrade for your camera and choose <b>Apply Grade</b>.",
             dv.galeria("aplicar", CAMARAS, fotos)), 5, T),
-        hoja("cierre", cierre(), 6, T, pie=False),
+        hoja("texto", '''<div class="centro"><h2 class="titulo">Watch the full masterclass</h2>
+            <p class="texto">Learn the full node tree, step by step, in the members area.</p>
+            <a class="enlace" href="https://spectrecolor.com/access">spectrecolor.com/access</a></div>''', 6, T),
+        hoja("cierre", cierre(), 7, T, pie=False),
     ]
 
 
