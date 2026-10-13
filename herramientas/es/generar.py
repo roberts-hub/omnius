@@ -89,8 +89,14 @@ def alternos(en, es):
             f'  <link rel="alternate" hreflang="x-default" href="{DOM}{en}" />\n')
 
 
-def boton_idioma(destino, codigo, etiqueta):
-    return f'<a class="link-idioma" href="{destino}" hreflang="{codigo}" lang="{codigo}" data-umami-event="idioma" data-umami-event-idioma="{codigo}" aria-label="{etiqueta}">{codigo.upper()}</a>\n      '
+def selector_idioma(actual, en, es):
+    # "EN / ES" como el de chemabal.com: el idioma actual en claro, el otro es el link
+    def opcion(codigo, destino, etiqueta):
+        if codigo == actual:
+            return f'<span class="idioma-activo" lang="{codigo}" aria-current="true">{codigo.upper()}</span>'
+        return f'<a href="{destino}" hreflang="{codigo}" lang="{codigo}" data-umami-event="idioma" data-umami-event-idioma="{codigo}" aria-label="{etiqueta}">{codigo.upper()}</a>'
+    return (f'<span class="link-idioma">{opcion("en", en, "View in English")}<span class="idioma-barra">/</span>'
+            f'{opcion("es", es, "Ver en español")}</span>\n      ')
 
 
 (RAIZ / "es").mkdir(exist_ok=True)
@@ -100,8 +106,8 @@ for archivo, (en, es) in PAGINAS.items():
     # inglés: alternos + botón ES (una sola vez)
     s = re.sub(r'  <link rel="alternate" hreflang=[^\n]*\n', "", s)
     s = s.replace('  <link rel="canonical"', alternos(en, es) + '  <link rel="canonical"', 1)
-    s = re.sub(r'<a class="link-idioma"[^>]*>[A-Z]{2}</a>\n      ', "", s)
-    s = s.replace('<a class="link-acceso"', boton_idioma(es, "es", "Ver en español") + '<a class="link-acceso"', 1)
+    s = re.sub(r'<(a|span) class="link-idioma"[^\n]*\n      ', "", s)
+    s = s.replace('<a class="link-acceso"', selector_idioma("en", en, es) + '<a class="link-acceso"', 1)
     ruta.write_text(s)
 
     e = s.replace('<html lang="en"', '<html lang="es"', 1)
@@ -109,12 +115,12 @@ for archivo, (en, es) in PAGINAS.items():
     e = re.sub(r'<link rel="canonical" href="[^"]*" />', f'<link rel="canonical" href="{DOM}{es}" />', e)
     e = re.sub(r'<meta property="og:url" content="[^"]*" />', f'<meta property="og:url" content="{DOM}{es}" />', e)
     e = e.replace('<meta property="og:locale" content="en_US" />', '<meta property="og:locale" content="es_MX" />')
-    e = re.sub(r'<a class="link-idioma"[^>]*>[A-Z]{2}</a>\n      ', "@@IDIOMA@@", e)
+    e = re.sub(r'<(a|span) class="link-idioma"[^\n]*\n      ', "@@IDIOMA@@", e)
     e = traducir_html(e)
     e = jsonld(e, es)
     e = rutas_absolutas(e)
     e = enlaces(e)
-    e = e.replace("@@IDIOMA@@", boton_idioma(en, "en", "View in English"))
+    e = e.replace("@@IDIOMA@@", selector_idioma("es", en, es))
     (RAIZ / "es" / archivo).write_text(e)
     print("  ✓ es/" + archivo)
 
