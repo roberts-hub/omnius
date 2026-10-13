@@ -57,25 +57,33 @@ async function bajarCifrado(c, boton) {
   const texto = boton.textContent;
   boton.disabled = true;
   try {
-    const resp = await fetch(c.ruta, { cache: "no-store" });
-    if (!resp.ok || !resp.body) throw new Error("descarga");
-    const lector = resp.body.getReader();
-    const partes = [];
+    const llave = await crypto.subtle.importKey("raw", deB64(c.llave), "AES-GCM", false, ["decrypt"]);
+    const partes = c.partes || [{ ruta: c.ruta, iv: c.iv }];
+    const total = c.bytes + 16 * partes.length;
+    const listos = [];
     let recibidos = 0;
-    for (;;) {
-      const { done, value } = await lector.read();
-      if (done) break;
-      partes.push(value);
-      recibidos += value.length;
-      boton.textContent = `DOWNLOADING ${Math.min(99, Math.round((recibidos / (c.bytes + 16)) * 100))}%`;
+    for (const p of partes) {
+      const resp = await fetch(p.ruta, { cache: "no-store" });
+      if (!resp.ok || !resp.body) throw new Error("descarga");
+      const lector = resp.body.getReader();
+      const trozos = [];
+      let largo = 0;
+      for (;;) {
+        const { done, value } = await lector.read();
+        if (done) break;
+        trozos.push(value);
+        largo += value.length;
+        recibidos += value.length;
+        boton.textContent = `DOWNLOADING ${Math.min(99, Math.round((recibidos / total) * 100))}%`;
+      }
+      const datos = new Uint8Array(largo);
+      let pos = 0;
+      for (const t of trozos) { datos.set(t, pos); pos += t.length; }
+      listos.push(await crypto.subtle.decrypt({ name: "AES-GCM", iv: deB64(p.iv) }, llave, datos));
     }
     boton.textContent = "PREPARING…";
-    const datos = new Uint8Array(recibidos);
-    let pos = 0;
-    for (const p of partes) { datos.set(p, pos); pos += p.length; }
-    const llave = await crypto.subtle.importKey("raw", deB64(c.llave), "AES-GCM", false, ["decrypt"]);
-    const zip = await crypto.subtle.decrypt({ name: "AES-GCM", iv: deB64(c.iv) }, llave, datos);
-    const url = URL.createObjectURL(new Blob([zip], { type: "application/zip" }));
+    const tipo = /\.mp4$/i.test(c.nombre) ? "video/mp4" : "application/zip";
+    const url = URL.createObjectURL(new Blob(listos, { type: tipo }));
     const a = el("a");
     a.href = url;
     a.download = c.nombre;

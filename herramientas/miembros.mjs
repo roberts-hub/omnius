@@ -23,22 +23,34 @@ const leer = (f) => readFileSync(join(raiz, "privado", f), "utf8");
 // La llave y el nombre se guardan en privado/descargas.json para no volver a subir el archivo si no cambió.
 const registro = join(raiz, "privado", "descargas.json");
 const cache = existsSync(registro) ? JSON.parse(readFileSync(registro, "utf8")) : {};
+// Archivos grandes (videos de práctica): se cortan en partes de 45 MB porque GitHub no acepta archivos de más de
+// 100 MB. Cada parte va cifrada con la misma llave y su propio iv; el navegador las baja en orden y las une.
+const PARTE = 45 * 1024 * 1024;
 async function cifrarArchivo(rel) {
   const datos = readFileSync(join(raiz, "privado", rel));
   const huella = createHash("sha256").update(datos).digest("hex");
   let r = cache[rel];
-  if (!r || r.huella !== huella || !existsSync(join(raiz, r.ruta))) {
+  const existen = r && (r.partes || [{ ruta: r.ruta }]).every((p) => existsSync(join(raiz, p.ruta)));
+  if (!r || r.huella !== huella || !existen) {
     const llave = crypto.getRandomValues(new Uint8Array(32));
-    const iv = crypto.getRandomValues(new Uint8Array(12));
     const k = await crypto.subtle.importKey("raw", llave, "AES-GCM", false, ["encrypt"]);
-    const cifrado = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv }, k, datos));
-    const ruta = `descargas/${Buffer.from(crypto.getRandomValues(new Uint8Array(12))).toString("hex")}.bin`;
     mkdirSync(join(raiz, "descargas"), { recursive: true });
-    writeFileSync(join(raiz, ruta), cifrado);
-    r = cache[rel] = { huella, ruta, llave: b64(llave), iv: b64(iv) };
-    console.log(`  cifrado: ${rel} → ${ruta}`);
+    const partes = [];
+    for (let i = 0; i < datos.length; i += PARTE) {
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+      const cifrado = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv }, k, datos.subarray(i, i + PARTE)));
+      const ruta = `descargas/${Buffer.from(crypto.getRandomValues(new Uint8Array(12))).toString("hex")}.bin`;
+      writeFileSync(join(raiz, ruta), cifrado);
+      partes.push({ ruta, iv: b64(iv) });
+    }
+    r = cache[rel] = partes.length === 1
+      ? { huella, ruta: partes[0].ruta, llave: b64(llave), iv: partes[0].iv }
+      : { huella, partes, llave: b64(llave) };
+    console.log(`  cifrado: ${rel} → ${partes.length} parte(s)`);
   }
-  return { ruta: "/" + r.ruta, llave: r.llave, iv: r.iv, nombre: rel.split("/").pop(), bytes: datos.length };
+  const nombre = rel.split("/").pop();
+  if (r.partes) return { partes: r.partes.map((p) => ({ ruta: "/" + p.ruta, iv: p.iv })), llave: r.llave, nombre, bytes: datos.length };
+  return { ruta: "/" + r.ruta, llave: r.llave, iv: r.iv, nombre, bytes: datos.length };
 }
 
 async function cifrar(clave, contenido) {
