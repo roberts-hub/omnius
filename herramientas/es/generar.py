@@ -107,7 +107,8 @@ for archivo, (en, es) in PAGINAS.items():
     s = re.sub(r'  <link rel="alternate" hreflang=[^\n]*\n', "", s)
     s = s.replace('  <link rel="canonical"', alternos(en, es) + '  <link rel="canonical"', 1)
     s = re.sub(r'<(a|span) class="link-idioma"[^\n]*\n      ', "", s)
-    s = s.replace('<a class="link-acceso"', selector_idioma("en", en, es) + '<a class="link-acceso"', 1)
+    # orden del menú: EN / ES · enlace principal · icono de acceso (el enlace principal queda junto al icono)
+    s = s.replace('<nav class="cabecera-nav">\n      ', '<nav class="cabecera-nav">\n      ' + selector_idioma("en", en, es), 1)
     ruta.write_text(s)
 
     e = s.replace('<html lang="en"', '<html lang="es"', 1)
