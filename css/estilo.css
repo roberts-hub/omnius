@@ -1845,4 +1845,8 @@ button.btn-pildora { border: 0; cursor: pointer; }
 .terminos-aviso { margin-top: 8px; font-size: 13px; color: var(--greige); }
 .terminos-acepto:has(input:checked) { border-color: rgba(234, 224, 197, 0.45); }
 .terminos-ok .terminos-aviso { display: none; }
-button.descarga-boton:disabled:not([data-bajando]) { opacity: 0.35; cursor: not-allowed; }
+button.descarga-boton.bloqueado { opacity: 0.45; }
+.descarga-aviso { margin: 8px 0 0; font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; color: var(--hueso); animation: faqEntra 0.4s var(--ease); }
+.terminos-acepto.llamar { animation: llamarTerminos 1.4s var(--ease) 2; }
+@keyframes llamarTerminos { 0%, 100% { border-color: var(--linea); box-shadow: none; } 40% { border-color: var(--hueso); box-shadow: 0 0 0 4px rgba(234, 224, 197, 0.18); } }
+

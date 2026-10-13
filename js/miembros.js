@@ -241,7 +241,8 @@ function pintar(datos) {
     caja.addEventListener("change", () => {
       aceptados = caja.checked;
       try { aceptados ? localStorage.setItem(CLAVE_TERMINOS, "1") : localStorage.removeItem(CLAVE_TERMINOS); } catch (_) {}
-      botonesDescarga.forEach((b) => { b.disabled = !aceptados; });
+      botonesDescarga.forEach((b) => b.classList.toggle("bloqueado", !aceptados));
+      if (aceptados) document.querySelectorAll(".descarga-aviso").forEach((x) => x.remove());
       destino.classList.toggle("terminos-ok", aceptados);
       if (aceptados && window.umami) window.umami.track("miembros-acepta-terminos");
     });
@@ -264,9 +265,17 @@ function pintar(datos) {
       if (d.cifrado) {
         accion = el("button", "descarga-boton", "DOWNLOAD ↓");
         accion.type = "button";
-        accion.disabled = !aceptados;
+        accion.classList.toggle("bloqueado", !aceptados);
         botonesDescarga.push(accion);
-        accion.addEventListener("click", () => { if (aceptados) bajarCifrado(d.cifrado, accion); });
+        accion.addEventListener("click", () => {
+          if (aceptados) { bajarCifrado(d.cifrado, accion); return; }
+          // sin aceptar: aviso junto al botón y se lleva a la casilla, que parpadea
+          let aviso = li.querySelector(".descarga-aviso");
+          if (!aviso) { aviso = el("p", "descarga-aviso", "↑ Please accept the Terms & License first"); info.append(aviso); }
+          const casilla = document.querySelector(".terminos-acepto");
+          casilla.scrollIntoView({ behavior: "smooth", block: "center" });
+          casilla.classList.remove("llamar"); void casilla.offsetWidth; casilla.classList.add("llamar");
+        });
       } else if (d.url) {
         accion = el("a", "descarga-boton", "DOWNLOAD ↓");
         accion.href = d.url;
