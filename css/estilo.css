@@ -1815,3 +1815,19 @@ button.descarga-boton:disabled { cursor: progress; opacity: 0.85; }
   .comparativa thead th { width: 24%; letter-spacing: 0.12em; font-size: 10px; }
 }
 button.btn-pildora { border: 0; cursor: pointer; }
+
+/* ══════════ checkout: ahorro, sello, prueba social, dudas ══════════ */
+.edicion-badge { display: inline-block; margin-left: 8px; padding: 3px 7px; border-radius: 999px; background: var(--hueso); color: var(--fondo); font-family: var(--mono); font-size: 9px; font-weight: 500; letter-spacing: 0.14em; vertical-align: 2px; }
+.prueba-social { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 18px; color: var(--greige); text-decoration: none; font-size: 13px; }
+.prueba-social:hover .prueba-texto { color: var(--hueso); }
+.prueba-avatares { display: flex; }
+.prueba-avatares img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 2px solid var(--fondo); }
+.prueba-avatares img + img { margin-left: -9px; }
+.prueba-estrellas { color: var(--hueso); letter-spacing: 0.08em; margin-right: 4px; }
+.faq-compra { padding-top: clamp(40px, 6vw, 80px); }
+@media (max-width: 860px) {
+  /* el botón de compra entra en la primera pantalla del celular */
+  .pagina-producto .producto.pagina { padding-top: 76px; }
+  .caja-escena { aspect-ratio: 5 / 4; }
+}
+.prueba-texto { text-decoration: underline; text-decoration-color: rgba(176,165,149,.35); text-underline-offset: 4px; white-space: nowrap; }
