@@ -1,7 +1,7 @@
 #!/bin/bash
 # Pone en cada link de pago de Stripe el texto que le llega al cliente en el correo de su factura
-# (gracias + link al área de miembros + SU contraseña), y hace que después de pagar Stripe lo lleve
-# directo al área de miembros ya abierta.
+# (gracias + link al área de miembros + SU contraseña), y la página de "pago completado" de Stripe con el
+# link y la contraseña. El correo de bienvenida lo manda aparte Google Apps Script (privado/correo-compra/).
 # Uso: bash herramientas/stripe-correo.sh   → pide una llave secreta de Stripe (no se muestra ni se guarda).
 set -euo pipefail
 
@@ -39,8 +39,8 @@ actualizar() { # $1 link  $2 contraseña  $3 nombre
     -d "invoice_creation[enabled]=true" \
     --data-urlencode "invoice_creation[invoice_data][description]=$(texto "$2")" \
     --data-urlencode "invoice_creation[invoice_data][footer]=SPECTRE · spectrecolor.com · Terms & License: spectrecolor.com/terms" \
-    -d "after_completion[type]=redirect" \
-    --data-urlencode "after_completion[redirect][url]=https://spectrecolor.com/access?compra=1#clave=$2")
+    -d "after_completion[type]=hosted_confirmation" \
+    --data-urlencode "after_completion[hosted_confirmation][custom_message]=Payment complete! Access your files at spectrecolor.com/access with your password: $2 — We have also sent your access details to your email.")
   if echo "$r" | grep -q '"object": "payment_link"'; then echo "✓ $3 listo"; else echo "✗ $3: $(echo "$r" | grep -o '"message": "[^"]*"' | head -1)"; fi
 }
 
