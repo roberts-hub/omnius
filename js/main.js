@@ -526,12 +526,11 @@ if (resenas && !resenas.closest("[hidden]")) {
   window.addEventListener("resize", pintarPuntos);
   pintarPuntos();
 
-  // rotación continua (como la franja de logos). Se mueve con transform (subpíxel, sin tirones) y
-  // no con scrollLeft. Con el dedo o el mouse se arrastra en horizontal con inercia; el gesto vertical
-  // sigue desplazando la página (touch-action: pan-y). Un toque sin arrastrar detiene / reanuda.
-  // Hay tres juegos de tarjetas (clon, original, clon) para que el ciclo no tenga corte hacia ningún lado.
-  if (!reduceMotion && tarjetas.length > 1) {
-    const VELOCIDAD = 32; // px por segundo
+  // carrusel paso a paso: avanza una reseña cada 3 s con el scroll nativo (en celular se desliza con el dedo
+  // y cada tarjeta se acomoda sola). Tocar, deslizar o usar las flechas lo pausa unos segundos.
+  // Hay tres juegos de tarjetas (clon, original, clon); al terminar un movimiento, si quedó en un clon,
+  // se brinca sin animación a la tarjeta idéntica del juego original, así que el ciclo nunca se ve cortado.
+  if (tarjetas.length > 1) {
     const clonar = (t) => {
       const c = t.cloneNode(true);
       c.setAttribute("aria-hidden", "true");
@@ -540,82 +539,47 @@ if (resenas && !resenas.closest("[hidden]")) {
     };
     tarjetas.forEach((t) => resenas.appendChild(clonar(t)));
     [...tarjetas].reverse().forEach((t) => resenas.prepend(clonar(t)));
-    resenas.classList.add("rodando");
+    resenas.classList.add("paso-a-paso");
     resenas.closest(".resenas").classList.add("resenas-continuas");
 
-    let c = 1, x = 0, vel = 0, antes = 0, detenido = false, enPantalla = false;
-    let toque = null; // { id, x0, y0, xIni, horizontal, ult: [t, x] }
-    const medir = () => { c = tarjetas.length * paso(); if (!x) x = c; };
-    const normal = () => { x = ((x - c) % c + c) % c + c; };
-    const pintar = () => { resenas.style.transform = `translate3d(${-x}px,0,0)`; };
-    medir(); pintar();
+    const INTERVALO = 3000, PAUSA = 6000;
+    const ciclo = () => tarjetas.length * paso();
+    const ir = (x, suave) => resenas.scrollTo({ left: x, behavior: suave && !reduceMotion ? "smooth" : "auto" });
+    let enPantalla = false, tocando = false, ultimaAccion = 0, quieto = 0;
+    const colocar = () => ir(ciclo(), false);
+    requestAnimationFrame(colocar);
     let anchoR = window.innerWidth;
     window.addEventListener("resize", () => {
       if (window.innerWidth === anchoR) return;
       anchoR = window.innerWidth;
-      const f = x / c; medir(); x = f * c; normal(); pintar();
+      colocar();
     });
-    // se observa el contenedor: la pista misma se desplaza fuera de su caja con el transform
-    new IntersectionObserver(([e]) => { enPantalla = e.isIntersecting; }).observe(resenas.parentElement);
+    new IntersectionObserver(([e]) => { enPantalla = e.isIntersecting; }).observe(resenas);
 
-    const cuadro = (t) => {
-      const dt = antes ? Math.min(t - antes, 64) / 1000 : 0;
-      antes = t;
-      if (!toque && enPantalla && !document.hidden) {
-        if (Math.abs(vel) > 5) { // inercia después de soltar
-          x += vel * dt;
-          vel *= Math.pow(0.04, dt); // frena en ~1 s
-        } else if (!detenido) {
-          vel = 0;
-          x += VELOCIDAD * dt;
-        }
-        normal(); pintar();
-      }
-      requestAnimationFrame(cuadro);
+    // al quedar quieto: volver al juego original si está en un clon
+    const normalizar = () => {
+      if (tocando) return;
+      const c = ciclo(), x = resenas.scrollLeft;
+      if (x >= 2 * c - 2) ir(x - c, false);
+      else if (x < c - paso() / 2) ir(x + c, false);
     };
-    requestAnimationFrame(cuadro);
+    resenas.addEventListener("scroll", () => {
+      clearTimeout(quieto);
+      quieto = setTimeout(normalizar, 160);
+    }, { passive: true });
 
-    let arrastro = false;
-    resenas.addEventListener("pointerdown", (e) => {
-      if (e.button > 0) return;
-      toque = { id: e.pointerId, x0: e.clientX, y0: e.clientY, xIni: x, horizontal: e.pointerType === "mouse", ult: [[e.timeStamp, e.clientX]] };
-      arrastro = false; vel = 0;
-    });
-    resenas.addEventListener("pointermove", (e) => {
-      if (!toque || e.pointerId !== toque.id) return;
-      const dx = e.clientX - toque.x0, dy = e.clientY - toque.y0;
-      if (!toque.horizontal) {
-        if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
-        if (Math.abs(dy) > Math.abs(dx)) { toque = null; return; } // gesto vertical: es de la página
-        toque.horizontal = true;
-      }
-      if (!arrastro && Math.abs(dx) > 4) { arrastro = true; resenas.setPointerCapture(e.pointerId); }
-      x = toque.xIni - dx;
-      normal(); pintar();
-      toque.ult.push([e.timeStamp, e.clientX]);
-      if (toque.ult.length > 6) toque.ult.shift();
-    });
-    const soltar = (e) => {
-      if (!toque || e.pointerId !== toque.id) return;
-      const [t0, x0] = toque.ult[0], [t1, x1] = toque.ult[toque.ult.length - 1];
-      if (arrastro && t1 > t0) vel = Math.max(-2500, Math.min(2500, -((x1 - x0) / (t1 - t0)) * 1000));
-      else if (!arrastro && e.type === "pointerup" && e.target.closest(".resena") && !e.target.closest("a")) {
-        detenido = !detenido;
-        resenas.classList.toggle("detenido", detenido);
-      }
-      toque = null;
-    };
-    resenas.addEventListener("pointerup", soltar);
-    resenas.addEventListener("pointercancel", soltar);
-    // un arrastre no debe abrir el Instagram de la tarjeta donde termina
-    resenas.addEventListener("click", (e) => { if (arrastro) { e.preventDefault(); e.stopPropagation(); arrastro = false; } }, true);
-    resenas.addEventListener("dragstart", (e) => e.preventDefault());
-    // trackpad / rueda horizontal
-    resenas.addEventListener("wheel", (e) => {
-      if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
-      e.preventDefault();
-      x += e.deltaX; normal(); pintar();
-    }, { passive: false });
+    const pausar = () => { ultimaAccion = Date.now(); };
+    resenas.addEventListener("touchstart", () => { tocando = true; pausar(); }, { passive: true });
+    resenas.addEventListener("touchend", () => { tocando = false; pausar(); }, { passive: true });
+    resenas.addEventListener("touchcancel", () => { tocando = false; }, { passive: true });
+    resenas.addEventListener("pointerdown", pausar);
+    resenas.addEventListener("wheel", pausar, { passive: true });
+    flechasR.forEach((f) => f.addEventListener("click", pausar));
+
+    if (!reduceMotion) setInterval(() => {
+      if (!enPantalla || tocando || document.hidden || Date.now() - ultimaAccion < PAUSA) return;
+      ir(Math.round(resenas.scrollLeft / paso()) * paso() + paso(), true);
+    }, INTERVALO);
   }
 }
 

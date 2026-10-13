@@ -1730,14 +1730,13 @@ body:has(.barra-compra) .cierre { padding-bottom: 120px; }
 /* reseñas en rotación continua (js/main.js): sin snap, sin flechas ni puntos */
 .resenas-pista.rodando { scroll-snap-type: none; scroll-behavior: auto; }
 .resenas-pista.rodando .resena { scroll-snap-align: none; }
-.resenas-continuas .resenas-flecha, .resenas-continuas .resenas-puntos { display: none; }
-/* la pista se mueve con transform; el contenedor recorta y desvanece los bordes */
-.resenas-pista.rodando { overflow: visible; touch-action: pan-y; user-select: none; -webkit-user-select: none; will-change: transform; cursor: grab; }
-.resenas-pista.rodando:active { cursor: grabbing; }
-.resenas-pista.rodando img { -webkit-user-drag: none; pointer-events: none; }
+.resenas-continuas .resenas-puntos { display: none; }
+.resenas-continuas .resenas-flecha[data-dir="-1"] { left: max(8px, calc(var(--margen) - 23px)); }
+.resenas-continuas .resenas-flecha[data-dir="1"] { right: max(8px, calc(var(--margen) - 23px)); }
+/* reseñas paso a paso: scroll nativo con snap; el contenedor desvanece los bordes */
+.resenas-pista.paso-a-paso { scroll-behavior: auto; scroll-padding-inline: var(--margen); }
 .resenas-continuas .resenas-carrusel {
-  overflow: hidden;
-  --fade-r: clamp(48px, 12vw, 180px);
+  --fade-r: clamp(28px, 8vw, 140px);
   -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 var(--fade-r), #000 calc(100% - var(--fade-r)), transparent 100%);
   mask-image: linear-gradient(90deg, transparent 0, #000 var(--fade-r), #000 calc(100% - var(--fade-r)), transparent 100%);
 }
