@@ -76,7 +76,7 @@ def guia_resolve():
     ]
 
 
-def guia_luts():
+def guia_luts(clave="unlockluts"):
     T = 6
     return [
         hoja("portada", portada("SPECTRE<br>LUT Installation", "Premiere Pro, Final Cut Pro and CapCut."), 1, T),
@@ -91,10 +91,10 @@ def guia_luts():
         hoja("texto", '''<div class="centro"><h2 class="titulo">Final Cut / CapCut</h2>
             <p class="texto">Final Cut Pro: apply the <b>Custom LUT</b> effect from the Effects panel and choose the SPECTRE file.</p>
             <p class="texto">CapCut Desktop: <b>Adjustment → LUT → Import</b>. Not available on CapCut Mobile.</p></div>''', 4, T),
-        hoja("texto", '''<div class="centro"><h2 class="titulo">Your members area</h2>
+        hoja("texto", f'''<div class="centro"><h2 class="titulo">Your members area</h2>
             <p class="texto">Tutorials and downloads, always available.</p>
             <a class="enlace" href="https://spectrecolor.com/access">spectrecolor.com/access</a>
-            <p class="clave">Password: <b>unlockluts</b></p></div>''', 5, T),
+            <p class="clave">Password: <b>{clave}</b></p></div>''', 5, T),
         hoja("cierre", cierre(), 6, T, pie=False),
     ]
 
@@ -146,4 +146,5 @@ def imprimir(nombre, contenido):
 if __name__ == "__main__":
     imprimir("DaVinci Installation", documento("SPECTRE DaVinci Resolve Installation", guia_resolve()))
     imprimir("LUT Installation", documento("SPECTRE LUT Installation", guia_luts()))
+    imprimir("LUT Installation (Full System)", documento("SPECTRE LUT Installation", guia_luts("unlockfullspectrum")))
     imprimir("Color Settings", documento("SPECTRE Color Settings", guia_ajustes()))
