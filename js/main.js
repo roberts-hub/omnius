@@ -489,6 +489,23 @@ if (carrusel) {
   colocar(CENTRO, false);
 }
 
+// ── looks en cuadrícula: botón para ver los 10 y una pista de "arrastra" en el primero al aparecer ──
+const looksSec = document.querySelector(".looks");
+if (looksSec && looksSec.querySelector(".looks-rejilla")) {
+  const mas = looksSec.querySelector("[data-looks-mas]");
+  if (mas) mas.addEventListener("click", () => {
+    looksSec.classList.add("todos");
+    mas.setAttribute("aria-expanded", "true");
+  });
+  const primero = looksSec.querySelector("[data-comparador]");
+  if (primero && "IntersectionObserver" in window && !reduceMotion) {
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && primero._pista) { setTimeout(() => primero._pista(), 500); obs.disconnect(); }
+    }, { threshold: 0.6 });
+    obs.observe(primero);
+  }
+}
+
 // ── carrusel de reseñas (scroll nativo con snap: en celular se desliza con el dedo) ──
 const resenas = document.querySelector(".resenas-pista");
 if (resenas && !resenas.closest("[hidden]")) {

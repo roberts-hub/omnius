@@ -1850,3 +1850,21 @@ button.descarga-boton.bloqueado { opacity: 0.45; }
 .terminos-acepto.llamar { animation: llamarTerminos 1.4s var(--ease) 2; }
 @keyframes llamarTerminos { 0%, 100% { border-color: var(--linea); box-shadow: none; } 40% { border-color: var(--hueso); box-shadow: 0 0 0 4px rgba(234, 224, 197, 0.18); } }
 
+
+/* ══════════ LOOKS en cuadrícula (antes: carrusel) ══════════ */
+.looks-rejilla-cabeza { text-align: center; margin-bottom: clamp(32px, 4vw, 52px); }
+.looks-rejilla-cabeza .nota-mono { margin-top: 14px; color: var(--greige); }
+.looks-rejilla { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(14px, 1.8vw, 24px); }
+.looks-rejilla .look { margin: 0; min-width: 0; }
+.looks-rejilla .look-extra { display: none; }
+.looks.todos .looks-rejilla .look-extra { display: block; animation: faqEntra 0.6s var(--ease); }
+.looks-rejilla .comparador { border-radius: 12px; }
+.looks-mas { display: flex; margin: clamp(28px, 3.5vw, 44px) auto 0; border: 0; cursor: pointer; }
+.looks.todos .looks-mas { display: none; }
+@media (max-width: 860px) {
+  .looks-rejilla { grid-template-columns: 1fr; gap: 14px; }
+  /* en celular arrancan 4: la página no se alarga de más */
+  .looks-rejilla .look:nth-child(n+5) { display: none; }
+  .looks.todos .looks-rejilla .look:nth-child(n+5) { display: block; }
+}
+section.looks { max-width: var(--ancho); margin: 0 auto; padding: clamp(80px, 9vw, 130px) var(--margen) 0; }
