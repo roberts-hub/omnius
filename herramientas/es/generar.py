@@ -90,13 +90,12 @@ def alternos(en, es):
 
 
 def selector_idioma(actual, en, es):
-    # "EN / ES" como el de chemabal.com: el idioma actual en claro, el otro es el link
-    def opcion(codigo, destino, etiqueta):
-        if codigo == actual:
-            return f'<span class="idioma-activo" lang="{codigo}" aria-current="true">{codigo.upper()}</span>'
-        return f'<a href="{destino}" hreflang="{codigo}" lang="{codigo}" data-umami-event="idioma" data-umami-event-idioma="{codigo}" aria-label="{etiqueta}">{codigo.upper()}</a>'
-    return (f'<span class="link-idioma">{opcion("en", en, "View in English")}<span class="idioma-barra">/</span>'
-            f'{opcion("es", es, "Ver en español")}</span>\n      ')
+    # "EN / ES" como el de chemabal.com. Todo el bloque es un solo botón: un clic en cualquier parte cambia al otro idioma.
+    otro, destino, etiqueta = ("es", es, "Ver en español") if actual == "en" else ("en", en, "View in English")
+    def opcion(codigo):
+        return f'<span class="idioma-activo">{codigo.upper()}</span>' if codigo == actual else f'<span lang="{codigo}">{codigo.upper()}</span>'
+    return (f'<a class="link-idioma" href="{destino}" hreflang="{otro}" data-umami-event="idioma" data-umami-event-idioma="{otro}" aria-label="{etiqueta}">'
+            f'{opcion("en")}<span class="idioma-barra">/</span>{opcion("es")}</a>\n      ')
 
 
 (RAIZ / "es").mkdir(exist_ok=True)
