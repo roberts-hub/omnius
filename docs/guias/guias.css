@@ -332,3 +332,4 @@ body { font-family: var(--ancho); }
 .ventana.pr .selector { background: #111; border-color: #3a3a3a; min-width: 270px; display: flex; justify-content: space-between; }
 .ventana.pr .seccion { border-bottom: 0; color: #e4e4e4; }
 .ventana.pr .casilla { display: inline-block; vertical-align: -3px; border-color: #bbb; border-radius: 2px; }
+.clave { margin-top: 6px; font-family: var(--mono); font-size: 14px; letter-spacing: 0.14em; color: var(--greige); } .clave b { color: var(--hueso); font-weight: 500; }

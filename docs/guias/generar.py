@@ -70,13 +70,14 @@ def guia_resolve():
             dv.galeria("aplicar", CAMARAS, fotos)), 5, T),
         hoja("texto", '''<div class="centro"><h2 class="titulo">Watch the full masterclass</h2>
             <p class="texto">Learn the full node tree, step by step, in the members area.</p>
-            <a class="enlace" href="https://spectrecolor.com/access">spectrecolor.com/access</a></div>''', 6, T),
+            <a class="enlace" href="https://spectrecolor.com/access">spectrecolor.com/access</a>
+            <p class="clave">Password: <b>unlockfullspectrum</b></p></div>''', 6, T),
         hoja("cierre", cierre(), 7, T, pie=False),
     ]
 
 
 def guia_luts():
-    T = 5
+    T = 6
     return [
         hoja("portada", portada("SPECTRE<br>LUT Installation", "Premiere Pro, Final Cut Pro and CapCut."), 1, T),
         hoja("paso", paso("Step 1: Add the LUTs to Premiere",
@@ -90,7 +91,11 @@ def guia_luts():
         hoja("texto", '''<div class="centro"><h2 class="titulo">Final Cut / CapCut</h2>
             <p class="texto">Final Cut Pro: apply the <b>Custom LUT</b> effect from the Effects panel and choose the SPECTRE file.</p>
             <p class="texto">CapCut Desktop: <b>Adjustment → LUT → Import</b>. Not available on CapCut Mobile.</p></div>''', 4, T),
-        hoja("cierre", cierre(), 5, T, pie=False),
+        hoja("texto", '''<div class="centro"><h2 class="titulo">Your members area</h2>
+            <p class="texto">Tutorials and downloads, always available.</p>
+            <a class="enlace" href="https://spectrecolor.com/access">spectrecolor.com/access</a>
+            <p class="clave">Password: <b>unlockluts</b></p></div>''', 5, T),
+        hoja("cierre", cierre(), 6, T, pie=False),
     ]
 
 
