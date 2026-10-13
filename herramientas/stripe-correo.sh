@@ -11,7 +11,9 @@ PRUEBA=plink_1UQC5uFethND82y0rckpA5Ru   # link de prueba de $1 / MX$10 (LUT Pack
 
 printf "Pega tu llave secreta de Stripe (sk_live_... o rk_live_...) y presiona Enter: "
 read -rs LLAVE; echo
-[[ "$LLAVE" == sk_live_* || "$LLAVE" == rk_live_* ]] || { echo "Esa no parece una llave live de Stripe."; exit 1; }
+# al pegar, la Terminal agrega códigos invisibles (pegado entre corchetes) y espacios: se limpian
+LLAVE=$(printf '%s' "$LLAVE" | LC_ALL=C sed -E 's/\x1b\[[0-9;]*~//g' | LC_ALL=C tr -cd 'A-Za-z0-9_')
+[[ "$LLAVE" == sk_live_* || "$LLAVE" == rk_live_* ]] || { echo "Esa no parece una llave live de Stripe (debe empezar con rk_live_). Vuelve a intentarlo."; exit 1; }
 
 texto() { # $1 contraseña
   printf 'Thank you for your purchase!\n\nAccess your files, guides and tutorials anytime:\nhttps://spectrecolor.com/access\n\nYour password: %s\n\nKeep this email: you will need the password to log in from any device.\nQuestions? roberto@arechederra.com' "$1"
