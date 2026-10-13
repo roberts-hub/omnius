@@ -214,6 +214,8 @@ img { display: block; }
   border-bottom-color: var(--linea);
 }
 .cabecera-nav { display: flex; align-items: center; gap: 26px; }
+/* mismo ancho en inglés y en español ("GET SPECTRE" / "OBTÉN SPECTRE"): al cambiar de idioma nada del menú se mueve */
+.cabecera-nav .link-mono { min-width: calc(13 * (1ch + 0.25em)); text-align: center; }
 /* acceso para compradores: solo el ícono, sin círculo; al pasar el cursor aparece "ACCESS" */
 .link-acceso {
   display: inline-flex;
@@ -241,7 +243,9 @@ img { display: block; }
 .link-acceso:hover span, .link-acceso:focus-visible span { max-width: 90px; opacity: 1; margin-left: 9px; transition-delay: 0s, 0.12s, 0s; }
 .link-acceso:focus-visible { outline: 1px solid var(--hueso); outline-offset: 3px; }
 @media (max-width: 480px) {
-  .cabecera-nav { gap: 14px; }
+  .cabecera-nav { gap: 10px; }
+  .cabecera-nav .link-idioma { padding: 0 2px; }
+  .link-acceso, .link-acceso:hover, .link-acceso:focus-visible { padding: 0 2px; }
 }
 .js .cabecera { opacity: 0; transition: opacity 1.2s var(--ease), background 0.6s ease, border-color 0.6s ease; }
 .js .listo .cabecera { opacity: 1; }
@@ -1323,7 +1327,7 @@ a.resena-perfil:focus-visible { outline: 1px solid var(--hueso); outline-offset:
   color: var(--greige);
 }
 .marca-texto { color: var(--hueso); font-size: 11px; letter-spacing: 0.4em; }
-.cierre-links { display: flex; gap: 28px; }
+.cierre-links { display: flex; flex-wrap: wrap; gap: 12px 28px; }
 .cierre-links a { text-decoration: none; transition: color 0.3s ease; }
 .cierre-links a:hover { color: var(--hueso); }
 /* crédito Two Waves: isotipo (T con punto) + texto, en una píldora tenue */
