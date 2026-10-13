@@ -23,23 +23,18 @@ FUENTES = '<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wgh
 
 
 def hoja(clase, contenido, guia, secciones, activa, pag, total):
-    indice = "".join(f'<span class="{"activo" if i == activa else ""}">{s}</span>' for i, s in enumerate(secciones))
     return f'''<section class="hoja {clase}">
-  <div class="arriba"><div class="firma-marca">{ICONO}<b>SPECTRE</b></div><div>{guia}</div><div class="pag">{pag:02d} / {total:02d}</div></div>
   {contenido}
-  <div class="indice">{indice}</div>
+  <div class="pie-hoja"><div class="firma-marca">{ICONO}<b>SPECTRE</b></div><div class="pag">{pag:02d} / {total:02d}</div></div>
 </section>'''
 
 
 def portada(kicker, titulo, serif, sub, datos, foto, pie):
-    d = "".join(f"<div>{k}<b>{v}</b></div>" for k, v in datos)
-    return f'''<div class="izq">
-    <p class="kicker"><span class="rojo">●</span>&nbsp; {kicker}</p>
-    <h1 class="titulo">{titulo}<span class="serif">{serif}</span></h1>
+    return f'''<div class="centro">
+    <div class="icono-grande">{ICONO}</div>
+    <h1 class="titulo">{titulo} <span class="serif">{serif}</span></h1>
     <p class="texto sub">{sub}</p>
-    <div class="datos">{d}</div>
-  </div>
-  <div class="foto"><img src="{FOTO(foto)}" alt=""><div class="esquinas"><i></i><i></i><i></i><i></i></div><div class="pie"><span>{pie}</span><span>VOL. 01</span></div></div>'''
+  </div>'''
 
 
 def paso(n, kicker, titulo, items, derecha, extra=""):
