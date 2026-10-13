@@ -40,7 +40,7 @@ actualizar() { # $1 link  $2 contraseña  $3 nombre
     --data-urlencode "invoice_creation[invoice_data][description]=$(texto "$2")" \
     --data-urlencode "invoice_creation[invoice_data][footer]=SPECTRE · spectrecolor.com · Terms & License: spectrecolor.com/terms" \
     -d "after_completion[type]=hosted_confirmation" \
-    --data-urlencode "after_completion[hosted_confirmation][custom_message]=Payment complete! Access your files at spectrecolor.com/access with your password: $2 — We have also sent your access details to your email.")
+    --data-urlencode "after_completion[hosted_confirmation][custom_message]=Payment complete! Access your files at spectrecolor.com/access with your password: $2. We have also sent your access details to your email.")
   if echo "$r" | grep -q '"object": "payment_link"'; then echo "✓ $3 listo"; else echo "✗ $3: $(echo "$r" | grep -o '"message": "[^"]*"' | head -1)"; fi
 }
 
