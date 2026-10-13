@@ -82,6 +82,15 @@ for (const ed of EDICIONES) {
 }
 
 writeFileSync(registro, JSON.stringify(cache, null, 2));
+// lista pública de las partes cifradas y su tamaño: la usa el monitor diario (herramientas/monitor.mjs)
+// para comprobar que cada descarga existe completa. No revela contenido ni contraseñas.
+const manifiesto = [];
+for (const v of Object.values(cache)) {
+  for (const p of v.partes || [{ ruta: v.ruta }]) {
+    manifiesto.push({ ruta: "/" + p.ruta, bytes: readFileSync(join(raiz, p.ruta)).length });
+  }
+}
+writeFileSync(join(raiz, "descargas", "manifest.json"), JSON.stringify(manifiesto, null, 1));
 const ruta = join(raiz, "access.html");
 const html = readFileSync(ruta, "utf8");
 const patron = /(<script type="application\/json" id="contenido-cifrado">)[\s\S]*?(<\/script>)/;
