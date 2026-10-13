@@ -44,8 +44,11 @@ actualizar() { # $1 link  $2 contraseña  $3 nombre
   if echo "$r" | grep -q '"object": "payment_link"'; then echo "✓ $3 listo"; else echo "✗ $3: $(echo "$r" | grep -o '"message": "[^"]*"' | head -1)"; fi
 }
 
-actualizar "$PRUEBA" unlockluts "Link de prueba"
-actualizar "$LUTS" unlockluts "LUT Pack"
-actualizar "$FULL" unlockfullspectrum "Full System"
+# las contraseñas viven solo en privado/ (nunca en el repo, que es público)
+CARPETA="$(cd "$(dirname "$0")/.." && pwd)/privado"
+CLAVE_LUTS=$(tr -d '[:space:]' < "$CARPETA/clave-luts.txt"); CLAVE_FULL=$(tr -d '[:space:]' < "$CARPETA/clave-full.txt")
+actualizar "$PRUEBA" "$CLAVE_LUTS" "Link de prueba"
+actualizar "$LUTS" "$CLAVE_LUTS" "LUT Pack"
+actualizar "$FULL" "$CLAVE_FULL" "Full System"
 unset LLAVE
 echo "Listo. Puedes borrar la llave en Stripe → Developers → API keys si la creaste solo para esto."
