@@ -53,7 +53,7 @@ def guia_resolve():
     T = 6
     fotos = [FOTO(n) for n in [3, 4, 6, 1, 7]]
     return [
-        hoja("portada", portada("SPECTRE in DaVinci Resolve", "Set it up once. Grade with it forever."), 1, T),
+        hoja("portada", portada("SPECTRE<br>in DaVinci Resolve", "Set it up once. Grade with it forever."), 1, T),
         hoja("paso", paso("Step 1: Copy the LUTs",
             "Go to <b>Project Settings → Color Management</b> and click <b>Open LUT Folder</b>. Drag the <b>SPECTRE LUTs</b> folder inside.",
             dv.carpeta_luts(),
@@ -75,7 +75,7 @@ def guia_resolve():
 def guia_luts():
     T = 5
     return [
-        hoja("portada", portada("SPECTRE LUT Installation", "Premiere Pro, Final Cut Pro and CapCut."), 1, T),
+        hoja("portada", portada("SPECTRE<br>LUT Installation", "Premiere Pro, Final Cut Pro and CapCut."), 1, T),
         hoja("paso", paso("Step 1: Add the LUTs to Premiere",
             "Open the ZIP and drag all the SPECTRE LUTs into Premiere's <b>Creative</b> folder.",
             captura("premiere-carpeta-spectre.png"),
@@ -98,7 +98,7 @@ def guia_ajustes():
       <div class="ajuste"><span>True Tone</span><span class="interruptor"></span></div>
       <div class="ajuste"><span>Night Shift</span><span class="selector">Off ⌄</span></div></div></div>'''
     return [
-        hoja("portada", portada("SPECTRE Color Settings", "What you grade is what they see."), 1, T),
+        hoja("portada", portada("SPECTRE<br>Color Settings", "What you grade is what they see."), 1, T),
         hoja("paso", paso("DaVinci Resolve",
             "In <b>Project Settings → Color Management</b>, use exactly these settings and click <b>Save</b>.",
             dv.color_management()), 2, T),

@@ -324,3 +324,4 @@ body { font-family: var(--ancho); }
 .cierre-frase { margin-top: 30px; font-family: var(--ancho); font-stretch: 125%; font-weight: 800; font-size: 34px; text-transform: uppercase; letter-spacing: 0.02em; color: var(--hueso); }
 .dv { width: 100%; }
 .captura { max-height: 600px; width: auto; max-width: 100%; margin-left: auto; }
+.portada .titulo { line-height: 1.08; }
