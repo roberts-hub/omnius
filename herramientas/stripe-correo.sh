@@ -16,7 +16,21 @@ LLAVE=$(printf '%s' "$LLAVE" | LC_ALL=C sed -E 's/\x1b\[[0-9;]*~//g' | LC_ALL=C 
 [[ "$LLAVE" == sk_live_* || "$LLAVE" == rk_live_* ]] || { echo "Esa no parece una llave live de Stripe (debe empezar con rk_live_). Vuelve a intentarlo."; exit 1; }
 
 texto() { # $1 contraseña
-  printf 'Thank you for your purchase!\n\nAccess your files, guides and tutorials anytime:\nhttps://spectrecolor.com/access\n\nYour password: %s\n\nKeep this email: you will need the password to log in from any device.\nQuestions? roberto@arechederra.com' "$1"
+  printf '%s\n' \
+    'Thank you for your purchase! / ¡Gracias por tu compra!' \
+    '' \
+    'HOW TO ACCESS YOUR FILES' \
+    '1. Go to https://spectrecolor.com/access' \
+    "2. Enter your password: $1" \
+    '3. Accept the Terms & License and download your files, guides and tutorials.' \
+    '' \
+    'CÓMO ENTRAR A TUS ARCHIVOS' \
+    '1. Entra a https://spectrecolor.com/access' \
+    "2. Escribe tu contraseña: $1" \
+    '3. Acepta los Términos y Licencia y descarga tus archivos, guías y tutoriales.' \
+    '' \
+    'Keep this email: you will need the password to log in from any device. / Guarda este correo: necesitarás la contraseña para entrar desde cualquier dispositivo.' \
+    'Questions? / ¿Dudas? roberto@arechederra.com'
 }
 
 actualizar() { # $1 link  $2 contraseña  $3 nombre
