@@ -326,3 +326,9 @@ body { font-family: var(--ancho); }
 .captura { max-height: 600px; width: auto; max-width: 100%; margin-left: auto; }
 .portada .titulo { line-height: 1.08; }
 .enlace { margin-top: 10px; display: inline-block; padding: 14px 30px; border: 1px solid var(--hueso); border-radius: 999px; font-family: var(--mono); font-size: 15px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--hueso); text-decoration: none; }
+.ventana.pr { background: #1d1d1d; border-color: #2a2a2a; font-size: 14px; }
+.ventana.pr .panel-ui { background: #1d1d1d; }
+.ventana.pr .ajuste { border-bottom: 0; padding: 9px 0; color: #c8c8c8; }
+.ventana.pr .selector { background: #111; border-color: #3a3a3a; min-width: 270px; display: flex; justify-content: space-between; }
+.ventana.pr .seccion { border-bottom: 0; color: #e4e4e4; }
+.ventana.pr .casilla { display: inline-block; vertical-align: -3px; border-color: #bbb; border-radius: 2px; }

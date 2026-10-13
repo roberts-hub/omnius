@@ -60,13 +60,13 @@ def guia_resolve():
             rutas("/Library/Application Support/Blackmagic Design/DaVinci Resolve/LUT",
                   "C:\\ProgramData\\Blackmagic Design\\DaVinci Resolve\\Support\\LUT")), 2, T),
         hoja("paso", paso("Step 2: Refresh",
-            "On the <b>Color</b> page, open <b>LUTs</b>, right-click the list and choose <b>Refresh</b>.",
+            "On the <b>Color</b> page, open <b>LUTs</b>, right-click the list and choose <b>Refresh</b>. Then save (<b>⌘S</b>) and restart Resolve.",
             dv.luts(FOTO(5))), 3, T),
         hoja("paso", paso("Step 3: Import the PowerGrades",
-            "In the <b>Gallery</b>, right-click → <b>Add PowerGrade Album</b>. Inside the album, right-click → <b>Import</b> and pick the five <b>.drx</b> files.",
+            "In the <b>Gallery</b>, right-click → <b>Add PowerGrade Album</b>. Inside the album, right-click → <b>Import</b> and pick the five <b>.drx</b> files from <b>SPECTRE POWER GRADE</b>, or drag them in.",
             dv.galeria("importar", CAMARAS, fotos)), 4, T),
         hoja("paso", paso("Step 4: Apply",
-            "Select your clip, right-click the PowerGrade for your camera and choose <b>Apply Grade</b>.",
+            "Select your clip, right-click the PowerGrade for your camera and choose <b>Apply Grade</b>. You can also drag it onto the clip.",
             dv.galeria("aplicar", CAMARAS, fotos)), 5, T),
         hoja("texto", '''<div class="centro"><h2 class="titulo">Watch the full masterclass</h2>
             <p class="texto">Learn the full node tree, step by step, in the members area.</p>
@@ -85,30 +85,40 @@ def guia_luts():
             rutas("/Applications/Adobe Premiere Pro 2025/Adobe Premiere Pro 2025.app/Contents/Lumetri/LUTs/Creative",
                   "C:\\Program Files\\Adobe\\Adobe Premiere Pro 2025\\Lumetri\\LUTs\\Creative")), 2, T),
         hoja("paso", paso("Step 2: Restart Premiere Pro",
-            "Every SPECTRE LUT is now in <b>Lumetri → Creative → Look</b>. Pick the one for your camera, or <b>SPECTRE LUT</b> for footage already in Rec.709.",
+            "All SPECTRE LUTs are now in <b>Lumetri → Creative → Look</b>. No more browsing.",
             captura("premiere-lumetri-spectre.png")), 3, T),
         hoja("texto", '''<div class="centro"><h2 class="titulo">Final Cut / CapCut</h2>
-            <p class="texto">Final Cut Pro: apply the <b>Custom LUT</b> effect and choose the SPECTRE file.</p>
+            <p class="texto">Final Cut Pro: apply the <b>Custom LUT</b> effect from the Effects panel and choose the SPECTRE file.</p>
             <p class="texto">CapCut Desktop: <b>Adjustment → LUT → Import</b>. Not available on CapCut Mobile.</p></div>''', 4, T),
         hoja("cierre", cierre(), 5, T, pie=False),
     ]
 
 
 def guia_ajustes():
-    T = 4
+    T = 5
     pantalla = '''<div class="ventana"><div class="barra"><i></i><i></i><i></i><b>Displays</b></div><div class="panel-ui">
-      <div class="ajuste"><span>Automatically adjust brightness</span><span class="interruptor"></span></div>
       <div class="ajuste"><span>True Tone</span><span class="interruptor"></span></div>
+      <div class="ajuste"><span>Preset</span><span class="selector">Apple XDR Display (P3-1600 nits) ⌄</span></div>
       <div class="ajuste"><span>Night Shift</span><span class="selector">Off ⌄</span></div></div></div>'''
+    premiere = '''<div class="ventana pr"><div class="panel-ui">
+      <div class="seccion"><span>⌄ Project: My Project</span></div>
+      <div class="ajuste"><span>HDR Graphics White (Nits):</span><span class="selector">203 (75% HLG, 58% PQ) ⌄</span></div>
+      <div class="ajuste"><span>3D LUT Interpolation:</span><span class="selector">Tetrahedral (requires GPU) ⌄</span></div>
+      <div class="ajuste"><span>Viewer Gamma:</span><span class="selector">1.96 (QuickTime) ⌄</span></div>
+      <div class="ajuste"><span><span class="casilla"></span>&nbsp; Color Manage Auto Detected Log and Raw Media</span></div>
+      <div class="ajuste"><span><span class="casilla"></span>&nbsp; Enable Color Space Aware Effects</span></div></div></div>'''
     return [
         hoja("portada", portada("SPECTRE<br>Color Settings", "What you grade is what they see."), 1, T),
+        hoja("paso", paso("Your screen",
+            "Before opening your editor, go to <b>System Settings → Displays</b>. Turn off <b>True Tone</b> and Night Shift. On an XDR screen, set <b>Preset</b> to <b>Apple XDR Display (P3-1600 nits)</b>.",
+            pantalla), 2, T),
         hoja("paso", paso("DaVinci Resolve",
             "In <b>Project Settings → Color Management</b>, use exactly these settings and click <b>Save</b>.",
-            dv.color_management()), 2, T),
-        hoja("paso", paso("Your screen",
-            "In <b>System Settings → Displays</b>, turn off True Tone, Night Shift and automatic brightness while you grade.",
-            pantalla), 3, T),
-        hoja("cierre", cierre(), 4, T, pie=False),
+            dv.color_management()), 3, T),
+        hoja("paso", paso("Premiere Pro",
+            "In <b>Lumetri Color → Settings</b>, set <b>Viewer Gamma</b> to <b>1.96 (QuickTime)</b> and turn off <b>Color Manage Auto Detected Log and Raw Media</b>.",
+            premiere), 4, T),
+        hoja("cierre", cierre(), 5, T, pie=False),
     ]
 
 
