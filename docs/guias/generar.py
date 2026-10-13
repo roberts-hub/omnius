@@ -66,7 +66,7 @@ def guia_resolve():
             "In the <b>Gallery</b>, right-click → <b>Add PowerGrade Album</b>. Inside the album, right-click → <b>Import</b> and pick the five <b>.drx</b> files from <b>SPECTRE POWER GRADE</b>, or drag them in.",
             dv.galeria("importar", CAMARAS, fotos)), 4, T),
         hoja("paso", paso("Step 4: Apply",
-            "Select your clip, right-click the PowerGrade for your camera and choose <b>Apply Grade</b>. You can also drag it onto the clip.",
+            "Select your clip, right-click the PowerGrade for your camera and choose <b>Apply Grade</b>. You can also drag it onto the clip. Another camera? Start from the closest version and adapt the nodes to your footage.",
             dv.galeria("aplicar", CAMARAS, fotos)), 5, T),
         hoja("texto", '''<div class="centro"><h2 class="titulo">Watch the full masterclass</h2>
             <p class="texto">Learn the full node tree, step by step, in the members area.</p>
