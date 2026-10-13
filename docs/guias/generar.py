@@ -60,7 +60,7 @@ def guia_resolve():
             rutas("/Library/Application Support/Blackmagic Design/DaVinci Resolve/LUT",
                   "C:\\ProgramData\\Blackmagic Design\\DaVinci Resolve\\Support\\LUT")), 2, T),
         hoja("paso", paso("Step 2: Refresh",
-            "On the <b>Color</b> page, open <b>LUTs</b>, right-click the list and choose <b>Refresh</b>. Then save (<b>⌘S</b>) and restart Resolve.",
+            "On the <b>Color</b> page, open <b>LUTs</b>, right-click the list and choose <b>Refresh</b>. Then save (<b>⌘S</b>) and restart Resolve. <b>SPECTRE One Click</b> is for Log clips, <b>SPECTRE LUT</b> for Rec.709 clips.",
             dv.luts(FOTO(5))), 3, T),
         hoja("paso", paso("Step 3: Import the PowerGrades",
             "In the <b>Gallery</b>, right-click → <b>Add PowerGrade Album</b>. Inside the album, right-click → <b>Import</b> and pick the five <b>.drx</b> files from <b>SPECTRE POWER GRADE</b>, or drag them in.",
@@ -85,7 +85,7 @@ def guia_luts():
             rutas("/Applications/Adobe Premiere Pro 2025/Adobe Premiere Pro 2025.app/Contents/Lumetri/LUTs/Creative",
                   "C:\\Program Files\\Adobe\\Adobe Premiere Pro 2025\\Lumetri\\LUTs\\Creative")), 2, T),
         hoja("paso", paso("Step 2: Restart Premiere Pro",
-            "All SPECTRE LUTs are now in <b>Lumetri → Creative → Look</b>. No more browsing.",
+            "All SPECTRE LUTs are now in <b>Lumetri → Creative → Look</b>. Use the <b>One Click LUT</b> for your camera on Log clips, and <b>SPECTRE LUT</b> on Rec.709 clips.",
             captura("premiere-lumetri-spectre.png")), 3, T),
         hoja("texto", '''<div class="centro"><h2 class="titulo">Final Cut / CapCut</h2>
             <p class="texto">Final Cut Pro: apply the <b>Custom LUT</b> effect from the Effects panel and choose the SPECTRE file.</p>
