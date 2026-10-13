@@ -17,10 +17,12 @@ let sem = DispatchSemaphore(value: 0)
 var pista: AVAssetTrack!
 var fps: Float = 30
 var dur = CMTime.zero
+var cuadro = CMTime.invalid
 Task {
     pista = try! await asset.loadTracks(withMediaType: .video).first!
     fps = try! await pista.load(.nominalFrameRate)
     dur = try! await asset.load(.duration)
+    cuadro = try! await pista.load(.minFrameDuration) // duración exacta de cuadro (23.976 = 1001/24000)
     sem.signal()
 }
 sem.wait()
@@ -34,7 +36,7 @@ let xf = CGAffineTransform(scaleX: s, y: s).concatenating(CGAffineTransform(tran
 
 let comp = AVMutableVideoComposition()
 comp.renderSize = CGSize(width: W, height: H)
-comp.frameDuration = CMTime(value: 1, timescale: CMTimeScale(fps.rounded()))
+comp.frameDuration = cuadro.isValid && cuadro.value > 0 ? cuadro : CMTime(value: 1, timescale: CMTimeScale(fps.rounded()))
 let instr = AVMutableVideoCompositionInstruction()
 instr.timeRange = CMTimeRange(start: .zero, duration: dur)
 let capa = AVMutableVideoCompositionLayerInstruction(assetTrack: pista)
@@ -102,5 +104,5 @@ input.requestMediaDataWhenReady(on: cola) {
 fin.wait()
 if writer.status != .completed { print("ERROR:", writer.error ?? "desconocido"); exit(1) }
 let bytes = (try? FileManager.default.attributesOfItem(atPath: salida.path)[.size] as? Int) ?? 0
-print(String(format: "%@  %dx%d  %@  %.1f Mbps  →  %.1f MB  (%.0f fps, %.1f s)",
+print(String(format: "%@  %dx%d  %@  %.1f Mbps  →  %.1f MB  (%.3f fps, %.1f s)",
              salida.lastPathComponent, W, H, a[3], Double(BR) / 1e6, Double(bytes) / 1e6, fps, dur.seconds))

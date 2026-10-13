@@ -56,6 +56,7 @@ async function bajarCifrado(c, boton) {
   if (boton.disabled) return;
   const texto = boton.textContent;
   boton.disabled = true;
+  boton.dataset.bajando = "1";
   try {
     const llave = await crypto.subtle.importKey("raw", deB64(c.llave), "AES-GCM", false, ["decrypt"]);
     const partes = c.partes || [{ ruta: c.ruta, iv: c.iv }];
@@ -97,6 +98,7 @@ async function bajarCifrado(c, boton) {
     boton.textContent = "TRY AGAIN ↓";
   } finally {
     boton.disabled = false;
+    delete boton.dataset.bajando;
     setTimeout(() => { if (boton.textContent === "DOWNLOADED ✓") boton.textContent = texto; }, 4000);
   }
 }
@@ -203,9 +205,55 @@ function pintar(datos) {
     destino.append(sec);
   });
 
+  // términos de la licencia: resumen + enlace + PDF. Las descargas se activan al aceptarlos
+  // (se recuerda en este navegador; si cambian los términos, cambiar TERMINOS_VERSION para volver a pedirlo).
+  const TERMINOS_VERSION = "2026-10-08";
+  const CLAVE_TERMINOS = "spectre-terminos-" + TERMINOS_VERSION;
+  let aceptados = false;
+  try { aceptados = localStorage.getItem(CLAVE_TERMINOS) === "1"; } catch (_) {}
+  const botonesDescarga = [];
+  {
+    const t = el("section", "miembros-seccion miembros-terminos");
+    t.append(el("h2", "miembros-subtitulo", "Terms & License"));
+    t.append(el("p", "acceso-texto", "Your purchase is a personal license to use SPECTRE. Before downloading, please keep in mind:"));
+    const ul = el("ul", "terminos-lista");
+    [
+      "Use it on unlimited personal and commercial projects, including client work.",
+      "The license is for one person. Teams need one license per user.",
+      "Do not share, resell, upload or redistribute the files, the password or the tutorials.",
+      "Do not use SPECTRE to create and sell your own LUTs or PowerGrades.",
+      "Practice footage is for learning only: not for client work, ads or stock.",
+      "All sales are final once the files are downloaded.",
+    ].forEach((x) => ul.append(el("li", "", x)));
+    t.append(ul);
+    const enlaces = el("p", "terminos-enlaces");
+    const ver = el("a", "", "Read the full Terms & License");
+    ver.href = "/terms"; ver.target = "_blank"; ver.rel = "noopener";
+    const pdf = el("a", "", "Download PDF");
+    pdf.href = "/legal/SPECTRE-Terms-and-License.pdf"; pdf.download = "SPECTRE Terms & License.pdf";
+    enlaces.append(ver, document.createTextNode("  ·  "), pdf);
+    t.append(enlaces);
+    const etiqueta = el("label", "terminos-acepto");
+    const caja = el("input");
+    caja.type = "checkbox";
+    caja.checked = aceptados;
+    etiqueta.append(caja, el("span", "", "I have read and agree to the Terms & License."));
+    caja.addEventListener("change", () => {
+      aceptados = caja.checked;
+      try { aceptados ? localStorage.setItem(CLAVE_TERMINOS, "1") : localStorage.removeItem(CLAVE_TERMINOS); } catch (_) {}
+      botonesDescarga.forEach((b) => { b.disabled = !aceptados; });
+      destino.classList.toggle("terminos-ok", aceptados);
+      if (aceptados && window.umami) window.umami.track("miembros-acepta-terminos");
+    });
+    t.append(etiqueta);
+    destino.append(t);
+    destino.classList.toggle("terminos-ok", aceptados);
+  }
+
   if ((datos.descargas || []).length) {
     const sec = el("section", "miembros-seccion");
     sec.append(el("h2", "miembros-subtitulo", "Downloads"));
+    sec.append(el("p", "terminos-aviso", "Accept the Terms & License above to enable the downloads."));
     const lista = el("ul", "descargas");
     datos.descargas.forEach((d) => {
       const li = el("li", "descarga");
@@ -216,7 +264,9 @@ function pintar(datos) {
       if (d.cifrado) {
         accion = el("button", "descarga-boton", "DOWNLOAD ↓");
         accion.type = "button";
-        accion.addEventListener("click", () => bajarCifrado(d.cifrado, accion));
+        accion.disabled = !aceptados;
+        botonesDescarga.push(accion);
+        accion.addEventListener("click", () => { if (aceptados) bajarCifrado(d.cifrado, accion); });
       } else if (d.url) {
         accion = el("a", "descarga-boton", "DOWNLOAD ↓");
         accion.href = d.url;

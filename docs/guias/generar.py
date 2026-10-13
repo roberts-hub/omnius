@@ -90,7 +90,8 @@ def guia_luts(clave="unlockluts"):
             captura("premiere-lumetri-spectre.png")), 3, T),
         hoja("texto", '''<div class="centro"><h2 class="titulo">Final Cut / CapCut</h2>
             <p class="texto">Final Cut Pro: apply the <b>Custom LUT</b> effect from the Effects panel and choose the SPECTRE file.</p>
-            <p class="texto">CapCut Desktop: <b>Adjustment → LUT → Import</b>. Not available on CapCut Mobile.</p></div>''', 4, T),
+            <p class="texto">CapCut Desktop: <b>Adjustment → LUT → Import</b>. Not available on CapCut Mobile.</p>
+            <p class="texto">Your app doesn't accept the LUT? Use the <b>33-point</b> versions in the <b>SPECTRE LUTs 33</b> folder.</p></div>''', 4, T),
         hoja("texto", f'''<div class="centro"><h2 class="titulo">Your members area</h2>
             <p class="texto">Tutorials and downloads, always available.</p>
             <a class="enlace" href="https://spectrecolor.com/access">spectrecolor.com/access</a>

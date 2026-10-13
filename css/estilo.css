@@ -1834,3 +1834,15 @@ button.btn-pildora { border: 0; cursor: pointer; }
 /* botón de idioma EN | ES en el encabezado */
 .link-idioma { display: inline-flex; align-items: center; height: 34px; padding: 0 8px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em; color: var(--greige); text-decoration: none; transition: color 0.3s ease; }
 .link-idioma:hover { color: var(--hueso); }
+
+/* área de miembros: términos antes de las descargas */
+.terminos-lista { margin: 18px 0 0; padding-left: 18px; color: var(--lino); font-size: 14px; line-height: 1.7; font-weight: 300; }
+.terminos-lista li { margin-bottom: 4px; }
+.terminos-enlaces { margin-top: 16px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; color: var(--greige); }
+.terminos-enlaces a { color: var(--hueso); text-underline-offset: 4px; }
+.terminos-acepto { display: flex; align-items: center; gap: 12px; margin-top: 22px; padding: 16px 18px; border: 1px solid var(--linea); border-radius: 12px; cursor: pointer; color: var(--hueso); font-size: 14px; }
+.terminos-acepto input { width: 18px; height: 18px; accent-color: var(--hueso); flex: none; cursor: pointer; }
+.terminos-aviso { margin-top: 8px; font-size: 13px; color: var(--greige); }
+.terminos-acepto:has(input:checked) { border-color: rgba(234, 224, 197, 0.45); }
+.terminos-ok .terminos-aviso { display: none; }
+button.descarga-boton:disabled:not([data-bajando]) { opacity: 0.35; cursor: not-allowed; }
