@@ -685,6 +685,14 @@ if (reduceMotion) {
   document.querySelectorAll(".reveal").forEach((el) => obs.observe(el));
 }
 
+// ── al cambiar de idioma se conserva lo elegido (?edition=luts) y la sección (#looks) ──
+document.querySelectorAll(".link-idioma").forEach((a) => a.addEventListener("click", () => {
+  const destino = new URL(a.href);
+  destino.search = location.search;
+  if (location.hash && !destino.hash) destino.hash = location.hash;
+  a.href = destino.href;
+}));
+
 // ── modo sin buena conexión: guarda en el teléfono lo ya visto (sw.js) ──
 if ("serviceWorker" in navigator && location.protocol === "https:") {
   window.addEventListener("load", () => navigator.serviceWorker.register("/sw.js").catch(() => {}));
