@@ -463,7 +463,13 @@ if (carrusel) {
     if (e.key === "ArrowRight") { mover(1); e.preventDefault(); }
   });
 
-  window.addEventListener("resize", () => colocar(CENTRO, false));
+  // solo si cambia el ancho: en celular la barra del navegador cambia el alto al hacer scroll
+  let anchoCarrusel = window.innerWidth;
+  window.addEventListener("resize", () => {
+    if (window.innerWidth === anchoCarrusel) return;
+    anchoCarrusel = window.innerWidth;
+    colocar(CENTRO, false);
+  });
 
   if ("IntersectionObserver" in window) {
     const obsCarrusel = new IntersectionObserver(([e]) => {
@@ -520,51 +526,96 @@ if (resenas && !resenas.closest("[hidden]")) {
   window.addEventListener("resize", pintarPuntos);
   pintarPuntos();
 
-  // rotación continua (como la franja de logos): las tarjetas se duplican para que el ciclo no tenga
-  // corte. Un clic sobre una reseña la detiene y otro la reanuda; con el dedo se puede arrastrar
-  // (mientras se arrastra se pausa). Fuera de pantalla o con la pestaña oculta no corre.
+  // rotación continua (como la franja de logos). Se mueve con transform (subpíxel, sin tirones) y
+  // no con scrollLeft. Con el dedo o el mouse se arrastra en horizontal con inercia; el gesto vertical
+  // sigue desplazando la página (touch-action: pan-y). Un toque sin arrastrar detiene / reanuda.
+  // Hay tres juegos de tarjetas (clon, original, clon) para que el ciclo no tenga corte hacia ningún lado.
   if (!reduceMotion && tarjetas.length > 1) {
     const VELOCIDAD = 32; // px por segundo
-    tarjetas.forEach((t) => {
+    const clonar = (t) => {
       const c = t.cloneNode(true);
       c.setAttribute("aria-hidden", "true");
       c.querySelectorAll("a").forEach((x) => { x.tabIndex = -1; });
-      resenas.appendChild(c);
-    });
+      return c;
+    };
+    tarjetas.forEach((t) => resenas.appendChild(clonar(t)));
+    [...tarjetas].reverse().forEach((t) => resenas.prepend(clonar(t)));
     resenas.classList.add("rodando");
     resenas.closest(".resenas").classList.add("resenas-continuas");
-    const ciclo = () => tarjetas.length * paso(); // ancho de un juego completo de tarjetas
-    let pos = 0, antes = 0, detenido = false, arrastrando = false, enPantalla = false, inicio = null;
-    new IntersectionObserver(([e]) => { enPantalla = e.isIntersecting; }).observe(resenas);
+
+    let c = 1, x = 0, vel = 0, antes = 0, detenido = false, enPantalla = false;
+    let toque = null; // { id, x0, y0, xIni, horizontal, ult: [t, x] }
+    const medir = () => { c = tarjetas.length * paso(); if (!x) x = c; };
+    const normal = () => { x = ((x - c) % c + c) % c + c; };
+    const pintar = () => { resenas.style.transform = `translate3d(${-x}px,0,0)`; };
+    medir(); pintar();
+    let anchoR = window.innerWidth;
+    window.addEventListener("resize", () => {
+      if (window.innerWidth === anchoR) return;
+      anchoR = window.innerWidth;
+      const f = x / c; medir(); x = f * c; normal(); pintar();
+    });
+    // se observa el contenedor: la pista misma se desplaza fuera de su caja con el transform
+    new IntersectionObserver(([e]) => { enPantalla = e.isIntersecting; }).observe(resenas.parentElement);
+
     const cuadro = (t) => {
       const dt = antes ? Math.min(t - antes, 64) / 1000 : 0;
       antes = t;
-      if (!detenido && !arrastrando && enPantalla && !document.hidden) {
-        pos += VELOCIDAD * dt;
-        const c = ciclo();
-        if (pos >= c) pos -= c;
-        resenas.scrollLeft = pos;
+      if (!toque && enPantalla && !document.hidden) {
+        if (Math.abs(vel) > 5) { // inercia después de soltar
+          x += vel * dt;
+          vel *= Math.pow(0.04, dt); // frena en ~1 s
+        } else if (!detenido) {
+          vel = 0;
+          x += VELOCIDAD * dt;
+        }
+        normal(); pintar();
       }
       requestAnimationFrame(cuadro);
     };
     requestAnimationFrame(cuadro);
-    // arrastre con el dedo o trackpad: pausa mientras dura y retoma desde donde quedó
-    resenas.addEventListener("pointerdown", (e) => { arrastrando = true; inicio = { x: e.clientX, y: e.clientY }; });
+
+    let arrastro = false;
+    resenas.addEventListener("pointerdown", (e) => {
+      if (e.button > 0) return;
+      toque = { id: e.pointerId, x0: e.clientX, y0: e.clientY, xIni: x, horizontal: e.pointerType === "mouse", ult: [[e.timeStamp, e.clientX]] };
+      arrastro = false; vel = 0;
+    });
+    resenas.addEventListener("pointermove", (e) => {
+      if (!toque || e.pointerId !== toque.id) return;
+      const dx = e.clientX - toque.x0, dy = e.clientY - toque.y0;
+      if (!toque.horizontal) {
+        if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+        if (Math.abs(dy) > Math.abs(dx)) { toque = null; return; } // gesto vertical: es de la página
+        toque.horizontal = true;
+      }
+      if (!arrastro && Math.abs(dx) > 4) { arrastro = true; resenas.setPointerCapture(e.pointerId); }
+      x = toque.xIni - dx;
+      normal(); pintar();
+      toque.ult.push([e.timeStamp, e.clientX]);
+      if (toque.ult.length > 6) toque.ult.shift();
+    });
     const soltar = (e) => {
-      if (!arrastrando) return;
-      arrastrando = false;
-      const c = ciclo();
-      pos = ((resenas.scrollLeft % c) + c) % c;
-      // clic (sin arrastre) sobre una reseña: detener / reanudar
-      if (inicio && e && Math.hypot(e.clientX - inicio.x, e.clientY - inicio.y) < 6 && e.target.closest(".resena") && !e.target.closest("a")) {
+      if (!toque || e.pointerId !== toque.id) return;
+      const [t0, x0] = toque.ult[0], [t1, x1] = toque.ult[toque.ult.length - 1];
+      if (arrastro && t1 > t0) vel = Math.max(-2500, Math.min(2500, -((x1 - x0) / (t1 - t0)) * 1000));
+      else if (!arrastro && e.type === "pointerup" && e.target.closest(".resena") && !e.target.closest("a")) {
         detenido = !detenido;
         resenas.classList.toggle("detenido", detenido);
       }
-      inicio = null;
+      toque = null;
     };
     resenas.addEventListener("pointerup", soltar);
-    resenas.addEventListener("pointercancel", () => { arrastrando = false; pos = resenas.scrollLeft % ciclo(); });
-    resenas.addEventListener("wheel", () => { pos = resenas.scrollLeft % ciclo(); }, { passive: true });
+    resenas.addEventListener("pointercancel", soltar);
+    // un arrastre no debe abrir el Instagram de la tarjeta donde termina
+    resenas.addEventListener("click", (e) => { if (arrastro) { e.preventDefault(); e.stopPropagation(); arrastro = false; } }, true);
+    resenas.addEventListener("dragstart", (e) => e.preventDefault());
+    // trackpad / rueda horizontal
+    resenas.addEventListener("wheel", (e) => {
+      if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+      e.preventDefault();
+      x += e.deltaX; normal(); pintar();
+    }, { passive: false });
   }
 }
 
