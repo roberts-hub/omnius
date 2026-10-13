@@ -703,3 +703,8 @@ if (reduceMotion) {
   );
   document.querySelectorAll(".reveal").forEach((el) => obs.observe(el));
 }
+
+// ── modo sin buena conexión: guarda en el teléfono lo ya visto (sw.js) ──
+if ("serviceWorker" in navigator && location.protocol === "https:") {
+  window.addEventListener("load", () => navigator.serviceWorker.register("/sw.js").catch(() => {}));
+}
