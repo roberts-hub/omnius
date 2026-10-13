@@ -186,10 +186,10 @@ def guia_luts():
         "Use <b>Intensity</b> to dial the look up or down, and adjust exposure in <b>Basic Correction</b> first.",
     ], lumetri, nota("NO INSTALL NEEDED", "In a hurry? Choose <b>Look → Browse…</b> and pick the .cube file from any folder.")), G, S, 3, 4, T))
 
-    fcp = '''<div class="tarjeta"><p class="kicker">FINAL CUT PRO</p><h3>Custom LUT effect</h3>
+    fcp = '''<div class="tarjeta"><h3>Final Cut Pro</h3>
       <div class="migas"><span>Effects</span><i>→</i><span>Color</span><i>→</i><span>Custom LUT</span></div>
       <p>Drag <b>Custom LUT</b> onto your clip. In the Inspector, open <b>LUT → Choose Custom LUT…</b> and select the SPECTRE file. For Log footage, set <b>Camera LUT</b> to <b>None</b> in the Info inspector so the LUT gets the original Log image.</p></div>'''
-    cap = '''<div class="tarjeta"><p class="kicker">CAPCUT DESKTOP</p><h3>Import the LUT</h3>
+    cap = '''<div class="tarjeta"><h3>CapCut Desktop</h3>
       <div class="migas"><span>Adjustment</span><i>→</i><span>LUT</span><i>→</i><span>Import</span></div>
       <p>Select your clip, open <b>Adjustment → LUT</b>, click <b>Import</b> and pick the SPECTRE .cube file. Then choose it from the list to apply it. LUT import is only available in the desktop app, not on mobile.</p></div>'''
     p.append(hoja("paso", f'''<div class="numero">04</div><div class="izq"><p class="kicker">STEP 04 · OTHER EDITORS</p>
