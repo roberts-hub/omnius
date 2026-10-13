@@ -51,6 +51,48 @@ const el = (tag, clase, texto) => {
   return n;
 };
 
+// ── descargas cifradas: el .bin publicado se descifra aquí con la llave que trae la bóveda ──
+async function bajarCifrado(c, boton) {
+  if (boton.disabled) return;
+  const texto = boton.textContent;
+  boton.disabled = true;
+  try {
+    const resp = await fetch(c.ruta, { cache: "no-store" });
+    if (!resp.ok || !resp.body) throw new Error("descarga");
+    const lector = resp.body.getReader();
+    const partes = [];
+    let recibidos = 0;
+    for (;;) {
+      const { done, value } = await lector.read();
+      if (done) break;
+      partes.push(value);
+      recibidos += value.length;
+      boton.textContent = `DOWNLOADING ${Math.min(99, Math.round((recibidos / (c.bytes + 16)) * 100))}%`;
+    }
+    boton.textContent = "PREPARING…";
+    const datos = new Uint8Array(recibidos);
+    let pos = 0;
+    for (const p of partes) { datos.set(p, pos); pos += p.length; }
+    const llave = await crypto.subtle.importKey("raw", deB64(c.llave), "AES-GCM", false, ["decrypt"]);
+    const zip = await crypto.subtle.decrypt({ name: "AES-GCM", iv: deB64(c.iv) }, llave, datos);
+    const url = URL.createObjectURL(new Blob([zip], { type: "application/zip" }));
+    const a = el("a");
+    a.href = url;
+    a.download = c.nombre;
+    document.body.append(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+    if (window.umami) window.umami.track("miembros-descarga", { archivo: c.nombre });
+    boton.textContent = "DOWNLOADED ✓";
+  } catch (_) {
+    boton.textContent = "TRY AGAIN ↓";
+  } finally {
+    boton.disabled = false;
+    setTimeout(() => { if (boton.textContent === "DOWNLOADED ✓") boton.textContent = texto; }, 4000);
+  }
+}
+
 const idYoutube = (valor) => {
   if (!valor) return "";
   const m = String(valor).match(/(?:youtu\.be\/|v=|embed\/|shorts\/|live\/)([\w-]{11})/);
@@ -163,7 +205,11 @@ function pintar(datos) {
       info.append(el("p", "descarga-titulo", d.titulo));
       if (d.detalle) info.append(el("p", "descarga-detalle", d.detalle));
       let accion;
-      if (d.url) {
+      if (d.cifrado) {
+        accion = el("button", "descarga-boton", "DOWNLOAD ↓");
+        accion.type = "button";
+        accion.addEventListener("click", () => bajarCifrado(d.cifrado, accion));
+      } else if (d.url) {
         accion = el("a", "descarga-boton", "DOWNLOAD ↓");
         accion.href = d.url;
         accion.target = "_blank";

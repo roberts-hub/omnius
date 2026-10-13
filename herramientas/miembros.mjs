@@ -5,7 +5,8 @@
 // La contraseña de una edición NO puede abrir la otra: cada bóveda va cifrada por separado.
 // Correrlo cada vez que cambies videos, descargas o contraseñas; después: commit + push.
 // La carpeta privado/ nunca se sube a GitHub: el sitio solo publica el contenido cifrado.
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { webcrypto as crypto } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
@@ -16,6 +17,29 @@ const EDICIONES = ["full", "luts"];
 
 const b64 = (b) => Buffer.from(b).toString("base64");
 const leer = (f) => readFileSync(join(raiz, "privado", f), "utf8");
+
+// Descargas: cada .zip de privado/ se publica cifrado en descargas/ con una llave al azar.
+// La llave solo viaja dentro de la bóveda de su edición, así que el archivo publicado no sirve sin la contraseña.
+// La llave y el nombre se guardan en privado/descargas.json para no volver a subir el archivo si no cambió.
+const registro = join(raiz, "privado", "descargas.json");
+const cache = existsSync(registro) ? JSON.parse(readFileSync(registro, "utf8")) : {};
+async function cifrarArchivo(rel) {
+  const datos = readFileSync(join(raiz, "privado", rel));
+  const huella = createHash("sha256").update(datos).digest("hex");
+  let r = cache[rel];
+  if (!r || r.huella !== huella || !existsSync(join(raiz, r.ruta))) {
+    const llave = crypto.getRandomValues(new Uint8Array(32));
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const k = await crypto.subtle.importKey("raw", llave, "AES-GCM", false, ["encrypt"]);
+    const cifrado = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv }, k, datos));
+    const ruta = `descargas/${Buffer.from(crypto.getRandomValues(new Uint8Array(12))).toString("hex")}.bin`;
+    mkdirSync(join(raiz, "descargas"), { recursive: true });
+    writeFileSync(join(raiz, ruta), cifrado);
+    r = cache[rel] = { huella, ruta, llave: b64(llave), iv: b64(iv) };
+    console.log(`  cifrado: ${rel} → ${ruta}`);
+  }
+  return { ruta: "/" + r.ruta, llave: r.llave, iv: r.iv, nombre: rel.split("/").pop(), bytes: datos.length };
+}
 
 async function cifrar(clave, contenido) {
   const sal = crypto.getRandomValues(new Uint8Array(16));
@@ -38,10 +62,14 @@ for (const ed of EDICIONES) {
   if (usadas.includes(clave)) throw new Error("Las dos ediciones deben tener contraseñas distintas.");
   usadas.push(clave);
   const contenido = JSON.parse(leer(`miembros-${ed}.json`)); // valida el JSON
+  for (const d of contenido.descargas) {
+    if (d.archivo) { d.cifrado = await cifrarArchivo(d.archivo); delete d.archivo; }
+  }
   paquetes.push(await cifrar(clave, contenido));
   console.log(`  ${ed}: ${contenido.secciones.reduce((n, s) => n + s.videos.length, 0)} videos, ${contenido.descargas.length} descargas`);
 }
 
+writeFileSync(registro, JSON.stringify(cache, null, 2));
 const ruta = join(raiz, "access.html");
 const html = readFileSync(ruta, "utf8");
 const patron = /(<script type="application\/json" id="contenido-cifrado">)[\s\S]*?(<\/script>)/;

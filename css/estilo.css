@@ -1774,3 +1774,5 @@ body:has(.barra-compra) .cierre { padding-bottom: 120px; }
 
 /* texto solo para lectores de pantalla y buscadores */
 .solo-lectores{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+button.descarga-boton { border: 0; font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; cursor: pointer; }
+button.descarga-boton:disabled { cursor: progress; opacity: 0.85; }
