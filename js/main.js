@@ -686,12 +686,16 @@ if (reduceMotion) {
 }
 
 // ── al cambiar de idioma se conserva lo elegido (?edition=luts) y la sección (#looks) ──
-document.querySelectorAll(".link-idioma").forEach((a) => a.addEventListener("click", () => {
-  const destino = new URL(a.href);
+// Se actualiza antes del clic (al tocar o enfocar): Umami abre el link con el href que tenga en ese momento.
+const enlacesIdioma = [...document.querySelectorAll(".link-idioma")];
+const ajustarIdioma = () => enlacesIdioma.forEach((a) => {
+  const destino = new URL(a.getAttribute("href"), location.href);
   destino.search = location.search;
-  if (location.hash && !destino.hash) destino.hash = location.hash;
-  a.href = destino.href;
-}));
+  destino.hash = location.hash;
+  a.href = destino.pathname + destino.search + destino.hash;
+});
+enlacesIdioma.forEach((a) => ["pointerdown", "focus", "mouseenter"].forEach((ev) => a.addEventListener(ev, ajustarIdioma)));
+ajustarIdioma();
 
 // ── modo sin buena conexión: guarda en el teléfono lo ya visto (sw.js) ──
 if ("serviceWorker" in navigator && location.protocol === "https:") {
