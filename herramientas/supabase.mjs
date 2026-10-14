@@ -4,6 +4,7 @@
 //   conectar            pide el "Personal access token" de Supabase y el id del proyecto (se guardan en privado/)
 //   instalar            todo lo inicial: tablas, ajustes de inicio de sesión, correos, función de Stripe, sitio
 //   correo              configura el envío de correos con Gmail (pide la contraseña de aplicación)
+//   plantillas          vuelve a subir el diseño de los correos (después de cambiarlos aquí)
 //   stripe              guarda el secreto del webhook de Stripe (pide whsec_…)
 //   contenido           sube el contenido del área de miembros (privado/contenido-*.json, lo genera miembros.mjs)
 //   dar <correo> <full|luts>     da acceso a mano (crea la cuenta y le manda el correo si no existe)
@@ -25,6 +26,8 @@ import readline from "node:readline";
 const RAIZ = join(dirname(fileURLToPath(import.meta.url)), "..");
 const PRIV = (f) => join(RAIZ, "privado", f);
 const SITIO = "https://spectrecolor.com";
+// a dónde llevan los links de los correos (en pruebas: ACCESO=http://localhost:4181/access.html node …)
+const ACCESO = process.env.ACCESO || SITIO + "/access";
 const PLINKS = { full: "plink_1UQBuJFethND82y0dUdl1vfy", luts: "plink_1UQBswFethND82y0hTuKybiY" };
 const REMITENTE = "roberto@arechederra.com";
 
@@ -92,7 +95,7 @@ async function sb(ruta, opciones = {}) {
 }
 
 // ── correos (mismo diseño negro que el sitio) ──
-function plantilla({ etiqueta, titulo, texto, boton, nota }) {
+function plantilla({ etiqueta, titulo, texto, boton, nota, tipo }) {
   const sans = "font-family:Archivo,'Helvetica Neue',Helvetica,Arial,sans-serif;";
   const mono = "font-family:'IBM Plex Mono',Menlo,Consolas,monospace;";
   return `<!doctype html><html><head><meta name="color-scheme" content="dark"><meta name="supported-color-schemes" content="dark"></head>
@@ -103,7 +106,7 @@ function plantilla({ etiqueta, titulo, texto, boton, nota }) {
 <tr><td style="padding:0 0 8px;${mono}font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:#b0a595;">${etiqueta}</td></tr>
 <tr><td style="padding:0 0 14px;${sans}font-size:28px;line-height:1.2;font-weight:600;color:#eae0c5;">${titulo}</td></tr>
 <tr><td style="padding:0 0 30px;${sans}font-size:15px;line-height:1.6;color:#b0a595;">${texto}</td></tr>
-<tr><td style="padding:0 0 30px;"><a href="{{ .ConfirmationURL }}" style="display:inline-block;padding:15px 26px;border-radius:10px;background:#eae0c5;color:#0b0b0a;${mono}font-size:11px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;text-decoration:none;">${boton} &rarr;</a></td></tr>
+<tr><td style="padding:0 0 30px;"><a href="${"{{ .RedirectTo }}"}#token_hash={{ .TokenHash }}&type=${tipo}" style="display:inline-block;padding:15px 26px;border-radius:10px;background:#eae0c5;color:#0b0b0a;${mono}font-size:11px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;text-decoration:none;">${boton} &rarr;</a></td></tr>
 <tr><td style="padding:0 0 28px;${sans}font-size:13px;line-height:1.6;color:#6f685d;">${nota}</td></tr>
 <tr><td style="border-top:1px solid #2a2824;padding:24px 0 0;${sans}font-size:13px;line-height:1.7;color:#b0a595;">Questions? Reply to this email or write to <a href="mailto:${REMITENTE}" style="color:#eae0c5;">${REMITENTE}</a></td></tr>
 <tr><td style="padding:18px 0 0;${mono}font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#6f685d;"><a href="${SITIO}" style="color:#6f685d;text-decoration:none;">spectrecolor.com</a> &nbsp;·&nbsp; <a href="${SITIO}/terms" style="color:#6f685d;text-decoration:none;">Terms &amp; License</a></td></tr>
@@ -117,6 +120,7 @@ const CORREOS = {
     titulo: "Thank you for your purchase.",
     texto: "Your SPECTRE account is ready. Create your password to access your files, guides and tutorials from any device.",
     boton: "Create your password",
+    tipo: "invite",
     nota: "This link works once and expires in 24 hours. If it expired, go to spectrecolor.com/access and choose “Forgot your password?” with this email.",
   }),
   mailer_subjects_recovery: "Reset your SPECTRE password",
@@ -125,6 +129,7 @@ const CORREOS = {
     titulo: "Reset your password.",
     texto: "We received a request to reset the password of your SPECTRE account. Choose a new one with the button below.",
     boton: "Choose a new password",
+    tipo: "recovery",
     nota: "This link works once and expires in 1 hour. If you didn’t ask for this, you can ignore this email: your password stays the same.",
   }),
   mailer_subjects_email_change: "Confirm your new email for SPECTRE",
@@ -148,7 +153,7 @@ const comandos = {
 
   async instalar() {
     const { ref } = config();
-    for (const m of ["0001_cuentas.sql", "0002_accesos.sql"]) await sql(readFileSync(join(RAIZ, "supabase/migrations", m), "utf8"));
+    for (const m of ["0001_cuentas.sql", "0002_accesos.sql", "0003_panel.sql"]) await sql(readFileSync(join(RAIZ, "supabase/migrations", m), "utf8"));
     console.log("✓ Tablas, permisos (RLS), registro de accesos y bloqueos");
     await api(`/v1/projects/${ref}/config/auth`, {
       method: "PATCH",
@@ -207,6 +212,11 @@ const comandos = {
     console.log("✓ Los correos de cuentas salen desde " + REMITENTE);
   },
 
+  async plantillas() {
+    await api(`/v1/projects/${config().ref}/config/auth`, { method: "PATCH", body: JSON.stringify(CORREOS) });
+    console.log("✓ Plantillas de correo actualizadas");
+  },
+
   async stripe() {
     const s = await preguntar("Pega el signing secret del webhook (whsec_…) y presiona Enter: ", true);
     if (!/^whsec_\w+$/.test(s)) throw new Error("Eso no parece un secreto de webhook (empieza con whsec_).");
@@ -224,7 +234,7 @@ const comandos = {
     if (!correo || !["full", "luts"].includes(edicion)) throw new Error("Uso: dar <correo> <full|luts>");
     correo = correo.toLowerCase();
     let id = await sb("/rest/v1/rpc/usuario_por_correo", { method: "POST", body: JSON.stringify({ correo }) });
-    if (!id) id = (await sb(`/auth/v1/invite?redirect_to=${encodeURIComponent(SITIO + "/access")}`, { method: "POST", body: JSON.stringify({ email: correo }) })).id;
+    if (!id) id = (await sb(`/auth/v1/invite?redirect_to=${encodeURIComponent(ACCESO)}`, { method: "POST", body: JSON.stringify({ email: correo }) })).id;
     await sb("/rest/v1/compras", { method: "POST", body: JSON.stringify({ user_id: id, email: correo, edicion, motivo: "manual" }) });
     console.log(`✓ ${correo} ya tiene ${edicion}`);
   },
@@ -235,7 +245,7 @@ const comandos = {
   },
 
   async reenviar(correo) {
-    await sb(`/auth/v1/recover?redirect_to=${encodeURIComponent(SITIO + "/access")}`, { method: "POST", body: JSON.stringify({ email: correo.toLowerCase() }) });
+    await sb(`/auth/v1/recover?redirect_to=${encodeURIComponent(ACCESO)}`, { method: "POST", body: JSON.stringify({ email: correo.toLowerCase() }) });
     console.log(`✓ Correo para crear/restablecer contraseña enviado a ${correo}`);
   },
 

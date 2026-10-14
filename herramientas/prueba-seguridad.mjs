@@ -67,6 +67,8 @@ try {
   esperar(negado(await pedir("/rest/v1/ediciones?select=*")), "no puede leer el contenido de las ediciones");
   esperar(negado(await pedir("/rest/v1/compras?select=*")), "no puede leer la lista de compradores");
   esperar(negado(await pedir("/rest/v1/descargas?select=*")), "no puede leer el registro de descargas");
+  esperar(negado(await pedir("/rest/v1/panel_cuentas?select=*")), "no puede ver el panel de cuentas");
+  esperar(negado(await pedir("/rest/v1/accesos?select=*")), "no puede ver el registro de entradas");
   esperar((await pedir("/rest/v1/compras", { metodo: "POST", cuerpo: { user_id: crypto.randomUUID(), email: "x@x.com", edicion: "full" } })).s >= 400, "no puede insertar una compra");
   esperar((await pedir("/rest/v1/ediciones?id=eq.full", { metodo: "PATCH", cuerpo: { contenido: {} } })).s >= 400, "no puede modificar ediciones");
   esperar((await pedir("/rest/v1/ediciones?id=eq.full", { metodo: "DELETE" })).s >= 400, "no puede borrar ediciones");

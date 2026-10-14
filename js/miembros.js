@@ -534,11 +534,23 @@ document.querySelector('[data-form="crear"]').addEventListener("submit", (e) => 
 (async () => {
   if (!CFG.url) return;
   const h = new URLSearchParams(location.hash.slice(1));
-  if (h.has("access_token") || h.has("error")) history.replaceState(null, "", location.pathname); // el token no se queda en la barra
+  if (h.has("access_token") || h.has("token_hash") || h.has("error")) history.replaceState(null, "", location.pathname); // el token no se queda en la barra
   if (h.get("error")) {
     ir("olvide");
     mostrarError(document.querySelector('[data-form="olvide"]'), "That link expired or was already used. Enter your email to get a new one.");
     return;
+  }
+  // link del correo: #token_hash=…&type=invite|recovery. Se canjea aquí (no al abrir el correo), así los
+  // revisores automáticos de correo que abren los links no lo gastan.
+  if (h.get("token_hash") && /invite|recovery/.test(h.get("type") || "")) {
+    try {
+      const s = await auth("verify", { type: h.get("type"), token_hash: h.get("token_hash") });
+      h.set("access_token", s.access_token); h.set("refresh_token", s.refresh_token); h.set("expires_in", s.expires_in);
+    } catch (_) {
+      ir("olvide");
+      mostrarError(document.querySelector('[data-form="olvide"]'), "That link expired or was already used. Enter your email to get a new one.");
+      return;
+    }
   }
   if (h.get("access_token") && /invite|recovery|signup|magiclink/.test(h.get("type") || "")) {
     tokenDelCorreo = { access_token: h.get("access_token"), refresh_token: h.get("refresh_token"), expires_in: Number(h.get("expires_in")) || 3600 };
