@@ -94,22 +94,22 @@ async function sb(ruta, opciones = {}) {
   return t ? JSON.parse(t) : null;
 }
 
-// ── correos (mismo diseño negro que el sitio) ──
+// ── correos: fondo negro y letras blancas ──
 function plantilla({ etiqueta, titulo, texto, boton, nota, tipo }) {
   const sans = "font-family:Archivo,'Helvetica Neue',Helvetica,Arial,sans-serif;";
   const mono = "font-family:'IBM Plex Mono',Menlo,Consolas,monospace;";
   return `<!doctype html><html><head><meta name="color-scheme" content="dark"><meta name="supported-color-schemes" content="dark"></head>
-<body style="margin:0;padding:0;background:#0b0b0a;">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" bgcolor="#0b0b0a" style="background:#0b0b0a;"><tr><td align="center" style="padding:24px 16px 40px;">
+<body style="margin:0;padding:0;background:#000000;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" bgcolor="#000000" style="background:#000000;"><tr><td align="center" style="padding:24px 16px 40px;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;">
-<tr><td style="padding:0 0 32px;${sans}font-size:22px;font-weight:700;letter-spacing:0.02em;color:#eae0c5;">SPECTRE</td></tr>
-<tr><td style="padding:0 0 8px;${mono}font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:#b0a595;">${etiqueta}</td></tr>
-<tr><td style="padding:0 0 14px;${sans}font-size:28px;line-height:1.2;font-weight:600;color:#eae0c5;">${titulo}</td></tr>
-<tr><td style="padding:0 0 30px;${sans}font-size:15px;line-height:1.6;color:#b0a595;">${texto}</td></tr>
-<tr><td style="padding:0 0 30px;"><a href="${"{{ .RedirectTo }}"}#token_hash={{ .TokenHash }}&type=${tipo}" style="display:inline-block;padding:15px 26px;border-radius:10px;background:#eae0c5;color:#0b0b0a;${mono}font-size:11px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;text-decoration:none;">${boton} &rarr;</a></td></tr>
-<tr><td style="padding:0 0 28px;${sans}font-size:13px;line-height:1.6;color:#6f685d;">${nota}</td></tr>
-<tr><td style="border-top:1px solid #2a2824;padding:24px 0 0;${sans}font-size:13px;line-height:1.7;color:#b0a595;">Questions? Reply to this email or write to <a href="mailto:${REMITENTE}" style="color:#eae0c5;">${REMITENTE}</a></td></tr>
-<tr><td style="padding:18px 0 0;${mono}font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#6f685d;"><a href="${SITIO}" style="color:#6f685d;text-decoration:none;">spectrecolor.com</a> &nbsp;·&nbsp; <a href="${SITIO}/terms" style="color:#6f685d;text-decoration:none;">Terms &amp; License</a></td></tr>
+<tr><td style="padding:0 0 32px;${sans}font-size:22px;font-weight:700;letter-spacing:0.02em;color:#ffffff;">SPECTRE</td></tr>
+<tr><td style="padding:0 0 8px;${mono}font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:#d4d4d4;">${etiqueta}</td></tr>
+<tr><td style="padding:0 0 14px;${sans}font-size:28px;line-height:1.2;font-weight:600;color:#ffffff;">${titulo}</td></tr>
+<tr><td style="padding:0 0 30px;${sans}font-size:15px;line-height:1.6;color:#d4d4d4;">${texto}</td></tr>
+<tr><td style="padding:0 0 30px;"><a href="${"{{ .RedirectTo }}"}#token_hash={{ .TokenHash }}&type=${tipo}" style="display:inline-block;padding:15px 26px;border-radius:10px;background:#ffffff;color:#000000;${mono}font-size:11px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;text-decoration:none;">${boton} &rarr;</a></td></tr>
+<tr><td style="padding:0 0 28px;${sans}font-size:13px;line-height:1.6;color:#9a9a9a;">${nota}</td></tr>
+<tr><td style="border-top:1px solid #333333;padding:24px 0 0;${sans}font-size:13px;line-height:1.7;color:#d4d4d4;">Questions? Reply to this email or write to <a href="mailto:${REMITENTE}" style="color:#ffffff;">${REMITENTE}</a></td></tr>
+<tr><td style="padding:18px 0 0;${mono}font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#9a9a9a;"><a href="${SITIO}" style="color:#9a9a9a;text-decoration:none;">spectrecolor.com</a> &nbsp;·&nbsp; <a href="${SITIO}/terms" style="color:#9a9a9a;text-decoration:none;">Terms &amp; License</a></td></tr>
 </table></td></tr></table></body></html>`;
 }
 
