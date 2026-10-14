@@ -340,8 +340,8 @@ function pintar(datos, compra) {
 
   const pie = el("section", "miembros-pie");
   const ayuda = el("p", "acceso-texto", "Need help? Write to me at ");
-  const correo = el("a", "", datos.soporte || "roberto@arechederra.com");
-  correo.href = "mailto:" + (datos.soporte || "roberto@arechederra.com");
+  const correo = el("a", "", datos.soporte || "support@spectrecolor.com");
+  correo.href = "mailto:" + (datos.soporte || "support@spectrecolor.com");
   ayuda.append(correo, document.createTextNode("."));
   const cerrar = el("button", "link-mono acceso-cerrar", "LOG OUT");
   cerrar.type = "button";
@@ -439,7 +439,7 @@ async function enviando(form, etiqueta, fn) {
   boton.firstChild.textContent = etiqueta + " ";
   try { await fn(); } finally { boton.disabled = false; boton.firstChild.textContent = original; }
 }
-const SOPORTE = "roberto@arechederra.com";
+const SOPORTE = "support@spectrecolor.com";
 
 // ── abrir el área: pide a la base de datos lo que esta cuenta compró ──
 async function abrirArea(recienCreada) {

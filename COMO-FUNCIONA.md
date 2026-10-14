@@ -64,7 +64,7 @@ compradores reales, solo compras de prueba de Roberto).
   (idioma principal) y en español.
 - **Agencia relacionada:** Two Waves (twowaves.mx), la productora de Roberto. El pie del sitio dice
   "Made by Two Waves". Las marcas del carrusel (Audi, Cupra, Lamborghini…) son clientes de su trabajo.
-- **Contacto público:** roberto@arechederra.com (Google Workspace del dominio arechederra.com).
+- **Contacto público:** support@spectrecolor.com (alias de roberto@arechederra.com en Google Workspace; llega a ese mismo Gmail y se puede responder como support@ desde "Enviar como").
 
 ---
 

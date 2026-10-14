@@ -25,7 +25,7 @@ texto() {
     '' \
     'Already have a SPECTRE account? Just log in with your email and password: your new purchase is already there.' \
     'Did not get the email? Check spam, or go to spectrecolor.com/access and choose "Forgot your password?" with the email you used to pay.' \
-    'Questions? roberto@arechederra.com'
+    'Questions? support@spectrecolor.com'
 }
 
 actualizar() { # $1 link  $2 nombre

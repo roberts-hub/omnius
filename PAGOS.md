@@ -57,7 +57,7 @@ Pídele a tu contador cómo facturarlos (normalmente CFDI a residente en el extr
 > **https://spectrecolor.com/access**
 > Password: **[CONTRASEÑA]**
 > Please keep it private — it's part of your personal license (see the Terms).
-> Questions? roberto@arechederra.com
+> Questions? support@spectrecolor.com
 
 ---
 

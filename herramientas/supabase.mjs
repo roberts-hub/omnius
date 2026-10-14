@@ -5,6 +5,7 @@
 //   instalar            todo lo inicial: tablas, ajustes de inicio de sesión, correos, función de Stripe, sitio
 //   correo              configura el envío de correos con Gmail (pide la contraseña de aplicación)
 //   plantillas          vuelve a subir el diseño de los correos (después de cambiarlos aquí)
+//   remitente           aplica REMITENTE como dirección de salida (y las plantillas)
 //   stripe              guarda el secreto del webhook de Stripe (pide whsec_…)
 //   contenido           sube el contenido del área de miembros (privado/contenido-*.json, lo genera miembros.mjs)
 //   dar <correo> <full|luts>     da acceso a mano (crea la cuenta y le manda el correo si no existe)
@@ -30,7 +31,8 @@ const SITIO = "https://spectrecolor.com";
 // a dónde llevan los links de los correos (en pruebas: ACCESO=http://localhost:4181/access.html node …)
 const ACCESO = process.env.ACCESO || SITIO + "/access";
 const PLINKS = { full: "plink_1UQBuJFethND82y0dUdl1vfy", luts: "plink_1UQBswFethND82y0hTuKybiY" };
-const REMITENTE = "roberto@arechederra.com";
+const CUENTA_SMTP = "roberto@arechederra.com"; // inicia sesión en Gmail (no se muestra a nadie)
+const REMITENTE = "support@spectrecolor.com"; // alias de esa cuenta: es lo que ve el comprador
 
 // ── utilidades ──
 function preguntar(texto, oculto = false) {
@@ -197,19 +199,25 @@ const comandos = {
   },
 
   async correo() {
-    console.log(`Contraseña de aplicación de Google para ${REMITENTE} (myaccount.google.com/apppasswords).`);
+    console.log(`Contraseña de aplicación de Google para ${CUENTA_SMTP} (myaccount.google.com/apppasswords).`);
     const pass = await preguntar("Pégala (16 letras) y presiona Enter: ", true);
     if (pass.length < 16) throw new Error("La contraseña de aplicación tiene 16 letras.");
     await api(`/v1/projects/${config().ref}/config/auth`, {
       method: "PATCH",
       body: JSON.stringify({
-        smtp_host: "smtp.gmail.com", smtp_port: "587", smtp_user: REMITENTE, smtp_pass: pass,
+        smtp_host: "smtp.gmail.com", smtp_port: "587", smtp_user: CUENTA_SMTP, smtp_pass: pass,
         smtp_admin_email: REMITENTE, smtp_sender_name: "Roberto from SPECTRE", smtp_max_frequency: 1,
         rate_limit_email_sent: 100,
       }),
     });
     // con SMTP propio ya se pueden usar las plantillas con el diseño SPECTRE
     await api(`/v1/projects/${config().ref}/config/auth`, { method: "PATCH", body: JSON.stringify(CORREOS) });
+    console.log("✓ Los correos de cuentas salen desde " + REMITENTE);
+  },
+
+  // cambia solo la dirección que ve el comprador (sin volver a pedir la contraseña de aplicación)
+  async remitente() {
+    await api(`/v1/projects/${config().ref}/config/auth`, { method: "PATCH", body: JSON.stringify({ smtp_admin_email: REMITENTE, ...CORREOS }) });
     console.log("✓ Los correos de cuentas salen desde " + REMITENTE);
   },
 
