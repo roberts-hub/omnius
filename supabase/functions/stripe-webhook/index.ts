@@ -15,6 +15,8 @@ const URL_SB = Deno.env.get("SUPABASE_URL")!;
 const SERVICIO = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const SECRETO = Deno.env.get("STRIPE_WEBHOOK_SECRET")!;
 const SITIO = Deno.env.get("SITIO") ?? "https://spectrecolor.com";
+// a dónde lleva el link del correo "Create your password" (en pruebas puede ser http://localhost:4181/access.html)
+const ACCESO = Deno.env.get("ACCESO") || SITIO + "/access";
 const LINKS: Record<string, "full" | "luts"> = {
   [Deno.env.get("PLINK_FULL") ?? "-"]: "full",
   [Deno.env.get("PLINK_LUTS") ?? "-"]: "luts",
@@ -57,7 +59,7 @@ async function usuarioDe(correo: string): Promise<{ id: string; nuevo: boolean }
   const existente = await sb("/rest/v1/rpc/usuario_por_correo", { method: "POST", body: JSON.stringify({ correo }) });
   if (existente) return { id: existente, nuevo: false };
   // invitación: Supabase crea la cuenta y le manda el correo para crear su contraseña
-  const invitado = await sb(`/auth/v1/invite?redirect_to=${encodeURIComponent(SITIO + "/access")}`, {
+  const invitado = await sb(`/auth/v1/invite?redirect_to=${encodeURIComponent(ACCESO)}`, {
     method: "POST",
     body: JSON.stringify({ email: correo }),
   });

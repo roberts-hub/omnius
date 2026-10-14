@@ -6,6 +6,7 @@ set -euo pipefail
 
 FULL=plink_1UQBuJFethND82y0dUdl1vfy     # SPECTRE Full System (USD + MXN)
 LUTS=plink_1UQBswFethND82y0hTuKybiY     # SPECTRE LUT Pack (USD + MXN)
+PRUEBA=plink_1UQC5uFethND82y0rckpA5Ru   # link de prueba de $1 / MX$10 (LUT Pack); desactivado salvo en pruebas
 
 printf "Pega tu llave secreta de Stripe (sk_live_... o rk_live_...) y presiona Enter: "
 read -rs LLAVE; echo
@@ -37,6 +38,7 @@ actualizar() { # $1 link  $2 nombre
   if echo "$r" | grep -q '"object": "payment_link"'; then echo "✓ $2 listo"; else echo "✗ $2: $(echo "$r" | grep -o '"message": "[^"]*"' | head -1)"; fi
 }
 
+actualizar "$PRUEBA" "Link de prueba"
 actualizar "$LUTS" "LUT Pack"
 actualizar "$FULL" "Full System"
 unset LLAVE
