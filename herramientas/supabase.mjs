@@ -17,9 +17,10 @@
 //   accesos <correo>    últimas entradas de una cuenta (hora, IP, dispositivo)
 //   bloquear <correo>   bloquea la cuenta (no puede abrir el área aunque tenga compra)
 //   desbloquear <correo>
+//   respaldo            copia completa de la base de clientes en privado/respaldos/AAAA-MM-DD.json
 //
 // Nada secreto se escribe en el repo: el token, las llaves y las contraseñas viven solo en privado/.
-import { readFileSync, writeFileSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
@@ -301,6 +302,26 @@ const comandos = {
     console.log(`✓ ${filas.length} cliente(s) → ${destino}`);
   },
 
+  // copia completa de la base de clientes en privado/respaldos/AAAA-MM-DD.json (además del respaldo diario en Google Drive)
+  async respaldo() {
+    const usuarios = [];
+    for (let pagina = 1; pagina < 50; pagina++) {
+      const { users } = await sb(`/auth/v1/admin/users?page=${pagina}&per_page=1000`);
+      usuarios.push(...users.map((u) => ({ id: u.id, correo: u.email, creada: u.created_at, ultima_entrada: u.last_sign_in_at })));
+      if (users.length < 1000) break;
+    }
+    const [compras, clientes, cuentas, accesos, bloqueos] = await Promise.all([
+      sb("/rest/v1/compras?select=*&order=creada"), sb("/rest/v1/clientes?select=*"),
+      sb("/rest/v1/rpc/actividad_cuentas", { method: "POST", body: "{}" }),
+      sb("/rest/v1/accesos?select=*&order=creada.desc&limit=20000"), sb("/rest/v1/bloqueos?select=*"),
+    ]);
+    const carpeta = PRIV("respaldos");
+    mkdirSync(carpeta, { recursive: true });
+    const destino = join(carpeta, new Date().toLocaleDateString("en-CA", { timeZone: "America/Mexico_City" }) + ".json");
+    writeFileSync(destino, JSON.stringify({ creado: new Date().toISOString(), usuarios, compras, clientes, cuentas, accesos, bloqueos }, null, 1), { mode: 0o600 });
+    console.log(`✓ Respaldo: ${usuarios.length} cuenta(s), ${compras.length} compra(s), ${accesos.length} entrada(s) → ${destino}`);
+  },
+
   async compras() {
     const filas = await sb("/rest/v1/compras?select=email,edicion,activa,motivo,creada&order=creada.desc");
     console.table(filas);
@@ -308,5 +329,5 @@ const comandos = {
 };
 
 const [cmd, ...args] = process.argv.slice(2);
-if (!comandos[cmd]) { console.log(readFileSync(fileURLToPath(import.meta.url), "utf8").split("\n").slice(1, 16).join("\n")); process.exit(1); }
+if (!comandos[cmd]) { console.log(readFileSync(fileURLToPath(import.meta.url), "utf8").split("\n").slice(1, 22).join("\n")); process.exit(1); }
 comandos[cmd](...args).catch((e) => { console.error("✗ " + e.message); process.exit(1); });
