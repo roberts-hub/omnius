@@ -279,7 +279,7 @@ img { display: block; }
   width: 100%;
   height: 100%;
   object-fit: cover;
-  animation: zoomLento 24s ease-in-out infinite alternate;
+  /* sin acercamiento: el video se ve a su encuadre real (antes hacía zoom lento a 108% y se veía muy cerrado) */
   /* estado final: nítido. Mientras corre la intro está borroso y oscuro (abajo) */
   transform: scale(1);
   /* 90% sobre el fondo negro del hero: un poco más de contraste para el texto */
@@ -288,7 +288,6 @@ img { display: block; }
   filter: none;
   transition: filter 2.6s cubic-bezier(0.45, 0, 0.2, 1);
 }
-@keyframes zoomLento { from { scale: 1; } to { scale: 1.08; } }
 
 /* el video "enfoca" desde el negro cuando se disuelve la intro */
 body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
