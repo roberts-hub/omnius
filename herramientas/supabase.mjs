@@ -26,17 +26,32 @@ const REMITENTE = "roberto@arechederra.com";
 
 // ── utilidades ──
 function preguntar(texto, oculto = false) {
+  process.stdout.write(texto);
   return new Promise((ok) => {
-    const rl = readline.createInterface({ input: process.stdin, output: process.stdout, terminal: true });
-    if (oculto) {
-      rl._writeToOutput = (s) => { if (s.includes(texto)) rl.output.write(s); };
+    const entrada = process.stdin;
+    let valor = "";
+    const limpiar = (r) => r.replace(/\x1b\[[0-9;]*~/g, "").replace(/[^\x21-\x7e]/g, ""); // códigos invisibles del pegado
+    if (!oculto || !entrada.isTTY) {
+      const rl = readline.createInterface({ input: entrada });
+      rl.once("line", (l) => { rl.close(); ok(limpiar(l)); });
+      return;
     }
-    rl.question(texto, (r) => {
-      rl.close();
-      if (oculto) process.stdout.write("\n");
-      // al pegar, la Terminal agrega códigos invisibles: se limpian
-      ok(r.replace(/\x1b\[[0-9;]*~/g, "").replace(/[^\x21-\x7e]/g, ""));
-    });
+    // modo oculto: no se escribe nada en pantalla mientras se pega o se teclea
+    entrada.setRawMode(true);
+    entrada.resume();
+    const alLeer = (trozo) => {
+      for (const c of trozo.toString("utf8")) {
+        if (c === "\r" || c === "\n") {
+          entrada.setRawMode(false); entrada.pause(); entrada.off("data", alLeer);
+          process.stdout.write("\n");
+          return ok(limpiar(valor));
+        }
+        if (c === "\u0003") { process.stdout.write("\n"); process.exit(130); } // Ctrl-C
+        if (c === "\u007f") { valor = valor.slice(0, -1); continue; }
+        valor += c;
+      }
+    };
+    entrada.on("data", alLeer);
   });
 }
 const config = () => {
@@ -143,10 +158,10 @@ const comandos = {
         password_required_characters: "abcdefghijklmnopqrstuvwxyz:ABCDEFGHIJKLMNOPQRSTUVWXYZ:0123456789",
         mailer_otp_exp: 86400,           // el link para crear contraseña dura 24 h
         security_update_password_require_reauthentication: false,
-        ...CORREOS,
       }),
     });
-    console.log("✓ Inicio de sesión: solo por invitación, contraseñas de 10+ caracteres, correos con el diseño SPECTRE");
+    console.log("✓ Inicio de sesión: solo por invitación, contraseñas de 10+ caracteres");
+    console.log("  (los correos con el diseño SPECTRE se activan con: node herramientas/supabase.mjs correo)");
     await api(`/v1/projects/${ref}/secrets`, {
       method: "POST",
       body: JSON.stringify([
@@ -179,6 +194,8 @@ const comandos = {
         rate_limit_email_sent: 100,
       }),
     });
+    // con SMTP propio ya se pueden usar las plantillas con el diseño SPECTRE
+    await api(`/v1/projects/${config().ref}/config/auth`, { method: "PATCH", body: JSON.stringify(CORREOS) });
     console.log("✓ Los correos de cuentas salen desde " + REMITENTE);
   },
 

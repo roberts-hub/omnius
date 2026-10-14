@@ -57,6 +57,9 @@ create policy "registrar mis descargas" on public.descargas
 revoke all on public.compras, public.ediciones, public.descargas from anon;
 grant select on public.compras, public.ediciones to authenticated;
 grant insert on public.descargas to authenticated;
+-- el servidor (webhook y herramientas/supabase.mjs) usa service_role: necesita todo sobre las tablas
+grant all on public.compras, public.ediciones, public.descargas to service_role;
+grant usage on all sequences in schema public to service_role, authenticated;
 
 -- el webhook busca si el correo ya tiene cuenta (solo lo puede llamar el servidor)
 create or replace function public.usuario_por_correo(correo text)
