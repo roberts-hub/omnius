@@ -34,6 +34,7 @@ actualizar() { # $1 link  $2 nombre
     -d "invoice_creation[enabled]=true" \
     --data-urlencode "invoice_creation[invoice_data][description]=$(texto)" \
     --data-urlencode "invoice_creation[invoice_data][footer]=SPECTRE · spectrecolor.com · Terms & License: spectrecolor.com/terms" \
+    -d "consent_collection[terms_of_service]=required" \
     -d "after_completion[type]=hosted_confirmation" \
     --data-urlencode "after_completion[hosted_confirmation][custom_message]=Payment complete! Check your email (and spam) for the link to create your SPECTRE password, then log in at spectrecolor.com/access. Already have an account? Just log in with your email and password.")
   if echo "$r" | grep -q '"object": "payment_link"'; then echo "✓ $2 listo"; else echo "✗ $2: $(echo "$r" | grep -o '"message": "[^"]*"' | head -1)"; fi
