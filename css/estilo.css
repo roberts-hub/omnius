@@ -1640,7 +1640,8 @@ body:has(.barra-compra) .cierre { padding-bottom: 120px; }
 .miembros-mejora .acceso-texto { margin-top: 0; max-width: 560px; }
 .miembros-mejora .btn-compra { width: auto; display: inline-flex; padding: 0 26px; margin-top: 18px; }
 .miembros-pie { margin-top: clamp(56px, 7vw, 88px); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px; }
-.acceso-cerrar { background: none; border-top: 0; border-left: 0; border-right: 0; cursor: pointer; }
+.acceso-cerrar { padding: 8px 0 6px; background: none; border-top: 0; border-left: 0; border-right: 0; color: var(--hueso); cursor: pointer; }
+.acceso-cerrar:hover { border-bottom-color: var(--hueso); }
 @media (max-width: 600px) {
   .descarga { flex-direction: column; align-items: flex-start; gap: 14px; }
   .videos { grid-template-columns: 1fr; }

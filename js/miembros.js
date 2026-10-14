@@ -58,7 +58,12 @@ async function datos(ruta, opciones = {}) {
     ...opciones,
     headers: { apikey: CFG.llave, Authorization: "Bearer " + token, "Content-Type": "application/json", ...(opciones.headers || {}) },
   });
-  if (!r.ok) throw new Error("datos " + r.status);
+  if (!r.ok) {
+    const e = new Error("datos " + r.status);
+    const cuerpo = await r.json().catch(() => ({}));
+    e.bloqueada = /cuenta_bloqueada/.test(cuerpo.message || "");
+    throw e;
+  }
   return r.status === 204 ? null : r.json().catch(() => null);
 }
 
@@ -434,7 +439,22 @@ const SOPORTE = "roberto@arechederra.com";
 
 // ── abrir el área: pide a la base de datos lo que esta cuenta compró ──
 async function abrirArea(recienCreada) {
-  const filas = await datos("ediciones?select=id,contenido");
+  // el servidor registra la entrada (IP y dispositivo), revisa los límites y solo entonces entrega el contenido
+  let filas;
+  try {
+    filas = await datos("rpc/abrir_area", { method: "POST", body: "{}" });
+    if (Array.isArray(filas) && filas.some((f) => f.id === "bloqueada")) { const e = new Error("bloqueada"); e.bloqueada = true; throw e; }
+  } catch (err) {
+    if (err.bloqueada) {
+      candado.hidden = false;
+      destino.hidden = true;
+      ir("entrar");
+      mostrarError(document.querySelector('[data-form="entrar"]'), `This account was paused for unusual activity (too many logins or devices). If you think this is a mistake, write to ${SOPORTE}.`);
+      olvidarSesion();
+      return;
+    }
+    throw err;
+  }
   if (!filas || !filas.length) {
     // tiene cuenta pero ninguna compra activa (por ejemplo, reembolsada)
     candado.hidden = false;

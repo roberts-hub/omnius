@@ -99,7 +99,8 @@ try {
   seccion("C. Usuario con cuenta pero SIN compra");
   const sin = await crearUsuario("sin"); creados.push(sin);
   esperar(!!sin.token, "puede iniciar sesión (la cuenta existe)");
-  esperar(vacio(await pedir("/rest/v1/ediciones?select=*", { token: sin.token })), "no ve ningún contenido");
+  esperar(vacio(await pedir("/rest/v1/ediciones?select=*", { token: sin.token })), "no puede leer la tabla de contenido directamente");
+  esperar(vacio(await pedir("/rest/v1/rpc/abrir_area", { metodo: "POST", token: sin.token, cuerpo: {} })), "abrir el área sin compra no entrega nada");
   esperar(vacio(await pedir("/rest/v1/ediciones?id=eq.full&select=*", { token: sin.token })), "aunque pida directamente el Full System, no lo recibe");
   const darse = await pedir("/rest/v1/compras", { metodo: "POST", token: sin.token, cuerpo: { user_id: sin.id, email: sin.email, edicion: "full" } });
   esperar(darse.s >= 400, "no puede darse acceso a sí mismo (insertar una compra)", darse.s);
@@ -113,8 +114,11 @@ try {
   seccion("D. Comprador del LUT Pack");
   const luts = await crearUsuario("luts"); creados.push(luts);
   await admin("/rest/v1/compras", { metodo: "POST", cuerpo: { user_id: luts.id, email: luts.email, edicion: "luts", motivo: "prueba" } });
-  const suyas = await pedir("/rest/v1/ediciones?select=id", { token: luts.token });
-  esperar(Array.isArray(suyas.j) && suyas.j.length === 1 && suyas.j[0].id === "luts", "ve SOLO el LUT Pack", JSON.stringify(suyas.j));
+  const suyas = await pedir("/rest/v1/rpc/abrir_area", { metodo: "POST", token: luts.token, cuerpo: {} });
+  esperar(Array.isArray(suyas.j) && suyas.j.length === 1 && suyas.j[0].id === "luts", "abrir el área entrega SOLO el LUT Pack", JSON.stringify(suyas.j).slice(0, 80));
+  esperar(vacio(await pedir("/rest/v1/ediciones?select=id", { token: luts.token })), "ni con compra puede leer la tabla directo (todo pasa por el registro)");
+  const reg = await admin(`/rest/v1/accesos?user_id=eq.${luts.id}&select=ip,agente`);
+  esperar(Array.isArray(reg.j) && reg.j.length >= 1 && reg.j[0].agente, "la entrada quedó registrada en el servidor (con dispositivo)", JSON.stringify(reg.j).slice(0, 80));
   esperar(vacio(await pedir("/rest/v1/ediciones?id=eq.full&select=*", { token: luts.token })), "no puede ver el Full System pidiéndolo directamente");
   const subir = await pedir(`/rest/v1/compras?user_id=eq.${luts.id}`, { metodo: "PATCH", token: luts.token, cuerpo: { edicion: "full" } });
   esperar(subir.s >= 400 || vacio(subir), "no puede cambiarse de LUT Pack a Full System");
@@ -129,7 +133,25 @@ try {
   // ══════════ E. reembolso ══════════
   seccion("E. Reembolso / contracargo");
   await admin(`/rest/v1/compras?user_id=eq.${luts.id}`, { metodo: "PATCH", cuerpo: { activa: false, motivo: "prueba reembolso" } });
-  esperar(vacio(await pedir("/rest/v1/ediciones?select=id", { token: luts.token })), "al desactivar la compra, pierde el acceso aunque siga con sesión abierta");
+  esperar(vacio(await pedir("/rest/v1/rpc/abrir_area", { metodo: "POST", token: luts.token, cuerpo: {} })), "al desactivar la compra, pierde el acceso aunque siga con sesión abierta");
+
+  // ══════════ E2. cuentas compartidas ══════════
+  seccion("E2. Cuenta compartida (demasiadas entradas)");
+  const comp = await crearUsuario("compartida"); creados.push(comp);
+  await admin("/rest/v1/compras", { metodo: "POST", cuerpo: { user_id: comp.id, email: comp.email, edicion: "full", motivo: "prueba" } });
+  let ultima;
+  for (let i = 0; i < 32; i++) ultima = await pedir("/rest/v1/rpc/abrir_area", { metodo: "POST", token: comp.token, cuerpo: {} });
+  esperar((ultima.s >= 400 && /cuenta_bloqueada/.test(JSON.stringify(ultima.j))) || (Array.isArray(ultima.j) && ultima.j.some((f) => f.id === "bloqueada")), "tras más de 30 entradas en 24 h la cuenta se bloquea sola", ultima.s);
+  const act = await admin("/rest/v1/rpc/actividad_cuentas", { metodo: "POST", cuerpo: {} });
+  const fila = Array.isArray(act.j) && act.j.find((f) => f.email === comp.email);
+  esperar(fila && fila.bandera && fila.bloqueada, "aparece con bandera roja y bloqueada en el panel", JSON.stringify(fila).slice(0, 100));
+  esperar((await pedir("/rest/v1/bloqueos", { metodo: "DELETE", token: comp.token })).s >= 400 || vacio(await pedir("/rest/v1/bloqueos?select=*", { token: comp.token })), "no puede quitarse el bloqueo él mismo");
+  esperar((await pedir("/rest/v1/accesos", { metodo: "DELETE", token: comp.token })).s >= 400, "no puede borrar su registro de entradas");
+  const tras = await pedir("/rest/v1/rpc/abrir_area", { metodo: "POST", token: comp.token, cuerpo: {} });
+  esperar(tras.s >= 400 && !JSON.stringify(tras.j).includes("cifrado"), "bloqueada: aunque tenga compra, no recibe contenido", tras.s);
+  esperar((await pedir("/rest/v1/rpc/actividad_cuentas", { metodo: "POST", token: comp.token, cuerpo: {} })).s >= 400, "un usuario no puede ver el panel de actividad");
+  const res = await fetch(URL_SB + "/functions/v1/resumen");
+  esperar(res.status === 401, "el resumen diario no se puede pedir sin su token secreto");
 
   // ══════════ F. tokens falsificados ══════════
   seccion("F. Tokens alterados o inventados");
@@ -201,7 +223,7 @@ try {
   mal("la prueba no pudo terminar: " + e.message);
 } finally {
   for (const u of creados) await admin(`/auth/v1/admin/users/${u.id}`, { metodo: "DELETE" });
-  await admin(`/rest/v1/compras?email=like.prueba-*-${sufijo}@example.com`, { metodo: "DELETE" });
+  await admin(`/rest/v1/compras?email=like.prueba-*-${sufijo}@example.com`, { metodo: "DELETE" }); // (se borran también en cascada con el usuario)
   console.log(`\n${fallos ? "✗" : "✓"} ${ok} pruebas pasaron, ${fallos} fallaron. Usuarios de prueba borrados.`);
   process.exit(fallos ? 1 : 0);
 }

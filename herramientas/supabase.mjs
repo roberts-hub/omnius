@@ -10,6 +10,10 @@
 //   quitar <correo> <full|luts>  quita el acceso
 //   reenviar <correo>   vuelve a mandar el correo para crear contraseña
 //   compras             lista las compras registradas
+//   cuentas             actividad de cada cuenta: entradas, IPs, descargas, bandera roja, bloqueo
+//   accesos <correo>    últimas entradas de una cuenta (hora, IP, dispositivo)
+//   bloquear <correo>   bloquea la cuenta (no puede abrir el área aunque tenga compra)
+//   desbloquear <correo>
 //
 // Nada secreto se escribe en el repo: el token, las llaves y las contraseñas viven solo en privado/.
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
@@ -144,8 +148,8 @@ const comandos = {
 
   async instalar() {
     const { ref } = config();
-    await sql(readFileSync(join(RAIZ, "supabase/migrations/0001_cuentas.sql"), "utf8"));
-    console.log("✓ Tablas y permisos (RLS)");
+    for (const m of ["0001_cuentas.sql", "0002_accesos.sql"]) await sql(readFileSync(join(RAIZ, "supabase/migrations", m), "utf8"));
+    console.log("✓ Tablas, permisos (RLS), registro de accesos y bloqueos");
     await api(`/v1/projects/${ref}/config/auth`, {
       method: "PATCH",
       body: JSON.stringify({
@@ -170,9 +174,13 @@ const comandos = {
         { name: "SITIO", value: SITIO },
       ]),
     });
-    execFileSync("npx", ["--yes", "supabase@2.120.0", "functions", "deploy", "stripe-webhook", "--project-ref", ref, "--no-verify-jwt", "--use-api"], {
-      cwd: RAIZ, stdio: "inherit", env: { ...process.env, SUPABASE_ACCESS_TOKEN: token() },
-    });
+    if (!existsSync(PRIV("resumen-token.txt"))) writeFileSync(PRIV("resumen-token.txt"), (await import("node:crypto")).randomBytes(32).toString("hex") + "\n", { mode: 0o600 });
+    await api(`/v1/projects/${ref}/secrets`, { method: "POST", body: JSON.stringify([{ name: "RESUMEN_TOKEN", value: readFileSync(PRIV("resumen-token.txt"), "utf8").trim() }]) });
+    for (const f of ["stripe-webhook", "resumen"]) {
+      execFileSync("npx", ["--yes", "supabase@2.120.0", "functions", "deploy", f, "--project-ref", ref, "--no-verify-jwt", "--use-api"], {
+        cwd: RAIZ, stdio: "inherit", env: { ...process.env, SUPABASE_ACCESS_TOKEN: token() },
+      });
+    }
     console.log(`✓ Función del webhook: https://${ref}.supabase.co/functions/v1/stripe-webhook`);
     const { publica } = await llaves();
     writeFileSync(join(RAIZ, "js/cuentas-config.js"),
@@ -229,6 +237,38 @@ const comandos = {
   async reenviar(correo) {
     await sb(`/auth/v1/recover?redirect_to=${encodeURIComponent(SITIO + "/access")}`, { method: "POST", body: JSON.stringify({ email: correo.toLowerCase() }) });
     console.log(`✓ Correo para crear/restablecer contraseña enviado a ${correo}`);
+  },
+
+  async cuentas() {
+    const filas = await sb("/rest/v1/rpc/actividad_cuentas", { method: "POST", body: "{}" });
+    console.table(filas.map((f) => ({
+      "🚩": f.bandera ? "🚩" : "", correo: f.email, compra: f.ediciones || "—", "24h": f.entradas_24h, "IPs 24h": f.ips_24h,
+      total: f.entradas_total, descargas: f.descargas_total, "última entrada": f.ultima_entrada ? new Date(f.ultima_entrada).toLocaleString("es-MX") : "—",
+      bloqueada: f.bloqueada || "",
+    })));
+  },
+
+  async accesos(correo) {
+    const id = await sb("/rest/v1/rpc/usuario_por_correo", { method: "POST", body: JSON.stringify({ correo: String(correo).toLowerCase() }) });
+    if (!id) throw new Error("No existe una cuenta con ese correo.");
+    const filas = await sb(`/rest/v1/accesos?user_id=eq.${id}&select=creada,ip,agente&order=creada.desc&limit=50`);
+    console.table(filas.map((f) => ({ hora: new Date(f.creada).toLocaleString("es-MX"), ip: f.ip, dispositivo: (f.agente || "").slice(0, 70) })));
+  },
+
+  async bloquear(correo) {
+    const id = await sb("/rest/v1/rpc/usuario_por_correo", { method: "POST", body: JSON.stringify({ correo: String(correo).toLowerCase() }) });
+    if (!id) throw new Error("No existe una cuenta con ese correo.");
+    await sb("/rest/v1/bloqueos?on_conflict=user_id", { method: "POST", headers: { Prefer: "resolution=merge-duplicates" }, body: JSON.stringify({ user_id: id, motivo: "bloqueada a mano", automatico: false }) });
+    await sb(`/auth/v1/admin/users/${id}/logout`, { method: "POST" }).catch(() => {});
+    console.log(`✓ ${correo} bloqueada: ya no puede abrir el área de miembros`);
+  },
+
+  async desbloquear(correo) {
+    const id = await sb("/rest/v1/rpc/usuario_por_correo", { method: "POST", body: JSON.stringify({ correo: String(correo).toLowerCase() }) });
+    if (!id) throw new Error("No existe una cuenta con ese correo.");
+    await sb(`/rest/v1/bloqueos?user_id=eq.${id}`, { method: "DELETE" });
+    await sb(`/rest/v1/accesos?user_id=eq.${id}&creada=gt.${new Date(Date.now() - 864e5).toISOString()}`, { method: "DELETE" }); // reinicia el conteo de 24 h
+    console.log(`✓ ${correo} desbloqueada`);
   },
 
   async compras() {
