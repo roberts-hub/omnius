@@ -40,7 +40,7 @@ a {{ color: #eae0c5; }}
 </style></head><body>
 <div class="portada">{ICONO}<h1>SPECTRE<br>Terms &amp; License</h1><p>END USER LICENSE AGREEMENT · LAST UPDATED {fecha.upper()}</p></div>
 {cuerpo}
-<div class="firma"><span>{ICONO}SPECTRE</span><span>SPECTRECOLOR.COM · ROBERTO@ARECHEDERRA.COM</span></div>
+<div class="firma"><span>{ICONO}SPECTRE</span><span>SPECTRECOLOR.COM · SUPPORT@SPECTRECOLOR.COM</span></div>
 </body></html>'''
 
 SALIDA.mkdir(exist_ok=True)
