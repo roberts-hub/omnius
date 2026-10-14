@@ -12,6 +12,8 @@ printf "Pega tu llave secreta de Stripe (sk_live_... o rk_live_...) y presiona E
 read -rs LLAVE; echo
 # al pegar, la Terminal agrega códigos invisibles (pegado entre corchetes) y espacios: se limpian
 LLAVE=$(printf '%s' "$LLAVE" | LC_ALL=C sed -E 's/\x1b\[[0-9;]*~//g' | LC_ALL=C tr -cd 'A-Za-z0-9_')
+# si se pegó dos veces, se queda con la última copia
+LLAVE=$(printf '%s' "$LLAVE" | LC_ALL=C sed -E 's/.*((sk|rk)_live_)/\1/')
 [[ "$LLAVE" == sk_live_* || "$LLAVE" == rk_live_* ]] || { echo "Esa no parece una llave live de Stripe (debe empezar con rk_live_). Vuelve a intentarlo."; exit 1; }
 
 texto() {
