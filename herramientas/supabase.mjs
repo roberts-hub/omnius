@@ -159,7 +159,7 @@ const comandos = {
       method: "PATCH",
       body: JSON.stringify({
         site_url: SITIO + "/access",
-        uri_allow_list: `${SITIO}/access,${SITIO}/access*,http://localhost:4181/access.html`,
+        uri_allow_list: `${SITIO}/access,${SITIO}/access*`,
         disable_signup: true,            // nadie se registra solo: las cuentas las crea el pago
         external_email_enabled: true,
         mailer_autoconfirm: false,
