@@ -51,7 +51,9 @@ async function generar() {
   const compras = await (await fetch(`https://${ref}.supabase.co/rest/v1/compras?select=creada,edicion,monto,moneda,activa,motivo,pais&order=creada`, {
     headers: { apikey: servicio, Authorization: "Bearer " + servicio },
   })).json();
-  guardar("ventas", compras
+  // el tablero no acepta un archivo vacío: sin ventas se manda una sola fila marcada (n = 0) que la página ignora
+  const sinVentas = [{ n: 0, dia: dia(Date.now()), edicion: "—", monto: null, moneda: "", estado: "sin ventas", pais: "" }];
+  const filasVentas = compras
     .filter((c) => c.motivo !== "prueba" && c.motivo !== "prueba-ui" && c.motivo !== "manual")
     .map((c, i) => ({
       n: i + 1,
@@ -61,7 +63,8 @@ async function generar() {
       moneda: (c.moneda || "").toUpperCase(),
       estado: c.activa ? "pagada" : c.motivo || "reembolsada",
       pais: c.pais || "",
-    })));
+    }));
+  guardar("ventas", filasVentas.length ? filasVentas : sinVentas);
 
   // ── tráfico (Umami) ──
   if (!existsSync(PRIV("umami.json"))) { console.log("  (sin llave de Umami: corre  node herramientas/metricas.mjs umami)"); return; }
