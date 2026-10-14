@@ -14,6 +14,10 @@ const PRIV = (f) => join(RAIZ, "privado", f);
 const SITIO_UMAMI = "add40efe-f309-476f-95a6-6367262a4434";
 const ZONA = "America/Mexico_City";
 const DIAS = 120;
+// día del lanzamiento: antes de esta fecha todo se considera prueba y no entra al tablero.
+// Mientras no haya lanzamiento vale 2099-01-01 (tablero en ceros). Cambiar en privado/metricas-inicio.txt
+// y en la constante INICIO de herramientas/umami-navegador.js.
+const INICIO = existsSync(join(RAIZ, "privado", "metricas-inicio.txt")) ? readFileSync(join(RAIZ, "privado", "metricas-inicio.txt"), "utf8").trim() : "2099-01-01";
 
 if (process.argv[2] === "umami") {
   process.stdout.write("Pega la llave de la API de Umami y presiona Enter: ");
@@ -54,7 +58,7 @@ async function generar() {
   // el tablero no acepta un archivo vacío: sin ventas se manda una sola fila marcada (n = 0) que la página ignora
   const sinVentas = [{ n: 0, dia: dia(Date.now()), edicion: "—", monto: null, moneda: "", estado: "sin ventas", pais: "" }];
   const filasVentas = compras
-    .filter((c) => c.motivo !== "prueba" && c.motivo !== "prueba-ui" && c.motivo !== "manual")
+    .filter((c) => c.motivo !== "prueba" && c.motivo !== "prueba-ui" && c.motivo !== "manual" && dia(c.creada) >= INICIO)
     .map((c, i) => ({
       n: i + 1,
       dia: dia(c.creada),
@@ -66,7 +70,20 @@ async function generar() {
     }));
   guardar("ventas", filasVentas.length ? filasVentas : sinVentas);
 
-  // ── tráfico (Umami) ──
+  // ── archivos de Umami (los escribe la revisión diaria con umami-navegador.js): solo desde el lanzamiento ──
+  const hoy = dia(Date.now());
+  const cero = { trafico: { dia: hoy, vistas: 0, visitantes: 0 }, eventos: { dia: hoy, evento: "—", total: 0 }, paginas: { pagina: "—", vistas: 0 },
+    fuentes: { fuente: "—", visitantes: 0 }, paises: { pais: "—", visitantes: 0 }, dispositivos: { dispositivo: "—", visitantes: 0 } };
+  for (const [nombre, fila0] of Object.entries(cero)) {
+    const ruta = join(salida, nombre + ".json");
+    let filas = existsSync(ruta) ? JSON.parse(readFileSync(ruta, "utf8")) : [];
+    if (filas[0] && "dia" in filas[0]) filas = filas.filter((f) => f.dia >= INICIO);
+    else if (INICIO > hoy) filas = []; // agregados de 30 días: antes del lanzamiento no cuentan
+    guardar(nombre, filas.length ? filas : [fila0]); // el tablero no acepta archivos vacíos
+  }
+  if (process.argv.includes("--solo-limpiar")) return;
+
+  // ── tráfico (Umami, solo con plan Pro) ──
   if (!existsSync(PRIV("umami.json"))) { console.log("  (sin llave de Umami: corre  node herramientas/metricas.mjs umami)"); return; }
   const { llave, sitio } = JSON.parse(readFileSync(PRIV("umami.json"), "utf8"));
   const u = async (ruta, extra = {}) => {
