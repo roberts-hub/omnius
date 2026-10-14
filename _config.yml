@@ -6,3 +6,5 @@ exclude:
   - docs
   - herramientas
   - .gitignore
+  - supabase
+  - COMO-FUNCIONA.md

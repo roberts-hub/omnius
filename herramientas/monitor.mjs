@@ -10,7 +10,7 @@ import { appendFileSync } from "node:fs";
 const SITIO = "https://spectrecolor.com";
 const PAGINAS = [
   ["/", "SPECTRE"], ["/get", "Full System"], ["/es/", "LUTs cinematográficos"], ["/es/get", "Full System"],
-  ["/terms", "Terms"], ["/access", "contenido-cifrado"],
+  ["/terms", "Terms"], ["/access", "Access your products"],
 ];
 const OTROS = ["/sitemap.xml", "/robots.txt", "/favicon.ico", "/site.webmanifest", "/sw.js", "/legal/SPECTRE-Terms-and-License.pdf"];
 const LENTO_MS = 6000;
@@ -107,11 +107,20 @@ try {
     else total += p.bytes;
   }
   bien(`Descargas: ${lista.length} partes completas (${(total / 1e6).toFixed(0)} MB)`);
+  // cuentas: la página de acceso, el proyecto de Supabase y el webhook de Stripe responden
   const { r: a } = await pedir(SITIO + "/access");
-  const m = (await a.text()).match(/id="contenido-cifrado">([\s\S]*?)<\/script>/);
-  const bovedas = m ? JSON.parse(m[1]) : [];
-  if (bovedas.length !== 2) falla(`Área de miembros: esperaba 2 bóvedas (Full System y LUT Pack) y hay ${bovedas.length}`);
-  else bien("Área de miembros: las 2 bóvedas están publicadas");
+  if (!(await a.text()).includes('data-vista="entrar"')) falla("Área de miembros: la página de acceso no tiene el inicio de sesión");
+  const cfg = (await (await pedir(SITIO + "/js/cuentas-config.js")).r.text()).match(/SPECTRE_CUENTAS = (\{.*\})/);
+  const cuentas = cfg ? JSON.parse(cfg[1]) : {};
+  if (!cuentas.url) falla("Cuentas: js/cuentas-config.js no tiene la dirección de Supabase");
+  else {
+    const { r: s } = await pedir(cuentas.url + "/auth/v1/health", { headers: { apikey: cuentas.llave } });
+    if (s.status !== 200) falla(`Cuentas: Supabase respondió ${s.status} (¿proyecto pausado? entra a supabase.com y dale "Restore")`);
+    else bien("Cuentas: Supabase activo");
+    const { r: w } = await pedir(cuentas.url + "/functions/v1/stripe-webhook", { method: "POST", body: "{}" });
+    if (w.status !== 400) falla(`Cuentas: el webhook de Stripe respondió ${w.status} (esperaba 400 a una llamada sin firma)`);
+    else bien("Cuentas: webhook de Stripe en línea (rechaza llamadas sin firma)");
+  }
 } catch (e) { falla(`Descargas: no pude revisarlas (${e.message})`); }
 
 // 4. certificado HTTPS

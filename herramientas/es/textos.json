@@ -167,7 +167,6 @@
   "No. The PowerGrade works in DaVinci Resolve Free and Studio. The LUTs work in any editor that supports .cube files.": "No. El PowerGrade funciona en DaVinci Resolve gratis y en Studio. Los LUTs funcionan en cualquier editor que acepte archivos .cube.",
   "SPECTRE works with any camera. It includes versions made specifically for Sony S-Log3, DJI D-Log, Canon C-Log and RED, plus a Rec.709 version for footage shot without a Log profile. If you shoot on another camera, the PowerGrade can be adapted to your footage, and the masterclass shows you how.": "SPECTRE funciona con cualquier cámara. Incluye versiones hechas específicamente para Sony S-Log3, DJI D-Log, Canon C-Log y RED, además de una versión Rec.709 para material grabado sin perfil Log. Si grabas con otra cámara, el PowerGrade se adapta a tu material y la masterclass te enseña cómo.",
   "How do I get my files?": "¿Cómo recibo mis archivos?",
-  "Right after paying you get access to the members area with your password. Your download, the guides and the tutorials are there, and you keep access to future updates.": "Justo después de pagar recibes acceso al área de miembros con tu contraseña. Ahí están tu descarga, las guías y los tutoriales, y conservas el acceso a las actualizaciones.",
   "Can I use it for client work?": "¿Puedo usarlo en trabajos para clientes?",
   "Yes. You can use SPECTRE on unlimited personal and commercial projects, including client work. The license is for one person.": "Sí. Puedes usar SPECTRE en proyectos personales y comerciales ilimitados, incluidos trabajos para clientes. La licencia es para una persona.",
   "Quick checkout": "Compra rápida",
@@ -193,5 +192,6 @@
   "Open Water: the same frame before grading": "Open Water: el mismo fotograma antes de corregir",
   "Golden Swell: the same frame before grading": "Golden Swell: el mismo fotograma antes de corregir",
   "Forest Trail: the same frame before grading": "Forest Trail: el mismo fotograma antes de corregir",
-  "Last Light: the same frame before grading": "Last Light: el mismo fotograma antes de corregir"
+  "Last Light: the same frame before grading": "Last Light: el mismo fotograma antes de corregir",
+  "Right after paying you get an email to create your SPECTRE account. Log in at spectrecolor.com/access with your email and password: your downloads, the guides and the tutorials are there, and you keep access to future updates.": "Justo después de pagar te llega un correo para crear tu cuenta de SPECTRE. Entra en spectrecolor.com/access con tu correo y contraseña: ahí están tus descargas, las guías y los tutoriales, y conservas el acceso a futuras actualizaciones."
 }

@@ -1,46 +1,65 @@
 // ══════════ SPECTRE — área de miembros (access.html) ══════════
-// El contenido llega cifrado (AES-GCM, llave derivada de la contraseña con PBKDF2-SHA256) y solo se
-// descifra aquí, en el navegador, con la contraseña correcta. Ver herramientas/miembros.mjs.
+// Cuentas por comprador (Supabase Auth). Cada pago en Stripe crea la cuenta del comprador y le manda el
+// correo "Create your password" (supabase/functions/stripe-webhook). Aquí se inicia sesión con correo y
+// contraseña; el contenido de cada edición (videos y llaves de las descargas) lo entrega la base de datos
+// SOLO a cuentas con una compra activa de esa edición (Row Level Security). Nada de eso está en el sitio.
 
-// Una bóveda por edición (Full System y LUT Pack), cada una con su propia contraseña:
-// la contraseña de una no puede descifrar la otra.
-const crudo = JSON.parse(document.getElementById("contenido-cifrado").textContent || "null");
-const paquetes = Array.isArray(crudo) ? crudo : crudo ? [crudo] : [];
+const CFG = window.SPECTRE_CUENTAS || {};
 const candado = document.querySelector("[data-candado]");
-const form = document.querySelector("[data-acceso-form]");
-const error = document.querySelector("[data-acceso-error]");
 const destino = document.querySelector("[data-contenido]");
-const GUARDADO = "spectre-acceso";
+const SESION = "spectre-sesion";
 
 const deB64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
-const aB64 = (b) => btoa(String.fromCharCode(...new Uint8Array(b)));
 
-const guardar = (valor) => { try { localStorage.setItem(GUARDADO, valor); } catch (_) {} };
-const leerGuardado = () => { try { return JSON.parse(localStorage.getItem(GUARDADO) || "null"); } catch (_) { return null; } };
-const olvidar = () => { try { localStorage.removeItem(GUARDADO); } catch (_) {} };
-
-async function llaveDe(clave, paquete, extraible) {
-  const base = await crypto.subtle.importKey("raw", new TextEncoder().encode(clave), "PBKDF2", false, ["deriveKey"]);
-  return crypto.subtle.deriveKey(
-    { name: "PBKDF2", salt: deB64(paquete.sal), iterations: paquete.iter, hash: "SHA-256" },
-    base, { name: "AES-GCM", length: 256 }, extraible, ["decrypt"]
-  );
+// ── sesión: el token de acceso vive en memoria; el de renovación en este navegador (si eligió quedarse) ──
+let sesion = null; // { access_token, refresh_token, expires_at, recordar }
+const almacen = (recordar) => (recordar ? localStorage : sessionStorage);
+function guardarSesion(s, recordar) {
+  sesion = { access_token: s.access_token, refresh_token: s.refresh_token, expires_at: Date.now() / 1000 + (s.expires_in || 3600), recordar };
+  try {
+    localStorage.removeItem(SESION); sessionStorage.removeItem(SESION);
+    almacen(recordar).setItem(SESION, JSON.stringify({ refresh_token: sesion.refresh_token }));
+  } catch (_) {}
 }
-
-async function abrir(llave, paquete) {
-  const plano = await crypto.subtle.decrypt({ name: "AES-GCM", iv: deB64(paquete.iv) }, llave, deB64(paquete.datos));
-  return JSON.parse(new TextDecoder().decode(plano));
+function olvidarSesion() {
+  sesion = null;
+  try { localStorage.removeItem(SESION); sessionStorage.removeItem(SESION); } catch (_) {}
 }
-
-// prueba la contraseña contra cada bóveda; devuelve la que abre (o null)
-async function probar(clave, extraible) {
-  for (const paquete of paquetes) {
-    try {
-      const llave = await llaveDe(clave, paquete, extraible);
-      return { paquete, llave, datos: await abrir(llave, paquete) };
-    } catch (_) {}
-  }
+function leerSesion() {
+  try {
+    const l = localStorage.getItem(SESION), t = sessionStorage.getItem(SESION);
+    if (l) return { ...JSON.parse(l), recordar: true };
+    if (t) return { ...JSON.parse(t), recordar: false };
+  } catch (_) {}
   return null;
+}
+
+async function auth(ruta, cuerpo, metodo = "POST", token) {
+  const r = await fetch(`${CFG.url}/auth/v1/${ruta}`, {
+    method: metodo,
+    headers: { apikey: CFG.llave, "Content-Type": "application/json", ...(token ? { Authorization: "Bearer " + token } : {}) },
+    body: cuerpo ? JSON.stringify(cuerpo) : undefined,
+  });
+  const datos = await r.json().catch(() => ({}));
+  if (!r.ok) { const e = new Error(datos.msg || datos.error_description || datos.message || "error"); e.codigo = datos.error_code || datos.code || r.status; throw e; }
+  return datos;
+}
+async function tokenVigente() {
+  if (!sesion) return null;
+  if (sesion.expires_at - Date.now() / 1000 < 60) {
+    const s = await auth("token?grant_type=refresh_token", { refresh_token: sesion.refresh_token });
+    guardarSesion(s, sesion.recordar);
+  }
+  return sesion.access_token;
+}
+async function datos(ruta, opciones = {}) {
+  const token = await tokenVigente();
+  const r = await fetch(`${CFG.url}/rest/v1/${ruta}`, {
+    ...opciones,
+    headers: { apikey: CFG.llave, Authorization: "Bearer " + token, "Content-Type": "application/json", ...(opciones.headers || {}) },
+  });
+  if (!r.ok) throw new Error("datos " + r.status);
+  return r.status === 204 ? null : r.json().catch(() => null);
 }
 
 // ── pintar el contenido (todo con textContent: nada del JSON se interpreta como HTML) ──
@@ -93,6 +112,7 @@ async function bajarCifrado(c, boton) {
     a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 60000);
     if (window.umami) window.umami.track("miembros-descarga", { archivo: c.nombre });
+    datos("descargas", { method: "POST", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ archivo: c.nombre }) }).catch(() => {});
     boton.textContent = "DOWNLOADED ✓";
   } catch (_) {
     boton.textContent = "TRY AGAIN ↓";
@@ -196,11 +216,11 @@ function pintar(datos, compra) {
   if (datos.bienvenida) intro.append(el("p", "acceso-texto", datos.bienvenida));
   destino.append(intro);
 
-  // recién pagado (Stripe redirige aquí ya con acceso): solo el agradecimiento; la contraseña va en su correo
+  // recién creó su contraseña desde el correo de compra
   if (compra) {
     const c = el("section", "compra-ok");
-    c.append(el("p", "kicker", "PAYMENT CONFIRMED"), el("h2", "compra-titulo", "Thank you for your purchase."));
-    c.append(el("p", "compra-nota", "Your receipt and your password are on their way to your email: keep it to log in from any device. This browser will remember you."));
+    c.append(el("p", "kicker", "ACCOUNT READY"), el("h2", "compra-titulo", "Thank you for your purchase."));
+    c.append(el("p", "compra-nota", "Your password is saved. Log in at spectrecolor.com/access with your email and password from any device."));
     destino.append(c);
   }
 
@@ -228,7 +248,7 @@ function pintar(datos, compra) {
     [
       "Use it on unlimited personal and commercial projects, including client work.",
       "The license is for one person. Teams need one license per user.",
-      "Do not share, resell, upload or redistribute the files, the password or the tutorials.",
+      "Do not share, resell, upload or redistribute the files, your account or the tutorials.",
       "Do not use SPECTRE to create and sell your own LUTs or PowerGrades.",
       "Practice footage is for learning only: not for client work, ads or stock.",
       "All sales are final once the files are downloaded.",
@@ -314,9 +334,13 @@ function pintar(datos, compra) {
   const correo = el("a", "", datos.soporte || "roberto@arechederra.com");
   correo.href = "mailto:" + (datos.soporte || "roberto@arechederra.com");
   ayuda.append(correo, document.createTextNode("."));
-  const cerrar = el("button", "link-mono acceso-cerrar", "LOCK THIS DEVICE");
+  const cerrar = el("button", "link-mono acceso-cerrar", "LOG OUT");
   cerrar.type = "button";
-  cerrar.addEventListener("click", () => { olvidar(); location.reload(); });
+  cerrar.addEventListener("click", async () => {
+    try { await auth("logout", null, "POST", await tokenVigente()); } catch (_) {}
+    olvidarSesion();
+    location.reload();
+  });
   pie.append(ayuda, cerrar);
   destino.append(pie);
 
@@ -385,66 +409,134 @@ function introMiembros(edicion) {
   document.addEventListener("keydown", cerrar, { once: true });
 }
 
-// ── entrar con contraseña ──
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  if (!paquetes.length) return;
-  const boton = form.querySelector("button");
-  const clave = form.clave.value.trim().toUpperCase();
-  const recordar = form.recordar.checked;
-  error.hidden = true;
+// ── vistas del candado: entrar · olvidé · crear contraseña ──
+const vistas = [...document.querySelectorAll("[data-vista]")];
+function ir(nombre) {
+  vistas.forEach((v) => (v.hidden = v.dataset.vista !== nombre));
+  vistas.forEach((v) => v.querySelectorAll("[data-error],[data-ok]").forEach((x) => (x.hidden = true)));
+  const campo = document.querySelector(`[data-vista="${nombre}"] input`);
+  if (campo) setTimeout(() => campo.focus(), 50);
+}
+document.querySelectorAll("[data-ir]").forEach((b) => b.addEventListener("click", () => {
+  if (b.dataset.ir === "olvide") document.getElementById("correo-olvide").value = document.getElementById("correo").value;
+  ir(b.dataset.ir);
+}));
+const mostrarError = (form, texto) => { const e = form.querySelector("[data-error]"); e.textContent = texto; e.hidden = false; };
+async function enviando(form, etiqueta, fn) {
+  const boton = form.querySelector("button[type=submit]");
+  const original = boton.firstChild.textContent;
+  form.querySelectorAll("[data-error],[data-ok]").forEach((x) => (x.hidden = true));
   boton.disabled = true;
-  boton.firstChild.textContent = "UNLOCKING… ";
-  try {
-    const r = await probar(clave, recordar);
-    if (!r) throw new Error("no abre");
-    if (recordar) guardar(JSON.stringify({ sal: r.paquete.sal, llave: aB64(await crypto.subtle.exportKey("raw", r.llave)) }));
-    introMiembros(r.datos.edicion);
-    pintar(r.datos);
-    if (window.umami) window.umami.track("miembros-entra", { edicion: r.datos.edicion || "" });
-    window.scrollTo(0, 0);
-  } catch (_) {
-    if (window.umami) window.umami.track("miembros-clave-incorrecta");
-    error.hidden = false;
-    form.clave.select();
-  } finally {
-    boton.disabled = false;
-    boton.firstChild.textContent = "UNLOCK ";
+  boton.firstChild.textContent = etiqueta + " ";
+  try { await fn(); } finally { boton.disabled = false; boton.firstChild.textContent = original; }
+}
+const SOPORTE = "roberto@arechederra.com";
+
+// ── abrir el área: pide a la base de datos lo que esta cuenta compró ──
+async function abrirArea(recienCreada) {
+  const filas = await datos("ediciones?select=id,contenido");
+  if (!filas || !filas.length) {
+    // tiene cuenta pero ninguna compra activa (por ejemplo, reembolsada)
+    candado.hidden = false;
+    destino.hidden = true;
+    ir("entrar");
+    mostrarError(document.querySelector('[data-form="entrar"]'), `This account has no active purchase. If you think this is a mistake, write to ${SOPORTE}.`);
+    olvidarSesion();
+    return;
   }
+  const fila = filas.find((f) => f.id === "full") || filas[0]; // Full System incluye todo lo del LUT Pack
+  introMiembros(fila.contenido.edicion);
+  pintar(fila.contenido, recienCreada);
+  window.scrollTo(0, 0);
+}
+
+document.querySelector('[data-form="entrar"]').addEventListener("submit", (e) => {
+  e.preventDefault();
+  const f = e.currentTarget;
+  const correo = f.correo.value.trim().toLowerCase();
+  if (!correo || !f.clave.value) return mostrarError(f, "Enter your email and password.");
+  enviando(f, "LOGGING IN…", async () => {
+    try {
+      const s = await auth("token?grant_type=password", { email: correo, password: f.clave.value });
+      guardarSesion(s, f.recordar.checked);
+      f.clave.value = "";
+      if (window.umami) window.umami.track("miembros-entra");
+      await abrirArea(false);
+    } catch (err) {
+      if (window.umami) window.umami.track("miembros-error-entrar");
+      mostrarError(f, /rate|too many/i.test(err.message) || err.codigo === 429
+        ? "Too many attempts. Wait a few minutes and try again."
+        : "Email or password incorrect. If you haven't created your password yet, use the link in your purchase email or “Forgot your password?”.");
+      f.clave.select();
+    }
+  });
 });
 
-// ── recién comprado: Stripe redirige a /access?compra=1#clave=… → se abre solo y muestra la contraseña.
-// La contraseña viaja en el # (no llega al servidor ni a la analítica) y se borra de la barra al entrar.
-const compraClave = (() => {
-  const m = location.hash.match(/clave=([^&]+)/);
-  return m ? decodeURIComponent(m[1]) : "";
-})();
-if (compraClave) history.replaceState(null, "", location.pathname + (new URLSearchParams(location.search).has("compra") ? "?compra=1" : ""));
-
-// ── dispositivo recordado: se abre solo (si la contraseña cambió, se vuelve a pedir) ──
-(async () => {
-  if (compraClave) {
+document.querySelector('[data-form="olvide"]').addEventListener("submit", (e) => {
+  e.preventDefault();
+  const f = e.currentTarget;
+  const correo = f.correo.value.trim().toLowerCase();
+  if (!/^\S+@\S+\.\S+$/.test(correo)) return mostrarError(f, "Enter a valid email.");
+  enviando(f, "SENDING…", async () => {
     try {
-      const r = await probar(compraClave.toUpperCase(), true);
-      if (r) {
-        guardar(JSON.stringify({ sal: r.paquete.sal, llave: aB64(await crypto.subtle.exportKey("raw", r.llave)) }));
-        introMiembros(r.datos.edicion);
-        pintar(r.datos, true);
-        if (window.umami) window.umami.track("miembros-compra", { edicion: r.datos.edicion || "" });
-        return;
-      }
-    } catch (_) {}
-    form.clave.value = compraClave; // si algo falla, al menos queda escrita
+      await auth(`recover?redirect_to=${encodeURIComponent(location.origin + location.pathname)}`, { email: correo });
+    } catch (err) {
+      if (err.codigo === 429 || /rate/i.test(err.message)) return mostrarError(f, "Too many requests. Wait a few minutes and try again.");
+      // cualquier otro error se calla: no se revela si un correo tiene cuenta o no
+    }
+    f.querySelector("[data-ok]").hidden = false;
+  });
+});
+
+let tokenDelCorreo = null;
+document.querySelector('[data-form="crear"]').addEventListener("submit", (e) => {
+  e.preventDefault();
+  const f = e.currentTarget;
+  const a = f.nueva.value, b = f.nueva2.value;
+  if (a.length < 10 || !/[a-z]/.test(a) || !/[A-Z]/.test(a) || !/\d/.test(a)) return mostrarError(f, "Use at least 10 characters, with uppercase, lowercase and a number.");
+  if (a !== b) return mostrarError(f, "The passwords don't match.");
+  enviando(f, "SAVING…", async () => {
+    try {
+      await auth("user", { password: a }, "PUT", tokenDelCorreo.access_token);
+      guardarSesion(tokenDelCorreo, true);
+      f.reset();
+      if (window.umami) window.umami.track("miembros-crea-clave");
+      await abrirArea(true);
+    } catch (err) {
+      mostrarError(f, /weak|pwned|leaked/i.test(err.message) ? "That password is too easy to guess. Choose another one."
+        : /same/i.test(err.message) ? "Choose a password different from your previous one."
+        : "The link expired or was already used. Use “Forgot your password?” to get a new one.");
+    }
+  });
+});
+
+// ── al cargar: link del correo (#access_token…&type=invite|recovery) o sesión guardada ──
+(async () => {
+  if (!CFG.url) return;
+  const h = new URLSearchParams(location.hash.slice(1));
+  if (h.has("access_token") || h.has("error")) history.replaceState(null, "", location.pathname); // el token no se queda en la barra
+  if (h.get("error")) {
+    ir("olvide");
+    mostrarError(document.querySelector('[data-form="olvide"]'), "That link expired or was already used. Enter your email to get a new one.");
+    return;
   }
-  const g = leerGuardado();
-  const paquete = g && paquetes.find((p) => p.sal === g.sal);
-  if (!paquete) { if (g) olvidar(); return; }
+  if (h.get("access_token") && /invite|recovery|signup|magiclink/.test(h.get("type") || "")) {
+    tokenDelCorreo = { access_token: h.get("access_token"), refresh_token: h.get("refresh_token"), expires_in: Number(h.get("expires_in")) || 3600 };
+    if (h.get("type") === "recovery") {
+      document.querySelector("[data-crear-titulo]").textContent = "Choose a new password.";
+      document.querySelector("[data-crear-texto]").textContent = "Your new password replaces the old one on every device.";
+    }
+    document.querySelector("[data-vista-kicker]").textContent = h.get("type") === "invite" ? "PAYMENT CONFIRMED" : "MEMBERS AREA";
+    ir("crear");
+    return;
+  }
+  const g = leerSesion();
+  if (!g) return;
   try {
-    const llave = await crypto.subtle.importKey("raw", deB64(g.llave), "AES-GCM", false, ["decrypt"]);
-    const datos = await abrir(llave, paquete);
-    introMiembros(datos.edicion);
-    pintar(datos);
+    const s = await auth("token?grant_type=refresh_token", { refresh_token: g.refresh_token });
+    guardarSesion(s, g.recordar);
+    await abrirArea(false);
   } catch (_) {
-    olvidar();
+    olvidarSesion();
   }
 })();

@@ -15,7 +15,7 @@
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://assets.lemonsqueezy.com https://cloud.umami.is; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://i.ytimg.com; media-src 'self'; frame-src https://www.youtube-nocookie.com https://*.lemonsqueezy.com; connect-src 'self' https://*.lemonsqueezy.com https://gateway.umami.is https://cloud.umami.is; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://assets.lemonsqueezy.com https://cloud.umami.is; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://i.ytimg.com; media-src 'self'; frame-src https://www.youtube-nocookie.com https://*.lemonsqueezy.com; connect-src 'self' https://*.supabase.co https://*.lemonsqueezy.com https://gateway.umami.is https://cloud.umami.is; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
   <link rel="icon" href="/favicon.ico" sizes="any" />
   <link rel="icon" href="/img/marca/icono-48.png" type="image/png" sizes="48x48" />
@@ -49,31 +49,67 @@
   </header>
 
   <!-- ══════════ ÁREA DE MIEMBROS ══════════
-       El contenido (videos y descargas) va CIFRADO en el bloque de abajo y solo se abre con la contraseña.
-       No editar a mano: se edita privado/miembros.json y se corre  node herramientas/miembros.mjs -->
+       Cuentas por comprador (Supabase). Cada compra pagada en Stripe crea la cuenta y manda el correo
+       "Create your password". El contenido solo lo entrega el servidor a cuentas con una compra activa.
+       Ver supabase/ y herramientas/supabase.mjs -->
   <main class="acceso">
     <section class="acceso-candado" data-candado>
       <svg class="acceso-icono" viewBox="18 18 64 64" fill="none" aria-hidden="true">
         <circle cx="50" cy="50" r="24" stroke="currentColor" stroke-width="2"/>
         <line x1="50" y1="20" x2="50" y2="80" stroke="currentColor" stroke-width="1.2"/>
       </svg>
-      <p class="kicker">MEMBERS AREA</p>
-      <h1 class="titulo">Access your products.</h1>
-      <p class="acceso-texto">Enter the password from your purchase email to watch the tutorials and download your files.</p>
-      <form class="acceso-form" data-acceso-form method="post" action="#" onsubmit="return false">
-        <label class="acceso-etiqueta" for="clave">PASSWORD</label>
-        <input id="clave" name="clave" type="password" autocomplete="current-password" autocapitalize="characters" spellcheck="false" required />
-        <label class="acceso-recordar"><input type="checkbox" name="recordar" checked /> Remember this device</label>
-        <button class="btn-compra" type="submit">UNLOCK <span class="flecha" aria-hidden="true">→</span></button>
-        <p class="acceso-error" data-acceso-error role="alert" hidden>That password doesn't match. Check your purchase email or write to <a href="mailto:roberto@arechederra.com">roberto@arechederra.com</a>.</p>
-      </form>
-      <p class="acceso-ayuda">Don't have SPECTRE yet? <a href="/get">Get it here</a>.</p>
+      <p class="kicker" data-vista-kicker>MEMBERS AREA</p>
+
+      <!-- 1. iniciar sesión -->
+      <div data-vista="entrar">
+        <h1 class="titulo">Access your products.</h1>
+        <p class="acceso-texto">Log in with the email you used to buy SPECTRE.</p>
+        <form class="acceso-form" data-form="entrar" method="post" action="#" novalidate>
+          <label class="acceso-etiqueta" for="correo">EMAIL</label>
+          <input id="correo" name="correo" type="email" autocomplete="username" spellcheck="false" required />
+          <label class="acceso-etiqueta" for="clave">PASSWORD</label>
+          <input id="clave" name="clave" type="password" autocomplete="current-password" required />
+          <label class="acceso-recordar"><input type="checkbox" name="recordar" checked /> Keep me logged in on this device</label>
+          <button class="btn-compra" type="submit">LOG IN <span class="flecha" aria-hidden="true">→</span></button>
+          <p class="acceso-error" data-error role="alert" hidden></p>
+        </form>
+        <p class="acceso-ayuda"><button class="acceso-link" type="button" data-ir="olvide">Forgot your password?</button></p>
+        <p class="acceso-ayuda">Don't have SPECTRE yet? <a href="/get">Get it here</a>.</p>
+      </div>
+
+      <!-- 2. olvidé mi contraseña -->
+      <div data-vista="olvide" hidden>
+        <h1 class="titulo">Reset your password.</h1>
+        <p class="acceso-texto">Enter the email you used to buy SPECTRE and we'll send you a link to choose a new password.</p>
+        <form class="acceso-form" data-form="olvide" method="post" action="#" novalidate>
+          <label class="acceso-etiqueta" for="correo-olvide">EMAIL</label>
+          <input id="correo-olvide" name="correo" type="email" autocomplete="username" spellcheck="false" required />
+          <button class="btn-compra" type="submit">SEND LINK <span class="flecha" aria-hidden="true">→</span></button>
+          <p class="acceso-error" data-error role="alert" hidden></p>
+          <p class="acceso-ok" data-ok role="status" hidden>If that email has a SPECTRE account, the link is on its way. Check your inbox (and spam).</p>
+        </form>
+        <p class="acceso-ayuda"><button class="acceso-link" type="button" data-ir="entrar">← Back to log in</button></p>
+      </div>
+
+      <!-- 3. crear / cambiar contraseña (desde el link del correo) -->
+      <div data-vista="crear" hidden>
+        <h1 class="titulo" data-crear-titulo>Create your password.</h1>
+        <p class="acceso-texto" data-crear-texto>You'll use it with your email to log in from any device.</p>
+        <form class="acceso-form" data-form="crear" method="post" action="#" novalidate>
+          <label class="acceso-etiqueta" for="nueva">NEW PASSWORD</label>
+          <input id="nueva" name="nueva" type="password" autocomplete="new-password" minlength="10" required />
+          <label class="acceso-etiqueta" for="nueva2">REPEAT PASSWORD</label>
+          <input id="nueva2" name="nueva2" type="password" autocomplete="new-password" minlength="10" required />
+          <p class="acceso-nota">At least 10 characters, with uppercase, lowercase and a number.</p>
+          <button class="btn-compra" type="submit">SAVE PASSWORD <span class="flecha" aria-hidden="true">→</span></button>
+          <p class="acceso-error" data-error role="alert" hidden></p>
+        </form>
+      </div>
     </section>
 
     <section class="acceso-contenido" data-contenido hidden></section>
   </main>
 
-  <script type="application/json" id="contenido-cifrado">[{"v":1,"iter":600000,"sal":"60ro0Q1akSj8NJxp73+B5g==","iv":"hF0M925rzJRmfSPs","datos":"9rFja+oi5fBeGcFzWz4lnqWAjDSt/pDQLKpNBtFaJkcozfcDlSyGa09wKxeN+eX76dVz6LDQ7NdS6pxAkj4JaFU6cXJ3AiPTFDbpMsThSDyx9QDYJMCM40EVf/uUNVkI0OxHA6Q21no+KOF//zDbvKKbTc3hTKLqb7w9sUdNaxM+0nWsBRdKKC9loNKZvjgK/hNKXTfiUcPwrRpoJd/DaHWFIv0rjVFsNsEgc3j+AQY+IWKWBL26PSlZWNtweTn9CUPTSQJpjsEBuomozYCbcv64DXHDKzgNdDaPoqWfL8sRnPqNdVHmE3B1PogDuYhi8j3CP4exk4jbjAs9b9c2VghCkPjOErVAHRMOiJH6SpSqI8Tm7sykLY3OdRBG7J15sLTFnjPbHYCoFlyBKSfMkGM6lDpekHoP9j9jkvA2qh283TZ8tBa7OycoFI9UgLHQtj/BSLmxR/aEBNbXeE85BMiJnpSjUICIEjj5phaewdYl3fa9vQmkF58Ego9GVDRzMPx6z1w/w+9HPsU2w7i9RBdN5wVeSin6FyByGDMDscDBXhazEPJ1OErww9dUYUg93mckz9iJeBIJZCp6/FDCDTf9n37pXRdmIPWpWbV/PvqgekhtMxbBj36+CAg8sY6dY18wfv0LeP7pEl+jY8Wx/pRszkdWNcSj5m9TEJdEStcFkzOdixYkHr4Ulvkcy3hmOI0MUg4riu94O4aLgIA95p6oSTXXTF5Hd07qweZftXNooE0cqWtPo5iTY7RAd9uxYwM87OI/N0tDYVvnrMztw4fBhqdxxKD/vhnlpKRrYbfj92RUO8zBWQ2/OUeo/NMFC8GChGPS6Ycy5WkF1oOXQji8xAcvcz5JEcwemuK4CkkkVlduZCNNBvXR4XfKeBGmFgCwk0PWHFiF8t7DnDJfFZ/g3C/FccoWyllix+B6FaFam+YjcV6o6lPJX9z25IIBqTx0IGDJccjDj4HUy+UaIuYR8gjE3TGEz0xkZbJLydoySSvRtSmLDfLt91GBwhAG8uLjV1shElFQc7xHrih4Cml59T6qjoOXj/1j9qnO1mT0PNa93UbmnQaLOn5/UEnhx025WSASkcm9V7nfgJJvmWbYE+ogUwIAosf/dkiG3xu8asKavcUMcrzaTlt959rCsgt9E15l1BaPs+MSHM1bzXURhVzSfIm+I4V25zLGVTitR1vwwpsM8CfesExwJLJ8GFMV3vg+ekOVuwrXoMCzHZAW7Z8/ijBxH4/nCzLhKDsLFeJaZFTfxlxTyR2DcI3yAlO8Tpj0khywEm5zFRrjuZqRyIZfXY1OHdnlkfxYgKSd8IyuW8MjH5wPBxsfYzeBzG+lDBeo0d4zlxHkwazruoTrapGMBgPbjjQ1rWbHlzJVpuCt8T2AqUHAtUmy9vsOSztH/GlC2eZc5WSMxwf7tGfbcK8Gn/qLKZQgZWnK1lZcrry3hz/XhdvtQESjFLPB+mMOlRdFhgk6wmwW961piGyQ9nnRMwrtfVpGcrYMDLx1p7aCB4xtFT22/rvt5FFYPhMgVk8kz8HhVM4MxXfwN6g+ehzVoGBZkSnFxOYjieWgw000mtxtGbOBdHKC+AbOwyk/3cQG8NNJMLm54UDZWjUybr5IRycJbGAj54VnDSPYEMKXTsaIpoD4ms6rgdUhLtO2OjPV9O/EQwx8JOQZhC2VaO6PP635COSNsJ1I4i+NVdk7LK36Q/yh4ktGwkiou1AnZICSq3XLk+kB/jzWlClzRAgGCGXg1w39OwwYORWBnlTMFDggWmIodMhvQSiQhiafdaDzNZ//7kXAT/sovGMyotmXavloXm+greVtKPejZzB07ahuRKaVFo90i4XRshFKHQvljsobZ01aUJzOXBDcaoLetnKY0NrCdgDxd3A6uEpszBd/ktzOP5yQR59RuzPYDLgI9A4xWr1qkZMtYYzK218THoz10A4D"},{"v":1,"iter":600000,"sal":"A13SojWYb4dXfilAIta33A==","iv":"gdhEgQTtM35dki1o","datos":"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"}]</script>
 
   <footer class="cierre cierre-corto">
     <div class="cierre-pie">
@@ -89,6 +125,7 @@
     <p class="cierre-powered"><a href="https://twowaves.mx" target="_blank" rel="noopener"><svg viewBox="0 0 41 34" aria-hidden="true"><rect x="0" y="0.8" width="29" height="6.2"/><rect x="10.7" y="0.8" width="7.6" height="33"/><circle cx="36.9" cy="3.9" r="3.9"/></svg><span>POWERED BY <strong>TWO WAVES</strong></span></a></p>
   </footer>
 
+  <script src="js/cuentas-config.js?v=20261013171224"></script>
   <script src="js/miembros.js?v=20261013171224" defer></script>
 </body>
 </html>

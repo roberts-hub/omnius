@@ -1,10 +1,9 @@
-// Uso: node herramientas/miembros.mjs
-// Cifra el contenido de cada edición con SU contraseña y lo guarda dentro de access.html:
-//   privado/miembros-full.json + privado/clave-full.txt  → Full System (todo)
-//   privado/miembros-luts.json + privado/clave-luts.txt  → LUT Pack (solo LUTs)
-// La contraseña de una edición NO puede abrir la otra: cada bóveda va cifrada por separado.
-// Correrlo cada vez que cambies videos, descargas o contraseñas; después: commit + push.
-// La carpeta privado/ nunca se sube a GitHub: el sitio solo publica el contenido cifrado.
+// Uso: node herramientas/miembros.mjs [--nuevas-llaves]
+// Prepara el área de miembros a partir de privado/miembros-full.json y privado/miembros-luts.json:
+//   · cifra cada ZIP de privado/ en descargas/*.bin (lo único que se publica, inservible sin su llave)
+//   · escribe privado/contenido-<edición>.json con los textos, videos y la llave de cada descarga
+// Después: node herramientas/supabase.mjs contenido  (sube el contenido a Supabase)  +  commit + push de descargas/.
+// La carpeta privado/ nunca se sube a GitHub.
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { webcrypto as crypto } from "node:crypto";
@@ -12,7 +11,6 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 const raiz = join(dirname(fileURLToPath(import.meta.url)), "..");
-const ITERACIONES = 600000; // PBKDF2-SHA256; va dentro de cada paquete
 const EDICIONES = ["full", "luts"];
 
 const b64 = (b) => Buffer.from(b).toString("base64");
@@ -22,7 +20,8 @@ const leer = (f) => readFileSync(join(raiz, "privado", f), "utf8");
 // La llave solo viaja dentro de la bóveda de su edición, así que el archivo publicado no sirve sin la contraseña.
 // La llave y el nombre se guardan en privado/descargas.json para no volver a subir el archivo si no cambió.
 const registro = join(raiz, "privado", "descargas.json");
-const cache = existsSync(registro) ? JSON.parse(readFileSync(registro, "utf8")) : {};
+// --nuevas-llaves: vuelve a cifrar todo con llaves nuevas (por ejemplo, si una llave pudo haberse filtrado)
+const cache = existsSync(registro) && !process.argv.includes("--nuevas-llaves") ? JSON.parse(readFileSync(registro, "utf8")) : {};
 // Archivos grandes (videos de práctica): se cortan en partes de 45 MB porque GitHub no acepta archivos de más de
 // 100 MB. Cada parte va cifrada con la misma llave y su propio iv; el navegador las baja en orden y las une.
 const PARTE = 45 * 1024 * 1024;
@@ -53,31 +52,15 @@ async function cifrarArchivo(rel) {
   return { ruta: "/" + r.ruta, llave: r.llave, iv: r.iv, nombre, bytes: datos.length };
 }
 
-async function cifrar(clave, contenido) {
-  const sal = crypto.getRandomValues(new Uint8Array(16));
-  const iv = crypto.getRandomValues(new Uint8Array(12));
-  const base = await crypto.subtle.importKey("raw", new TextEncoder().encode(clave), "PBKDF2", false, ["deriveKey"]);
-  const llave = await crypto.subtle.deriveKey(
-    { name: "PBKDF2", salt: sal, iterations: ITERACIONES, hash: "SHA-256" },
-    base, { name: "AES-GCM", length: 256 }, false, ["encrypt"]
-  );
-  const datos = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, llave, new TextEncoder().encode(JSON.stringify(contenido)));
-  return { v: 1, iter: ITERACIONES, sal: b64(sal), iv: b64(iv), datos: b64(datos) };
-}
-
-const usadas = [];
-const paquetes = [];
+// Contenido de cada edición (textos, videos y descargas con su llave). Ya NO se publica en el sitio:
+// se guarda en privado/contenido-<edición>.json y se sube a Supabase (node herramientas/supabase.mjs contenido),
+// donde solo lo puede leer un usuario con una compra activa de esa edición.
 for (const ed of EDICIONES) {
-  // sin distinguir mayúsculas (la página hace lo mismo)
-  const clave = leer(`clave-${ed}.txt`).trim().toUpperCase();
-  if (clave.length < 8) throw new Error(`La contraseña de ${ed} debe tener al menos 8 caracteres.`);
-  if (usadas.includes(clave)) throw new Error("Las dos ediciones deben tener contraseñas distintas.");
-  usadas.push(clave);
   const contenido = JSON.parse(leer(`miembros-${ed}.json`)); // valida el JSON
   for (const d of contenido.descargas) {
     if (d.archivo) { d.cifrado = await cifrarArchivo(d.archivo); delete d.archivo; }
   }
-  paquetes.push(await cifrar(clave, contenido));
+  writeFileSync(join(raiz, "privado", `contenido-${ed}.json`), JSON.stringify(contenido, null, 1));
   console.log(`  ${ed}: ${contenido.secciones.reduce((n, s) => n + s.videos.length, 0)} videos, ${contenido.descargas.length} descargas`);
 }
 
@@ -91,11 +74,12 @@ for (const v of Object.values(cache)) {
   }
 }
 writeFileSync(join(raiz, "descargas", "manifest.json"), JSON.stringify(manifiesto, null, 1));
-const ruta = join(raiz, "access.html");
-const html = readFileSync(ruta, "utf8");
-const patron = /(<script type="application\/json" id="contenido-cifrado">)[\s\S]*?(<\/script>)/;
-if (!patron.test(html)) throw new Error("No encontré el bloque #contenido-cifrado en access.html");
-// el orden de las bóvedas no revela cuál es cuál: se barajan en cada publicación
-if (crypto.getRandomValues(new Uint8Array(1))[0] & 1) paquetes.reverse();
-writeFileSync(ruta, html.replace(patron, `$1${JSON.stringify(paquetes)}$2`));
-console.log("Listo: access.html actualizado con 2 bóvedas cifradas.");
+console.log("Listo: privado/contenido-*.json. Súbelo con: node herramientas/supabase.mjs contenido");
+
+// borra de descargas/ los .bin viejos que ya no usa ninguna edición
+import("node:fs").then(({ readdirSync, unlinkSync }) => {
+  const usados = new Set(manifiesto.map((p) => p.ruta.slice(1)));
+  for (const f of readdirSync(join(raiz, "descargas"))) {
+    if (f.endsWith(".bin") && !usados.has("descargas/" + f)) { unlinkSync(join(raiz, "descargas", f)); console.log("  borrado: descargas/" + f); }
+  }
+});

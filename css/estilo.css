@@ -1504,7 +1504,8 @@ body:has(.barra-compra) .cierre { padding-bottom: 120px; }
 .acceso-texto a, .acceso-ayuda a, .acceso-error a { color: var(--hueso); text-underline-offset: 3px; }
 .acceso-form { margin-top: 34px; text-align: left; }
 .acceso-etiqueta { display: block; font-family: var(--mono); font-size: 10px; letter-spacing: 0.3em; color: var(--greige); }
-.acceso-form input[type="password"] {
+.acceso-form input[type="password"],
+.acceso-form input[type="email"] {
   display: block;
   width: 100%;
   margin-top: 10px;
@@ -1519,7 +1520,14 @@ body:has(.barra-compra) .cierre { padding-bottom: 120px; }
   outline: none;
   transition: border-color 0.3s ease;
 }
-.acceso-form input[type="password"]:focus { border-color: var(--hueso); }
+.acceso-form input[type="password"]:focus,
+.acceso-form input[type="email"]:focus { border-color: var(--hueso); }
+.acceso-form input[type="email"] { letter-spacing: 0.02em; }
+.acceso-form input + .acceso-etiqueta { margin-top: 18px; }
+.acceso-nota { margin-top: 10px; font-size: 12px; line-height: 1.6; color: var(--greige); opacity: 0.8; }
+.acceso-ok { margin-top: 14px; font-size: 13px; line-height: 1.6; color: var(--hueso); }
+.acceso-link { padding: 6px 0; border: 0; background: none; color: var(--hueso); font: inherit; font-size: 13px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.acceso-ayuda + .acceso-ayuda { margin-top: 12px; }
 .acceso-recordar { display: flex; align-items: center; gap: 10px; margin-top: 14px; font-size: 13px; color: var(--greige); cursor: pointer; }
 .acceso-recordar input { accent-color: var(--hueso); width: 16px; height: 16px; }
 .acceso-form .btn-compra { border: 0; cursor: pointer; }

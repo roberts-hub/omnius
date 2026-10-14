@@ -10,8 +10,6 @@ SALIDA = pathlib.Path.home() / "Desktop" / "SPECTRE GUIDES"
 CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 FOTO = lambda n: f"file://{RAIZ}/img/looks/{n:02d}-despues-1200.jpg"
 IMG = lambda n: f"file://{AQUI}/img/{n}"
-# las contraseñas viven solo en privado/ (el repo es público)
-CLAVE = lambda e: (RAIZ / "privado" / f"clave-{e}.txt").read_text().strip()
 
 # nombres reales de los archivos que recibe el comprador: (One Click LUT, PowerGrade)
 CAMARAS = [
@@ -73,13 +71,12 @@ def guia_resolve():
         hoja("texto", '''<div class="centro"><h2 class="titulo">Watch the full masterclass</h2>
             <p class="texto">Learn the full node tree, step by step, in the members area.</p>
             <a class="enlace" href="https://spectrecolor.com/access">spectrecolor.com/access</a>
-            <p class="clave">Password: <b>''' + CLAVE("full") + '''</b></p></div>''', 6, T),
+            <p class="clave">Log in with your email and password</p></div>''', 6, T),
         hoja("cierre", cierre(), 7, T, pie=False),
     ]
 
 
-def guia_luts(clave=None):
-    clave = clave or CLAVE("luts")
+def guia_luts():
     T = 6
     return [
         hoja("portada", portada("SPECTRE<br>LUT Installation", "Premiere Pro, Final Cut Pro and CapCut."), 1, T),
@@ -98,7 +95,7 @@ def guia_luts(clave=None):
         hoja("texto", f'''<div class="centro"><h2 class="titulo">Your members area</h2>
             <p class="texto">Tutorials and downloads, always available.</p>
             <a class="enlace" href="https://spectrecolor.com/access">spectrecolor.com/access</a>
-            <p class="clave">Password: <b>{clave}</b></p></div>''', 5, T),
+            <p class="clave">Log in with your email and password</p></div>''', 5, T),
         hoja("cierre", cierre(), 6, T, pie=False),
     ]
 
@@ -150,5 +147,5 @@ def imprimir(nombre, contenido):
 if __name__ == "__main__":
     imprimir("DaVinci Installation", documento("SPECTRE DaVinci Resolve Installation", guia_resolve()))
     imprimir("LUT Installation", documento("SPECTRE LUT Installation", guia_luts()))
-    imprimir("LUT Installation (Full System)", documento("SPECTRE LUT Installation", guia_luts(CLAVE("full"))))
+    imprimir("LUT Installation (Full System)", documento("SPECTRE LUT Installation", guia_luts()))
     imprimir("Color Settings", documento("SPECTRE Color Settings", guia_ajustes()))
