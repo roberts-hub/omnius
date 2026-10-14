@@ -23,6 +23,7 @@ texto() {
     '2. Log in at https://spectrecolor.com/access with your email and password.' \
     '3. Accept the Terms & License and download your files, guides and tutorials.' \
     '' \
+    'Already have a SPECTRE account? Just log in with your email and password: your new purchase is already there.' \
     'Did not get the email? Check spam, or go to spectrecolor.com/access and choose "Forgot your password?" with the email you used to pay.' \
     'Questions? roberto@arechederra.com'
 }
@@ -34,11 +35,10 @@ actualizar() { # $1 link  $2 nombre
     --data-urlencode "invoice_creation[invoice_data][description]=$(texto)" \
     --data-urlencode "invoice_creation[invoice_data][footer]=SPECTRE · spectrecolor.com · Terms & License: spectrecolor.com/terms" \
     -d "after_completion[type]=hosted_confirmation" \
-    --data-urlencode "after_completion[hosted_confirmation][custom_message]=Payment complete! Check your email: we have sent you a link to create your SPECTRE password. Then log in at spectrecolor.com/access with your email and password.")
+    --data-urlencode "after_completion[hosted_confirmation][custom_message]=Payment complete! Check your email (and spam) for the link to create your SPECTRE password, then log in at spectrecolor.com/access. Already have an account? Just log in with your email and password.")
   if echo "$r" | grep -q '"object": "payment_link"'; then echo "✓ $2 listo"; else echo "✗ $2: $(echo "$r" | grep -o '"message": "[^"]*"' | head -1)"; fi
 }
 
-actualizar "$PRUEBA" "Link de prueba"
 actualizar "$LUTS" "LUT Pack"
 actualizar "$FULL" "Full System"
 unset LLAVE

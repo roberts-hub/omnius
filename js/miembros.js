@@ -221,11 +221,15 @@ function pintar(datos, compra) {
   if (datos.bienvenida) intro.append(el("p", "acceso-texto", datos.bienvenida));
   destino.append(intro);
 
-  // recién creó su contraseña desde el correo de compra
+  // recién creó (invitación de compra) o cambió (recuperación) su contraseña desde el correo
   if (compra) {
     const c = el("section", "compra-ok");
-    c.append(el("p", "kicker", "ACCOUNT READY"), el("h2", "compra-titulo", "Thank you for your purchase."));
-    c.append(el("p", "compra-nota", "Your password is saved. Log in at spectrecolor.com/access with your email and password from any device."));
+    const nueva = compra === "invite";
+    c.append(el("p", "kicker", nueva ? "ACCOUNT READY" : "PASSWORD UPDATED"),
+      el("h2", "compra-titulo", nueva ? "Thank you for your purchase." : "Your new password is saved."));
+    c.append(el("p", "compra-nota", nueva
+      ? "Your password is saved. Log in at spectrecolor.com/access with your email and password from any device."
+      : "Use it with your email to log in at spectrecolor.com/access from any device."));
     destino.append(c);
   }
 
@@ -509,6 +513,7 @@ document.querySelector('[data-form="olvide"]').addEventListener("submit", (e) =>
 });
 
 let tokenDelCorreo = null;
+let tipoDelCorreo = "invite";
 document.querySelector('[data-form="crear"]').addEventListener("submit", (e) => {
   e.preventDefault();
   const f = e.currentTarget;
@@ -521,7 +526,7 @@ document.querySelector('[data-form="crear"]').addEventListener("submit", (e) => 
       guardarSesion(tokenDelCorreo, true);
       f.reset();
       if (window.umami) window.umami.track("miembros-crea-clave");
-      await abrirArea(true);
+      await abrirArea(tipoDelCorreo);
     } catch (err) {
       mostrarError(f, /weak|pwned|leaked/i.test(err.message) ? "That password is too easy to guess. Choose another one."
         : /same/i.test(err.message) ? "Choose a password different from your previous one."
@@ -554,6 +559,7 @@ document.querySelector('[data-form="crear"]').addEventListener("submit", (e) => 
   }
   if (h.get("access_token") && /invite|recovery|signup|magiclink/.test(h.get("type") || "")) {
     tokenDelCorreo = { access_token: h.get("access_token"), refresh_token: h.get("refresh_token"), expires_in: Number(h.get("expires_in")) || 3600 };
+    tipoDelCorreo = h.get("type") === "recovery" ? "recovery" : "invite";
     if (h.get("type") === "recovery") {
       document.querySelector("[data-crear-titulo]").textContent = "Choose a new password.";
       document.querySelector("[data-crear-texto]").textContent = "Your new password replaces the old one on every device.";

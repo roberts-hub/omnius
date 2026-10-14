@@ -57,7 +57,16 @@ async function sb(ruta: string, opciones: RequestInit = {}) {
 
 async function usuarioDe(correo: string): Promise<{ id: string; nuevo: boolean }> {
   const existente = await sb("/rest/v1/rpc/usuario_por_correo", { method: "POST", body: JSON.stringify({ correo }) });
-  if (existente) return { id: existente, nuevo: false };
+  if (existente) {
+    // ya tenía cuenta: si nunca creó su contraseña (o su primer correo no salió), se le manda el link de nuevo.
+    // Si ya entra normalmente, no se le manda nada: con su correo y contraseña de siempre ve lo nuevo.
+    const u = await sb(`/auth/v1/admin/users/${existente}`);
+    if (!u.last_sign_in_at) {
+      await sb(`/auth/v1/recover?redirect_to=${encodeURIComponent(ACCESO)}`, { method: "POST", body: JSON.stringify({ email: correo }) })
+        .catch((e) => console.error("no se pudo reenviar el link", String(e)));
+    }
+    return { id: existente, nuevo: false };
+  }
   // invitación: Supabase crea la cuenta y le manda el correo para crear su contraseña
   const invitado = await sb(`/auth/v1/invite?redirect_to=${encodeURIComponent(ACCESO)}`, {
     method: "POST",
