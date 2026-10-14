@@ -177,7 +177,9 @@ try {
   esperar(sinNumero.s >= 400, "el servidor exige mayúscula, minúscula y número", sinNumero.s);
   const r1 = await pedir("/auth/v1/recover", { metodo: "POST", cuerpo: { email: `no-existe-${sufijo}@example.com` } });
   esperar(r1.s < 300 || r1.s === 429, "'olvidé mi contraseña' no revela si un correo tiene cuenta", r1.s);
-  let bloqueado = false;
+  // la prueba de fuerza bruta bloquea por unos minutos TU IP (también para ti): solo con --fuerza-bruta
+  let bloqueado = !process.argv.includes("--fuerza-bruta");
+  if (bloqueado) console.log("  · fuerza bruta: omitida (agrega --fuerza-bruta; bloquea tu IP unos minutos)");
   for (let i = 0; i < 40 && !bloqueado; i++) {
     const r = await pedir("/auth/v1/token?grant_type=password", { metodo: "POST", cuerpo: { email: sin.email, password: "fuerza-bruta-" + i } });
     if (r.s === 429) bloqueado = true;
