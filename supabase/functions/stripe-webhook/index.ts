@@ -91,6 +91,13 @@ async function registrarCompra(sesion: any) {
       edicion,
       stripe_session: sesion.id,
       stripe_payment_intent: sesion.payment_intent ?? null,
+      nombre: sesion.customer_details?.name ?? null,
+      pais: sesion.customer_details?.address?.country ?? null,
+      monto: typeof sesion.amount_total === "number" ? sesion.amount_total / 100 : null,
+      moneda: sesion.currency ?? null,
+      // pregunta del checkout "Email me new looks and updates?" (dropdown): sí = acepta recibir novedades
+      novedades: (sesion.custom_fields ?? []).some((f: any) => f.dropdown?.value === "yeskeepmeposted")
+        ? true : (sesion.custom_fields ?? []).some((f: any) => f.dropdown?.value) ? false : null,
     }),
   });
   return `${edicion} para ${correo}${nuevo ? " (cuenta nueva, invitación enviada)" : " (cuenta existente)"}`;

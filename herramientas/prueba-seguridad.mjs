@@ -68,6 +68,7 @@ try {
   esperar(negado(await pedir("/rest/v1/compras?select=*")), "no puede leer la lista de compradores");
   esperar(negado(await pedir("/rest/v1/descargas?select=*")), "no puede leer el registro de descargas");
   esperar(negado(await pedir("/rest/v1/panel_cuentas?select=*")), "no puede ver el panel de cuentas");
+  esperar(negado(await pedir("/rest/v1/clientes?select=*")), "no puede ver la base de clientes");
   esperar(negado(await pedir("/rest/v1/accesos?select=*")), "no puede ver el registro de entradas");
   esperar((await pedir("/rest/v1/compras", { metodo: "POST", cuerpo: { user_id: crypto.randomUUID(), email: "x@x.com", edicion: "full" } })).s >= 400, "no puede insertar una compra");
   esperar((await pedir("/rest/v1/ediciones?id=eq.full", { metodo: "PATCH", cuerpo: { contenido: {} } })).s >= 400, "no puede modificar ediciones");
@@ -109,6 +110,7 @@ try {
   esperar(vacio(await pedir("/rest/v1/ediciones?select=id", { token: sin.token })), "después del intento sigue sin contenido");
   esperar((await pedir("/rest/v1/rpc/usuario_por_correo", { metodo: "POST", token: sin.token, cuerpo: { correo: "roberto@arechederra.com" } })).s >= 400, "no puede buscar correos de otros compradores");
   esperar(vacio(await pedir("/rest/v1/descargas?select=*", { token: sin.token })), "no puede leer el registro de descargas");
+  esperar(vacio(await pedir("/rest/v1/clientes?select=*", { token: sin.token })), "no puede ver la base de clientes (correos de otros)");
   const ajeno = await pedir("/rest/v1/descargas", { metodo: "POST", token: sin.token, cuerpo: { user_id: crypto.randomUUID(), archivo: "x" } });
   esperar(ajeno.s >= 400, "no puede registrar descargas a nombre de otro usuario");
 

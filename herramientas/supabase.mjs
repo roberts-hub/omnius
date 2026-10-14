@@ -11,6 +11,7 @@
 //   quitar <correo> <full|luts>  quita el acceso
 //   reenviar <correo>   vuelve a mandar el correo para crear contraseña
 //   compras             lista las compras registradas
+//   clientes [novedades]  exporta la base de clientes a ~/Desktop/clientes-spectre.csv (con "novedades": solo quienes aceptaron recibir correos)
 //   cuentas             actividad de cada cuenta: entradas, IPs, descargas, bandera roja, bloqueo
 //   accesos <correo>    últimas entradas de una cuenta (hora, IP, dispositivo)
 //   bloquear <correo>   bloquea la cuenta (no puede abrir el área aunque tenga compra)
@@ -153,7 +154,7 @@ const comandos = {
 
   async instalar() {
     const { ref } = config();
-    for (const m of ["0001_cuentas.sql", "0002_accesos.sql", "0003_panel.sql"]) await sql(readFileSync(join(RAIZ, "supabase/migrations", m), "utf8"));
+    for (const m of ["0001_cuentas.sql", "0002_accesos.sql", "0003_panel.sql", "0004_clientes.sql"]) await sql(readFileSync(join(RAIZ, "supabase/migrations", m), "utf8"));
     console.log("✓ Tablas, permisos (RLS), registro de accesos y bloqueos");
     await api(`/v1/projects/${ref}/config/auth`, {
       method: "PATCH",
@@ -279,6 +280,17 @@ const comandos = {
     await sb(`/rest/v1/bloqueos?user_id=eq.${id}`, { method: "DELETE" });
     await sb(`/rest/v1/accesos?user_id=eq.${id}&creada=gt.${new Date(Date.now() - 864e5).toISOString()}`, { method: "DELETE" }); // reinicia el conteo de 24 h
     console.log(`✓ ${correo} desbloqueada`);
+  },
+
+  async clientes(filtro) {
+    const filas = await sb("/rest/v1/clientes?select=*" + (filtro === "novedades" ? "&acepta_novedades=is.true" : ""));
+    const columnas = ["correo", "nombre", "pais", "compro", "pagado", "acepta_novedades", "primera_compra", "ultima_compra", "acceso_activo", "sin_acceso_por", "ultima_entrada", "entradas_total", "descargas_total", "bandera", "bloqueada"];
+    const celda = (v) => v == null ? "" : /[",\n]/.test(String(v)) ? '"' + String(v).replace(/"/g, '""') + '"' : String(v);
+    const csv = [columnas.join(","), ...filas.map((f) => columnas.map((c) => celda(f[c])).join(","))].join("\n");
+    const destino = join(process.env.HOME, "Desktop", filtro === "novedades" ? "clientes-spectre-novedades.csv" : "clientes-spectre.csv");
+    writeFileSync(destino, "\ufeff" + csv, { mode: 0o600 }); // BOM: Excel lee bien los acentos
+    console.table(filas.map((f) => ({ correo: f.correo, nombre: f.nombre, pais: f.pais, compro: f.compro, pagado: f.pagado, novedades: f.acepta_novedades ? "sí" : f.acepta_novedades === false ? "no" : "—" })));
+    console.log(`✓ ${filas.length} cliente(s) → ${destino}`);
   },
 
   async compras() {
