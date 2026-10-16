@@ -7,7 +7,7 @@ persona o IA pueda modificar el proyecto sin romper nada.
 > **Este archivo no contiene contraseñas ni llaves.** Solo dice dónde viven (carpeta `privado/`, que nunca
 > se sube a GitHub). Si necesitas una contraseña, pídesela a Roberto.
 
-Fecha de este documento: 13 de octubre de 2026 (el sitio está en beta, a punto de lanzarse; aún no hay
+Fecha de este documento: 13 de octubre de 2026 (actualizado el 16 de octubre) (el sitio está en beta, a punto de lanzarse; aún no hay
 compradores reales, solo compras de prueba de Roberto).
 
 
@@ -16,17 +16,36 @@ compradores reales, solo compras de prueba de Roberto).
 > 1. Cliente paga en un Stripe Payment Link (acepta términos). Stripe muestra "Payment complete! Check your email…".
 > 2. Stripe avisa por webhook firmado a Supabase (`supabase/functions/stripe-webhook`): crea la cuenta (invitación) y la compra
 >    (`compras`). Si ya tenía cuenta y nunca entró, le reenvía el link. Reembolso/contracargo → compra inactiva.
-> 3. Supabase manda (SMTP de Gmail, roberto@arechederra.com) "Your SPECTRE access: create your password" (negro/blanco);
+> 3. Supabase manda (SMTP de Gmail con la cuenta roberto@arechederra.com, remitente support@spectrecolor.com) "Your SPECTRE access: create your password" (negro/blanco);
 >    el botón lleva a spectrecolor.com/access#token_hash=… y la página canjea el token.
 > 4. El cliente entra con correo + contraseña. El contenido (videos + llaves de las descargas cifradas) solo lo entrega la
 >    función `abrir_area()`, que registra cada entrada (IP/dispositivo) en `accesos`; 🚩 >10 entradas o ≥3 IPs en 24 h;
 >    bloqueo automático >30 o ≥6 IPs (`supabase/migrations/0002_accesos.sql`).
 > 5. Stripe además manda recibo + factura PDF (soporte: dirección de Two Waves Films, sin teléfono).
 > Administración: `node herramientas/supabase.mjs cuentas | accesos | bloquear | desbloquear | dar | quitar | reenviar | contenido | plantillas`;
-> panel en Supabase → proyecto spectre → Table Editor → panel_cuentas. Pruebas: `node herramientas/prueba-seguridad.mjs` (61).
+> panel en Supabase → proyecto spectre → Table Editor → panel_cuentas. Pruebas: `node herramientas/prueba-seguridad.mjs` (63).
 > Vigilancia: Apps Script "SPECTRE correo de compra" revisa cada 5 min (correo 🔴/🟢), mantiene vivo Supabase y manda
 > alertas diarias de cuentas sospechosas; Claude hace una revisión diaria a las 9:30 (tarea programada).
 > Contenido de miembros: editar privado/miembros-*.json → `node herramientas/miembros.mjs` → `node herramientas/supabase.mjs contenido` → publicar descargas/.
+
+> **ACTUALIZACIÓN 14-16 oct 2026 (manda sobre lo que diga abajo):**
+> - **Correo público: support@spectrecolor.com** (alias de roberto@arechederra.com en Google Workspace; Gmail "Enviar como"
+>   SPECTRE Support). Lo usan el sitio, términos, área de miembros, READ ME y PDF de términos de los ZIPs, Stripe (soporte y
+>   texto de factura) y Supabase (remitente). DNS de spectrecolor.com (Squarespace): MX smtp.google.com, SPF, DKIM
+>   `google._domainkey` activo, DMARC p=none. Cambiar el remitente de Supabase: `node herramientas/supabase.mjs remitente`.
+> - **Respaldos:** Apps Script `respaldar()` cada día 3 am → Google Drive de roberto@ carpeta "SPECTRE respaldos" (hoja
+>   "SPECTRE · Respaldo de clientes" + `respaldo-AAAA-MM-DD.json`, últimos 90; datos de la función `resumen?respaldo=1`).
+>   En la Mac: `node herramientas/supabase.mjs respaldo` (lo corre la revisión diaria) → `privado/respaldos/`.
+>   **Respaldo completo cifrado** (sitio + privado/ + base de datos + configuración + DNS + guía): `bash herramientas/respaldo-completo.sh`
+>   → `~/Desktop/SPECTRE-respaldo-AAAA-MM-DD.dmg` (pide contraseña; adentro `RESTAURAR.md`). Subirlo a Drive y al NAS. Hacerlo
+>   después de cambios grandes o cada mes.
+> - **Tablero "SPECTRE Métricas"** (artifact privado, https://claude.ai/artifact/HqEd1R82Ey5iTfdkq6qsBp): pestañas Métricas y
+>   Usuarios (cuentas, entradas, descargas por pack, alertas, ventas acumuladas). Datos: `node herramientas/metricas.mjs`
+>   (usuarios.json lleva correos). Lo actualiza la revisión diaria de Claude.
+> - **Stripe:** no hay llaves de API guardadas (la de solo lectura de Apps Script ya no existe). Para `stripe-correo.sh` se crea una
+>   llave restringida temporal (Payment Links: Write) y se borra después.
+> - **GitHub Pages** a veces tarda más de 10 min en publicar (el sitio pesa ~500 MB) y cancela; se reintenta con
+>   `gh api -X POST repos/roberts-hub/omnius/pages/builds`.
 
 ---
 
@@ -294,8 +313,7 @@ página de Stripe, le quedan los dos correos.
   caracteres invisibles al pegar y lee las contraseñas de `privado/`. La llave se borra al terminar.
 
 ### 7.4 Llaves de API vigentes
-- Solo **"SPECTRE correo de compra (solo lectura)"**: permiso único Checkout Sessions: Read. La usa Apps
-  Script. No borrarla.
+- Ninguna (desde el 14 oct 2026). Apps Script ya no lee Stripe; las compras llegan por webhook a Supabase.
 - Cualquier llave temporal (por ejemplo para correr stripe-correo.sh) se crea con el mínimo permiso y se
   borra después.
 - Stripe Shell del dashboard es solo lectura en modo live.
@@ -518,7 +536,10 @@ algo falla), pero **no está subido**. Para activarlo, Roberto corre una vez
 
 ## 17. Pendientes y decisiones abiertas
 
-- [ ] (Opcional) Registro DMARC en arechederra.com (Squarespace DNS), para mejorar la entrega de correos.
+- [x] DMARC en arechederra.com y en spectrecolor.com.
+- [ ] Decir en la página de compra que los videos y la masterclass están en español (o agregar subtítulos).
+- [ ] Copiar `privado/` (o el .dmg del respaldo completo) al NAS UGREEN.
+- [ ] Día del lanzamiento: fijar INICIO en `privado/metricas-inicio.txt` y en `herramientas/umami-navegador.js`.
 - [ ] (Opcional) Reembolsar las 3 compras de prueba de MX$10.
 - [ ] Activar el monitor diario en GitHub Actions (`gh auth refresh -s workflow`).
 - [ ] Video "How to install and use the SPECTRE LUTs" (Premiere, Final Cut, CapCut) para el LUT Pack.
@@ -541,5 +562,8 @@ algo falla), pero **no está subido**. Para activarlo, Roberto corre una vez
 | Actualizar los archivos del producto | Reemplazar el ZIP en `privado/paquetes/` → `node herramientas/miembros.mjs` → borrar `.bin` viejos → publicar |
 | Cambiar el correo de compra | Editar `privado/correo-compra/Code.gs` → pegar en Apps Script → guardar → `probar()` |
 | Reembolsar | Stripe → Payments → pago → Refund (§11.2) |
-| Revisar que todo funcione | `node herramientas/monitor.mjs` |
+| Revisar que todo funcione | `node herramientas/monitor.mjs` y `node herramientas/prueba-seguridad.mjs` |
+| Ver cuentas y entradas | Tablero → pestaña Usuarios, Supabase → Table Editor → panel_cuentas, o `node herramientas/supabase.mjs cuentas` / `accesos <correo>` |
+| Respaldar todo | `bash herramientas/respaldo-completo.sh` → subir el .dmg a Drive "SPECTRE respaldos" |
+| Recuperar el sitio tras una pérdida | Abrir el .dmg del respaldo → `RESTAURAR.md` |
 | Agregar un look al comparador | Imágenes en `img/looks/NN-antes-*.jpg` / `NN-despues-*.jpg` + bloque `<article class="look">` en index.html |
