@@ -70,6 +70,63 @@ async function generar() {
     }));
   guardar("ventas", filasVentas.length ? filasVentas : sinVentas);
 
+  // ── usuarios (página "Usuarios" del tablero): una fila por cuenta con sus entradas, descargas y alertas ──
+  // Lleva correos: el tablero es privado de Roberto (no compartir su link).
+  const leer = async (ruta, init = {}) => {
+    const r = await fetch(`https://${ref}.supabase.co${ruta}`, { ...init, headers: { apikey: servicio, Authorization: "Bearer " + servicio, "Content-Type": "application/json" } });
+    if (!r.ok) throw new Error(ruta + " → " + r.status);
+    return r.json();
+  };
+  const usuarios = [];
+  for (let pagina = 1; pagina < 50; pagina++) {
+    const { users } = await leer(`/auth/v1/admin/users?page=${pagina}&per_page=1000`);
+    usuarios.push(...users);
+    if (users.length < 1000) break;
+  }
+  const [comprasTodas, accesos, descargas, bloqueos, lim] = await Promise.all([
+    leer("/rest/v1/compras?select=user_id,edicion,activa,motivo,creada&order=creada"),
+    leer("/rest/v1/accesos?select=user_id,ip,creada&order=creada.desc&limit=50000"),
+    leer("/rest/v1/descargas?select=user_id,archivo,creada&limit=50000"),
+    leer("/rest/v1/bloqueos?select=user_id,motivo"),
+    leer("/rest/v1/rpc/limites", { method: "POST", body: "{}" }),
+  ]);
+  const hace24 = Date.now() - 864e5;
+  const filasUsuarios = usuarios.map((u) => {
+    const cs = comprasTodas.filter((c) => c.user_id === u.id);
+    const as = accesos.filter((a) => a.user_id === u.id);
+    const ds = descargas.filter((d) => d.user_id === u.id);
+    const a24 = as.filter((a) => Date.parse(a.creada) > hace24);
+    const ips24 = new Set(a24.map((a) => a.ip).filter(Boolean)).size;
+    const ipsTotal = new Set(as.map((a) => a.ip).filter(Boolean)).size;
+    const cuenta = (re) => ds.filter((d) => re.test(d.archivo || "")).length;
+    const bloqueo = bloqueos.find((b) => b.user_id === u.id);
+    const activa = cs.some((c) => c.activa);
+    const prueba = cs.length > 0 && cs.every((c) => ["prueba", "prueba-ui", "manual"].includes(c.motivo));
+    const alertas = [];
+    if (bloqueo) alertas.push("Bloqueada: " + bloqueo.motivo);
+    if (a24.length > lim.bandera_entradas_24h) alertas.push(`${a24.length} entradas en 24 h`);
+    if (ips24 >= lim.bandera_ips_24h) alertas.push(`${ips24} lugares (IPs) distintos en 24 h`);
+    if (ipsTotal >= 8) alertas.push(`${ipsTotal} IPs distintas en total`);
+    for (const [nombre, n] of [["Full System", cuenta(/full system/i)], ["LUT Pack", cuenta(/lut pack/i)]]) if (n >= 6) alertas.push(`${n} descargas del ${nombre}`);
+    return {
+      correo: u.email,
+      compro: [...new Set(cs.map((c) => (c.edicion === "full" ? "Full System" : "LUT Pack")))].join(" + ") || "—",
+      estado: bloqueo ? "bloqueada" : activa ? "activa" : cs.length ? "sin acceso (reembolso)" : "sin compra",
+      tipo: prueba ? "prueba" : "real",
+      cuenta_creada: dia(u.created_at),
+      ultima_entrada: as[0] ? new Date(as[0].creada).toLocaleString("sv-SE", { timeZone: ZONA }).slice(0, 16) : "",
+      entradas_total: as.length,
+      entradas_24h: a24.length,
+      ips_total: ipsTotal,
+      descargas_full: cuenta(/full system/i),
+      descargas_luts: cuenta(/lut pack/i),
+      descargas_practica: cuenta(/practice|pr[aá]ctica/i),
+      descargas_total: ds.length,
+      alerta: alertas.join(" · "),
+    };
+  }).sort((a, b) => (b.alerta ? 1 : 0) - (a.alerta ? 1 : 0) || (b.ultima_entrada || "").localeCompare(a.ultima_entrada || ""));
+  guardar("usuarios", filasUsuarios.length ? filasUsuarios : [{ correo: "—", compro: "—", estado: "sin cuentas", tipo: "", cuenta_creada: dia(Date.now()), ultima_entrada: "", entradas_total: 0, entradas_24h: 0, ips_total: 0, descargas_full: 0, descargas_luts: 0, descargas_practica: 0, descargas_total: 0, alerta: "" }]);
+
   // ── archivos de Umami (los escribe la revisión diaria con umami-navegador.js): solo desde el lanzamiento ──
   const hoy = dia(Date.now());
   const cero = { trafico: { dia: hoy, vistas: 0, visitantes: 0 }, eventos: { dia: hoy, evento: "—", total: 0 }, paginas: { pagina: "—", vistas: 0 },
