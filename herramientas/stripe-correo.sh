@@ -4,12 +4,16 @@
 # Uso: bash herramientas/stripe-correo.sh   → pide una llave secreta de Stripe (no se muestra ni se guarda).
 set -euo pipefail
 
-FULL=plink_1UQBuJFethND82y0dUdl1vfy     # SPECTRE Full System (USD + MXN)
+FULL=plink_1URE5LFethND82y0BMV3UzdA     # SPECTRE Full System (USD + MXN)
 LUTS=plink_1UQBswFethND82y0hTuKybiY     # SPECTRE LUT Pack (USD + MXN)
 PRUEBA=plink_1UQC5uFethND82y0rckpA5Ru   # link de prueba de $1 / MX$10 (LUT Pack); desactivado salvo en pruebas
 
-printf "Pega tu llave secreta de Stripe (sk_live_... o rk_live_...) y presiona Enter: "
-read -rs LLAVE; echo
+if [ -f "$(dirname "$0")/../privado/stripe-llave.txt" ]; then
+  LLAVE=$(cat "$(dirname "$0")/../privado/stripe-llave.txt")
+else
+  printf "Pega tu llave secreta de Stripe (sk_live_... o rk_live_...) y presiona Enter: "
+  read -rs LLAVE; echo
+fi
 # al pegar, la Terminal agrega códigos invisibles (pegado entre corchetes) y espacios: se limpian
 LLAVE=$(printf '%s' "$LLAVE" | LC_ALL=C sed -E 's/\x1b\[[0-9;]*~//g' | LC_ALL=C tr -cd 'A-Za-z0-9_')
 # si se pegó dos veces, se queda con la última copia

@@ -43,7 +43,7 @@ node "$RAIZ/herramientas/supabase.mjs" respaldo >/dev/null && cp "$RAIZ/privado/
 echo "4/6 Stripe (links de pago, webhook, ajustes)…"
 cat > "$DEST/04-stripe/STRIPE.md" <<'EOF'
 # Stripe (cuenta acct_1UNeFXFethND82y0, nombre público "Spectre")
-- Full System $89 USD / MX$1,634 → payment link plink_1UQBuJFethND82y0dUdl1vfy → https://buy.stripe.com/7sY7sL3Cd81u6VCgiM1kA05
+- Full System $98 USD / MX$1,799 → payment link plink_1URE5LFethND82y0BMV3UzdA → https://buy.stripe.com/fZu4gz5KldlO5Ry3w01kA08
 - LUT Pack $49 USD / MX$899 → payment link plink_1UQBswFethND82y0hTuKybiY → https://buy.stripe.com/5kQ5kD0q181u7ZG0jO1kA04
 - Ambos: términos obligatorios (https://spectrecolor.com/terms), códigos de promoción activos, campo "Email me new looks and updates?",
   factura PDF post-pago con instrucciones (texto en herramientas/stripe-correo.sh), página de confirmación propia.

@@ -17,11 +17,11 @@ const SECRETO = Deno.env.get("STRIPE_WEBHOOK_SECRET")!;
 const SITIO = Deno.env.get("SITIO") ?? "https://spectrecolor.com";
 // a dónde lleva el link del correo "Create your password" (en pruebas puede ser http://localhost:4181/access.html)
 const ACCESO = Deno.env.get("ACCESO") || SITIO + "/access";
-const LINKS: Record<string, "full" | "luts"> = {
-  [Deno.env.get("PLINK_FULL") ?? "-"]: "full",
-  [Deno.env.get("PLINK_LUTS") ?? "-"]: "luts",
-  [Deno.env.get("PLINK_PRUEBA") ?? "-"]: "luts", // link de prueba de MX$10 (opcional; quitar el secreto al terminar)
-};
+// cada secreto puede llevar varios links separados por coma (por ejemplo el link viejo y el nuevo al cambiar un precio)
+const LINKS: Record<string, "full" | "luts"> = {};
+for (const [secreto, edicion] of [["PLINK_FULL", "full"], ["PLINK_LUTS", "luts"], ["PLINK_PRUEBA", "luts"]] as const) {
+  for (const id of (Deno.env.get(secreto) ?? "").split(",").map((x) => x.trim()).filter(Boolean)) LINKS[id] = edicion;
+}
 const TOLERANCIA_S = 300;
 
 const cabeceras = { apikey: SERVICIO, Authorization: `Bearer ${SERVICIO}`, "Content-Type": "application/json" };
@@ -76,7 +76,8 @@ async function usuarioDe(correo: string): Promise<{ id: string; nuevo: boolean }
 }
 
 async function registrarCompra(sesion: any) {
-  if (sesion.payment_status !== "paid") return "sin pagar";
+  // "no_payment_required": compra con un código de 100% de descuento (total $0); también da acceso
+  if (sesion.payment_status !== "paid" && sesion.payment_status !== "no_payment_required") return "sin pagar";
   const edicion = LINKS[sesion.payment_link];
   if (!edicion) return "link ajeno a SPECTRE";
   const correo = String(sesion.customer_details?.email || "").trim().toLowerCase();

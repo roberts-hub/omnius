@@ -31,7 +31,7 @@ const PRIV = (f) => join(RAIZ, "privado", f);
 const SITIO = "https://spectrecolor.com";
 // a dónde llevan los links de los correos (en pruebas: ACCESO=http://localhost:4181/access.html node …)
 const ACCESO = process.env.ACCESO || SITIO + "/access";
-const PLINKS = { full: "plink_1UQBuJFethND82y0dUdl1vfy", luts: "plink_1UQBswFethND82y0hTuKybiY" };
+const PLINKS = { full: "plink_1URE5LFethND82y0BMV3UzdA", luts: "plink_1UQBswFethND82y0hTuKybiY" };
 const CUENTA_SMTP = "roberto@arechederra.com"; // inicia sesión en Gmail (no se muestra a nadie)
 const REMITENTE = "support@spectrecolor.com"; // alias de esa cuenta: es lo que ve el comprador
 

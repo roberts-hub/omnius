@@ -85,7 +85,7 @@ try {
   // ══════════ B. webhook ══════════
   seccion("B. Webhook de Stripe (fingir un pago)");
   const W = URL_SB + "/functions/v1/stripe-webhook";
-  const evento = JSON.stringify({ id: "evt_falso", type: "checkout.session.completed", data: { object: { id: "cs_falso_" + sufijo, payment_status: "paid", payment_link: "plink_1UQBuJFethND82y0dUdl1vfy", customer_details: { email: `atacante-${sufijo}@example.com` } } } });
+  const evento = JSON.stringify({ id: "evt_falso", type: "checkout.session.completed", data: { object: { id: "cs_falso_" + sufijo, payment_status: "paid", payment_link: "plink_1URE5LFethND82y0BMV3UzdA", customer_details: { email: `atacante-${sufijo}@example.com` } } } });
   const firmar = (secreto, t, cuerpo) => crypto.createHmac("sha256", secreto).update(`${t}.${cuerpo}`).digest("hex");
   const ahora = Math.floor(Date.now() / 1000);
   const post = async (cab, cuerpo = evento) => (await fetch(W, { method: "POST", headers: { "Content-Type": "application/json", ...cab }, body: cuerpo })).status;

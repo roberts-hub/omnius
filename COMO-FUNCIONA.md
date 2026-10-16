@@ -92,8 +92,8 @@ compradores reales, solo compras de prueba de Roberto).
 Dos ediciones. Son **archivos digitales** que se entregan como ZIP descargable desde el área de miembros,
 más videos (YouTube no listados) que se ven dentro del área.
 
-### 2.1 SPECTRE Full System: $89 USD (o MX$1,634)
-Para quien edita en **DaVinci Resolve** (Free o Studio). Precio tachado de referencia: $119.
+### 2.1 SPECTRE Full System: $98 USD (o MX$1,799)
+Para quien edita en **DaVinci Resolve** (Free o Studio). Precio tachado de referencia: $129.
 
 **Descarga 1: `SPECTRE Full System.zip` (~52 MB, 29 archivos)**
 ```
@@ -255,7 +255,7 @@ omnius/
 ```
  1. Cliente llega a spectrecolor.com (inglés por default)
  2. GET SPECTRE ──► /get
- 3. Elige edición (Full System $89 / LUTs Only $49)
+ 3. Elige edición (Full System $98 / LUTs Only $49)
  4. "Buy securely with Stripe" ──► Stripe Payment Link (checkout alojado por Stripe)
  5. Paga
       · Tarjeta extranjera → USD
@@ -291,7 +291,7 @@ página de Stripe, le quedan los dos correos.
 ### 7.2 Productos, precios y links
 | Edición | Producto | Precio | Payment Link (activo) |
 |---|---|---|---|
-| Full System | `prod_VPL9cIENGM37gN` | $89 USD / MX$1,634 | https://buy.stripe.com/7sY7sL3Cd81u6VCgiM1kA05 (`plink_1UQBuJFethND82y0dUdl1vfy`) |
+| Full System | `prod_VPL9cIENGM37gN` | $98 USD / MX$1,799 | https://buy.stripe.com/fZu4gz5KldlO5Ry3w01kA08 (`plink_1URE5LFethND82y0BMV3UzdA`) |
 | LUT Pack | `prod_VPL9Jv3AnWPJ6s` | $49 USD / MX$899 | https://buy.stripe.com/5kQ5kD0q181u7ZG0jO1kA04 (`plink_1UQBswFethND82y0hTuKybiY`) |
 
 - Los links del sitio están en `js/main.js` → `CHECKOUT_URLS = { completo: …, luts: … }`.

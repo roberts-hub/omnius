@@ -63,7 +63,7 @@ Pídele a tu contador cómo facturarlos (normalmente CFDI a residente en el extr
 
 ## Estado actual en Stripe (cuenta real)
 
-- Full System $89 → https://buy.stripe.com/7sY7sL3Cd81u6VCgiM1kA05
+- Full System $98 → https://buy.stripe.com/fZu4gz5KldlO5Ry3w01kA08
 - LUT Pack $49 → https://buy.stripe.com/5kQ5kD0q181u7ZG0jO1kA04
 - Cada link: nombre del cliente, códigos de promoción, número fiscal para empresas, sin impuesto automático,
   pregunta opcional "Email me new looks and updates?", factura PDF por correo y mensaje con SU contraseña.
