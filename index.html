@@ -18,7 +18,7 @@
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://assets.lemonsqueezy.com https://cloud.umami.is; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://i.ytimg.com; media-src 'self'; frame-src https://www.youtube-nocookie.com https://*.lemonsqueezy.com; connect-src 'self' https://*.lemonsqueezy.com https://gateway.umami.is https://cloud.umami.is; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://assets.lemonsqueezy.com https://cloud.umami.is; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://i.ytimg.com; media-src 'self'; frame-src https://www.youtube-nocookie.com https://*.lemonsqueezy.com; connect-src 'self' https://*.lemonsqueezy.com https://gateway.umami.is https://cloud.umami.is; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
   <link rel="icon" href="/favicon.ico" sizes="any" />
   <link rel="icon" href="/img/marca/icono-48.png" type="image/png" sizes="48x48" />
@@ -40,10 +40,9 @@
   </script>
   <!-- con internet lento la portada del video se pinta antes que todo lo demás -->
   <link rel="preload" as="image" href="video/hero-poster.jpg" fetchpriority="high" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,300;0,400;0,600;0,700;1,300&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/estilo.css?v=20261016093604" />
+  <link rel="preload" href="/fonts/archivo-latin-0186fb.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/ibm-plex-mono-latin-bc87d8.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="css/estilo.css?v=20261016153656" />
   <!-- Umami: analítica sin cookies (cloud.umami.is) — visitas, clics de checkout y embudo -->
   <script defer src="https://cloud.umami.is/script.js" data-website-id="add40efe-f309-476f-95a6-6367262a4434" data-domains="spectrecolor.com"></script>
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://spectrecolor.com/#spectre","name":"SPECTRE","alternateName":"SPECTRE Color System","url":"https://spectrecolor.com/","logo":"https://spectrecolor.com/img/marca/icono-512.png","founder":{"@id":"https://spectrecolor.com/#roberto"},"email":"support@spectrecolor.com","sameAs":["https://www.instagram.com/robert.arre/"]},{"@type":"Person","@id":"https://spectrecolor.com/#roberto","name":"Roberto Arechederra","jobTitle":"Filmmaker & colorist","url":"https://spectrecolor.com/","sameAs":["https://www.instagram.com/robert.arre/","https://www.twowaves.mx"]},{"@type":"WebSite","@id":"https://spectrecolor.com/#web","name":"SPECTRE","url":"https://spectrecolor.com/","publisher":{"@id":"https://spectrecolor.com/#spectre"},"inLanguage":"en"},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What's included?","acceptedAnswer":{"@type":"Answer","text":"The SPECTRE Signature LUT (.cube), five One-Click LUTs that take your Log footage to the finished look in a single click, the complete node tree setup (PowerGrade) for DaVinci Resolve with versions for Sony S-Log, DJI D-Log, Canon C-Log, RED and Rec.709, an in-depth video tutorial on how to use it correctly, and Log practice footage to follow along."}},{"@type":"Question","name":"What cameras does it work with?","acceptedAnswer":{"@type":"Answer","text":"SPECTRE works with any camera. It includes versions made specifically for Sony S-Log, DJI D-Log, Canon C-Log and RED (like the Komodo), plus a Rec.709 version for non-Log footage. With the PowerGrade you can adapt the look to footage from any other camera."}},{"@type":"Question","name":"Which editing software does it work with?","acceptedAnswer":{"@type":"Answer","text":"The node tree (PowerGrade) is built for DaVinci Resolve — Free and Studio. The Signature LUT and the One-Click LUT work in any editor that reads .cube files: Premiere Pro, Final Cut Pro, CapCut and more. Not using Resolve? Get the LUTs Only edition."}},{"@type":"Question","name":"Do I need advanced experience or Log footage?","acceptedAnswer":{"@type":"Answer","text":"No advanced experience needed — the tutorial walks you through it step by step. Log gives you the most flexibility, but the workflow also adapts to Rec.709 footage."}},{"@type":"Question","name":"How do I receive the files?","acceptedAnswer":{"@type":"Answer","text":"Instantly. Right after checkout you get access to the members area, where you can download your files and watch the tutorials. Free updates for this version are included."}},{"@type":"Question","name":"What is a PowerGrade?","acceptedAnswer":{"@type":"Answer","text":"A PowerGrade is a saved DaVinci Resolve node tree: the complete grade, node by node, ready to apply to your clips. SPECTRE's PowerGrade is the exact structure I use on my films, so you can see and adjust every step instead of relying on a single LUT."}},{"@type":"Question","name":"What's the difference between the Full System and the LUT Pack?","acceptedAnswer":{"@type":"Answer","text":"The Full System includes the LUTs, the PowerGrade node tree for DaVinci Resolve, the in-depth color grading class and Log practice footage. The LUT Pack includes the Signature LUT and One-Click LUTs as .cube files for any editor, like Premiere Pro, Final Cut Pro or CapCut."}},{"@type":"Question","name":"Is there a color grading class included?","acceptedAnswer":{"@type":"Answer","text":"Yes. The Full System includes a 50-minute masterclass where I break down, step by step, my exact color grading process with SPECTRE, from the node tree to grading real footage."}}]}]}</script>
@@ -104,37 +103,46 @@
     <!-- ══════════ HERO: video de fondo a pantalla completa ══════════ -->
     <section class="hero-video" aria-label="SPECTRE">
       <div class="hero-media">
-        <!-- Video del hero (fuente: 4K). Cada dispositivo descarga solo una versión:
-             - horizontal (computadora / celular acostado): 1080p
-             - celular vertical: recorte vertical 1080x1920 sacado del 4K (nítido a pantalla completa)
-             HEVC primero (mejor calidad por MB: Safari, Chrome, Edge, iPhone, Android); H.264 de respaldo (Firefox). -->
+        <!-- Video del hero (fuente: 4K). Siempre arranca la versión ligera (720p, ~2 MB) para que se vea rápido con
+             cualquier internet; con buena conexión la HD (1080p horizontal / 1080x1920 vertical, HEVC o H.264) se
+             descarga aparte y la reemplaza sin corte. Ver el script de abajo. -->
         <video autoplay muted loop playsinline preload="auto" poster="video/hero-poster.jpg" aria-hidden="true">
-          <source src="video/hero-1080.hevc.mp4" type='video/mp4; codecs="hvc1.1.6.L123.B0"' media="(min-width: 861px), (orientation: landscape)" />
-          <source src="video/hero-1080.h264.mp4" type='video/mp4; codecs="avc1.640028"' media="(min-width: 861px), (orientation: landscape)" />
-          <source src="video/hero-vertical.hevc.mp4" type='video/mp4; codecs="hvc1.1.6.L123.B0"' />
-          <source src="video/hero-vertical.h264.mp4" type='video/mp4; codecs="avc1.640028"' />
+          <source src="video/hero-lite.h264.mp4" type="video/mp4" media="(min-width: 861px), (orientation: landscape)" />
+          <source src="video/hero-vertical-lite.h264.mp4" type="video/mp4" />
         </video>
         <script>
-          // Internet lento: versión ligera del video (720p, ~2 MB en vez de 7-10 MB). Se decide antes de que
-          // empiece la descarga si el navegador avisa que la conexión es lenta o hay ahorro de datos; si no
-          // avisa (Safari) y a los 4 s el video sigue sin poder reproducirse, se cambia a la ligera.
+          // Carga rápida con cualquier internet: siempre arranca la versión ligera (~2 MB) y, si la conexión es buena,
+          // la versión HD se descarga aparte y entra sin corte cuando ya puede reproducirse completa.
+          // Con ahorro de datos, 2G/3G o menos de 5 Mbps se queda en la ligera (nunca descarga la HD).
           (function () {
             var v = document.currentScript.previousElementSibling;
             var vertical = window.matchMedia("(max-width: 860px) and (orientation: portrait)").matches;
-            var ligera = function () {
-              if (v.dataset.ligera) return;
-              v.dataset.ligera = "1";
-              while (v.firstChild) v.removeChild(v.firstChild);
-              var s = document.createElement("source");
-              s.src = vertical ? "video/hero-vertical-lite.h264.mp4" : "video/hero-lite.h264.mp4";
-              s.type = "video/mp4";
-              v.appendChild(s);
-              v.load();
-              var p = v.play(); if (p && p.catch) p.catch(function () {});
-            };
             var c = navigator.connection;
-            if (c && (c.saveData || /2g|3g/.test(c.effectiveType || "") || (c.downlink && c.downlink < 1.5))) ligera();
-            else setTimeout(function () { if (v.readyState < 3 && !v.error) ligera(); }, 4000);
+            if (c && (c.saveData || /2g|3g/.test(c.effectiveType || "") || (c.downlink && c.downlink < 5))) return;
+            var inicio = performance.now();
+            var mejorar = function () {
+              // velocidad real: lo que tardó la ligera en estar lista. Si fue lento, no vale la pena la HD.
+              if (performance.now() - inicio > 3500) return;
+              var hd = document.createElement("video");
+              hd.muted = true; hd.loop = true; hd.playsInline = true; hd.preload = "auto";
+              var hevc = hd.canPlayType('video/mp4; codecs="hvc1.1.6.L123.B0"');
+              hd.src = vertical
+                ? (hevc ? "video/hero-vertical.hevc.mp4" : "video/hero-vertical.h264.mp4")
+                : (hevc ? "video/hero-1080.hevc.mp4" : "video/hero-1080.h264.mp4");
+              hd.addEventListener("canplaythrough", function () {
+                hd.currentTime = v.currentTime % (hd.duration || 1);
+                var p = hd.play();
+                var cambiar = function () {
+                  hd.className = v.className;
+                  hd.setAttribute("aria-hidden", "true");
+                  hd.poster = v.poster;
+                  v.replaceWith(hd);
+                };
+                if (p && p.then) p.then(cambiar).catch(function () {}); else cambiar();
+              }, { once: true });
+              hd.load();
+            };
+            if (v.readyState >= 3) mejorar(); else v.addEventListener("canplaythrough", mejorar, { once: true });
           })();
         </script>
       </div>
@@ -237,8 +245,8 @@
       </div>
       <div class="clase-video reveal" data-clase>
         <video muted loop playsinline preload="none" poster="video/clase-poster.jpg" aria-label="Preview of the SPECTRE class">
-          <source data-src="video/clase-1080.hevc.mp4?v=20261016093604" type='video/mp4; codecs="hvc1"' media="(min-width: 861px)" />
-          <source data-src="video/clase-720.h264.mp4?v=20261016093604" type="video/mp4" />
+          <source data-src="video/clase-1080.hevc.mp4?v=20261016153656" type='video/mp4; codecs="hvc1"' media="(min-width: 861px)" />
+          <source data-src="video/clase-720.h264.mp4?v=20261016153656" type="video/mp4" />
         </video>
       </div>
     </section>
@@ -251,17 +259,17 @@
       <div class="looks-rejilla">
         <article class="look" aria-label="Hidden Cove: before and after">
           <div class="comparador" data-comparador>
-            <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
+            <picture><source type="image/avif" srcset="img/looks/09-despues-1200.avif 1200w, img/looks/09-despues-1920.avif 1920w" sizes="(max-width: 860px) calc(100vw - 40px), 620px" /><img class="despues" loading="lazy" decoding="async" width="1920" height="960"
                  src="img/looks/09-despues-1920.jpg"
                  srcset="img/looks/09-despues-1200.jpg 1200w, img/looks/09-despues-1920.jpg 1920w"
                  sizes="(max-width: 860px) calc(100vw - 40px), 620px"
-                 alt="Hidden Cove: frame graded with the SPECTRE PowerGrade" />
+                 alt="Hidden Cove: frame graded with the SPECTRE PowerGrade" /></picture>
             <div class="antes-marco">
-              <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
+              <picture><source type="image/avif" srcset="img/looks/09-antes-1200.avif 1200w, img/looks/09-antes-1920.avif 1920w" sizes="(max-width: 860px) calc(100vw - 40px), 620px" /><img class="antes" loading="lazy" decoding="async" width="1920" height="960"
                    src="img/looks/09-antes-1920.jpg"
                    srcset="img/looks/09-antes-1200.jpg 1200w, img/looks/09-antes-1920.jpg 1920w"
                    sizes="(max-width: 860px) calc(100vw - 40px), 620px"
-                   alt="Hidden Cove: the same frame before grading" />
+                   alt="Hidden Cove: the same frame before grading" /></picture>
             </div>
             <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
             <div class="tag camara" hidden>SHOT ON —</div>
@@ -269,17 +277,17 @@
         </article>
         <article class="look" aria-label="Desert Drift: before and after">
           <div class="comparador" data-comparador>
-            <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
+            <picture><source type="image/avif" srcset="img/looks/03-despues-1200.avif 1200w, img/looks/03-despues-1920.avif 1920w" sizes="(max-width: 860px) calc(100vw - 40px), 620px" /><img class="despues" loading="lazy" decoding="async" width="1920" height="960"
                  src="img/looks/03-despues-1920.jpg"
                  srcset="img/looks/03-despues-1200.jpg 1200w, img/looks/03-despues-1920.jpg 1920w"
                  sizes="(max-width: 860px) calc(100vw - 40px), 620px"
-                 alt="Desert Drift: frame graded with the SPECTRE PowerGrade" />
+                 alt="Desert Drift: frame graded with the SPECTRE PowerGrade" /></picture>
             <div class="antes-marco">
-              <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
+              <picture><source type="image/avif" srcset="img/looks/03-antes-1200.avif 1200w, img/looks/03-antes-1920.avif 1920w" sizes="(max-width: 860px) calc(100vw - 40px), 620px" /><img class="antes" loading="lazy" decoding="async" width="1920" height="960"
                    src="img/looks/03-antes-1920.jpg"
                    srcset="img/looks/03-antes-1200.jpg 1200w, img/looks/03-antes-1920.jpg 1920w"
                    sizes="(max-width: 860px) calc(100vw - 40px), 620px"
-                   alt="Desert Drift: the same frame before grading" />
+                   alt="Desert Drift: the same frame before grading" /></picture>
             </div>
             <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
             <div class="tag camara" hidden>SHOT ON —</div>
@@ -287,17 +295,17 @@
         </article>
         <article class="look" aria-label="Alpine Road: before and after">
           <div class="comparador" data-comparador>
-            <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
+            <picture><source type="image/avif" srcset="img/looks/02-despues-1200.avif 1200w, img/looks/02-despues-1920.avif 1920w" sizes="(max-width: 860px) calc(100vw - 40px), 620px" /><img class="despues" loading="lazy" decoding="async" width="1920" height="960"
                  src="img/looks/02-despues-1920.jpg"
                  srcset="img/looks/02-despues-1200.jpg 1200w, img/looks/02-despues-1920.jpg 1920w"
                  sizes="(max-width: 860px) calc(100vw - 40px), 620px"
-                 alt="Alpine Road: frame graded with the SPECTRE PowerGrade" />
+                 alt="Alpine Road: frame graded with the SPECTRE PowerGrade" /></picture>
             <div class="antes-marco">
-              <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
+              <picture><source type="image/avif" srcset="img/looks/02-antes-1200.avif 1200w, img/looks/02-antes-1920.avif 1920w" sizes="(max-width: 860px) calc(100vw - 40px), 620px" /><img class="antes" loading="lazy" decoding="async" width="1920" height="960"
                    src="img/looks/02-antes-1920.jpg"
                    srcset="img/looks/02-antes-1200.jpg 1200w, img/looks/02-antes-1920.jpg 1920w"
                    sizes="(max-width: 860px) calc(100vw - 40px), 620px"
-                   alt="Alpine Road: the same frame before grading" />
+                   alt="Alpine Road: the same frame before grading" /></picture>
             </div>
             <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
             <div class="tag camara" hidden>SHOT ON —</div>
@@ -305,17 +313,17 @@
         </article>
         <article class="look" aria-label="Open Water: before and after">
           <div class="comparador" data-comparador>
-            <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
+            <picture><source type="image/avif" srcset="img/looks/04-despues-1200.avif 1200w, img/looks/04-despues-1920.avif 1920w" sizes="(max-width: 860px) calc(100vw - 40px), 620px" /><img class="despues" loading="lazy" decoding="async" width="1920" height="960"
                  src="img/looks/04-despues-1920.jpg"
                  srcset="img/looks/04-despues-1200.jpg 1200w, img/looks/04-despues-1920.jpg 1920w"
                  sizes="(max-width: 860px) calc(100vw - 40px), 620px"
-                 alt="Open Water: frame graded with the SPECTRE PowerGrade" />
+                 alt="Open Water: frame graded with the SPECTRE PowerGrade" /></picture>
             <div class="antes-marco">
-              <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
+              <picture><source type="image/avif" srcset="img/looks/04-antes-1200.avif 1200w, img/looks/04-antes-1920.avif 1920w" sizes="(max-width: 860px) calc(100vw - 40px), 620px" /><img class="antes" loading="lazy" decoding="async" width="1920" height="960"
                    src="img/looks/04-antes-1920.jpg"
                    srcset="img/looks/04-antes-1200.jpg 1200w, img/looks/04-antes-1920.jpg 1920w"
                    sizes="(max-width: 860px) calc(100vw - 40px), 620px"
-                   alt="Open Water: the same frame before grading" />
+                   alt="Open Water: the same frame before grading" /></picture>
             </div>
             <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
             <div class="tag camara" hidden>SHOT ON —</div>
@@ -323,17 +331,17 @@
         </article>
         <article class="look" aria-label="Golden Swell: before and after">
           <div class="comparador" data-comparador>
-            <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
+            <picture><source type="image/avif" srcset="img/looks/05-despues-1200.avif 1200w, img/looks/05-despues-1920.avif 1920w" sizes="(max-width: 860px) calc(100vw - 40px), 620px" /><img class="despues" loading="lazy" decoding="async" width="1920" height="960"
                  src="img/looks/05-despues-1920.jpg"
                  srcset="img/looks/05-despues-1200.jpg 1200w, img/looks/05-despues-1920.jpg 1920w"
                  sizes="(max-width: 860px) calc(100vw - 40px), 620px"
-                 alt="Golden Swell: frame graded with the SPECTRE PowerGrade" />
+                 alt="Golden Swell: frame graded with the SPECTRE PowerGrade" /></picture>
             <div class="antes-marco">
-              <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
+              <picture><source type="image/avif" srcset="img/looks/05-antes-1200.avif 1200w, img/looks/05-antes-1920.avif 1920w" sizes="(max-width: 860px) calc(100vw - 40px), 620px" /><img class="antes" loading="lazy" decoding="async" width="1920" height="960"
                    src="img/looks/05-antes-1920.jpg"
                    srcset="img/looks/05-antes-1200.jpg 1200w, img/looks/05-antes-1920.jpg 1920w"
                    sizes="(max-width: 860px) calc(100vw - 40px), 620px"
-                   alt="Golden Swell: the same frame before grading" />
+                   alt="Golden Swell: the same frame before grading" /></picture>
             </div>
             <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
             <div class="tag camara" hidden>SHOT ON —</div>
@@ -341,17 +349,17 @@
         </article>
         <article class="look" aria-label="Forest Trail: before and after">
           <div class="comparador" data-comparador>
-            <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
+            <picture><source type="image/avif" srcset="img/looks/06-despues-1200.avif 1200w, img/looks/06-despues-1920.avif 1920w" sizes="(max-width: 860px) calc(100vw - 40px), 620px" /><img class="despues" loading="lazy" decoding="async" width="1920" height="960"
                  src="img/looks/06-despues-1920.jpg"
                  srcset="img/looks/06-despues-1200.jpg 1200w, img/looks/06-despues-1920.jpg 1920w"
                  sizes="(max-width: 860px) calc(100vw - 40px), 620px"
-                 alt="Forest Trail: frame graded with the SPECTRE PowerGrade" />
+                 alt="Forest Trail: frame graded with the SPECTRE PowerGrade" /></picture>
             <div class="antes-marco">
-              <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
+              <picture><source type="image/avif" srcset="img/looks/06-antes-1200.avif 1200w, img/looks/06-antes-1920.avif 1920w" sizes="(max-width: 860px) calc(100vw - 40px), 620px" /><img class="antes" loading="lazy" decoding="async" width="1920" height="960"
                    src="img/looks/06-antes-1920.jpg"
                    srcset="img/looks/06-antes-1200.jpg 1200w, img/looks/06-antes-1920.jpg 1920w"
                    sizes="(max-width: 860px) calc(100vw - 40px), 620px"
-                   alt="Forest Trail: the same frame before grading" />
+                   alt="Forest Trail: the same frame before grading" /></picture>
             </div>
             <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
             <div class="tag camara" hidden>SHOT ON —</div>
@@ -359,17 +367,17 @@
         </article>
         <article class="look look-extra" aria-label="Last Light: before and after">
           <div class="comparador" data-comparador>
-            <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
+            <picture><source type="image/avif" srcset="img/looks/07-despues-1200.avif 1200w, img/looks/07-despues-1920.avif 1920w" sizes="(max-width: 860px) calc(100vw - 40px), 620px" /><img class="despues" loading="lazy" decoding="async" width="1920" height="960"
                  src="img/looks/07-despues-1920.jpg"
                  srcset="img/looks/07-despues-1200.jpg 1200w, img/looks/07-despues-1920.jpg 1920w"
                  sizes="(max-width: 860px) calc(100vw - 40px), 620px"
-                 alt="Last Light: frame graded with the SPECTRE PowerGrade" />
+                 alt="Last Light: frame graded with the SPECTRE PowerGrade" /></picture>
             <div class="antes-marco">
-              <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
+              <picture><source type="image/avif" srcset="img/looks/07-antes-1200.avif 1200w, img/looks/07-antes-1920.avif 1920w" sizes="(max-width: 860px) calc(100vw - 40px), 620px" /><img class="antes" loading="lazy" decoding="async" width="1920" height="960"
                    src="img/looks/07-antes-1920.jpg"
                    srcset="img/looks/07-antes-1200.jpg 1200w, img/looks/07-antes-1920.jpg 1920w"
                    sizes="(max-width: 860px) calc(100vw - 40px), 620px"
-                   alt="Last Light: the same frame before grading" />
+                   alt="Last Light: the same frame before grading" /></picture>
             </div>
             <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
             <div class="tag camara" hidden>SHOT ON —</div>
@@ -377,17 +385,17 @@
         </article>
         <article class="look look-extra" aria-label="Desert Noir: before and after">
           <div class="comparador" data-comparador>
-            <img class="despues" loading="lazy" decoding="async" width="1920" height="960"
+            <picture><source type="image/avif" srcset="img/looks/12-despues-1200.avif 1200w, img/looks/12-despues-1920.avif 1920w" sizes="(max-width: 860px) calc(100vw - 40px), 620px" /><img class="despues" loading="lazy" decoding="async" width="1920" height="960"
                  src="img/looks/12-despues-1920.jpg"
                  srcset="img/looks/12-despues-1200.jpg 1200w, img/looks/12-despues-1920.jpg 1920w"
                  sizes="(max-width: 860px) calc(100vw - 40px), 620px"
-                 alt="Desert Noir: frame graded with the SPECTRE PowerGrade" />
+                 alt="Desert Noir: frame graded with the SPECTRE PowerGrade" /></picture>
             <div class="antes-marco">
-              <img class="antes" loading="lazy" decoding="async" width="1920" height="960"
+              <picture><source type="image/avif" srcset="img/looks/12-antes-1200.avif 1200w, img/looks/12-antes-1920.avif 1920w" sizes="(max-width: 860px) calc(100vw - 40px), 620px" /><img class="antes" loading="lazy" decoding="async" width="1920" height="960"
                    src="img/looks/12-antes-1920.jpg"
                    srcset="img/looks/12-antes-1200.jpg 1200w, img/looks/12-antes-1920.jpg 1920w"
                    sizes="(max-width: 860px) calc(100vw - 40px), 620px"
-                   alt="Desert Noir: the same frame before grading" />
+                   alt="Desert Noir: the same frame before grading" /></picture>
             </div>
             <div class="guia" aria-hidden="true"><span class="linea"></span><span class="handle"></span></div>
             <div class="tag camara" hidden>SHOT ON —</div>
@@ -541,6 +549,6 @@
 
 
 
-  <script src="js/main.js?v=20261016093604" defer></script>
+  <script src="js/main.js?v=20261016153656" defer></script>
 </body>
 </html>
