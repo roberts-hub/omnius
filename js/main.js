@@ -614,7 +614,11 @@ if (clase) {
   new IntersectionObserver(([e]) => {
     if (e.isIntersecting) {
       cargar();
-      if (!reduceMotion) v.play().catch(() => {});
+      if (!reduceMotion) v.play().catch(() => {
+        // iPhone con ahorro de batería: arranca con el siguiente toque o clic
+        const otra = () => { v.play().then(() => ["touchend", "click"].forEach((ev) => window.removeEventListener(ev, otra, true))).catch(() => {}); };
+        ["touchend", "click"].forEach((ev) => window.addEventListener(ev, otra, { capture: true, passive: true }));
+      });
     } else if (cargado) {
       v.pause();
     }
