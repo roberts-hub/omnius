@@ -793,7 +793,7 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
   letter-spacing: -0.055em;
   line-height: 0.9;
 }
-.producto-titulo span { font-weight: 300; font-style: italic; color: var(--greige); letter-spacing: -0.045em; }
+.producto-titulo span[data-oferta-texto] { font-weight: 300; font-style: italic; color: var(--greige); letter-spacing: -0.045em; }
 
 .precio {
   display: flex;
@@ -1548,7 +1548,7 @@ body:has(.barra-compra) .cierre { padding-bottom: 120px; }
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.barra-compra-nombre span { font-weight: 300; font-style: italic; color: var(--greige); }
+.barra-compra-nombre span[data-oferta-texto] { font-weight: 300; font-style: italic; color: var(--greige); }
 
 .barra-compra-boton {
   flex-shrink: 0;
@@ -1581,7 +1581,7 @@ body:has(.barra-compra) .cierre { padding-bottom: 120px; }
   .barra-compra-boton { padding: 14px 16px; letter-spacing: 0.16em; }
 }
 @media (max-width: 380px) {
-  .barra-compra-nombre span { display: none; }
+  .barra-compra-nombre span[data-oferta-texto] { display: none; }
 }
 
 /* ══════════ REVEAL ══════════ */
