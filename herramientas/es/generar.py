@@ -29,6 +29,7 @@ def rutas_absolutas(s):
     s = re.sub(r'((?:src|href|poster|data-src)=")(?=(?:img|css|js|video|descargas)/)', r"\1/", s)
     s = re.sub(r'(srcset=")([^"]+)"', lambda m: m.group(1) + re.sub(r'(^|,\s*)(?=(?:img|video)/)', r"\1/", m.group(2)) + '"', s)
     s = re.sub(r'"video/hero-', '"/video/hero-', s)  # rutas dentro del script del video ligero
+    s = s.replace('"video/" +', '"/video/" +')  # la función poner() arma la ruta de la mini
     return s
 
 

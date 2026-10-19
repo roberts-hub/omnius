@@ -812,7 +812,7 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
 
 .lead { margin-top: 44px; font-size: 18px; letter-spacing: -0.01em; }
 .lead strong { font-weight: 600; }
-.cuerpo { margin-top: 14px; font-size: 15px; font-weight: 300; line-height: 1.7; color: var(--greige); }
+.cuerpo { margin-top: 14px; font-size: 16px; font-weight: 300; line-height: 1.7; color: var(--greige); }
 
 .checklist { list-style: none; margin-top: 28px; border-top: 1px solid var(--linea); }
 .checklist li {
@@ -958,7 +958,7 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
 .barra-compra-boton.btn-stripe .marca-stripe { font-size: 16px; }
 .pagos-metodos { margin-top: 12px; text-align: center; font-size: 12px; color: var(--greige); }
 .pagos-nota { margin-top: 6px; text-align: center; font-size: 12px; line-height: 1.7; color: var(--greige); }
-.pagos-nota a { color: var(--lino); text-underline-offset: 3px; }
+.pagos-nota a { padding: 6px 0; margin: -6px 0;  color: var(--lino); text-underline-offset: 3px; }
 
 /* ══════════ TÉRMINOS (terms.html) ══════════ */
 .legal {
@@ -970,21 +970,21 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
 .legal-intro { margin-top: 26px; font-size: 17px; line-height: 1.7; color: var(--lino); }
 .legal section { scroll-margin-top: 100px; margin-top: 44px; padding-top: 28px; border-top: 1px solid var(--linea); }
 .legal h2 { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; color: var(--hueso); }
-.legal p { margin-top: 12px; font-size: 15px; font-weight: 300; line-height: 1.75; color: var(--greige); }
+.legal p { margin-top: 12px; font-size: 16px; font-weight: 300; line-height: 1.75; color: var(--greige); }
 .legal strong { font-weight: 600; color: var(--hueso); }
 .legal a { color: var(--hueso); text-underline-offset: 3px; }
 .legal-lista { margin-top: 12px; padding-left: 0; list-style: none; }
 .legal-lista li {
   position: relative;
   padding: 6px 0 6px 24px;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 300;
   line-height: 1.7;
   color: var(--greige);
 }
 .legal-lista li::before { content: "✕"; position: absolute; left: 0; top: 7px; font-size: 11px; color: var(--rojo); }
 
-.pagina-producto .lead { margin-top: 34px; font-size: 15px; }
+.pagina-producto .lead { margin-top: 34px; font-size: 16px; }
 .pagina-producto .cuerpo { margin-top: 14px; font-size: 14px; line-height: 1.65; }
 .pagina-producto .cuerpo strong { font-weight: 600; color: var(--hueso); }
 /* oferta agrupada (TOOLS / TRAINING / ACCESS), como en Reilin Joey */
@@ -1442,7 +1442,7 @@ a.resena-perfil:focus-visible { outline: 1px solid var(--hueso); outline-offset:
   from { opacity: 0; transform: translateY(-6px); }
   to { opacity: 1; transform: none; }
 }
-.faq-a p { padding: 0 0 26px; font-size: 15px; font-weight: 300; line-height: 1.75; color: var(--greige); max-width: 640px; }
+.faq-a p { padding: 0 0 26px; font-size: 16px; font-weight: 300; line-height: 1.75; color: var(--greige); max-width: 640px; }
 
 /* ══════════ CIERRE ══════════ */
 
@@ -1474,7 +1474,7 @@ a.resena-perfil:focus-visible { outline: 1px solid var(--hueso); outline-offset:
 }
 .marca-texto { color: var(--hueso); font-size: 11px; letter-spacing: 0.4em; }
 .cierre-links { display: flex; flex-wrap: wrap; gap: 12px 28px; }
-.cierre-links a { text-decoration: none; transition: color 0.3s ease; }
+.cierre-links a { text-decoration: none; transition: color 0.3s ease; padding: 8px 0; margin: -8px 0; } /* área de toque ≥ 24px sin mover el diseño */
 .cierre-links a:hover { color: var(--hueso); }
 /* crédito Two Waves: isotipo (T con punto) + texto, en una píldora tenue */
 .cierre-powered { margin-top: 40px; text-align: center; }
@@ -1647,7 +1647,7 @@ body:has(.barra-compra) .cierre { padding-bottom: 120px; }
 .acceso-candado { max-width: 440px; margin: 0 auto; text-align: center; }
 .acceso-icono { width: 54px; height: 54px; color: var(--hueso); margin-bottom: 26px; }
 .acceso-candado .titulo { margin-top: 16px; font-size: clamp(32px, 4vw, 48px); }
-.acceso-texto { margin-top: 18px; font-size: 15px; font-weight: 300; line-height: 1.7; color: var(--greige); }
+.acceso-texto { margin-top: 18px; font-size: 16px; font-weight: 300; line-height: 1.7; color: var(--greige); }
 .acceso-texto a, .acceso-ayuda a, .acceso-error a { color: var(--hueso); text-underline-offset: 3px; }
 .acceso-form { margin-top: 34px; text-align: left; }
 .acceso-etiqueta { display: block; font-family: var(--mono); font-size: 10px; letter-spacing: 0.3em; color: var(--greige); }
@@ -1667,6 +1667,7 @@ body:has(.barra-compra) .cierre { padding-bottom: 120px; }
   outline: none;
   transition: border-color 0.3s ease;
 }
+.acceso-form input:focus-visible { outline: 1px solid var(--hueso); outline-offset: 3px; }
 .acceso-form input[type="password"]:focus,
 .acceso-form input[type="email"]:focus { border-color: var(--hueso); }
 .acceso-form input[type="email"] { letter-spacing: 0.02em; }
@@ -1911,7 +1912,7 @@ body:has(.barra-compra) .cierre { padding-bottom: 120px; }
   padding: clamp(90px, 10vw, 150px) var(--margen) 0;
 }
 .clase .titulo { margin-top: 0; font-size: clamp(30px, 3.6vw, 52px); }
-.clase-desc { margin-top: 18px; max-width: 46ch; font-size: 15px; font-weight: 300; line-height: 1.7; color: var(--greige); }
+.clase-desc { margin-top: 18px; max-width: 46ch; font-size: 16px; font-weight: 300; line-height: 1.7; color: var(--greige); }
 .clase-lista { margin-top: 22px; border-top: none; }
 .clase-lista li { padding: 5px 0; border-bottom: none; }
 .clase .clase-boton { margin-top: 30px; }

@@ -42,7 +42,7 @@
   <link rel="preload" as="image" href="/video/hero-poster.jpg" fetchpriority="high" />
   <link rel="preload" href="/fonts/archivo-latin-0186fb.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="/fonts/ibm-plex-mono-latin-bc87d8.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="stylesheet" href="/css/estilo.css?v=20261019102921" />
+  <link rel="stylesheet" href="/css/estilo.css?v=20261019162123" />
   <!-- Umami: analítica sin cookies (cloud.umami.is) — visitas, clics de checkout y embudo -->
   <script defer src="https://cloud.umami.is/script.js" data-website-id="add40efe-f309-476f-95a6-6367262a4434" data-domains="spectrecolor.com"></script>
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://spectrecolor.com/#spectre","name":"SPECTRE","alternateName":"SPECTRE Color System","url":"https://spectrecolor.com/","logo":"https://spectrecolor.com/img/marca/icono-512.png","founder":{"@id":"https://spectrecolor.com/#roberto"},"email":"support@spectrecolor.com","sameAs":["https://www.instagram.com/robert.arre/"]},{"@type":"Person","@id":"https://spectrecolor.com/#roberto","name":"Roberto Arechederra","jobTitle":"Filmmaker & colorist","url":"https://spectrecolor.com/","sameAs":["https://www.instagram.com/robert.arre/","https://www.twowaves.mx"]},{"@type":"WebSite","@id":"https://spectrecolor.com/#web","name":"SPECTRE","url":"https://spectrecolor.com/es/","publisher":{"@id":"https://spectrecolor.com/#spectre"},"inLanguage":"es"},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"¿Qué incluye?","acceptedAnswer":{"@type":"Answer","text":"El Signature LUT de SPECTRE (.cube), cinco One-Click LUTs que llevan tu material en Log al look final en un solo clic, el árbol de nodos completo (PowerGrade) para DaVinci Resolve con versiones para Sony S-Log, DJI D-Log, Canon C-Log, RED y Rec.709, una masterclass de 50 minutos y clips en Log para practicar."}},{"@type":"Question","name":"¿Con qué cámaras funciona?","acceptedAnswer":{"@type":"Answer","text":"SPECTRE funciona con cualquier cámara. Incluye versiones hechas específicamente para Sony S-Log, DJI D-Log, Canon C-Log y RED (como la Komodo), además de una versión Rec.709 para material sin Log. Con el PowerGrade puedes adaptar el look al material de cualquier otra cámara."}},{"@type":"Question","name":"¿Con qué programas de edición funciona?","acceptedAnswer":{"@type":"Answer","text":"The node tree (PowerGrade) is built for DaVinci Resolve — Free and Studio. The Signature LUT and the One-Click LUT work in any editor that reads .cube files: Premiere Pro, Final Cut Pro, CapCut and more. Not using Resolve? Get the LUTs Only edition."}},{"@type":"Question","name":"¿Necesito experiencia avanzada o material en Log?","acceptedAnswer":{"@type":"Answer","text":"No necesitas experiencia avanzada: la masterclass te guía paso a paso. El Log te da más flexibilidad, pero el flujo también se adapta a material en Rec.709."}},{"@type":"Question","name":"¿Cómo recibo los archivos?","acceptedAnswer":{"@type":"Answer","text":"Al instante. Justo después de pagar tienes acceso al área de miembros, donde descargas tus archivos y ves los tutoriales. Incluye actualizaciones gratis de esta versión."}},{"@type":"Question","name":"¿Qué es un PowerGrade?","acceptedAnswer":{"@type":"Answer","text":"Un PowerGrade es un árbol de nodos guardado de DaVinci Resolve: la corrección completa, nodo por nodo, lista para aplicar a tus clips. El PowerGrade de SPECTRE es la estructura exacta que uso en mis películas, así que puedes ver y ajustar cada paso en lugar de depender de un solo LUT."}},{"@type":"Question","name":"¿Qué diferencia hay entre el Full System y el LUT Pack?","acceptedAnswer":{"@type":"Answer","text":"El Full System incluye los LUTs, el árbol de nodos PowerGrade para DaVinci Resolve, la masterclass de 50 minutos y clips en Log para practicar. El LUT Pack incluye el Signature LUT y los One-Click LUTs en archivos .cube para cualquier editor, como Premiere Pro, Final Cut Pro o CapCut."}},{"@type":"Question","name":"¿Incluye una clase de corrección de color?","acceptedAnswer":{"@type":"Answer","text":"Sí. El Full System incluye una masterclass de 50 minutos donde explico, paso a paso, mi proceso exacto de corrección de color con SPECTRE, desde el árbol de nodos hasta corregir material real."}}]}]}</script>
@@ -83,7 +83,7 @@
 
   <!-- ══════════ HEADER ══════════ -->
   <header class="cabecera">
-    <a class="marca" href="#">
+    <a class="marca" href="#" translate="no">
       <svg class="marca-icono" viewBox="0 0 100 100" fill="none" aria-hidden="true">
         <circle cx="50" cy="50" r="30" stroke="currentColor" stroke-width="5"/>
         <line x1="50" y1="12" x2="50" y2="88" stroke="currentColor" stroke-width="3"/>
@@ -116,6 +116,8 @@
           // Siempre arranca una versión chica; si la conexión es buena, la HD se descarga aparte y entra sin corte.
           (function () {
             var v = document.currentScript.previousElementSibling;
+            // con "reducir movimiento" activado el hero se queda en el poster, sin video
+            if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { v.removeAttribute("autoplay"); v.pause(); return; }
             var vertical = window.matchMedia("(max-width: 860px) and (orientation: portrait)").matches;
             var c = navigator.connection;
             // iPhone en modo de ahorro de batería (o ahorro de datos) no deja que el video arranque solo:
@@ -138,7 +140,7 @@
             intentar();
             var poner = function (archivo) {
               while (v.firstChild) v.removeChild(v.firstChild);
-              v.src = "video/" + archivo;
+              v.src = "/video/" + archivo;
               v.load();
               intentar();
             };
@@ -183,7 +185,7 @@
           <circle cx="50" cy="50" r="24" stroke="currentColor" stroke-width="2"/>
           <line x1="50" y1="20" x2="50" y2="80" stroke="currentColor" stroke-width="1.2"/>
         </svg>
-        <h1 class="hero-marca hero-meta">SPECTRE<span class="solo-lectores"> : LUTs cinematográficos y PowerGrade para DaVinci Resolve</span></h1>
+        <h1 class="hero-marca hero-meta"><span translate="no">SPECTRE</span><span class="solo-lectores"> : LUTs cinematográficos y PowerGrade para DaVinci Resolve</span></h1>
         <p class="hero-kicker hero-meta">SISTEMA DE COLOR // POR ROBERTO ARECHEDERRA</p>
         <!-- Lleva a producto.html, donde se elige la edición (Full System o LUTs Only) -->
         <a class="btn-pildora hero-meta" href="/es/get" data-umami-event="ver-producto" data-umami-event-boton="hero"><span class="btn-pildora-texto">OBTÉN SPECTRE</span><span class="flecha" aria-hidden="true">→</span></a>
@@ -203,11 +205,11 @@
     <!-- ══════════ COLLAGE (franja de tomas gradeadas; lista para cambiar por un reel en video) ══════════ -->
     <section class="introducing reveal" aria-label="Fotogramas corregidos con SPECTRE">
       <div class="introducing-tiras" aria-hidden="true">
-        <img loading="lazy" src="/img/looks/reel-01.jpg" alt="" />
-        <img loading="lazy" src="/img/looks/reel-02.jpg" alt="" />
-        <img loading="lazy" src="/img/looks/reel-04.jpg" alt="" />
-        <img loading="lazy" src="/img/looks/reel-isla.jpg" alt="" />
-        <img loading="lazy" src="/img/looks/reel-06.jpg" alt="" />
+        <img loading="lazy" src="/img/looks/reel-01.jpg" alt="" width="600" height="800" />
+        <img loading="lazy" src="/img/looks/reel-02.jpg" alt="" width="600" height="800" />
+        <img loading="lazy" src="/img/looks/reel-04.jpg" alt="" width="600" height="800" />
+        <img loading="lazy" src="/img/looks/reel-isla.jpg" alt="" width="600" height="1000" />
+        <img loading="lazy" src="/img/looks/reel-06.jpg" alt="" width="600" height="800" />
       </div>
     </section>
 
@@ -217,46 +219,46 @@
       <h2 class="marcas-titulo reveal">El color detrás de nuestro trabajo para</h2>
       <div class="marcas-franja reveal">
         <div class="marcas-pista">
-          <img class="marca-logo" src="/img/logos/ford.png" alt="Ford" style="--factor: 0.845" />
-          <img class="marca-logo" src="/img/logos/audi.png" alt="Audi" style="--factor: 0.812" />
-          <img class="marca-logo" src="/img/logos/cupra.png" alt="Cupra" style="--factor: 1.118" />
-          <img class="marca-logo" src="/img/logos/lamborghini.png" alt="Lamborghini" style="--factor: 0.67" />
-          <img class="marca-logo" src="/img/logos/red-bull.png" alt="Red Bull" style="--factor: 1.061" />
-          <img class="marca-logo" src="/img/logos/alo-yoga.png" alt="Alo Yoga" style="--factor: 1.141" />
-          <img class="marca-logo" src="/img/logos/skechers.png" alt="Skechers" style="--factor: 0.344" />
-          <img class="marca-logo" src="/img/logos/kerastase.png" alt="Kérastase" style="--factor: 0.732" />
-          <img class="marca-logo" src="/img/logos/longines.png" alt="Longines" style="--factor: 0.688" />
-          <img class="marca-logo" src="/img/logos/beautiful-destinations.png" alt="Beautiful Destinations" style="--factor: 1.367" />
-          <img class="marca-logo" aria-hidden="true" src="/img/logos/ford.png" alt="" style="--factor: 0.845" />
-          <img class="marca-logo" aria-hidden="true" src="/img/logos/audi.png" alt="" style="--factor: 0.812" />
-          <img class="marca-logo" aria-hidden="true" src="/img/logos/cupra.png" alt="" style="--factor: 1.118" />
-          <img class="marca-logo" aria-hidden="true" src="/img/logos/lamborghini.png" alt="" style="--factor: 0.67" />
-          <img class="marca-logo" aria-hidden="true" src="/img/logos/red-bull.png" alt="" style="--factor: 1.061" />
-          <img class="marca-logo" aria-hidden="true" src="/img/logos/alo-yoga.png" alt="" style="--factor: 1.141" />
-          <img class="marca-logo" aria-hidden="true" src="/img/logos/skechers.png" alt="" style="--factor: 0.344" />
-          <img class="marca-logo" aria-hidden="true" src="/img/logos/kerastase.png" alt="" style="--factor: 0.732" />
-          <img class="marca-logo" aria-hidden="true" src="/img/logos/longines.png" alt="" style="--factor: 0.688" />
-          <img class="marca-logo" aria-hidden="true" src="/img/logos/beautiful-destinations.png" alt="" style="--factor: 1.367" />
-          <img class="marca-logo" aria-hidden="true" src="/img/logos/ford.png" alt="" style="--factor: 0.845" />
-          <img class="marca-logo" aria-hidden="true" src="/img/logos/audi.png" alt="" style="--factor: 0.812" />
-          <img class="marca-logo" aria-hidden="true" src="/img/logos/cupra.png" alt="" style="--factor: 1.118" />
-          <img class="marca-logo" aria-hidden="true" src="/img/logos/lamborghini.png" alt="" style="--factor: 0.67" />
-          <img class="marca-logo" aria-hidden="true" src="/img/logos/red-bull.png" alt="" style="--factor: 1.061" />
-          <img class="marca-logo" aria-hidden="true" src="/img/logos/alo-yoga.png" alt="" style="--factor: 1.141" />
-          <img class="marca-logo" aria-hidden="true" src="/img/logos/skechers.png" alt="" style="--factor: 0.344" />
-          <img class="marca-logo" aria-hidden="true" src="/img/logos/kerastase.png" alt="" style="--factor: 0.732" />
-          <img class="marca-logo" aria-hidden="true" src="/img/logos/longines.png" alt="" style="--factor: 0.688" />
-          <img class="marca-logo" aria-hidden="true" src="/img/logos/beautiful-destinations.png" alt="" style="--factor: 1.367" />
-          <img class="marca-logo" aria-hidden="true" src="/img/logos/ford.png" alt="" style="--factor: 0.845" />
-          <img class="marca-logo" aria-hidden="true" src="/img/logos/audi.png" alt="" style="--factor: 0.812" />
-          <img class="marca-logo" aria-hidden="true" src="/img/logos/cupra.png" alt="" style="--factor: 1.118" />
-          <img class="marca-logo" aria-hidden="true" src="/img/logos/lamborghini.png" alt="" style="--factor: 0.67" />
-          <img class="marca-logo" aria-hidden="true" src="/img/logos/red-bull.png" alt="" style="--factor: 1.061" />
-          <img class="marca-logo" aria-hidden="true" src="/img/logos/alo-yoga.png" alt="" style="--factor: 1.141" />
-          <img class="marca-logo" aria-hidden="true" src="/img/logos/skechers.png" alt="" style="--factor: 0.344" />
-          <img class="marca-logo" aria-hidden="true" src="/img/logos/kerastase.png" alt="" style="--factor: 0.732" />
-          <img class="marca-logo" aria-hidden="true" src="/img/logos/longines.png" alt="" style="--factor: 0.688" />
-          <img class="marca-logo" aria-hidden="true" src="/img/logos/beautiful-destinations.png" alt="" style="--factor: 1.367" />
+          <img class="marca-logo" src="/img/logos/ford.png" alt="Ford" width="639" height="240" style="--factor: 0.845" />
+          <img class="marca-logo" src="/img/logos/audi.png" alt="Audi" width="1800" height="625" style="--factor: 0.812" />
+          <img class="marca-logo" src="/img/logos/cupra.png" alt="Cupra" width="365" height="240" style="--factor: 1.118" />
+          <img class="marca-logo" src="/img/logos/lamborghini.png" alt="Lamborghini" width="597" height="141" style="--factor: 0.67" />
+          <img class="marca-logo" src="/img/logos/red-bull.png" alt="Red Bull" width="405" height="240" style="--factor: 1.061" />
+          <img class="marca-logo" src="/img/logos/alo-yoga.png" alt="Alo Yoga" width="350" height="240" style="--factor: 1.141" />
+          <img class="marca-logo" src="/img/logos/skechers.png" alt="Skechers" width="2652" height="240" style="--factor: 0.344" />
+          <img class="marca-logo" src="/img/logos/kerastase.png" alt="Kérastase" width="850" height="240" style="--factor: 0.732" />
+          <img class="marca-logo" src="/img/logos/longines.png" alt="Longines" width="962" height="240" style="--factor: 0.688" />
+          <img class="marca-logo" src="/img/logos/beautiful-destinations.png" alt="Beautiful Destinations" width="244" height="240" style="--factor: 1.367" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/ford.png" alt="" width="639" height="240" style="--factor: 0.845" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/audi.png" alt="" width="1800" height="625" style="--factor: 0.812" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/cupra.png" alt="" width="365" height="240" style="--factor: 1.118" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/lamborghini.png" alt="" width="597" height="141" style="--factor: 0.67" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/red-bull.png" alt="" width="405" height="240" style="--factor: 1.061" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/alo-yoga.png" alt="" width="350" height="240" style="--factor: 1.141" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/skechers.png" alt="" width="2652" height="240" style="--factor: 0.344" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/kerastase.png" alt="" width="850" height="240" style="--factor: 0.732" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/longines.png" alt="" width="962" height="240" style="--factor: 0.688" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/beautiful-destinations.png" alt="" width="244" height="240" style="--factor: 1.367" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/ford.png" alt="" width="639" height="240" style="--factor: 0.845" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/audi.png" alt="" width="1800" height="625" style="--factor: 0.812" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/cupra.png" alt="" width="365" height="240" style="--factor: 1.118" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/lamborghini.png" alt="" width="597" height="141" style="--factor: 0.67" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/red-bull.png" alt="" width="405" height="240" style="--factor: 1.061" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/alo-yoga.png" alt="" width="350" height="240" style="--factor: 1.141" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/skechers.png" alt="" width="2652" height="240" style="--factor: 0.344" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/kerastase.png" alt="" width="850" height="240" style="--factor: 0.732" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/longines.png" alt="" width="962" height="240" style="--factor: 0.688" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/beautiful-destinations.png" alt="" width="244" height="240" style="--factor: 1.367" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/ford.png" alt="" width="639" height="240" style="--factor: 0.845" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/audi.png" alt="" width="1800" height="625" style="--factor: 0.812" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/cupra.png" alt="" width="365" height="240" style="--factor: 1.118" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/lamborghini.png" alt="" width="597" height="141" style="--factor: 0.67" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/red-bull.png" alt="" width="405" height="240" style="--factor: 1.061" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/alo-yoga.png" alt="" width="350" height="240" style="--factor: 1.141" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/skechers.png" alt="" width="2652" height="240" style="--factor: 0.344" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/kerastase.png" alt="" width="850" height="240" style="--factor: 0.732" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/longines.png" alt="" width="962" height="240" style="--factor: 0.688" />
+          <img class="marca-logo" aria-hidden="true" src="/img/logos/beautiful-destinations.png" alt="" width="244" height="240" style="--factor: 1.367" />
         </div>
       </div>
     </section>
@@ -275,8 +277,8 @@
       </div>
       <div class="clase-video reveal" data-clase>
         <video muted loop playsinline preload="none" poster="/video/clase-poster.jpg" aria-label="Adelanto de la clase de SPECTRE">
-          <source data-src="/video/clase-1080.hevc.mp4?v=20261019102921" type='video/mp4; codecs="hvc1"' media="(min-width: 861px)" />
-          <source data-src="/video/clase-720.h264.mp4?v=20261019102921" type="video/mp4" />
+          <source data-src="/video/clase-1080.hevc.mp4?v=20261019162123" type='video/mp4; codecs="hvc1"' media="(min-width: 861px)" />
+          <source data-src="/video/clase-720.h264.mp4?v=20261019162123" type="video/mp4" />
         </video>
       </div>
     </section>
@@ -565,7 +567,7 @@
   <footer class="cierre">
     <p class="cierre-frase reveal">Naciste<br />para crear.</p>
     <div class="cierre-pie">
-      <span class="marca-texto">SPECTRE</span>
+      <span class="marca-texto" translate="no">SPECTRE</span>
       <span class="cierre-links">
         <a href="https://instagram.com/robert.arre" target="_blank" rel="noopener">@ROBERT.ARRE</a>
         <a href="mailto:support@spectrecolor.com">CONTACTO</a>
@@ -579,6 +581,6 @@
 
 
 
-  <script src="/js/main.js?v=20261019102921" defer></script>
+  <script src="/js/main.js?v=20261019162123" defer></script>
 </body>
 </html>
