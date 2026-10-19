@@ -14,7 +14,11 @@ const urlLista = (u) => !!u && !u.startsWith("TODO");
 // ?edition=luts en la URL abre la página con LUTs Only ya elegida.
 let edicion = "completo";
 const botonesCheckout = document.querySelectorAll("[data-checkout]");
-const urlDe = (b) => CHECKOUT_URLS[b.dataset.checkout || edicion];
+// el pago de Stripe sale en el idioma de la página (inglés por default; español solo si eligió /es/),
+// no en el del teléfono del comprador (Stripe lo traduciría solo y quedaría mezclado)
+const IDIOMA_PAGO = document.documentElement.lang === "es" ? "es" : "en";
+const conIdioma = (u) => (u && u.includes("buy.stripe.com") ? u + (u.includes("?") ? "&" : "?") + "locale=" + IDIOMA_PAGO : u);
+const urlDe = (b) => conIdioma(CHECKOUT_URLS[b.dataset.checkout || edicion]);
 const actualizarCheckout = () => botonesCheckout.forEach((b) => {
   const u = urlDe(b);
   if (urlLista(u)) b.href = u;
