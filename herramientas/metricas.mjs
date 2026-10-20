@@ -45,7 +45,12 @@ async function generar() {
   mkdirSync(salida, { recursive: true });
   const fin = Date.now(), inicio = fin - DIAS * 864e5;
   const dia = (t) => new Date(t).toLocaleDateString("en-CA", { timeZone: ZONA }); // AAAA-MM-DD en hora de México
-  const guardar = (nombre, filas) => { writeFileSync(join(salida, nombre + ".json"), JSON.stringify(filas)); console.log(`  ${nombre}: ${filas.length} filas`); };
+  // nunca guardar lo que va después de # en una dirección (ahí viajaban llaves de acceso de los correos)
+  const sinHash = (v) => typeof v === "string" ? v.replace(/#.*$/s, "") : v;
+  const guardar = (nombre, filas) => {
+    if (nombre === "paginas") filas = filas.map((f) => ({ ...f, pagina: sinHash(f.pagina) || "/" }));
+    writeFileSync(join(salida, nombre + ".json"), JSON.stringify(filas)); console.log(`  ${nombre}: ${filas.length} filas`);
+  };
 
   // ── ventas (Supabase) ──
   const { ref } = JSON.parse(readFileSync(PRIV("supabase.json"), "utf8"));

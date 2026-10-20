@@ -157,7 +157,7 @@ const comandos = {
 
   async instalar() {
     const { ref } = config();
-    for (const m of ["0001_cuentas.sql", "0002_accesos.sql", "0003_panel.sql", "0004_clientes.sql"]) await sql(readFileSync(join(RAIZ, "supabase/migrations", m), "utf8"));
+    for (const m of ["0001_cuentas.sql", "0002_accesos.sql", "0003_panel.sql", "0004_clientes.sql", "0005_revocaciones.sql"]) await sql(readFileSync(join(RAIZ, "supabase/migrations", m), "utf8"));
     console.log("✓ Tablas, permisos (RLS), registro de accesos y bloqueos");
     await api(`/v1/projects/${ref}/config/auth`, {
       method: "PATCH",
@@ -207,7 +207,8 @@ const comandos = {
       method: "PATCH",
       body: JSON.stringify({
         smtp_host: "smtp.gmail.com", smtp_port: "587", smtp_user: CUENTA_SMTP, smtp_pass: pass,
-        smtp_admin_email: REMITENTE, smtp_sender_name: "Roberto from SPECTRE", smtp_max_frequency: 1,
+        smtp_admin_email: REMITENTE, smtp_sender_name: "Roberto from SPECTRE",
+        smtp_max_frequency: 300, // 5 min entre correos a la misma persona: nadie puede gastar el límite pidiendo links sin parar
         rate_limit_email_sent: 100,
       }),
     });
@@ -250,8 +251,16 @@ const comandos = {
   },
 
   async quitar(correo, edicion) {
-    await sb(`/rest/v1/compras?email=eq.${encodeURIComponent(correo.toLowerCase())}&edicion=eq.${edicion}`, { method: "PATCH", body: JSON.stringify({ activa: false, motivo: "retirado a mano" }) });
-    console.log(`✓ ${correo} ya no tiene ${edicion}`);
+    if (!correo || !["full", "luts"].includes(edicion)) throw new Error("Uso: quitar <correo> <full|luts>");
+    // se busca la CUENTA por su correo actual (el comprador pudo cambiarlo después de comprar) y se quitan
+    // sus compras por user_id, no por el correo con el que pagó
+    const id = await sb("/rest/v1/rpc/usuario_por_correo", { method: "POST", body: JSON.stringify({ correo: String(correo).toLowerCase() }) });
+    const filtro = id ? `user_id=eq.${id}` : `email=eq.${encodeURIComponent(String(correo).toLowerCase())}`;
+    const filas = await sb(`/rest/v1/compras?${filtro}&edicion=eq.${edicion}&activa=is.true`, {
+      method: "PATCH", headers: { Prefer: "return=representation" }, body: JSON.stringify({ activa: false, motivo: "retirado a mano" }),
+    });
+    if (!filas?.length) throw new Error(`No encontré una compra activa de ${edicion} para ${correo}. Revisa con: node herramientas/supabase.mjs cuentas`);
+    console.log(`✓ ${correo} ya no tiene ${edicion} (${filas.length} compra${filas.length > 1 ? "s" : ""})`);
   },
 
   async reenviar(correo) {
@@ -294,7 +303,14 @@ const comandos = {
   async clientes(filtro) {
     const filas = await sb("/rest/v1/clientes?select=*" + (filtro === "novedades" ? "&acepta_novedades=is.true" : ""));
     const columnas = ["correo", "nombre", "pais", "compro", "pagado", "acepta_novedades", "primera_compra", "ultima_compra", "acceso_activo", "sin_acceso_por", "ultima_entrada", "entradas_total", "descargas_total", "bandera", "bloqueada"];
-    const celda = (v) => v == null ? "" : /[",\n]/.test(String(v)) ? '"' + String(v).replace(/"/g, '""') + '"' : String(v);
+    // un texto que empieza con = + - @ (el nombre lo escribe el comprador) Excel lo ejecutaría como fórmula:
+    // se le antepone un apóstrofo para que quede como texto
+    const celda = (v) => {
+      if (v == null) return "";
+      let t = String(v);
+      if (typeof v === "string" && /^[=+\-@\t\r]/.test(t)) t = "'" + t;
+      return /[",\n\r]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t;
+    };
     const csv = [columnas.join(","), ...filas.map((f) => columnas.map((c) => celda(f[c])).join(","))].join("\n");
     const destino = join(process.env.HOME, "Desktop", filtro === "novedades" ? "clientes-spectre-novedades.csv" : "clientes-spectre.csv");
     writeFileSync(destino, "\ufeff" + csv, { mode: 0o600 }); // BOM: Excel lee bien los acentos

@@ -196,7 +196,7 @@ try {
     for (const d of c.descargas) if (d.cifrado) secretos.add(d.cifrado.llave);
     for (const s of c.secciones) for (const v of s.videos) { const m = String(v.youtube || "").match(/([\w-]{11})$/); if (m) secretos.add(m[1]); }
   }
-  for (const f of ["clave-full.txt", "clave-luts.txt"]) if (existsSync(PRIV(f))) secretos.add(readFileSync(PRIV(f), "utf8").trim());
+  for (const f of ["clave-full.txt", "clave-luts.txt", "resumen-token.txt", "stripe-llave.txt", "supabase-token.txt"]) if (existsSync(PRIV(f))) secretos.add(readFileSync(PRIV(f), "utf8").trim());
   secretos.add(SERVICIO); secretos.add(TOKEN);
   const patrones = [/sk_live_\w{10,}/, /rk_live_\w{10,}/, /whsec_\w{10,}/, /sbp_\w{10,}/, /service_role/];
   const paginas = ["/", "/get", "/es/", "/es/get", "/access", "/terms", "/js/main.js", "/js/miembros.js", "/js/cuentas-config.js", "/sw.js", "/descargas/manifest.json"];
@@ -224,6 +224,12 @@ try {
     for (const re of patrones.slice(0, 4)) if (re.test(t)) fugaRepo.push(`${f} ${re}`);
   }
   esperar(fugaRepo.length === 0, "ningún archivo del repositorio (público) contiene secretos", fugaRepo.join("; "));
+  // también todo el historial de git: lo que alguna vez se subió sigue visible aunque ya se haya borrado
+  const historial = execFileSync("git", ["log", "--all", "-p", "--no-color", "--", ".", ":(exclude)descargas"], { cwd: RAIZ, encoding: "utf8", maxBuffer: 512e6 });
+  const fugaHistorial = [];
+  for (const s of secretos) if (s && s.length >= 8 && historial.includes(s)) fugaHistorial.push(`un secreto actual (${s.slice(0, 4)}…)`);
+  for (const re of patrones.slice(0, 4)) if (re.test(historial)) fugaHistorial.push(String(re));
+  esperar(fugaHistorial.length === 0, "ningún secreto actual aparece en el historial de git (público)", fugaHistorial.join("; "));
   esperar(execFileSync("git", ["check-ignore", "privado/contenido-full.json"], { cwd: RAIZ, encoding: "utf8" }).trim() !== "", "privado/ está excluido de git");
 } catch (e) {
   mal("la prueba no pudo terminar: " + e.message);

@@ -45,7 +45,13 @@ language plpgsql volatile security definer set search_path = '' as $$
 declare
   uid uuid := auth.uid();
   cab jsonb := coalesce(nullif(current_setting('request.headers', true), '')::jsonb, '{}'::jsonb);
-  ip_actual text := split_part(coalesce(cab ->> 'x-forwarded-for', cab ->> 'x-real-ip', cab ->> 'cf-connecting-ip', ''), ',', 1);
+  -- la IP la pone Cloudflare (cf-connecting-ip, no se puede falsificar). El PRIMER valor de x-forwarded-for
+  -- lo puede escribir el navegador, así que de respaldo se usa el ÚLTIMO (el que agrega el servidor).
+  ip_actual text := left(coalesce(
+    nullif(trim(cab ->> 'cf-connecting-ip'), ''),
+    nullif(trim((regexp_match(coalesce(cab ->> 'x-forwarded-for', ''), '([^,]*)$'))[1]), ''),
+    nullif(trim(cab ->> 'x-real-ip'), ''),
+    ''), 64);
   lim jsonb := public.limites();
   entradas int;
   ips int;

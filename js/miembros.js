@@ -538,7 +538,8 @@ document.querySelector('[data-form="crear"]').addEventListener("submit", (e) => 
 // ── al cargar: link del correo (#access_token…&type=invite|recovery) o sesión guardada ──
 (async () => {
   if (!CFG.url) return;
-  const h = new URLSearchParams(location.hash.slice(1));
+  // access.html ya copió el # en SPECTRE_HASH y lo borró de la barra antes de cargar la analítica
+  const h = new URLSearchParams((window.SPECTRE_HASH ?? location.hash).slice(1));
   if (h.has("access_token") || h.has("token_hash") || h.has("error")) history.replaceState(null, "", location.pathname); // el token no se queda en la barra
   if (h.get("error")) {
     ir("olvide");

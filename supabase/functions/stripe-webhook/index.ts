@@ -55,24 +55,29 @@ async function sb(ruta: string, opciones: RequestInit = {}) {
   return texto ? JSON.parse(texto) : null;
 }
 
-async function usuarioDe(correo: string): Promise<{ id: string; nuevo: boolean }> {
+// Busca o crea la cuenta del comprador. Devuelve si hay que mandarle el correo para crear su contraseña.
+async function usuarioDe(correo: string): Promise<{ id: string; nuevo: boolean; correoPendiente: boolean }> {
   const existente = await sb("/rest/v1/rpc/usuario_por_correo", { method: "POST", body: JSON.stringify({ correo }) });
   if (existente) {
     // ya tenía cuenta: si nunca creó su contraseña (o su primer correo no salió), se le manda el link de nuevo.
     // Si ya entra normalmente, no se le manda nada: con su correo y contraseña de siempre ve lo nuevo.
     const u = await sb(`/auth/v1/admin/users/${existente}`);
-    if (!u.last_sign_in_at) {
-      await sb(`/auth/v1/recover?redirect_to=${encodeURIComponent(ACCESO)}`, { method: "POST", body: JSON.stringify({ email: correo }) })
-        .catch((e) => console.error("no se pudo reenviar el link", String(e)));
-    }
-    return { id: existente, nuevo: false };
+    return { id: existente, nuevo: false, correoPendiente: !u.last_sign_in_at };
   }
   // invitación: Supabase crea la cuenta y le manda el correo para crear su contraseña
-  const invitado = await sb(`/auth/v1/invite?redirect_to=${encodeURIComponent(ACCESO)}`, {
-    method: "POST",
-    body: JSON.stringify({ email: correo }),
-  });
-  return { id: invitado.id, nuevo: true };
+  try {
+    const invitado = await sb(`/auth/v1/invite?redirect_to=${encodeURIComponent(ACCESO)}`, {
+      method: "POST",
+      body: JSON.stringify({ email: correo }),
+    });
+    return { id: invitado.id, nuevo: true, correoPendiente: false };
+  } catch (e) {
+    // si el correo no sale (límite de envíos, Gmail caído…) la cuenta se crea igual SIN correo, para que la
+    // compra quede registrada; el correo se reintenta cuando Stripe repita el evento (ver registrarCompra)
+    console.error("la invitación no salió; se crea la cuenta sin correo", String(e));
+    const creado = await sb("/auth/v1/admin/users", { method: "POST", body: JSON.stringify({ email: correo }) });
+    return { id: creado.id, nuevo: true, correoPendiente: true };
+  }
 }
 
 async function registrarCompra(sesion: any) {
@@ -82,7 +87,8 @@ async function registrarCompra(sesion: any) {
   if (!edicion) return "link ajeno a SPECTRE";
   const correo = String(sesion.customer_details?.email || "").trim().toLowerCase();
   if (!correo) throw new Error("sesión sin correo");
-  const { id, nuevo } = await usuarioDe(correo);
+  const { id, nuevo, correoPendiente } = await usuarioDe(correo);
+  // la compra se registra ANTES de mandar correos: si el correo falla, el pago ya no se pierde
   await sb("/rest/v1/compras?on_conflict=stripe_session", {
     method: "POST",
     headers: { Prefer: "resolution=ignore-duplicates" },
@@ -101,16 +107,29 @@ async function registrarCompra(sesion: any) {
         ? true : (sesion.custom_fields ?? []).some((f: any) => f.dropdown?.value) ? false : null,
     }),
   });
+  if (correoPendiente) {
+    // cuenta sin contraseña todavía: link para crearla. Si no sale, se responde error para que Stripe
+    // repita el evento más tarde (la compra ya quedó guardada y no se duplica)
+    await sb(`/auth/v1/recover?redirect_to=${encodeURIComponent(ACCESO)}`, { method: "POST", body: JSON.stringify({ email: correo }) });
+  }
   return `${edicion} para ${correo}${nuevo ? " (cuenta nueva, invitación enviada)" : " (cuenta existente)"}`;
 }
 
 async function desactivar(pagoId: string, motivo: string) {
   if (!pagoId) return "sin payment_intent";
-  await sb(`/rest/v1/compras?stripe_payment_intent=eq.${encodeURIComponent(pagoId)}`, {
+  // primero se anota el reembolso (tabla revocaciones): si la compra todavía no ha llegado (Stripe puede
+  // mandar los eventos en desorden), entra desactivada cuando llegue. Luego se apaga la que ya exista.
+  await sb("/rest/v1/revocaciones?on_conflict=stripe_payment_intent", {
+    method: "POST",
+    headers: { Prefer: "resolution=ignore-duplicates" },
+    body: JSON.stringify({ stripe_payment_intent: pagoId, motivo }),
+  });
+  const filas = await sb(`/rest/v1/compras?stripe_payment_intent=eq.${encodeURIComponent(pagoId)}`, {
     method: "PATCH",
+    headers: { Prefer: "return=representation" },
     body: JSON.stringify({ activa: false, motivo }),
   });
-  return `acceso retirado (${motivo})`;
+  return filas?.length ? `acceso retirado (${motivo})` : `${motivo} anotado (la compra aún no llega; entrará desactivada)`;
 }
 
 Deno.serve(async (req) => {
