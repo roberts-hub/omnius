@@ -109,7 +109,7 @@ if [ $AUTO = 1 ]; then
   printf '%s' "$CLAVE" | hdiutil create -quiet -encryption AES-256 -stdinpass -fs APFS -volname "SPECTRE respaldo $FECHA" -srcfolder "$DEST" "$DMG" || fallo "No se pudo crear el disco cifrado"
   unset CLAVE
   "$RCLONE" copy "$DMG" "spectre-drive:DMG cifrados" --config "$RCONF" --checksum -q || fallo "No se pudo subir a Google Drive (¿hay que reconectar Drive?)"
-  "$RCLONE" check "$DMG" "spectre-drive:DMG cifrados" --config "$RCONF" --one-way --checksum --include "$(basename "$DMG")" -q || fallo "La copia en Google Drive no coincide con la de la Mac"
+  "$RCLONE" check "$(dirname "$DMG")" "spectre-drive:DMG cifrados" --config "$RCONF" --one-way --checksum --include "$(basename "$DMG")" -q || fallo "La copia en Google Drive no coincide con la de la Mac"
   ls -1t "$HOME/SPECTRE-respaldos"/SPECTRE-respaldo-*.dmg 2>/dev/null | tail -n +3 | while read -r viejo; do rm -f "$viejo"; done  # en la Mac solo las 2 últimas (en Drive quedan todas)
   mkdir -p "$(dirname "$ESTADO")"
   printf '{"fecha":"%s","ok":true,"archivo":"%s","bytes":%s}' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$(basename "$DMG")" "$(stat -f%z "$DMG")" > "$ESTADO"
