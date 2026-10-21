@@ -27,6 +27,11 @@ la cuenta de GitHub o el proyecto de Supabase. Los pasos van de lo más probable
 2. Si el usuario o repositorio cambió de nombre, actualiza el CNAME `www` en Squarespace (ver 05-google-dns/dns.txt).
 
 ## Caso 3 · Se perdió el proyecto de Supabase (cuentas de compradores)
+**Primero intenta esto (plan Pro, desde oct 2026):** si el proyecto sigue existiendo pero se dañaron o borraron datos,
+Supabase guarda una copia completa diaria de los últimos 7 días (incluye cuentas y contraseñas cifradas). Ve a
+supabase.com → proyecto spectre → Database → Backups → Restore en la fecha anterior al problema. Después re-aplica a mano
+los reembolsos o bloqueos posteriores a esa fecha (Stripe → Pagos → Reembolsos) con `node herramientas/supabase.mjs quitar`.
+Si el proyecto ya no existe, sigue estos pasos:
 1. Crea un proyecto nuevo y corre `node herramientas/supabase.mjs conectar` y luego `instalar` (crea tablas, reglas, correos, funciones
    y escribe js/cuentas-config.js con la nueva dirección). Después `correo` (pide la contraseña de aplicación de Gmail) y `contenido`.
 2. Restaura los datos: en el SQL Editor de Supabase importa usuarios (03-supabase/auth-users.json, con su contraseña cifrada) y luego

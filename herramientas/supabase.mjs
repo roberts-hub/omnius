@@ -170,7 +170,9 @@ const comandos = {
         password_min_length: 10,
         password_required_characters: "abcdefghijklmnopqrstuvwxyz:ABCDEFGHIJKLMNOPQRSTUVWXYZ:0123456789",
         mailer_otp_exp: 86400,           // el link para crear contraseña dura 24 h
-        security_update_password_require_reauthentication: false,
+        security_update_password_require_reauthentication: true, // cambiar contraseña con una sesión vieja pide confirmar por correo
+        password_hibp_enabled: true,     // (plan Pro) rechaza contraseñas que salieron en hackeos públicos
+        sessions_inactivity_timeout: 720, // (plan Pro) 30 días sin entrar = vuelve a iniciar sesión
       }),
     });
     console.log("✓ Inicio de sesión: solo por invitación, contraseñas de 10+ caracteres");
