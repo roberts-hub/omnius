@@ -1,6 +1,7 @@
 // SPECTRE · resumen de actividad para el correo diario de Roberto (lo llama Google Apps Script).
 // Protegido con RESUMEN_TOKEN (secreto compartido solo con el Apps Script). Devuelve las cuentas con
 // bandera roja o bloqueadas y un conteo general. Nunca devuelve contenido ni llaves.
+// Con ?bloquear=<correo> (POST) bloquea esa cuenta (botón del correo de alerta).
 // Con ?respaldo=1 devuelve además la base de clientes completa (compras, cuentas, entradas y bloqueos)
 // para el respaldo diario en Google Drive. Tampoco incluye contenido, llaves ni contraseñas.
 const URL_SB = Deno.env.get("SUPABASE_URL")!;
@@ -24,9 +25,38 @@ async function leer(ruta: string, init: RequestInit = {}) {
 Deno.serve(async (req) => {
   if (!TOKEN || !igualSeguro(req.headers.get("x-resumen-token") ?? "", TOKEN)) return new Response("no", { status: 401 });
   try {
+    const params = new URL(req.url).searchParams;
+
+    // ?bloquear=<correo> (POST): bloquea la cuenta desde el botón del correo de alerta y cierra sus sesiones
+    if (params.get("bloquear")) {
+      if (req.method !== "POST") return new Response("usa POST", { status: 405 });
+      const correo = params.get("bloquear")!.trim().toLowerCase();
+      const id = await leer("/rest/v1/rpc/usuario_por_correo", { method: "POST", body: JSON.stringify({ correo }) });
+      if (!id) return Response.json({ ok: false, mensaje: "No existe una cuenta con ese correo." }, { status: 404 });
+      const r = await fetch(URL_SB + "/rest/v1/bloqueos?on_conflict=user_id", {
+        method: "POST", headers: { ...CAB, Prefer: "resolution=merge-duplicates" },
+        body: JSON.stringify({ user_id: id, motivo: "bloqueada desde la alerta", automatico: false }),
+      });
+      if (!r.ok) throw new Error("bloqueo " + r.status);
+      await fetch(URL_SB + `/auth/v1/admin/users/${id}/logout`, { method: "POST", headers: CAB }).catch(() => {});
+      return Response.json({ ok: true, mensaje: `${correo} quedó bloqueada: ya no puede abrir el área de miembros.` });
+    }
+
     const filas = await leer("/rest/v1/rpc/actividad_cuentas", { method: "POST", body: "{}" });
     const alertas = filas.filter((f: any) => f.bandera || f.bloqueada);
-    if (new URL(req.url).searchParams.get("respaldo") !== "1") return Response.json({ cuentas: filas.length, alertas });
+    if (params.get("respaldo") !== "1") {
+      // para el correo de alerta: las entradas de las últimas 24 h de cada cuenta con bandera (hora, IP, dispositivo)
+      if (alertas.length) {
+        const ids = new Map<string, string>();
+        for (const a of alertas) ids.set(a.email, await leer("/rest/v1/rpc/usuario_por_correo", { method: "POST", body: JSON.stringify({ correo: a.email }) }));
+        const desde = new Date(Date.now() - 864e5).toISOString();
+        for (const a of alertas) {
+          const id = ids.get(a.email);
+          a.entradas = id ? await leer(`/rest/v1/accesos?user_id=eq.${id}&creada=gt.${desde}&select=creada,ip,agente&order=creada.desc&limit=40`) : [];
+        }
+      }
+      return Response.json({ cuentas: filas.length, alertas });
+    }
 
     // usuarios (solo id, correo y fechas) para poner el correo en cada entrada y bloqueo
     const correos = new Map<string, string>();
