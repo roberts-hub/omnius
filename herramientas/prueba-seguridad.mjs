@@ -11,7 +11,7 @@
 //   G. contraseñas: políticas del servidor, enumeración de correos, fuerza bruta
 //   H. fugas: el sitio publicado y el repositorio no contienen llaves, contraseñas ni contenido privado
 // Crea usuarios temporales (prueba-*@example.com) y los borra al terminar.
-import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
+import { readFileSync, readdirSync, statSync, existsSync, writeFileSync, mkdirSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
@@ -237,5 +237,7 @@ try {
   for (const u of creados) await admin(`/auth/v1/admin/users/${u.id}`, { metodo: "DELETE" });
   await admin(`/rest/v1/compras?email=like.prueba-*-${sufijo}@example.com`, { metodo: "DELETE" }); // (se borran también en cascada con el usuario)
   console.log(`\n${fallos ? "✗" : "✓"} ${ok} pruebas pasaron, ${fallos} fallaron. Usuarios de prueba borrados.`);
+  // resultado para el tablero (pestaña Estado): solo conteos y fecha
+  try { mkdirSync(PRIV("metricas"), { recursive: true }); writeFileSync(PRIV("metricas/ultima-prueba.json"), JSON.stringify({ fecha: new Date().toISOString(), pasaron: ok, fallaron: fallos })); } catch (_) {}
   process.exit(fallos ? 1 : 0);
 }

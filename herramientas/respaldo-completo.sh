@@ -5,13 +5,33 @@
 # Para abrirlo: doble clic en el .dmg y escribe la contraseña. Adentro está RESTAURAR.md con los pasos.
 # Guarda la contraseña en un lugar seguro (sin ella el respaldo no se puede abrir) y sube el .dmg a Google Drive
 # y/o al NAS. No incluye el historial de git (GitHub ya lo guarda), sí todos los archivos actuales.
+#
+# Modo automático (lo corre la Mac sola cada domingo, ver herramientas/respaldo-semanal.plist):
+#   bash herramientas/respaldo-completo.sh --auto
+#   → usa la contraseña guardada en el Llavero (servicio "spectre-respaldo-dmg"), deja el .dmg en ~/SPECTRE-respaldos,
+#     lo sube a Google Drive (carpeta "SPECTRE respaldos/DMG cifrados", nunca se borra allá) y anota el resultado en
+#     privado/metricas/respaldo-dmg.json para el tablero. Si algo falla, avisa con una notificación de la Mac.
 set -euo pipefail
 RAIZ="$(cd "$(dirname "$0")/.." && pwd)"
 FECHA=$(date +%Y-%m-%d)
 TMP=$(mktemp -d)
 DEST="$TMP/SPECTRE-respaldo-$FECHA"
 DMG="$HOME/Desktop/SPECTRE-respaldo-$FECHA.dmg"
+AUTO=0; [ "${1:-}" = "--auto" ] && AUTO=1
+ESTADO="$RAIZ/privado/metricas/respaldo-dmg.json"
+RCLONE="$HOME/respaldo-grads-2026/rclone"; RCONF="$RAIZ/privado/rclone.conf"
+fallo() {
+  mkdir -p "$(dirname "$ESTADO")"
+  printf '{"fecha":"%s","ok":false,"error":"%s"}' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$1" > "$ESTADO"
+  osascript -e "display notification \"$1\" with title \"SPECTRE: falló el respaldo semanal\"" 2>/dev/null || true
+  echo "✗ $1"; exit 1
+}
+if [ $AUTO = 1 ]; then
+  mkdir -p "$HOME/SPECTRE-respaldos"; DMG="$HOME/SPECTRE-respaldos/SPECTRE-respaldo-$FECHA.dmg"
+  CLAVE=$(security find-generic-password -a spectre -s spectre-respaldo-dmg -w 2>/dev/null) || fallo "No encontré la contraseña del respaldo en el Llavero"
+fi
 trap 'rm -rf "$TMP"' EXIT
+[ $AUTO = 1 ] && trap 'fallo "Falló un paso del respaldo (línea $LINENO)"' ERR
 mkdir -p "$DEST"/{01-sitio,02-privado,03-supabase,04-stripe,05-google-dns,06-claude}
 
 echo "1/6 Sitio (archivos actuales del repositorio, sin .git)…"
@@ -78,11 +98,24 @@ cp "$RAIZ/herramientas/RESTAURAR.md" "$DEST/RESTAURAR.md"
 
 # revisión: que nada importante haya salido vacío
 for f in 03-supabase/config-auth.json 03-supabase/tabla-compras.json 03-supabase/tabla-ediciones.json 03-supabase/auth-users.json 02-privado/descargas.json 02-privado/supabase.json; do
-  [ -s "$DEST/$f" ] || { echo "✗ Falta o está vacío: $f"; exit 1; }
+  [ -s "$DEST/$f" ] || fallo "Falta o está vacío: $f"
 done
 echo "✓ Contenido listo: $(du -sh "$DEST" | cut -f1)"
 # --revisar: solo arma el contenido y lo deja en una carpeta para inspeccionarlo (sin cifrar ni pedir contraseña)
 if [ "${1:-}" = "--revisar" ]; then trap - EXIT; echo "Carpeta de prueba: $DEST"; exit 0; fi
+
+if [ $AUTO = 1 ]; then
+  rm -f "$DMG"
+  printf '%s' "$CLAVE" | hdiutil create -quiet -encryption AES-256 -stdinpass -fs APFS -volname "SPECTRE respaldo $FECHA" -srcfolder "$DEST" "$DMG" || fallo "No se pudo crear el disco cifrado"
+  unset CLAVE
+  "$RCLONE" copy "$DMG" "spectre-drive:DMG cifrados" --config "$RCONF" --checksum -q || fallo "No se pudo subir a Google Drive (¿hay que reconectar Drive?)"
+  "$RCLONE" check "$DMG" "spectre-drive:DMG cifrados" --config "$RCONF" --one-way --checksum --include "$(basename "$DMG")" -q || fallo "La copia en Google Drive no coincide con la de la Mac"
+  ls -1t "$HOME/SPECTRE-respaldos"/SPECTRE-respaldo-*.dmg 2>/dev/null | tail -n +3 | while read -r viejo; do rm -f "$viejo"; done  # en la Mac solo las 2 últimas (en Drive quedan todas)
+  mkdir -p "$(dirname "$ESTADO")"
+  printf '{"fecha":"%s","ok":true,"archivo":"%s","bytes":%s}' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$(basename "$DMG")" "$(stat -f%z "$DMG")" > "$ESTADO"
+  echo "✓ Respaldo cifrado y subido a Google Drive: $(basename "$DMG") ($(du -h "$DMG" | cut -f1))"
+  exit 0
+fi
 
 echo
 echo "Elige una contraseña para el respaldo (mínimo 12 caracteres). Guárdala en un lugar seguro:"

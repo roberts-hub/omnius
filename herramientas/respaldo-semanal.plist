@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- SPECTRE · respaldo completo cifrado cada domingo 4 am → Google Drive. Instalar (una vez):
+     cp herramientas/respaldo-semanal.plist ~/Library/LaunchAgents/com.spectre.respaldo-semanal.plist
+     launchctl load ~/Library/LaunchAgents/com.spectre.respaldo-semanal.plist
+     Si la Mac está apagada o dormida a esa hora, corre al despertar. Registro: ~/SPECTRE-respaldos/respaldo.log -->
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>com.spectre.respaldo-semanal</string>
+  <key>ProgramArguments</key>
+  <array><string>/bin/bash</string><string>/Users/roberts.creative/omnius/herramientas/respaldo-completo.sh</string><string>--auto</string></array>
+  <key>StartCalendarInterval</key>
+  <dict><key>Weekday</key><integer>0</integer><key>Hour</key><integer>4</integer><key>Minute</key><integer>0</integer></dict>
+  <key>EnvironmentVariables</key>
+  <dict><key>PATH</key><string>/usr/local/bin:/opt/homebrew/bin:/Users/roberts.creative/bin:/usr/bin:/bin:/usr/sbin:/sbin</string></dict>
+  <key>StandardOutPath</key><string>/Users/roberts.creative/SPECTRE-respaldos/respaldo.log</string>
+  <key>StandardErrorPath</key><string>/Users/roberts.creative/SPECTRE-respaldos/respaldo.log</string>
+  <key>LowPriorityIO</key><true/>
+</dict>
+</plist>
