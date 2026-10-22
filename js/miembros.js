@@ -234,7 +234,7 @@ function tarjetaVideo(v) {
     img.alt = "";
     img.loading = "lazy";
     play.append(img, el("span", "video-play-icono"));
-    if (falta) play.append(el("span", "video-idioma-aviso", enIngles ? "ENGLISH VERSION COMING SOON · PLAYS ORIGINAL (SPANISH)" : "VERSIÓN EN ESPAÑOL PRÓXIMAMENTE · SE REPRODUCE EN INGLÉS"));
+    if (falta) play.append(el("span", "video-idioma-aviso", enIngles ? "ENGLISH VERSION COMING SOON · PLAYS ORIGINAL (SPANISH)" : "ORIGINAL VERSION COMING SOON · PLAYS IN ENGLISH"));
     play.addEventListener("click", () => abrirVideo(id, v, id === idEn ? "en" : "es"));
     marco.append(play);
   } else {
