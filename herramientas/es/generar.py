@@ -35,7 +35,7 @@ def rutas_absolutas(s):
 
 def enlaces(s):
     s = s.replace('href="/terms#privacy"', 'href="/es/privacidad"')
-    s = s.replace('href="/get"', 'href="/es/get"').replace('href="/#', 'href="/es/#').replace('href="/"', 'href="/es/"')
+    s = s.replace('href="/get"', 'href="/es/get"').replace('href="/get?', 'href="/es/get?').replace('href="/#', 'href="/es/#').replace('href="/"', 'href="/es/"')
     return s
 
 
@@ -78,10 +78,12 @@ def jsonld(s, url_es):
                 a = q["acceptedAnswer"]
                 a["text"] = T.get(a["text"], a["text"])
         if t == "Product":
-            n["description"] = "Sistema de color cinematográfico: árbol de nodos PowerGrade para DaVinci Resolve, cuatro LUTs de SPECTRE y cuatro One-Click LUTs para Sony S-Log3, versiones del PowerGrade para Sony S-Log3, DJI D-Log, Canon C-Log, RED y Rec.709, una masterclass de 40 minutos y clips en Log para practicar. Funciona en DaVinci Resolve gratis y Studio."
+            n["description"] = "Sistema de color cinematográfico: árbol de nodos PowerGrade para DaVinci Resolve, cuatro LUTs de SPECTRE, cuatro One-Click LUTs para material en Log, versiones del PowerGrade para Sony S-Log3, DJI D-Log, Canon C-Log, RED y Rec.709, una masterclass de 40 minutos y clips en Log para practicar. Funciona en DaVinci Resolve gratis y Studio."
         if t == "BreadcrumbList":
             for it in n["itemListElement"]:
-                it["item"] = it["item"].replace(DOM + "/get", DOM + "/es/get").replace(DOM + "/", DOM + "/es/") if "/es/" not in it["item"] else it["item"]
+                if "/es/" not in it["item"]:
+                    it["item"] = DOM + "/es" + it["item"][len(DOM):]
+                it["name"] = T.get(it["name"], it["name"])
     return s[: m.start(2)] + json.dumps(d, ensure_ascii=False, separators=(",", ":")) + s[m.end(2):]
 
 
