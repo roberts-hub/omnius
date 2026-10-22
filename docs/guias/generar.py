@@ -76,7 +76,8 @@ def guia_resolve():
     ]
 
 
-def guia_luts():
+def guia_luts(con33=True):
+    # con33=False: versión del Full System, que ya no trae la carpeta "SPECTRE LUTs 33" (solo LUTs de 65 puntos)
     T = 6
     return [
         hoja("portada", portada("SPECTRE<br>LUT Installation", "Premiere Pro, Final Cut Pro and CapCut."), 1, T),
@@ -90,8 +91,10 @@ def guia_luts():
             captura("premiere-lumetri-spectre.png")), 3, T),
         hoja("texto", '''<div class="centro"><h2 class="titulo">Final Cut / CapCut</h2>
             <p class="texto">Final Cut Pro: apply the <b>Custom LUT</b> effect from the Effects panel and choose the SPECTRE file.</p>
-            <p class="texto">CapCut Desktop: <b>Adjustment → LUT → Import</b>. Not available on CapCut Mobile.</p>
-            <p class="texto">Your app doesn't accept the LUT? Use the <b>33-point</b> versions in the <b>SPECTRE LUTs 33</b> folder.</p></div>''', 4, T),
+            <p class="texto">CapCut Desktop: <b>Adjustment → LUT → Import</b>. Not available on CapCut Mobile.</p>'''
+            + ('''
+            <p class="texto">Your app doesn't accept the LUT? Use the <b>33-point</b> versions in the <b>SPECTRE LUTs 33</b> folder.</p>''' if con33 else "")
+            + '''</div>''', 4, T),
         hoja("texto", f'''<div class="centro"><h2 class="titulo">Your members area</h2>
             <p class="texto">Tutorials and downloads, always available.</p>
             <a class="enlace" href="https://spectrecolor.com/access">spectrecolor.com/access</a>
@@ -147,5 +150,5 @@ def imprimir(nombre, contenido):
 if __name__ == "__main__":
     imprimir("DaVinci Installation", documento("SPECTRE DaVinci Resolve Installation", guia_resolve()))
     imprimir("LUT Installation", documento("SPECTRE LUT Installation", guia_luts()))
-    imprimir("LUT Installation (Full System)", documento("SPECTRE LUT Installation", guia_luts()))
+    imprimir("LUT Installation (Full System)", documento("SPECTRE LUT Installation", guia_luts(con33=False)))
     imprimir("Color Settings", documento("SPECTRE Color Settings", guia_ajustes()))

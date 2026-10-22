@@ -107,7 +107,6 @@ SPECTRE Full System/
 │       ├── CANON C-LOG.cube
 │       ├── RED-KOMODO.cube
 │       └── REC.709.cube
-├── SPECTRE LUTs 33/                     (las mismas LUTs en 33 puntos, para editores/apps que no aceptan 65)
 │   ├── SPECTRE LUT 33.cube
 │   └── SPECTRE One Click/ (… 33.cube de cada cámara)
 ├── SPECTRE POWER GRADE/                 (PowerGrades de DaVinci Resolve: el árbol de nodos completo)
@@ -138,7 +137,7 @@ aparece como **"LUTs Only"**. Precio tachado: $59.
 
 **Descarga: `SPECTRE LUT Pack.zip` (~50 MB, 22 archivos)**
 Igual que el Full System, pero **sin** `SPECTRE POWER GRADE/` y sin la guía de DaVinci:
-LUTs 65 y 33 puntos (firma + One Click por cámara), READ ME, guías LUT Installation, Color Settings y Terms.
+LUTs de 65 puntos (firma + One Click por cámara; desde 21-oct-2026 sin la carpeta de 33 puntos, que solo queda en el LUT Pack), READ ME, guías LUT Installation, Color Settings y Terms.
 
 **Videos:** Introduction, Setting up in DaVinci Resolve y *How to install and use the SPECTRE LUTs*
 (este último aún sin video; aparece como "coming soon").
