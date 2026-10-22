@@ -78,7 +78,7 @@ def jsonld(s, url_es):
                 a = q["acceptedAnswer"]
                 a["text"] = T.get(a["text"], a["text"])
         if t == "Product":
-            n["description"] = "Sistema de color cinematográfico: árbol de nodos PowerGrade para DaVinci Resolve, Signature LUT y cinco One-Click LUTs, con versiones para Sony S-Log3, DJI D-Log, Canon C-Log, RED y Rec.709, una masterclass de 50 minutos y clips en Log para practicar. Funciona en DaVinci Resolve gratis y Studio."
+            n["description"] = "Sistema de color cinematográfico: árbol de nodos PowerGrade para DaVinci Resolve, cuatro LUTs de SPECTRE y cuatro One-Click LUTs para Sony S-Log3, versiones del PowerGrade para Sony S-Log3, DJI D-Log, Canon C-Log, RED y Rec.709, una masterclass de 50 minutos y clips en Log para practicar. Funciona en DaVinci Resolve gratis y Studio."
         if t == "BreadcrumbList":
             for it in n["itemListElement"]:
                 it["item"] = it["item"].replace(DOM + "/get", DOM + "/es/get").replace(DOM + "/", DOM + "/es/") if "/es/" not in it["item"] else it["item"]

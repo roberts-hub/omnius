@@ -97,27 +97,25 @@ Para quien edita en **DaVinci Resolve** (Free o Studio). Precio tachado de refer
 
 **Descarga 1: `SPECTRE Full System.zip` (~52 MB, 29 archivos)**
 ```
-SPECTRE Full System/
-├── READ ME.txt                          (instrucciones; saltos de línea CRLF para que se lea bien en Windows)
-├── SPECTRE LUTs/                        (LUTs de 65 puntos, máxima calidad)
-│   ├── SPECTRE LUT .cube                ← LUT "firma", para material en Rec.709
-│   └── SPECTRE One Click/               ← un clic: convierten de Log al look final
-│       ├── SONY S-LOG3.cube
-│       ├── DJI D-LOG.cube
-│       ├── CANON C-LOG.cube
-│       ├── RED-KOMODO.cube
-│       └── REC.709.cube
-├── SPECTRE POWER GRADE/                 (PowerGrades de DaVinci Resolve: el árbol de nodos completo)
-│   ├── SONY S-LOG3.drx
-│   ├── DJI D-LOG.drx
-│   ├── CANON C-LOG.drx
-│   ├── RED-LOG.drx
-│   └── REC.709.drx
-└── Guides/                              (PDF 16:9)
-    ├── DaVinci Installation.pdf         (cómo importar el PowerGrade)
-    ├── LUT Installation.pdf             (cómo instalar LUTs; incluye link al área y contraseña)
-    ├── Color Settings.pdf               (DaVinci YRGB, DaVinci WG/Intermediate, salida Rec.709-A)
+SPECTRE Full System/                     (paquete final del 22-oct-2026; archivos originales en ~/Desktop/SPECTRE)
+├── READ ME.txt                          (corto: solo carpetas; la explicación va en las guías. CRLF para Windows)
+├── SPECTRE LUTs/                        (65 puntos) para clips YA en Rec.709
+│   ├── SPR LUT 1.cube · SPR LUT 2.cube · SPR LUT 3.cube · SPR LUT BW.cube
+├── One Click LUTs/                      (65 puntos) SOLO Sony S-Log3: traen la conversión a Rec.709 (un clic en Premiere)
+│   └── One Click 1.cube … One Click 4.cube
+├── SPECTRE POWER GRADE/                 (PowerGrades de DaVinci Resolve)
+│   ├── CANON C-LOG.drx · DJI D-LOG.drx · REC.709.drx · RED-LOG.drx · SONY S-LOG 3.drx
+└── Guides/                              (PDF 16:9, se generan con docs/guias/generar.py y licencia.py)
+    ├── DaVinci Installation.pdf         (copiar las 2 carpetas de LUTs, importar PowerGrades)
+    ├── LUT Installation.pdf             (versión Full System: Premiere/Final Cut/CapCut + página "Which LUT do I use?")
+    ├── Color Settings.pdf
     └── Terms & License.pdf
+
+SPECTRE LUT Pack/                        ($49: todos los LUTs; sin PowerGrades ni masterclass)
+├── READ ME.txt
+├── SPECTRE LUTs/  (los mismos 4)  ·  One Click LUTs/  (los mismos 4)
+├── SPECTRE LUTs 33/                     (versiones de 33 puntos de los 8, hechas con herramientas/lut33.py)
+└── Guides/  LUT Installation.pdf (con nota de 33 puntos) · Color Settings.pdf · Terms & License.pdf
 ```
 
 **Descarga 2: `SPECTRE Log Practice Footage.zip` (~448 MB, se sirve en partes de 45 MB)**
@@ -135,7 +133,7 @@ aparece como **"LUTs Only"**. Precio tachado: $59.
 
 **Descarga: `SPECTRE LUT Pack.zip` (~50 MB, 22 archivos)**
 Igual que el Full System, pero **sin** `SPECTRE POWER GRADE/` y sin la guía de DaVinci:
-LUTs de 65 puntos (firma + One Click por cámara; desde 21-oct-2026 sin la carpeta de 33 puntos, que solo queda en el LUT Pack), READ ME, guías LUT Installation, Color Settings y Terms.
+LUTs SPR 1-3 y BW + One Click 1-4 (Sony S-Log3), sin carpeta de 33 puntos (solo en el LUT Pack), READ ME corto, guías LUT Installation, DaVinci Installation, Color Settings y Terms.
 
 **Videos:** Introduction, Setting up in DaVinci Resolve y *How to install and use the SPECTRE LUTs*
 (este último aún sin video; aparece como "coming soon").

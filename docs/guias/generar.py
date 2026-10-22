@@ -3,6 +3,7 @@
 # Resolve: maquetas con los colores y textos de la app real (davinci.py). Premiere: capturas reales en img/.
 import subprocess, pathlib
 import davinci as dv
+import premiere as pr
 
 AQUI = pathlib.Path(__file__).resolve().parent
 RAIZ = AQUI.parent.parent
@@ -11,14 +12,16 @@ CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 FOTO = lambda n: f"file://{RAIZ}/img/looks/{n:02d}-despues-1200.jpg"
 IMG = lambda n: f"file://{AQUI}/img/{n}"
 
-# nombres reales de los archivos que recibe el comprador: (One Click LUT, PowerGrade)
-CAMARAS = [
+# nombres reales de los archivos que recibe el comprador
+CAMARAS = [  # (nombre en la galería, archivo PowerGrade)
     ("CANON C-LOG", "CANON C-LOG.drx"),
     ("DJI D-LOG", "DJI D-LOG.drx"),
     ("REC.709", "REC.709.drx"),
-    ("RED-KOMODO", "RED-LOG.drx"),
-    ("SONY S-LOG3", "SONY S-LOG3.drx"),
+    ("RED-LOG", "RED-LOG.drx"),
+    ("SONY S-LOG 3", "SONY S-LOG 3.drx"),
 ]
+SPR_LUTS = ["SPR LUT 1", "SPR LUT 2", "SPR LUT 3", "SPR LUT BW"]  # carpeta SPECTRE LUTs: para clips ya en Rec.709
+ONE_CLICK = ["One Click 1", "One Click 2", "One Click 3", "One Click 4"]  # carpeta One Click LUTs: Sony S-Log3, conversión incluida
 
 ICONO = '<svg viewBox="0 0 40 40" fill="none" stroke="#eae0c5" stroke-width="2"><circle cx="20" cy="20" r="13"/><line x1="20" y1="2" x2="20" y2="38"/></svg>'
 FUENTES = '<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=IBM+Plex+Mono:wght@400;500&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">'
@@ -55,13 +58,13 @@ def guia_resolve():
     return [
         hoja("portada", portada("SPECTRE<br>in DaVinci Resolve", "Set it up once. Grade with it forever."), 1, T),
         hoja("paso", paso("Step 1: Copy the LUTs",
-            "Go to <b>Project Settings → Color Management</b> and click <b>Open LUT Folder</b>. Drag the <b>SPECTRE LUTs</b> folder inside.",
+            "Go to <b>Project Settings → Color Management</b> and click <b>Open LUT Folder</b>. Drag the <b>SPECTRE LUTs</b> and <b>One Click LUTs</b> folders inside.",
             dv.carpeta_luts(),
             rutas("/Library/Application Support/Blackmagic Design/DaVinci Resolve/LUT",
                   "C:\\ProgramData\\Blackmagic Design\\DaVinci Resolve\\Support\\LUT")), 2, T),
         hoja("paso", paso("Step 2: Refresh",
-            "On the <b>Color</b> page, open <b>LUTs</b>, right-click the list and choose <b>Refresh</b>. Then save (<b>⌘S</b>) and restart Resolve. <b>SPECTRE One Click</b> is for Log clips, <b>SPECTRE LUT</b> for Rec.709 clips.",
-            dv.luts(FOTO(5))), 3, T),
+            "On the <b>Color</b> page, open <b>LUTs</b>, right-click the list and choose <b>Refresh</b>. Then save (<b>⌘S</b>) and restart Resolve. <b>SPR LUTs</b> are for clips already in Rec.709; <b>One Click</b> LUTs are for Sony S-Log3 clips.",
+            dv.luts(SPR_LUTS, [FOTO(n) for n in [5, 3, 4, 6]])), 3, T),
         hoja("paso", paso("Step 3: Import the PowerGrades",
             "In the <b>Gallery</b>, right-click → <b>Add PowerGrade Album</b>. Inside the album, right-click → <b>Import</b> and pick the five <b>.drx</b> files from <b>SPECTRE POWER GRADE</b>, or drag them in.",
             dv.galeria("importar", CAMARAS, fotos)), 4, T),
@@ -77,29 +80,33 @@ def guia_resolve():
 
 
 def guia_luts(con33=True):
-    # con33=False: versión del Full System, que ya no trae la carpeta "SPECTRE LUTs 33" (solo LUTs de 65 puntos)
-    T = 6
+    # con33=False: versión del Full System, que no trae la carpeta "SPECTRE LUTs 33" (solo LUTs de 65 puntos)
+    T = 7
     return [
         hoja("portada", portada("SPECTRE<br>LUT Installation", "Premiere Pro, Final Cut Pro and CapCut."), 1, T),
         hoja("paso", paso("Step 1: Add the LUTs to Premiere",
-            "Open the ZIP and drag all the SPECTRE LUTs into Premiere's <b>Creative</b> folder.",
-            captura("premiere-carpeta-spectre.png"),
+            "Open the ZIP and drag the files from the <b>SPECTRE LUTs</b> and <b>One Click LUTs</b> folders into Premiere's <b>Creative</b> folder.",
+            pr.carpeta(ONE_CLICK + SPR_LUTS),
             rutas("/Applications/Adobe Premiere Pro 2025/Adobe Premiere Pro 2025.app/Contents/Lumetri/LUTs/Creative",
                   "C:\\Program Files\\Adobe\\Adobe Premiere Pro 2025\\Lumetri\\LUTs\\Creative")), 2, T),
         hoja("paso", paso("Step 2: Restart Premiere Pro",
-            "All SPECTRE LUTs are now in <b>Lumetri → Creative → Look</b>. Use the <b>One Click LUT</b> for your camera on Log clips, and <b>SPECTRE LUT</b> on Rec.709 clips.",
-            captura("premiere-lumetri-spectre.png")), 3, T),
+            "All SPECTRE LUTs are now in <b>Lumetri → Creative → Look</b>. Pick the one that matches your clip (next page).",
+            pr.lumetri(ONE_CLICK + SPR_LUTS, "One Click 1")), 3, T),
+        hoja("texto", '''<div class="centro"><h2 class="titulo">Which LUT do I use?</h2>
+            <p class="texto"><b>One Click 1–4</b>: for <b>Sony S-Log3</b> clips only. The conversion to Rec.709 is built in, so in Premiere one LUT takes your Log clip straight to the finished look. Don't add another conversion, and never use them on clips that are already in Rec.709.</p>
+            <p class="texto"><b>SPR LUT 1, 2, 3 and BW</b>: for clips that are <b>already in Rec.709</b>, either converted from Log or shot without a Log profile.</p>
+            <p class="texto">Another camera or Log profile? Convert the clip to Rec.709 first, then apply an <b>SPR LUT</b>.</p></div>''', 4, T),
         hoja("texto", '''<div class="centro"><h2 class="titulo">Final Cut / CapCut</h2>
             <p class="texto">Final Cut Pro: apply the <b>Custom LUT</b> effect from the Effects panel and choose the SPECTRE file.</p>
             <p class="texto">CapCut Desktop: <b>Adjustment → LUT → Import</b>. Not available on CapCut Mobile.</p>'''
             + ('''
             <p class="texto">Your app doesn't accept the LUT? Use the <b>33-point</b> versions in the <b>SPECTRE LUTs 33</b> folder.</p>''' if con33 else "")
-            + '''</div>''', 4, T),
+            + '''</div>''', 5, T),
         hoja("texto", f'''<div class="centro"><h2 class="titulo">Your members area</h2>
             <p class="texto">Tutorials and downloads, always available.</p>
             <a class="enlace" href="https://spectrecolor.com/access">spectrecolor.com/access</a>
-            <p class="clave">Log in with your email and password</p></div>''', 5, T),
-        hoja("cierre", cierre(), 6, T, pie=False),
+            <p class="clave">Log in with your email and password</p></div>''', 6, T),
+        hoja("cierre", cierre(), 7, T, pie=False),
     ]
 
 

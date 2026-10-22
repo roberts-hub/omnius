@@ -25,11 +25,11 @@ def menu(items, pos):
     return f'<div class="dv-menu" style="{pos}">{h}</div>'
 
 
-def luts(foto):
-    carpetas = ["ACES", "Arri", "Astrodesign", "Blackmagic Design", "DCI", "DJI", "Film Looks", "Sony", "SPECTRE LUTs", "VFX IO"]
+def luts(nombres, fotos):
+    carpetas = ["ACES", "Arri", "Astrodesign", "Blackmagic Design", "DCI", "DJI", "Film Looks", "One Click LUTs", "Sony", "SPECTRE LUTs", "VFX IO"]
     lado = '<div class="raiz">▾ &nbsp;LUTs</div>' + "".join(f'<div class="{"on" if c == "SPECTRE LUTs" else ""}">{c}</div>' for c in carpetas)
-    rejilla = (f'<div class="dv-item on"><div class="dv-img barras"><img src="{foto}"></div><div class="dv-etq">SPECTRE LUT</div></div>'
-               '<div class="dv-item"><div class="dv-carpeta"><i></i></div><div class="dv-etq">SPECTRE One Click</div></div>')
+    rejilla = "".join(f'<div class="dv-item{" on" if i == 0 else ""}"><div class="dv-img barras"><img src="{f}"></div><div class="dv-etq">{n}</div></div>'
+                      for i, (n, f) in enumerate(zip(nombres, fotos)))
     m = menu(["*Refresh", "Reveal in Finder"], "left:150px;top:262px")
     return (f'<div class="dv">{tabs("LUTs")}{tool("SPECTRE LUTs")}<div class="dv-cuerpo"><div class="dv-lado">{lado}</div>'
             f'<div class="dv-rejilla">{rejilla}</div></div>{m}{CURSOR.format(pos="left:160px;top:250px")}</div>')
@@ -39,7 +39,7 @@ def galeria(tipo, camaras, fotos):
     albumes = [("Stills 1", ""), ("PowerGrade 1", ""), ("SPECTRE", "on"), ("Timelines", "")]
     lado = "".join(f'<div class="{c}">{IC_ALB}{n}</div>' for n, c in albumes)
     stills = "".join(
-        f'<div class="dv-item{" on" if (tipo == "aplicar" and c[0] == "SONY S-LOG3") else ""}"><div class="dv-img"><img src="{f}"></div>'
+        f'<div class="dv-item{" on" if (tipo == "aplicar" and c[0] == "SONY S-LOG 3") else ""}"><div class="dv-img"><img src="{f}"></div>'
         f'<div class="dv-etq">{c[1].replace(".drx", "")}</div></div>' for c, f in zip(camaras, fotos))
     if tipo == "importar":
         m = menu(["Switch Wipe Mode", "-", "Trace Timeline", "One Still Per Scene", "Apply Display Lut", "-",
