@@ -216,7 +216,7 @@ function cerrarVideo() {
 
 // idioma de los videos: cada video puede tener youtube (español) y youtube_en (inglés)
 const CLAVE_IDIOMA_VIDEOS = "spectre-idioma-videos";
-const AVISO_IA = "Automatically translated with AI from Spanish.";
+const AVISO_IA = "Translated from Spanish with AI.";
 let idiomaVideos = null;
 
 function tarjetaVideo(v) {
@@ -239,7 +239,7 @@ function tarjetaVideo(v) {
     play.append(img, el("span", "video-play-icono"));
     if (falta) play.append(el("span", "video-idioma-aviso", enIngles ? "ENGLISH VERSION COMING SOON · PLAYS ORIGINAL (SPANISH)" : "ORIGINAL VERSION COMING SOON · PLAYS IN ENGLISH"));
     // versión en inglés doblada con IA: aviso en la franja de abajo del video, bien visible
-    else if (id === idEn) play.append(el("span", "video-idioma-aviso una-linea", "Automatically translated with AI from Spanish"));
+    else if (id === idEn) play.append(el("span", "video-idioma-aviso una-linea", "Translated from Spanish with AI"));
     play.addEventListener("click", () => abrirVideo(id, v, id === idEn ? "en" : "es"));
     marco.append(play);
   } else {
