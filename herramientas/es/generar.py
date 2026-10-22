@@ -35,6 +35,7 @@ def rutas_absolutas(s):
 
 def enlaces(s):
     s = s.replace('href="/terms#privacy"', 'href="/es/privacidad"')
+    s = s.replace('href="/terms"', 'href="/es/terminos"')
     s = s.replace('href="/get"', 'href="/es/get"').replace('href="/get?', 'href="/es/get?').replace('href="/#', 'href="/es/#').replace('href="/"', 'href="/es/"')
     return s
 
