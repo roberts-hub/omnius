@@ -119,6 +119,9 @@ if (loader) {
     if (introCerrada) return;
     introCerrada = true;
     timers.forEach(clearTimeout);
+    // si se adelanta (toque, clic o tecla) a media frase: la frase se va primero (0.6 s), antes de que entre
+    // el título del hero (1.1 s); si no, se veía su fantasma detrás de "SPECTRE" mientras el fondo se disolvía
+    intro.classList.add("fuera");
     loader.classList.add("fuera");
     document.body.classList.remove("cargando");
     try { sessionStorage.setItem("omnius-intro", "1"); } catch (e) {}
