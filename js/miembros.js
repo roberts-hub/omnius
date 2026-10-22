@@ -244,7 +244,9 @@ function tarjetaVideo(v) {
   art.append(marco, el("h3", "video-titulo", v.titulo));
   // si el dato debajo del título empieza con el idioma ("SPANISH · 49 MIN"), se muestra el de la versión que se va a reproducir
   const idiomaMostrado = id && id === idEn ? "ENGLISH" : "SPANISH";
-  const meta = (v.duracion || "").replace(/^\s*(spanish|español|english|inglés)\b/i, idiomaMostrado);
+  // duracion_en (opcional): la duración de la versión en inglés, si es distinta
+  const base = idiomaMostrado === "ENGLISH" && v.duracion_en ? v.duracion_en : v.duracion || "";
+  const meta = base.replace(/^\s*(spanish|español|english|inglés)\b/i, idiomaMostrado);
   if (meta) art.append(el("p", "video-meta", meta));
   if (v.descripcion) art.append(el("p", "video-desc", v.descripcion));
   return art;
