@@ -188,8 +188,9 @@ function abrirVideo(id, v, idioma) {
   d.querySelector(".modal-video_etiqueta").textContent = v.titulo;
   d.querySelector(".modal-video_titulo").textContent = v.titulo;
   const desc = d.querySelector(".modal-video_descripcion");
-  desc.textContent = v.descripcion || "";
-  desc.hidden = !v.descripcion;
+  const textoDesc = [v.descripcion, idioma === "en" ? AVISO_IA : ""].filter(Boolean).join(" ");
+  desc.textContent = textoDesc;
+  desc.hidden = !textoDesc;
   const f = document.createElement("iframe");
   // video en español: subtítulos en inglés activados; video en inglés: sin forzar subtítulos
   const subs = idioma === "en" ? "" : "&cc_load_policy=1&cc_lang_pref=en";
@@ -215,6 +216,7 @@ function cerrarVideo() {
 
 // idioma de los videos: cada video puede tener youtube (español) y youtube_en (inglés)
 const CLAVE_IDIOMA_VIDEOS = "spectre-idioma-videos";
+const AVISO_IA = "English version translated with AI. The original version is in Spanish.";
 let idiomaVideos = null;
 
 function tarjetaVideo(v) {
@@ -248,6 +250,8 @@ function tarjetaVideo(v) {
   const base = idiomaMostrado === "ENGLISH" && v.duracion_en ? v.duracion_en : v.duracion || "";
   const meta = base.replace(/^\s*(spanish|español|english|inglés)\b/i, idiomaMostrado);
   if (meta) art.append(el("p", "video-meta", meta));
+  // las versiones en inglés están dobladas con IA: se avisa y se recuerda que la original es en español
+  if (id && id === idEn) art.append(el("p", "video-nota-ia", AVISO_IA));
   if (v.descripcion) art.append(el("p", "video-desc", v.descripcion));
   return art;
 }
