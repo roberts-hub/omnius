@@ -87,23 +87,44 @@ async function bajarCifrado(c, boton) {
     const total = c.bytes + 16 * partes.length;
     const listos = [];
     let recibidos = 0;
-    for (const p of partes) {
-      const resp = await fetch(p.ruta, { cache: "no-store" });
-      if (!resp.ok || !resp.body) throw new Error("descarga");
-      const lector = resp.body.getReader();
-      const trozos = [];
-      let largo = 0;
-      for (;;) {
-        const { done, value } = await lector.read();
-        if (done) break;
-        trozos.push(value);
-        largo += value.length;
-        recibidos += value.length;
-        boton.textContent = `DOWNLOADING ${Math.min(99, Math.round((recibidos / total) * 100))}%`;
+    // cada parte se baja con reintentos: si deja de llegar información 20 s (wifi que se cae, servidor lento)
+    // se cancela y se vuelve a pedir, hasta 3 intentos; así la descarga nunca se queda congelada
+    const bajarParte = async (ruta) => {
+      for (let intento = 1; ; intento++) {
+        const control = new AbortController();
+        let vigia = setTimeout(() => control.abort(), 20000);
+        let deEstaParte = 0;
+        try {
+          const resp = await fetch(ruta, { cache: "no-store", signal: control.signal });
+          if (!resp.ok || !resp.body) throw new Error("descarga");
+          const lector = resp.body.getReader();
+          const trozos = [];
+          for (;;) {
+            const { done, value } = await lector.read();
+            if (done) break;
+            clearTimeout(vigia);
+            vigia = setTimeout(() => control.abort(), 20000);
+            trozos.push(value);
+            deEstaParte += value.length;
+            recibidos += value.length;
+            boton.textContent = `DOWNLOADING ${Math.min(99, Math.round((recibidos / total) * 100))}%`;
+          }
+          const datos = new Uint8Array(deEstaParte);
+          let pos = 0;
+          for (const t of trozos) { datos.set(t, pos); pos += t.length; }
+          return datos;
+        } catch (e) {
+          recibidos -= deEstaParte; // lo de este intento no cuenta
+          if (intento >= 3) throw e;
+          boton.textContent = "RECONNECTING…";
+          await new Promise((r) => setTimeout(r, 1500 * intento));
+        } finally {
+          clearTimeout(vigia);
+        }
       }
-      const datos = new Uint8Array(largo);
-      let pos = 0;
-      for (const t of trozos) { datos.set(t, pos); pos += t.length; }
+    };
+    for (const p of partes) {
+      const datos = await bajarParte(p.ruta);
       listos.push(await crypto.subtle.decrypt({ name: "AES-GCM", iv: deB64(p.iv) }, llave, datos));
     }
     boton.textContent = "PREPARING…";
@@ -219,7 +240,10 @@ function tarjetaVideo(v) {
     marco.append(el("span", "nota-mono", "COMING SOON"));
   }
   art.append(marco, el("h3", "video-titulo", v.titulo));
-  if (v.duracion) art.append(el("p", "video-meta", v.duracion));
+  // si el dato debajo del título es solo el idioma ("SPANISH"), se muestra el de la versión que se va a reproducir
+  const soloIdioma = /^\s*(spanish|español|english|inglés)\s*$/i.test(v.duracion || "");
+  const meta = soloIdioma ? (id && id === idEn ? "ENGLISH" : "SPANISH") : v.duracion;
+  if (meta) art.append(el("p", "video-meta", meta));
   if (v.descripcion) art.append(el("p", "video-desc", v.descripcion));
   return art;
 }
@@ -359,6 +383,12 @@ function pintar(datos, compra) {
       const info = el("div", "descarga-info");
       info.append(el("p", "descarga-titulo", d.titulo));
       if (d.detalle) info.append(el("p", "descarga-detalle", d.detalle));
+      const mb = d.cifrado && d.cifrado.bytes ? Math.round(d.cifrado.bytes / 1e6) : 0;
+      if (mb) {
+        info.append(el("p", "descarga-peso", `${mb >= 1000 ? (mb / 1000).toFixed(1) + " GB" : mb + " MB"}`));
+        // archivos grandes en celular: se arman en la memoria del navegador, mejor bajarlos en la computadora
+        if (mb > 150 && window.matchMedia("(pointer: coarse)").matches) info.append(el("p", "descarga-nota", "Large file: we recommend downloading it on your computer."));
+      }
       let accion;
       if (d.cifrado) {
         accion = el("button", "descarga-boton", "DOWNLOAD ↓");
