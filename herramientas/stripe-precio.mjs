@@ -16,7 +16,7 @@ const CODIGOS = [
   { codigo: "WF100", porcentaje: 100, usos: 1 },
   { codigo: "WF80", porcentaje: 80, usos: 2 },
   { codigo: "WF69", porcentaje: 69, usos: 1 },
-  { codigo: "WF20", porcentaje: 20, usos: 8 },
+  { codigo: "WF20", porcentaje: 20, usos: 13 }, // 8 originales + 5 (22 oct 2026: código recreado con 13 usos)
 ];
 
 function preguntar(texto) {
@@ -145,6 +145,7 @@ try {
   estado.codigos = estado.codigos || {};
   for (const c of CODIGOS) {
     if (estado.codigos[c.codigo]) { console.log(`✓ ${c.codigo} ya existía`); continue; }
+    // 22 oct 2026: los 4 códigos se recrearon a mano para valer en el Full System y el LUT Pack (ver privado/stripe-precio.json)
     const cupon = await stripe("/coupons", { percent_off: c.porcentaje, duration: "once", name: `${c.codigo} · ${c.porcentaje}% Full System`, applies_to: { products: [producto] } });
     let promo;
     try { promo = await stripe("/promotion_codes", { promotion: { type: "coupon", coupon: cupon.id }, code: c.codigo, max_redemptions: c.usos }); }
