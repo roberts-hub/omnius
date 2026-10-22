@@ -107,8 +107,6 @@ SPECTRE Full System/
 │       ├── CANON C-LOG.cube
 │       ├── RED-KOMODO.cube
 │       └── REC.709.cube
-│   ├── SPECTRE LUT 33.cube
-│   └── SPECTRE One Click/ (… 33.cube de cada cámara)
 ├── SPECTRE POWER GRADE/                 (PowerGrades de DaVinci Resolve: el árbol de nodos completo)
 │   ├── SONY S-LOG3.drx
 │   ├── DJI D-LOG.drx
