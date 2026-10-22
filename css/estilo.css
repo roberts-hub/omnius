@@ -2091,3 +2091,4 @@ section.looks { max-width: var(--ancho); margin: 0 auto; padding: clamp(80px, 9v
 .descarga-nota { margin-top: 6px; font-size: 12px; color: var(--hueso); }
 .selector-idioma-sub { font-size: 9px; letter-spacing: 0.16em; opacity: 0.65; }
 .video-nota-ia { margin-top: 8px; font-size: 12px; font-style: normal; line-height: 1.5; color: var(--greige); opacity: 0.85; }
+.video-idioma-aviso.una-linea { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: 0.12em; }
