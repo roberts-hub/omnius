@@ -232,7 +232,8 @@ function tarjetaVideo(v) {
     play.type = "button";
     play.setAttribute("aria-label", "Play: " + v.titulo);
     const img = el("img");
-    img.src = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+    // miniatura: la de la versión original (las de inglés son el mismo video doblado y YouTube a veces les pone un cuadro oscuro)
+    img.src = `https://i.ytimg.com/vi/${idEs || id}/hqdefault.jpg`;
     img.alt = "";
     img.loading = "lazy";
     play.append(img, el("span", "video-play-icono"));
