@@ -173,6 +173,8 @@ const comandos = {
         security_update_password_require_reauthentication: true, // cambiar contraseña con una sesión vieja pide confirmar por correo
         password_hibp_enabled: true,     // (plan Pro) rechaza contraseñas que salieron en hackeos públicos
         sessions_inactivity_timeout: 720, // (plan Pro) 30 días sin entrar = vuelve a iniciar sesión
+        mfa_totp_enroll_enabled: false,  // sin verificación en dos pasos (no se usa)
+        mfa_totp_verify_enabled: false,
       }),
     });
     console.log("✓ Inicio de sesión: solo por invitación, contraseñas de 10+ caracteres");
