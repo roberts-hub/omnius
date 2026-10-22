@@ -139,7 +139,7 @@
 /* ═══════════════════════════════════════════════
    SPECTRE — Roberto Arechederra
    Estructura directa (página de producto) + sello Two Waves:
-   intro tipográfica, iconos, grano, hueso sobre negro.
+   intro tipográfica, iconos, hueso sobre negro.
    ═══════════════════════════════════════════════ */
 
 :root {
@@ -257,29 +257,6 @@ img { display: block; }
 }
 .glyph.activo { opacity: 1; transform: scale(1); }
 
-/* ══════════ GRANO ══════════ */
-
-.grain {
-  position: fixed;
-  inset: -100%;
-  z-index: 90;
-  pointer-events: none;
-  opacity: 0.05;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
-  animation: grano 0.45s steps(4) infinite;
-}
-/* en celular el grano va quieto y del tamaño de la pantalla: animado era una capa enorme
-   redibujándose sin parar, y le quitaba fluidez a los sliders y al scroll */
-@media (hover: none), (max-width: 860px) {
-  .grain { inset: 0; animation: none; }
-}
-@keyframes grano {
-  0% { transform: translate(0, 0); }
-  25% { transform: translate(-2%, 3%); }
-  50% { transform: translate(3%, -2%); }
-  75% { transform: translate(-3%, -3%); }
-  100% { transform: translate(2%, 2%); }
-}
 
 /* ══════════ PIEZAS COMUNES ══════════ */
 
@@ -1625,7 +1602,6 @@ body:has(.barra-compra) .cierre { padding-bottom: 120px; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .grain { animation: none; }
   .js .reveal { opacity: 1; transform: none; transition: none; }
   .faq-a { animation: none; }
   .barra-compra { transition: none; }
