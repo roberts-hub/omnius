@@ -15,3 +15,5 @@ create table if not exists public.upgrades_revisar (
 );
 alter table public.upgrades_revisar enable row level security;
 revoke all on public.upgrades_revisar from anon, authenticated;
+-- la función del webhook usa la llave de servicio: necesita permisos explícitos sobre la tabla
+grant select, insert, update, delete on public.upgrades_revisar to service_role;

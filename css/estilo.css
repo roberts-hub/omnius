@@ -2130,6 +2130,6 @@ section.looks { max-width: var(--ancho); margin: 0 auto; padding: clamp(80px, 9v
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 10V7a5 5 0 0 1 10 0v3h1.5A1.5 1.5 0 0 1 20 11.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 20.5v-9A1.5 1.5 0 0 1 5.5 10H7zm2 0h6V7a3 3 0 0 0-6 0v3z'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 .video-candado-texto { font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em; color: var(--hueso); }
-.video-desbloquear { width: auto; display: inline-flex; padding: 0 22px; margin-top: 14px; }
+.video-desbloquear { width: auto; display: inline-flex; padding: 0 22px; margin-top: 14px; background: transparent; color: var(--hueso); border: 1px solid rgba(234, 224, 197, 0.45); box-shadow: none; }
+.video-desbloquear:hover { background: rgba(234, 224, 197, 0.08); }
 .miembros-aviso-upgrade { margin: 0 0 18px; padding: 12px 16px; border-radius: 10px; border: 1px solid rgba(234, 224, 197, 0.25); color: var(--hueso); font-size: 14px; }
-@media (max-width: 600px) { .video-desbloquear { width: 100%; justify-content: center; } }

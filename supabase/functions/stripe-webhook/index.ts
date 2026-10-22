@@ -93,6 +93,11 @@ async function edicionesDe(id: string | null): Promise<string[]> {
 }
 
 async function registrarUpgrade(sesion: any) {
+  // Stripe puede mandar el mismo evento más de una vez: si este pago ya se registró, no se hace nada más
+  const ya = await sb(`/rest/v1/compras?stripe_session=eq.${encodeURIComponent(sesion.id)}&select=id`);
+  if (ya?.length) return "upgrade ya registrado";
+  const yaRevisar = await sb(`/rest/v1/upgrades_revisar?stripe_session=eq.${encodeURIComponent(sesion.id)}&select=id`);
+  if (yaRevisar?.length) return "upgrade ya guardado para revisar";
   const correo = String(sesion.customer_details?.email || "").trim().toLowerCase();
   const referencia = String(sesion.client_reference_id || "").trim();
   const datosPago = {

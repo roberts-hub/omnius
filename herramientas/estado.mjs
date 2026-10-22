@@ -85,6 +85,13 @@ await intenta("Seguridad", "Cuentas sospechosas", async () => {
   punto("Seguridad", "Cuentas sospechosas", Number(x.bloqueadas) || Number(x.bandera) ? "aviso" : "ok",
     Number(x.bloqueadas) || Number(x.bandera) ? `${x.bandera} con bandera roja · ${x.bloqueadas} bloqueada(s): revisa la pestaña Usuarios` : "Ninguna cuenta compartida ni bloqueada");
 });
+await intenta("Stripe", "Upgrades por revisar", async () => {
+  // pagos del upgrade ($49) que NO se aplicaron: la cuenta no tenía LUT Pack o ya tenía el Full System
+  const r = await sql(`select email, motivo, monto, creada from public.upgrades_revisar where not resuelto order by creada`);
+  punto("Stripe", "Upgrades por revisar", r.length ? "falla" : "ok", r.length
+    ? `${r.length} pago(s) de upgrade sin aplicar: ${r.map((x) => `${x.email} (${x.motivo})`).join(" · ")}. Reembolsa en Stripe o pide a Claude darle el LUT Pack`
+    : "Todos los upgrades pagados se aplicaron");
+});
 await intenta("Seguridad", "Pruebas de seguridad", async () => {
   if (!existsSync(PRIV("metricas/ultima-prueba.json"))) return punto("Seguridad", "Pruebas de seguridad", "aviso", "Todavía no hay resultado guardado");
   const u = JSON.parse(readFileSync(PRIV("metricas/ultima-prueba.json"), "utf8"));
