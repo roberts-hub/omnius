@@ -2109,3 +2109,5 @@ section.looks { max-width: var(--ancho); margin: 0 auto; padding: clamp(80px, 9v
   .introducing-tiras img:nth-child(3), .introducing-tiras img:nth-child(7) { --w: 0.7; }
   .introducing-tiras img:nth-child(5) { --w: 1.2; }
 }
+/* Looks (antes/después) más anchos en escritorio: la rejilla llega más cerca de las orillas de la pantalla */
+@media (min-width: 861px) { section.looks { max-width: 1720px; } }
