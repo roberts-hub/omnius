@@ -21,7 +21,7 @@ CAMARAS = [  # (nombre en la galería, archivo PowerGrade)
     ("SONY S-LOG 3", "SONY S-LOG 3.drx"),
 ]
 SPR_LUTS = ["SPR LUT 1", "SPR LUT 2", "SPR LUT 3", "SPR LUT BW"]  # carpeta SPECTRE LUTs: para clips ya en Rec.709
-ONE_CLICK = ["One Click 1", "One Click 2", "One Click 3", "One Click 4"]  # carpeta One Click LUTs: Sony S-Log3, conversión incluida
+ONE_CLICK = ["One Click 1", "One Click 2", "One Click 3", "One Click 4"]  # carpeta One Click LUTs: para material en Log, conversión incluida
 
 ICONO = '<svg viewBox="0 0 40 40" fill="none" stroke="#eae0c5" stroke-width="2"><circle cx="20" cy="20" r="13"/><line x1="20" y1="2" x2="20" y2="38"/></svg>'
 FUENTES = '<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=IBM+Plex+Mono:wght@400;500&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">'
@@ -63,7 +63,7 @@ def guia_resolve():
             rutas("/Library/Application Support/Blackmagic Design/DaVinci Resolve/LUT",
                   "C:\\ProgramData\\Blackmagic Design\\DaVinci Resolve\\Support\\LUT")), 2, T),
         hoja("paso", paso("Step 2: Refresh",
-            "On the <b>Color</b> page, open <b>LUTs</b>, right-click the list and choose <b>Refresh</b>. Then save (<b>⌘S</b>) and restart Resolve. <b>SPR LUTs</b> are for clips already in Rec.709; <b>One Click</b> LUTs are for Sony S-Log3 clips.",
+            "On the <b>Color</b> page, open <b>LUTs</b>, right-click the list and choose <b>Refresh</b>. Then save (<b>⌘S</b>) and restart Resolve. <b>One Click</b> LUTs go straight on your Log footage; <b>SPR LUTs</b> go on footage that is already in Rec.709.",
             dv.luts(SPR_LUTS, [FOTO(n) for n in [5, 3, 4, 6]])), 3, T),
         hoja("paso", paso("Step 3: Import the PowerGrades",
             "In the <b>Gallery</b>, right-click → <b>Add PowerGrade Album</b>. Inside the album, right-click → <b>Import</b> and pick the five <b>.drx</b> files from <b>SPECTRE POWER GRADE</b>, or drag them in.",
@@ -92,9 +92,9 @@ def guia_luts():
             "All SPECTRE LUTs are now in <b>Lumetri → Creative → Look</b>. Pick the one that matches your clip (next page).",
             pr.lumetri(ONE_CLICK + SPR_LUTS, "One Click 1")), 3, T),
         hoja("texto", '''<div class="centro"><h2 class="titulo">Which LUT do I use?</h2>
-            <p class="texto"><b>One Click 1–4</b>: for <b>Sony S-Log3</b> clips only. The conversion to Rec.709 is built in, so in Premiere one LUT takes your Log clip straight to the finished look. Don't add another conversion, and never use them on clips that are already in Rec.709.</p>
-            <p class="texto"><b>SPR LUT 1, 2, 3 and BW</b>: for clips that are <b>already in Rec.709</b>, either converted from Log or shot without a Log profile.</p>
-            <p class="texto">Another camera or Log profile? Convert the clip to Rec.709 first, then apply an <b>SPR LUT</b>.</p></div>''', 4, T),
+            <p class="texto"><b>One Click 1–4</b>: made for <b>Log footage</b>. The conversion to Rec.709 is already built in, so one LUT on your Log clip gives you a finished image in a single layer. Don't add another conversion on top, and don't use them on clips that are already in Rec.709.</p>
+            <p class="texto"><b>SPR LUT 1, 2, 3 and BW</b>: made for footage in <b>Rec.709</b>. Use them on clips shot without a Log profile, or to finish your look after converting your Log footage to Rec.709 with your camera's conversion LUT or a Color Space Transform.</p>
+            <p class="texto">Quick rule: Log clip, <b>One Click</b>. Rec.709 clip, <b>SPR LUT</b>.</p></div>''', 4, T),
         hoja("texto", '''<div class="centro"><h2 class="titulo">Final Cut / CapCut</h2>
             <p class="texto">Final Cut Pro: apply the <b>Custom LUT</b> effect from the Effects panel and choose the SPECTRE file.</p>
             <p class="texto">CapCut Desktop: <b>Adjustment → LUT → Import</b>. Not available on CapCut Mobile.</p></div>''', 5, T),
