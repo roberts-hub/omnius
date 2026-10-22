@@ -1615,7 +1615,7 @@ body:has(.barra-compra) .cierre { padding-bottom: 120px; }
   .resenas-flecha { display: none; }
   .carrusel-pista .look { opacity: 0.4; }
   .introducing-tiras { grid-template-columns: 1fr 1.4fr 1fr; }
-  .introducing-tiras img:nth-child(n+4) { display: none; }
+  .introducing-tiras img.lateral, .introducing-tiras img:nth-child(n+6) { display: none; }
   .comparador .tag.camara { font-size: 9px; bottom: 10px; }
   .guia .handle { width: 40px; height: 40px; margin: -20px 0 0 -20px; background-size: 26px 26px; }
   .look-nombre { font-size: 22px; }
@@ -2093,3 +2093,19 @@ section.looks { max-width: var(--ancho); margin: 0 auto; padding: clamp(80px, 9v
 .video-nota-ia { margin-top: 8px; font-size: 12px; font-style: normal; line-height: 1.5; color: var(--greige); opacity: 0.85; }
 .video-idioma-aviso.una-linea { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: 0.12em; }
 @media (max-width: 420px) { .video-idioma-aviso.una-linea { font-size: 8.5px; letter-spacing: 0.04em; padding: 7px 6px; } }
+
+/* Collage a lo ancho: las 5 tomas conservan su tamaño y dos stills extra por lado lo extienden hasta las orillas,
+   que se desvanecen (sutil). --u = ancho de 1fr de la versión original (5 tomas = 4.6fr). */
+@media (min-width: 861px) {
+  .introducing { max-width: none; padding: 0; overflow: hidden; --u: calc((min(var(--ancho), 100vw) - 2 * var(--margen)) / 4.6); }
+  .introducing-tiras {
+    display: flex; justify-content: center;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+  }
+  .introducing-tiras img { flex: 0 0 auto; width: calc(var(--w, 1) * var(--u)); }
+  .introducing-tiras img:nth-child(1), .introducing-tiras img:nth-child(9) { --w: 0.75; }
+  .introducing-tiras img:nth-child(2), .introducing-tiras img:nth-child(8) { --w: 0.85; }
+  .introducing-tiras img:nth-child(3), .introducing-tiras img:nth-child(7) { --w: 0.7; }
+  .introducing-tiras img:nth-child(5) { --w: 1.2; }
+}
