@@ -229,6 +229,16 @@ function pintar(datos, compra) {
   const intro = el("header", "miembros-intro");
   intro.append(el("p", "kicker", "MEMBERS AREA" + (datos.edicion ? " // " + datos.edicion.toUpperCase() : "")), el("h1", "titulo", "Welcome to SPECTRE."));
   if (datos.bienvenida) intro.append(el("p", "acceso-texto", datos.bienvenida));
+  if ((datos.descargas || []).length) {
+    const ir = el("a", "btn-compra ir-descargas", "GO TO DOWNLOADS ↓");
+    ir.href = "#descargas";
+    ir.addEventListener("click", (e) => {
+      e.preventDefault();
+      document.getElementById("descargas")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      if (window.umami) window.umami.track("miembros-ir-descargas");
+    });
+    intro.append(ir);
+  }
   destino.append(intro);
 
   // recién creó (invitación de compra) o cambió (recuperación) su contraseña desde el correo
@@ -251,9 +261,59 @@ function pintar(datos, compra) {
   try { aceptados = localStorage.getItem(CLAVE_TERMINOS) === "1"; } catch (_) {}
   const botonesDescarga = [];
 
-  // ── 1. DESCARGAS (arriba: es lo primero que busca el comprador) ──
+  // ── 1. VIDEOS, con selector de idioma bien visible ──
+  const secciones = datos.secciones || [];
+  if (secciones.length) {
+    const todos = secciones.flatMap((s) => s.videos || []);
+    const hayIngles = todos.some((v) => idYoutube(v.youtube_en));
+    try { idiomaVideos = localStorage.getItem(CLAVE_IDIOMA_VIDEOS); } catch (_) {}
+    if (idiomaVideos !== "en" && idiomaVideos !== "es") idiomaVideos = hayIngles ? "en" : "es";
+
+    const cab = el("section", "miembros-seccion videos-cabeza");
+    const textos = el("div", "videos-cabeza-texto");
+    textos.append(el("p", "kicker", "TUTORIALS"), el("p", "videos-cabeza-nota", "Choose the language of the videos."));
+    const selector = el("div", "selector-idioma");
+    selector.setAttribute("role", "group");
+    selector.setAttribute("aria-label", "Video language");
+    const opciones = [["en", "ENGLISH"], ["es", "ESPAÑOL"]].map(([id, nombre]) => {
+      const b = el("button", "selector-idioma-opcion", nombre);
+      b.type = "button";
+      b.dataset.idioma = id;
+      if (id === "en" && !hayIngles) b.append(el("span", "selector-idioma-pronto", "SOON"));
+      b.addEventListener("click", () => {
+        if (idiomaVideos === id) return;
+        idiomaVideos = id;
+        try { localStorage.setItem(CLAVE_IDIOMA_VIDEOS, id); } catch (_) {}
+        if (window.umami) window.umami.track("miembros-idioma-videos", { idioma: id });
+        pintarVideos();
+      });
+      return b;
+    });
+    selector.append(...opciones);
+    cab.append(textos, selector);
+    destino.append(cab);
+
+    const contVideos = el("div", "videos-secciones");
+    destino.append(contVideos);
+    const pintarVideos = () => {
+      opciones.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.idioma === idiomaVideos)));
+      contVideos.replaceChildren();
+      secciones.forEach((s) => {
+        const sec = el("section", "miembros-seccion");
+        sec.append(el("h2", "miembros-subtitulo", s.titulo));
+        const grid = el("div", "videos");
+        (s.videos || []).forEach((v) => grid.append(tarjetaVideo(v)));
+        sec.append(grid);
+        contVideos.append(sec);
+      });
+    };
+    pintarVideos();
+  }
+
+  // ── 2. DESCARGAS (el botón "GO TO DOWNLOADS" de arriba baja hasta aquí) ──
   if ((datos.descargas || []).length) {
     const sec = el("section", "miembros-seccion miembros-descargas");
+    sec.id = "descargas";
     sec.append(el("h2", "miembros-subtitulo", "Your downloads"));
 
     // licencia, compacta: resumen desplegable + casilla
@@ -327,55 +387,6 @@ function pintar(datos, compra) {
     });
     sec.append(lista, t);
     destino.append(sec);
-  }
-
-  // ── 2. VIDEOS, con selector de idioma bien visible ──
-  const secciones = datos.secciones || [];
-  if (secciones.length) {
-    const todos = secciones.flatMap((s) => s.videos || []);
-    const hayIngles = todos.some((v) => idYoutube(v.youtube_en));
-    try { idiomaVideos = localStorage.getItem(CLAVE_IDIOMA_VIDEOS); } catch (_) {}
-    if (idiomaVideos !== "en" && idiomaVideos !== "es") idiomaVideos = hayIngles ? "en" : "es";
-
-    const cab = el("section", "miembros-seccion videos-cabeza");
-    const textos = el("div", "videos-cabeza-texto");
-    textos.append(el("p", "kicker", "TUTORIALS"), el("p", "videos-cabeza-nota", "Choose the language of the videos."));
-    const selector = el("div", "selector-idioma");
-    selector.setAttribute("role", "group");
-    selector.setAttribute("aria-label", "Video language");
-    const opciones = [["en", "ENGLISH"], ["es", "ESPAÑOL"]].map(([id, nombre]) => {
-      const b = el("button", "selector-idioma-opcion", nombre);
-      b.type = "button";
-      b.dataset.idioma = id;
-      if (id === "en" && !hayIngles) b.append(el("span", "selector-idioma-pronto", "SOON"));
-      b.addEventListener("click", () => {
-        if (idiomaVideos === id) return;
-        idiomaVideos = id;
-        try { localStorage.setItem(CLAVE_IDIOMA_VIDEOS, id); } catch (_) {}
-        if (window.umami) window.umami.track("miembros-idioma-videos", { idioma: id });
-        pintarVideos();
-      });
-      return b;
-    });
-    selector.append(...opciones);
-    cab.append(textos, selector);
-    destino.append(cab);
-
-    const contVideos = el("div", "videos-secciones");
-    destino.append(contVideos);
-    const pintarVideos = () => {
-      opciones.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.idioma === idiomaVideos)));
-      contVideos.replaceChildren();
-      secciones.forEach((s) => {
-        const sec = el("section", "miembros-seccion");
-        sec.append(el("h2", "miembros-subtitulo", s.titulo));
-        const grid = el("div", "videos");
-        (s.videos || []).forEach((v) => grid.append(tarjetaVideo(v)));
-        sec.append(grid);
-        contVideos.append(sec);
-      });
-    };
-    pintarVideos();
   }
 
   // LUT Pack: invitación a la edición completa
