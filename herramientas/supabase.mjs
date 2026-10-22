@@ -99,7 +99,7 @@ async function sb(ruta, opciones = {}) {
 }
 
 // ── correos: fondo negro y letras blancas ──
-function plantilla({ etiqueta, titulo, texto, boton, nota, tipo }) {
+function plantilla({ etiqueta, titulo, texto, boton, nota, tipo, url }) {
   const sans = "font-family:Archivo,'Helvetica Neue',Helvetica,Arial,sans-serif;";
   const mono = "font-family:'IBM Plex Mono',Menlo,Consolas,monospace;";
   return `<!doctype html><html><head><meta name="color-scheme" content="dark"><meta name="supported-color-schemes" content="dark"></head>
@@ -110,7 +110,7 @@ function plantilla({ etiqueta, titulo, texto, boton, nota, tipo }) {
 <tr><td style="padding:0 0 8px;${mono}font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:#d4d4d4;">${etiqueta}</td></tr>
 <tr><td style="padding:0 0 14px;${sans}font-size:28px;line-height:1.2;font-weight:600;color:#ffffff;">${titulo}</td></tr>
 <tr><td style="padding:0 0 30px;${sans}font-size:15px;line-height:1.6;color:#d4d4d4;">${texto}</td></tr>
-<tr><td style="padding:0 0 30px;"><a href="${"{{ .RedirectTo }}"}#token_hash={{ .TokenHash }}&type=${tipo}" style="display:inline-block;padding:15px 26px;border-radius:10px;background:#ffffff;color:#000000;${mono}font-size:11px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;text-decoration:none;">${boton} &rarr;</a></td></tr>
+<tr><td style="padding:0 0 30px;"><a href="${url || "{{ .RedirectTo }}#token_hash={{ .TokenHash }}&type=" + tipo}" style="display:inline-block;padding:15px 26px;border-radius:10px;background:#ffffff;color:#000000;${mono}font-size:11px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;text-decoration:none;">${boton} &rarr;</a></td></tr>
 <tr><td style="padding:0 0 28px;${sans}font-size:13px;line-height:1.6;color:#9a9a9a;">${nota}</td></tr>
 <tr><td style="border-top:1px solid #333333;padding:24px 0 0;${sans}font-size:13px;line-height:1.7;color:#d4d4d4;">Questions? Reply to this email or write to <a href="mailto:${REMITENTE}" style="color:#ffffff;">${REMITENTE}</a></td></tr>
 <tr><td style="padding:18px 0 0;${mono}font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#9a9a9a;"><a href="${SITIO}" style="color:#9a9a9a;text-decoration:none;">spectrecolor.com</a> &nbsp;·&nbsp; <a href="${SITIO}/terms" style="color:#9a9a9a;text-decoration:none;">Terms &amp; License</a></td></tr>
@@ -137,7 +137,18 @@ const CORREOS = {
     nota: "This link works once and expires soon. If you didn’t ask for it, you can ignore this email: nothing changes in your account.",
   }),
   mailer_subjects_email_change: "Confirm your new email for SPECTRE",
-  mailer_subjects_magic_link: "Your SPECTRE login link",
+  // "magic link": el sitio no lo usa para entrar. Es el correo que manda el webhook cuando se aplica un upgrade
+  // (LUT Pack → Full System). Sin link de acceso ni código: solo lleva a spectrecolor.com/access, así que aunque
+  // alguien lo pidiera para otra persona no abre ninguna cuenta. Texto neutro por la misma razón.
+  mailer_subjects_magic_link: "Your SPECTRE purchase is ready",
+  mailer_templates_magic_link_content: plantilla({
+    etiqueta: "Payment confirmed",
+    titulo: "Your SPECTRE account is updated.",
+    texto: "Your purchase is active on your SPECTRE account. If you upgraded to the Full System, the PowerGrade for DaVinci Resolve and the full grading masterclass are now unlocked. Log in with your usual email and password to see everything.",
+    boton: "Open the members area",
+    url: SITIO + "/access",
+    nota: "Same email, same password: nothing else to set up. Your payment receipt arrives in a separate email from Stripe.",
+  }),
   mailer_subjects_confirmation: "Confirm your SPECTRE account",
 };
 

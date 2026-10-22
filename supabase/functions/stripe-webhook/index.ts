@@ -139,7 +139,16 @@ async function registrarUpgrade(sesion: any) {
       motivo: "upgrade desde LUT Pack",
     }),
   });
-  return `upgrade a Full System para ${correoCuenta}`;
+  // correo de confirmación de SPECTRE ("Your SPECTRE purchase is ready", plantilla magic_link sin link de acceso)
+  // al correo de la CUENTA. Si no sale, el upgrade ya quedó aplicado: solo se anota (Stripe manda su recibo aparte).
+  let correoEnviado = true;
+  try {
+    await sb("/auth/v1/otp", { method: "POST", body: JSON.stringify({ email: correoCuenta, create_user: false }) });
+  } catch (e) {
+    correoEnviado = false;
+    console.error("upgrade aplicado pero el correo de confirmación no salió", String(e));
+  }
+  return `upgrade a Full System para ${correoCuenta}${correoEnviado ? " (correo enviado)" : " (SIN correo)"}`;
 }
 
 async function registrarCompra(sesion: any) {
