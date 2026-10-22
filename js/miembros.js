@@ -219,7 +219,52 @@ const CLAVE_IDIOMA_VIDEOS = "spectre-idioma-videos";
 const AVISO_IA = "Translated from Spanish with AI.";
 let idiomaVideos = null;
 
+// id y correo de la cuenta (vienen dentro del token de la sesión)
+function cuentaActual() {
+  try {
+    const p = JSON.parse(atob(sesion.access_token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/")));
+    return { id: p.sub || "", correo: p.email || "" };
+  } catch (_) { return { id: "", correo: "" }; }
+}
+// link de pago del upgrade (Stripe): lleva el id de la cuenta para que el pago se aplique a ESTA cuenta
+function linkUpgrade(url) {
+  if (!/buy\.stripe\.com/.test(url || "")) return url || "/get";
+  const { id, correo } = cuentaActual();
+  const u = new URL(url);
+  if (id) u.searchParams.set("client_reference_id", id);
+  if (correo) u.searchParams.set("prefilled_email", correo);
+  u.searchParams.set("locale", "en");
+  return u.toString();
+}
+
+// tarjeta bloqueada (LUT Pack): la masterclass del Full System, con la invitación a hacer upgrade
+function tarjetaBloqueada(v) {
+  const art = el("article", "video video-bloqueado");
+  const marco = el("a", "video-marco");
+  marco.href = linkUpgrade(v.url);
+  marco.setAttribute("aria-label", (v.boton || "Unlock") + ": " + v.titulo);
+  marco.setAttribute("data-umami-event", "upgrade");
+  marco.setAttribute("data-umami-event-boton", "tarjeta");
+  const img = el("img");
+  img.src = v.poster || "/video/clase-poster.jpg";
+  img.alt = "";
+  img.loading = "lazy";
+  const capa = el("span", "video-candado");
+  capa.append(el("span", "video-candado-icono"), el("span", "video-candado-texto", v.etiqueta || "FULL SYSTEM"));
+  marco.append(img, capa);
+  art.append(marco, el("h3", "video-titulo", v.titulo));
+  if (v.duracion) art.append(el("p", "video-meta", v.duracion));
+  if (v.descripcion) art.append(el("p", "video-desc", v.descripcion));
+  const b = el("a", "btn-compra video-desbloquear", v.boton || "UNLOCK");
+  b.href = linkUpgrade(v.url);
+  b.setAttribute("data-umami-event", "upgrade");
+  b.setAttribute("data-umami-event-boton", "tarjeta-boton");
+  art.append(b);
+  return art;
+}
+
 function tarjetaVideo(v) {
+  if (v.bloqueado) return tarjetaBloqueada(v);
   const art = el("article", "video");
   const marco = el("div", "video-marco");
   const idEs = idYoutube(v.youtube), idEn = idYoutube(v.youtube_en);
@@ -432,7 +477,9 @@ function pintar(datos, compra) {
     const m = el("section", "miembros-mejora");
     m.append(el("p", "acceso-texto", datos.mejora.texto));
     const b = el("a", "btn-compra", datos.mejora.boton || "UPGRADE");
-    b.href = datos.mejora.url || "/get";
+    b.href = linkUpgrade(datos.mejora.url);
+    b.setAttribute("data-umami-event", "upgrade");
+    b.setAttribute("data-umami-event-boton", "caja");
     m.append(b);
     destino.append(m);
   }
@@ -571,6 +618,24 @@ async function abrirArea(recienCreada) {
   introMiembros(fila.contenido.edicion);
   pintar(fila.contenido, recienCreada);
   window.scrollTo(0, 0);
+  if (new URLSearchParams(location.search).has("upgrade")) esperarUpgrade(fila.id === "full");
+}
+
+// regreso del pago del upgrade: el webhook de Stripe tarda unos segundos en registrarlo. Se revisa la compra
+// (sin abrir el área otra vez, para no sumar entradas) y, cuando aparece, se abre el Full System.
+async function esperarUpgrade(yaListo) {
+  history.replaceState(null, "", location.pathname);
+  const aviso = el("p", "miembros-aviso-upgrade", yaListo ? "Upgrade complete: welcome to the Full System." : "Confirming your upgrade… this takes a few seconds.");
+  destino.prepend(aviso);
+  if (yaListo) return;
+  for (let i = 0; i < 12; i++) {
+    await new Promise((r) => setTimeout(r, 4000));
+    try {
+      const c = await datos("compras?select=edicion&activa=is.true");
+      if (Array.isArray(c) && c.some((x) => x.edicion === "full")) { await abrirArea(false); destino.prepend(el("p", "miembros-aviso-upgrade", "Upgrade complete: welcome to the Full System.")); return; }
+    } catch (_) {}
+  }
+  aviso.textContent = `Your payment went through. If the Full System doesn't show up in a minute, reload this page or write to ${SOPORTE}.`;
 }
 
 document.querySelector('[data-form="entrar"]').addEventListener("submit", (e) => {

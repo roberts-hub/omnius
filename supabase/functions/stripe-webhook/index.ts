@@ -6,8 +6,12 @@
 //      correo "crea tu contraseña") y registra la compra de su edición.
 //   3. charge.refunded (reembolso total) o charge.dispute.created (contracargo) → desactiva esa compra:
 //      el comprador pierde el acceso a esa edición.
+//   4. Upgrade (link PLINK_UPGRADE, $49 = la diferencia): agrega el Full System a la MISMA cuenta que ya tiene el
+//      LUT Pack. La cuenta llega en client_reference_id (el área de miembros arma el link con el id de la cuenta);
+//      si no, se busca por correo. Si esa cuenta no tiene un LUT Pack activo (o ya tiene el Full System), NO se da
+//      acceso: el pago se guarda en upgrades_revisar para que Roberto lo revise (reembolso o LUT Pack).
 //
-// Secretos (supabase secrets): STRIPE_WEBHOOK_SECRET, PLINK_FULL, PLINK_LUTS, SITIO.
+// Secretos (supabase secrets): STRIPE_WEBHOOK_SECRET, PLINK_FULL, PLINK_LUTS, PLINK_UPGRADE, SITIO.
 // SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY los pone Supabase solo.
 // Se despliega con --no-verify-jwt (Stripe no manda JWT; la seguridad es la firma).
 
@@ -22,6 +26,7 @@ const LINKS: Record<string, "full" | "luts"> = {};
 for (const [secreto, edicion] of [["PLINK_FULL", "full"], ["PLINK_LUTS", "luts"], ["PLINK_PRUEBA", "luts"]] as const) {
   for (const id of (Deno.env.get(secreto) ?? "").split(",").map((x) => x.trim()).filter(Boolean)) LINKS[id] = edicion;
 }
+const UPGRADES = new Set((Deno.env.get("PLINK_UPGRADE") ?? "").split(",").map((x) => x.trim()).filter(Boolean));
 const TOLERANCIA_S = 300;
 
 const cabeceras = { apikey: SERVICIO, Authorization: `Bearer ${SERVICIO}`, "Content-Type": "application/json" };
@@ -80,9 +85,62 @@ async function usuarioDe(correo: string): Promise<{ id: string; nuevo: boolean; 
   }
 }
 
+// compras activas de una cuenta ("luts", "full")
+async function edicionesDe(id: string | null): Promise<string[]> {
+  if (!id || !/^[0-9a-f-]{36}$/i.test(id)) return [];
+  const filas = await sb(`/rest/v1/compras?user_id=eq.${id}&activa=is.true&select=edicion`);
+  return (filas ?? []).map((f: any) => f.edicion);
+}
+
+async function registrarUpgrade(sesion: any) {
+  const correo = String(sesion.customer_details?.email || "").trim().toLowerCase();
+  const referencia = String(sesion.client_reference_id || "").trim();
+  const datosPago = {
+    stripe_session: sesion.id,
+    stripe_payment_intent: sesion.payment_intent ?? null,
+    monto: typeof sesion.amount_total === "number" ? sesion.amount_total / 100 : null,
+    moneda: sesion.currency ?? null,
+  };
+  // 1. la cuenta que mandó el área de miembros; 2. si no sirve, la cuenta con el correo con el que pagó
+  let id: string | null = /^[0-9a-f-]{36}$/i.test(referencia) ? referencia : null;
+  let ediciones = await edicionesDe(id);
+  if (!ediciones.includes("luts") && correo) {
+    const porCorreo = await sb("/rest/v1/rpc/usuario_por_correo", { method: "POST", body: JSON.stringify({ correo }) });
+    const deEsa = await edicionesDe(porCorreo);
+    if (deEsa.includes("luts") || !id) { id = porCorreo; ediciones = deEsa; }
+  }
+  if (!id || !ediciones.includes("luts") || ediciones.includes("full")) {
+    const motivo = ediciones.includes("full") ? "ya tenía el Full System" : "sin LUT Pack activo";
+    await sb("/rest/v1/upgrades_revisar?on_conflict=stripe_session", {
+      method: "POST",
+      headers: { Prefer: "resolution=ignore-duplicates" },
+      body: JSON.stringify({ ...datosPago, email: correo || "(sin correo)", referencia: referencia || null, motivo }),
+    });
+    return `upgrade NO aplicado (${motivo}) para ${correo}: guardado en upgrades_revisar`;
+  }
+  // el correo de la compra es el de la cuenta (puede ser distinto al que escribió en Stripe)
+  const u = await sb(`/auth/v1/admin/users/${id}`);
+  const correoCuenta = String(u?.email || correo).toLowerCase();
+  await sb("/rest/v1/compras?on_conflict=stripe_session", {
+    method: "POST",
+    headers: { Prefer: "resolution=ignore-duplicates" },
+    body: JSON.stringify({
+      ...datosPago,
+      user_id: id,
+      email: correoCuenta,
+      edicion: "full",
+      nombre: sesion.customer_details?.name ?? null,
+      pais: sesion.customer_details?.address?.country ?? null,
+      motivo: "upgrade desde LUT Pack",
+    }),
+  });
+  return `upgrade a Full System para ${correoCuenta}`;
+}
+
 async function registrarCompra(sesion: any) {
   // "no_payment_required": compra con un código de 100% de descuento (total $0); también da acceso
   if (sesion.payment_status !== "paid" && sesion.payment_status !== "no_payment_required") return "sin pagar";
+  if (UPGRADES.has(sesion.payment_link)) return await registrarUpgrade(sesion);
   const edicion = LINKS[sesion.payment_link];
   if (!edicion) return "link ajeno a SPECTRE";
   const correo = String(sesion.customer_details?.email || "").trim().toLowerCase();

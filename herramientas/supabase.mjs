@@ -31,7 +31,7 @@ const PRIV = (f) => join(RAIZ, "privado", f);
 const SITIO = "https://spectrecolor.com";
 // a dónde llevan los links de los correos (en pruebas: ACCESO=http://localhost:4181/access.html node …)
 const ACCESO = process.env.ACCESO || SITIO + "/access";
-const PLINKS = { full: "plink_1URE5LFethND82y0BMV3UzdA", luts: "plink_1UQBswFethND82y0hTuKybiY" };
+const PLINKS = { full: "plink_1URE5LFethND82y0BMV3UzdA", luts: "plink_1UQBswFethND82y0hTuKybiY", upgrade: "plink_1UTTDOFethND82y0CnGx316m" };
 const CUENTA_SMTP = "roberto@arechederra.com"; // inicia sesión en Gmail (no se muestra a nadie)
 const REMITENTE = "support@spectrecolor.com"; // alias de esa cuenta: es lo que ve el comprador
 
@@ -157,7 +157,7 @@ const comandos = {
 
   async instalar() {
     const { ref } = config();
-    for (const m of ["0001_cuentas.sql", "0002_accesos.sql", "0003_panel.sql", "0004_clientes.sql", "0005_revocaciones.sql", "0006_permisos.sql"]) await sql(readFileSync(join(RAIZ, "supabase/migrations", m), "utf8"));
+    for (const m of ["0001_cuentas.sql", "0002_accesos.sql", "0003_panel.sql", "0004_clientes.sql", "0005_revocaciones.sql", "0006_permisos.sql", "0007_upgrades.sql"]) await sql(readFileSync(join(RAIZ, "supabase/migrations", m), "utf8"));
     console.log("✓ Tablas, permisos (RLS), registro de accesos y bloqueos");
     await api(`/v1/projects/${ref}/config/auth`, {
       method: "PATCH",
@@ -184,6 +184,7 @@ const comandos = {
       body: JSON.stringify([
         { name: "PLINK_FULL", value: PLINKS.full },
         { name: "PLINK_LUTS", value: PLINKS.luts },
+        { name: "PLINK_UPGRADE", value: PLINKS.upgrade },
         { name: "SITIO", value: SITIO },
       ]),
     });
