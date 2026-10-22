@@ -238,6 +238,8 @@ function tarjetaVideo(v) {
     img.loading = "lazy";
     play.append(img, el("span", "video-play-icono"));
     if (falta) play.append(el("span", "video-idioma-aviso", enIngles ? "ENGLISH VERSION COMING SOON · PLAYS ORIGINAL (SPANISH)" : "ORIGINAL VERSION COMING SOON · PLAYS IN ENGLISH"));
+    // versión en inglés doblada con IA: aviso en la franja de abajo del video, bien visible
+    else if (id === idEn) play.append(el("span", "video-idioma-aviso", "ENGLISH VERSION TRANSLATED WITH AI · ORIGINAL IN SPANISH"));
     play.addEventListener("click", () => abrirVideo(id, v, id === idEn ? "en" : "es"));
     marco.append(play);
   } else {
@@ -251,8 +253,6 @@ function tarjetaVideo(v) {
   const base = idiomaMostrado === "ENGLISH" && v.duracion_en ? v.duracion_en : v.duracion || "";
   const meta = base.replace(/^\s*(spanish|español|english|inglés)\b/i, idiomaMostrado);
   if (meta) art.append(el("p", "video-meta", meta));
-  // las versiones en inglés están dobladas con IA: se avisa y se recuerda que la original es en español
-  if (id && id === idEn) art.append(el("p", "video-nota-ia", AVISO_IA));
   if (v.descripcion) art.append(el("p", "video-desc", v.descripcion));
   return art;
 }
