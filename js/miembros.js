@@ -300,7 +300,7 @@ function pintar(datos, compra) {
     const todos = secciones.flatMap((s) => s.videos || []);
     const hayIngles = todos.some((v) => idYoutube(v.youtube_en));
     try { idiomaVideos = localStorage.getItem(CLAVE_IDIOMA_VIDEOS); } catch (_) {}
-    if (idiomaVideos !== "en" && idiomaVideos !== "es") idiomaVideos = hayIngles ? "en" : "es";
+    if (idiomaVideos !== "en" && idiomaVideos !== "es") idiomaVideos = "es"; // por default, la versión original (español)
 
     const cab = el("section", "miembros-seccion videos-cabeza");
     const textos = el("div", "videos-cabeza-texto");
