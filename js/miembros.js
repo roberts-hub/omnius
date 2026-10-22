@@ -159,7 +159,7 @@ function crearModal() {
   d.addEventListener("cancel", (e) => { e.preventDefault(); cerrarVideo(); }); // tecla Esc
   return d;
 }
-function abrirVideo(id, v) {
+function abrirVideo(id, v, idioma) {
   modalVideo = modalVideo || crearModal();
   const d = modalVideo;
   d.querySelector(".modal-video_etiqueta").textContent = v.titulo;
@@ -168,7 +168,9 @@ function abrirVideo(id, v) {
   desc.textContent = v.descripcion || "";
   desc.hidden = !v.descripcion;
   const f = document.createElement("iframe");
-  f.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&playsinline=1&cc_load_policy=1&cc_lang_pref=en&hl=en`;
+  // video en español: subtítulos en inglés activados; video en inglés: sin forzar subtítulos
+  const subs = idioma === "en" ? "" : "&cc_load_policy=1&cc_lang_pref=en";
+  f.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&playsinline=1${subs}&hl=en`;
   f.title = v.titulo;
   f.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
   f.allowFullscreen = true;
@@ -188,10 +190,17 @@ function cerrarVideo() {
   }, 380);
 }
 
+// idioma de los videos: cada video puede tener youtube (español) y youtube_en (inglés)
+const CLAVE_IDIOMA_VIDEOS = "spectre-idioma-videos";
+let idiomaVideos = null;
+
 function tarjetaVideo(v) {
   const art = el("article", "video");
   const marco = el("div", "video-marco");
-  const id = idYoutube(v.youtube);
+  const idEs = idYoutube(v.youtube), idEn = idYoutube(v.youtube_en);
+  const enIngles = idiomaVideos === "en";
+  const id = enIngles ? idEn || idEs : idEs || idEn;
+  const falta = enIngles ? !idEn && !!idEs : !idEs && !!idEn; // no existe la versión del idioma elegido
   if (id) {
     // carga ligera: solo la miniatura; el reproductor de YouTube se carga al dar play
     const play = el("button", "video-play");
@@ -202,7 +211,8 @@ function tarjetaVideo(v) {
     img.alt = "";
     img.loading = "lazy";
     play.append(img, el("span", "video-play-icono"));
-    play.addEventListener("click", () => abrirVideo(id, v));
+    if (falta) play.append(el("span", "video-idioma-aviso", enIngles ? "ENGLISH VERSION COMING SOON · PLAYS IN SPANISH" : "VERSIÓN EN ESPAÑOL PRÓXIMAMENTE · SE REPRODUCE EN INGLÉS"));
+    play.addEventListener("click", () => abrirVideo(id, v, id === idEn ? "en" : "es"));
     marco.append(play);
   } else {
     marco.classList.add("pronto");
@@ -233,26 +243,24 @@ function pintar(datos, compra) {
     destino.append(c);
   }
 
-  (datos.secciones || []).forEach((s) => {
-    const sec = el("section", "miembros-seccion");
-    sec.append(el("h2", "miembros-subtitulo", s.titulo));
-    const grid = el("div", "videos");
-    (s.videos || []).forEach((v) => grid.append(tarjetaVideo(v)));
-    sec.append(grid);
-    destino.append(sec);
-  });
-
-  // términos de la licencia: resumen + enlace + PDF. Las descargas se activan al aceptarlos
-  // (se recuerda en este navegador; si cambian los términos, cambiar TERMINOS_VERSION para volver a pedirlo).
+  // términos de la licencia (se aceptan una vez; se recuerda en este navegador; si cambian los términos,
+  // cambiar TERMINOS_VERSION para volver a pedirlo). Las descargas se activan al aceptarlos.
   const TERMINOS_VERSION = "2026-10-08";
   const CLAVE_TERMINOS = "spectre-terminos-" + TERMINOS_VERSION;
   let aceptados = false;
   try { aceptados = localStorage.getItem(CLAVE_TERMINOS) === "1"; } catch (_) {}
   const botonesDescarga = [];
-  {
-    const t = el("section", "miembros-seccion miembros-terminos");
-    t.append(el("h2", "miembros-subtitulo", "Terms & License"));
-    t.append(el("p", "acceso-texto", "Your purchase is a personal license to use SPECTRE. Before downloading, please keep in mind:"));
+
+  // ── 1. DESCARGAS (arriba: es lo primero que busca el comprador) ──
+  if ((datos.descargas || []).length) {
+    const sec = el("section", "miembros-seccion miembros-descargas");
+    sec.append(el("h2", "miembros-subtitulo", "Your downloads"));
+
+    // licencia, compacta: resumen desplegable + casilla
+    const t = el("div", "miembros-terminos");
+    const resumen = el("details", "terminos-resumen");
+    resumen.open = !aceptados;
+    resumen.append(el("summary", "", "License summary: what you can and can't do"));
     const ul = el("ul", "terminos-lista");
     [
       "Use it on unlimited personal and commercial projects, including client work.",
@@ -262,14 +270,13 @@ function pintar(datos, compra) {
       "Practice footage is for learning only: not for client work, ads or stock.",
       "All sales are final once the files are downloaded.",
     ].forEach((x) => ul.append(el("li", "", x)));
-    t.append(ul);
     const enlaces = el("p", "terminos-enlaces");
     const ver = el("a", "", "Read the full Terms & License");
     ver.href = "/terms"; ver.target = "_blank"; ver.rel = "noopener";
     const pdf = el("a", "", "Download PDF");
     pdf.href = "/legal/SPECTRE-Terms-and-License.pdf"; pdf.download = "SPECTRE Terms & License.pdf";
     enlaces.append(ver, document.createTextNode("  ·  "), pdf);
-    t.append(enlaces);
+    resumen.append(ul, enlaces);
     const etiqueta = el("label", "terminos-acepto");
     const caja = el("input");
     caja.type = "checkbox";
@@ -283,15 +290,9 @@ function pintar(datos, compra) {
       destino.classList.toggle("terminos-ok", aceptados);
       if (aceptados && window.umami) window.umami.track("miembros-acepta-terminos");
     });
-    t.append(etiqueta);
-    destino.append(t);
+    t.append(resumen, etiqueta, el("p", "terminos-aviso", "Accept the Terms & License to enable the downloads."));
     destino.classList.toggle("terminos-ok", aceptados);
-  }
 
-  if ((datos.descargas || []).length) {
-    const sec = el("section", "miembros-seccion");
-    sec.append(el("h2", "miembros-subtitulo", "Downloads"));
-    sec.append(el("p", "terminos-aviso", "Accept the Terms & License above to enable the downloads."));
     const lista = el("ul", "descargas");
     datos.descargas.forEach((d) => {
       const li = el("li", "descarga");
@@ -308,7 +309,7 @@ function pintar(datos, compra) {
           if (aceptados) { bajarCifrado(d.cifrado, accion); return; }
           // sin aceptar: aviso junto al botón y se lleva a la casilla, que parpadea
           let aviso = li.querySelector(".descarga-aviso");
-          if (!aviso) { aviso = el("p", "descarga-aviso", "↑ Please accept the Terms & License first"); info.append(aviso); }
+          if (!aviso) { aviso = el("p", "descarga-aviso", "↓ Please accept the Terms & License below first"); info.append(aviso); }
           const casilla = document.querySelector(".terminos-acepto");
           casilla.scrollIntoView({ behavior: "smooth", block: "center" });
           casilla.classList.remove("llamar"); void casilla.offsetWidth; casilla.classList.add("llamar");
@@ -324,8 +325,57 @@ function pintar(datos, compra) {
       li.append(info, accion);
       lista.append(li);
     });
-    sec.append(lista);
+    sec.append(lista, t);
     destino.append(sec);
+  }
+
+  // ── 2. VIDEOS, con selector de idioma bien visible ──
+  const secciones = datos.secciones || [];
+  if (secciones.length) {
+    const todos = secciones.flatMap((s) => s.videos || []);
+    const hayIngles = todos.some((v) => idYoutube(v.youtube_en));
+    try { idiomaVideos = localStorage.getItem(CLAVE_IDIOMA_VIDEOS); } catch (_) {}
+    if (idiomaVideos !== "en" && idiomaVideos !== "es") idiomaVideos = hayIngles ? "en" : "es";
+
+    const cab = el("section", "miembros-seccion videos-cabeza");
+    const textos = el("div", "videos-cabeza-texto");
+    textos.append(el("p", "kicker", "TUTORIALS"), el("p", "videos-cabeza-nota", "Choose the language of the videos."));
+    const selector = el("div", "selector-idioma");
+    selector.setAttribute("role", "group");
+    selector.setAttribute("aria-label", "Video language");
+    const opciones = [["en", "ENGLISH"], ["es", "ESPAÑOL"]].map(([id, nombre]) => {
+      const b = el("button", "selector-idioma-opcion", nombre);
+      b.type = "button";
+      b.dataset.idioma = id;
+      if (id === "en" && !hayIngles) b.append(el("span", "selector-idioma-pronto", "SOON"));
+      b.addEventListener("click", () => {
+        if (idiomaVideos === id) return;
+        idiomaVideos = id;
+        try { localStorage.setItem(CLAVE_IDIOMA_VIDEOS, id); } catch (_) {}
+        if (window.umami) window.umami.track("miembros-idioma-videos", { idioma: id });
+        pintarVideos();
+      });
+      return b;
+    });
+    selector.append(...opciones);
+    cab.append(textos, selector);
+    destino.append(cab);
+
+    const contVideos = el("div", "videos-secciones");
+    destino.append(contVideos);
+    const pintarVideos = () => {
+      opciones.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.idioma === idiomaVideos)));
+      contVideos.replaceChildren();
+      secciones.forEach((s) => {
+        const sec = el("section", "miembros-seccion");
+        sec.append(el("h2", "miembros-subtitulo", s.titulo));
+        const grid = el("div", "videos");
+        (s.videos || []).forEach((v) => grid.append(tarjetaVideo(v)));
+        sec.append(grid);
+        contVideos.append(sec);
+      });
+    };
+    pintarVideos();
   }
 
   // LUT Pack: invitación a la edición completa
