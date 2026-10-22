@@ -349,7 +349,7 @@ function pintar(datos, compra) {
   if ((datos.descargas || []).length) {
     const sec = el("section", "miembros-seccion miembros-descargas");
     sec.id = "descargas";
-    sec.append(el("h2", "miembros-subtitulo", "Your downloads"));
+    sec.append(el("h2", "miembros-subtitulo", "Download here"));
 
     // licencia, compacta: resumen desplegable + casilla
     const t = el("div", "miembros-terminos");
