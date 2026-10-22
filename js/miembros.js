@@ -541,6 +541,7 @@ function introMiembros(edicion) {
     if (cerrada) return;
     cerrada = true;
     timers.forEach(clearTimeout);
+    capa.querySelector(".loader-intro").classList.add("fuera"); // si se adelanta, la frase se va primero (no se empalma)
     capa.classList.add("fuera");
     setTimeout(() => capa.remove(), 1200);
   };
