@@ -973,6 +973,9 @@ body.cargando .hero-media video { filter: blur(14px) brightness(0.2); }
 .legal p { margin-top: 12px; font-size: 16px; font-weight: 300; line-height: 1.75; color: var(--greige); }
 .legal strong { font-weight: 600; color: var(--hueso); }
 .legal a { color: var(--hueso); text-underline-offset: 3px; }
+.legal ul:not(.legal-lista) { margin-top: 12px; padding-left: 20px; }
+.legal ul:not(.legal-lista) li { margin-top: 8px; font-size: 16px; font-weight: 300; line-height: 1.75; color: var(--greige); }
+.legal ul:not(.legal-lista) li::marker { color: var(--greige); }
 .legal-lista { margin-top: 12px; padding-left: 0; list-style: none; }
 .legal-lista li {
   position: relative;
