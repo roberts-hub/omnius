@@ -125,7 +125,7 @@ original. Se guardan sin compresión dentro del ZIP. Uso solo para practicar (ve
 
 **Videos en el área de miembros (en español):**
 - Start here → *Introduction to SPECTRE* y *Setting up SPECTRE in DaVinci Resolve*.
-- The masterclass → *The SPECTRE masterclass* (unos 50 min; el sitio dice "50-minute masterclass").
+- The masterclass → *The SPECTRE masterclass* (40 min; el sitio dice "40-minute masterclass").
 
 ### 2.2 SPECTRE LUT Pack: $49 USD (o MX$899)
 Para quien **no usa DaVinci Resolve** (Premiere Pro, Final Cut Pro, CapCut, etc.). En la página de compra
