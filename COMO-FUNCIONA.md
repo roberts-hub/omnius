@@ -114,8 +114,7 @@ SPECTRE Full System/                     (paquete final del 22-oct-2026; archivo
 SPECTRE LUT Pack/                        ($49: todos los LUTs; sin PowerGrades ni masterclass)
 ├── READ ME.txt
 ├── SPECTRE LUTs/  (los mismos 4)  ·  One Click LUTs/  (los mismos 4)
-├── SPECTRE LUTs 33/                     (versiones de 33 puntos de los 8, hechas con herramientas/lut33.py)
-└── Guides/  LUT Installation.pdf (con nota de 33 puntos) · Color Settings.pdf · Terms & License.pdf
+└── Guides/  LUT Installation.pdf · Color Settings.pdf · Terms & License.pdf
 ```
 
 **Descarga 2: `SPECTRE Log Practice Footage.zip` (~448 MB, se sirve en partes de 45 MB)**
@@ -133,7 +132,7 @@ aparece como **"LUTs Only"**. Precio tachado: $59.
 
 **Descarga: `SPECTRE LUT Pack.zip` (~50 MB, 22 archivos)**
 Igual que el Full System, pero **sin** `SPECTRE POWER GRADE/` y sin la guía de DaVinci:
-LUTs SPR 1-3 y BW + One Click 1-4 (Sony S-Log3), sin carpeta de 33 puntos (solo en el LUT Pack), READ ME corto, guías LUT Installation, DaVinci Installation, Color Settings y Terms.
+LUTs SPR 1-3 y BW + One Click 1-4 (Sony S-Log3), sin LUTs de 33 puntos (ningún paquete los lleva), READ ME corto, guías LUT Installation, DaVinci Installation, Color Settings y Terms.
 
 **Videos:** Introduction, Setting up in DaVinci Resolve y *How to install and use the SPECTRE LUTs*
 (este último aún sin video; aparece como "coming soon").
