@@ -17,7 +17,10 @@ const LINKS = { // payment links de SPECTRE
   plink_1UQBuJFethND82y0dUdl1vfy: { producto: "Full System", actual: false }, // $89, desactivado
   plink_1UQBswFethND82y0hTuKybiY: { producto: "LUT Pack", actual: true },
   plink_1UQC5uFethND82y0rckpA5Ru: { producto: "LUT Pack", actual: false, prueba: true }, // link de prueba de $1
+  plink_1UTTDOFethND82y0CnGx316m: { producto: "Upgrade a Full System", actual: true }, // $49 = la diferencia
 };
+// las ventas del tablero cuentan desde el lanzamiento (privado/metricas-inicio.txt, AAAA-MM-DD, hora de México)
+const INICIO_VENTAS = existsSync(PRIV("metricas-inicio.txt")) ? Date.parse(readFileSync(PRIV("metricas-inicio.txt"), "utf8").trim() + "T06:00:00Z") / 1000 : 0;
 const PRUEBAS = ["prueba", "prueba-ui", "manual"];
 const RCLONE = join(process.env.HOME, "respaldo-grads-2026", "rclone");
 const RCLONE_CONF = PRIV("rclone.conf");
@@ -164,7 +167,7 @@ await intenta("Stripe", "Códigos de descuento", async () => {
 // ── 5. ventas (todas las de Stripe, sin datos personales) ──
 const codigoDe = new Map();
 for (const s of sesiones) for (const d of s.discounts || []) if (d.promotion_code && !codigoDe.has(d.promotion_code)) codigoDe.set(d.promotion_code, (await stripe(`/promotion_codes/${d.promotion_code}`).catch(() => ({}))).code || "");
-const ventas = sesiones.sort((a, b) => a.created - b.created).map((s, i) => {
+const ventas = sesiones.filter((s) => s.created >= INICIO_VENTAS).sort((a, b) => a.created - b.created).map((s, i) => {
   const l = LINKS[s.payment_link], c = porSesion.get(s.id);
   const codigo = (s.discounts || []).map((d) => codigoDe.get(d.promotion_code)).filter(Boolean).join(", ");
   const prueba = l.prueba || /^PRUEBA/.test(codigo) || (c && PRUEBAS.includes(c.motivo));

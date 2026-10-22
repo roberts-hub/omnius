@@ -42,7 +42,7 @@
   <link rel="preload" as="image" href="/video/hero-poster.jpg" fetchpriority="high" />
   <link rel="preload" href="/fonts/archivo-latin-0186fb.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="/fonts/ibm-plex-mono-latin-bc87d8.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="stylesheet" href="/css/estilo.css?v=20261022142248" />
+  <link rel="stylesheet" href="/css/estilo.css?v=20261022142742" />
   <!-- Umami: analítica sin cookies (cloud.umami.is) — visitas, clics de checkout y embudo -->
   <script defer src="https://cloud.umami.is/script.js" data-exclude-hash="true" data-website-id="add40efe-f309-476f-95a6-6367262a4434" data-domains="spectrecolor.com"></script>
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://spectrecolor.com/#spectre","name":"SPECTRE","alternateName":"SPECTRE Color System","url":"https://spectrecolor.com/","logo":"https://spectrecolor.com/img/marca/icono-512.png","founder":{"@id":"https://spectrecolor.com/#roberto"},"email":"support@spectrecolor.com","sameAs":["https://www.instagram.com/robert.arre/"]},{"@type":"Person","@id":"https://spectrecolor.com/#roberto","name":"Roberto Arechederra","jobTitle":"Filmmaker & colorist","url":"https://spectrecolor.com/","sameAs":["https://www.instagram.com/robert.arre/","https://www.twowaves.mx"]},{"@type":"WebSite","@id":"https://spectrecolor.com/#web","name":"SPECTRE","url":"https://spectrecolor.com/es/","publisher":{"@id":"https://spectrecolor.com/#spectre"},"inLanguage":"es"},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"¿Qué incluye?","acceptedAnswer":{"@type":"Answer","text":"El Full System incluye el árbol de nodos PowerGrade para DaVinci Resolve en 5 versiones (Sony S-Log3, DJI D-Log, Canon C-Log, RED y Rec.709), 4 LUTs de SPECTRE, 4 One-Click LUTs, una masterclass de 40 minutos, un video de instalación, clips en Log para practicar y guías en PDF. El LUT Pack incluye los 4 LUTs de SPECTRE, los 4 One-Click LUTs, los clips en Log para practicar y las guías en PDF, para cualquier editor. Mac y Windows."}},{"@type":"Question","name":"¿Con qué cámaras funciona?","acceptedAnswer":{"@type":"Answer","text":"SPECTRE funciona con cualquier cámara. El PowerGrade incluye versiones hechas específicamente para Sony S-Log3, DJI D-Log, Canon C-Log y RED (como la Komodo), además de una versión Rec.709 para material sin Log, y lo puedes adaptar al material de cualquier otra cámara. Los One-Click LUTs se aplican directo sobre material en Log, con la conversión a Rec.709 integrada; los LUTs de SPECTRE van sobre material que ya está en Rec.709."}},{"@type":"Question","name":"¿Con qué programas de edición funciona?","acceptedAnswer":{"@type":"Answer","text":"El árbol de nodos (PowerGrade) está hecho para DaVinci Resolve, en su versión gratis y Studio. Los LUTs de SPECTRE y los One-Click LUTs funcionan en cualquier editor que lea archivos .cube: Premiere Pro, Final Cut Pro, CapCut y más. ¿No usas Resolve? Elige el LUT Pack."}},{"@type":"Question","name":"¿Necesito experiencia avanzada o material en Log?","acceptedAnswer":{"@type":"Answer","text":"No necesitas experiencia avanzada: el video de instalación y las guías te ponen en marcha, y la masterclass del Full System te lleva paso a paso por mi proceso. El Log te da más flexibilidad, pero el flujo también se adapta a material en Rec.709."}},{"@type":"Question","name":"¿Cómo recibo los archivos?","acceptedAnswer":{"@type":"Answer","text":"Al instante. Justo después de pagar te llega un correo para crear tu contraseña. Luego entras en spectrecolor.com/access para descargar tus archivos y ver los tutoriales. Las actualizaciones de esta versión están incluidas."}},{"@type":"Question","name":"¿Qué es un PowerGrade?","acceptedAnswer":{"@type":"Answer","text":"Un PowerGrade es un árbol de nodos guardado de DaVinci Resolve: la corrección completa, nodo por nodo, lista para aplicar a tus clips. El PowerGrade de SPECTRE es la estructura exacta que uso en mis películas, así que puedes ver y ajustar cada paso en lugar de depender de un solo LUT."}},{"@type":"Question","name":"¿Qué diferencia hay entre el Full System y el LUT Pack?","acceptedAnswer":{"@type":"Answer","text":"El Full System incluye los LUTs, el árbol de nodos PowerGrade para DaVinci Resolve, la masterclass de 40 minutos y clips en Log para practicar. El LUT Pack incluye los cuatro LUTs de SPECTRE y los cuatro One-Click LUTs en archivos .cube para cualquier editor, como Premiere Pro, Final Cut Pro o CapCut, además de los mismos clips en Log para practicar."}},{"@type":"Question","name":"¿Incluye una clase de corrección de color?","acceptedAnswer":{"@type":"Answer","text":"Sí. El Full System incluye una masterclass de 40 minutos donde explico, paso a paso, mi proceso exacto de corrección de color con SPECTRE, desde el árbol de nodos hasta corregir material real. Está grabada en español, con una versión en inglés traducida con IA."}}]}]}</script>
@@ -144,16 +144,17 @@
               intentar();
             };
             var mini = function () { if (v.dataset.mini) return; v.dataset.mini = "1"; poner(vertical ? "hero-vertical-mini.h264.mp4" : "hero-mini.h264.mp4"); };
-            // el navegador avisa que la conexión es lenta (Chrome, Android): directo a la mini y sin HD
-            if (c && (c.saveData || /2g|3g/.test(c.effectiveType || "") || (c.downlink && c.downlink < 3))) { mini(); return; }
-            // si no avisa (Safari, iPhone) y a los 2.5 s la ligera no ha arrancado, se cambia a la mini
-            var espera = setTimeout(function () { if (v.readyState < 3 && !v.error) mini(); }, 2500);
-            var inicio = performance.now();
+            // solo con ahorro de datos o una red 2G/3G real se queda en la mini y sin HD
+            // (el "downlink" que reporta Chrome al abrir la página suele salir bajo aunque la conexión sea rápida)
+            if (c && (c.saveData || /(^|-)(2g|3g)$/.test(c.effectiveType || ""))) { mini(); return; }
+            // si a los 4 s la ligera no ha arrancado (Safari/iPhone con señal floja), se cambia a la mini
+            var espera = setTimeout(function () { if (v.readyState < 3 && !v.error) mini(); }, 4000);
+            // la HD se descarga aparte en cuanto el video visible arranca (ligera o mini) y entra sin corte
+            // cuando ya puede reproducirse completa; si la conexión no da, simplemente nunca entra
             var mejorar = function () {
               clearTimeout(espera);
-              if (v.dataset.mini) return;
-              // velocidad real: si la ligera tardó en estar lista, la conexión no da para la HD
-              if (performance.now() - inicio > 3000 || (c && c.downlink && c.downlink < 5)) return;
+              if (v.dataset.hd) return;
+              v.dataset.hd = "1";
               var hd = document.createElement("video");
               hd.muted = true; hd.loop = true; hd.playsInline = true; hd.preload = "auto";
               var hevc = hd.canPlayType('video/mp4; codecs="hvc1.1.6.L123.B0"');
@@ -161,19 +162,20 @@
                 ? (hevc ? "/video/hero-vertical.hevc.mp4" : "/video/hero-vertical.h264.mp4")
                 : (hevc ? "/video/hero-1080.hevc.mp4" : "/video/hero-1080.h264.mp4");
               hd.addEventListener("canplaythrough", function () {
-                hd.currentTime = v.currentTime % (hd.duration || 1);
+                var actual = document.querySelector(".hero-media video") || v;
+                hd.currentTime = actual.currentTime % (hd.duration || 1);
                 var p = hd.play();
                 var cambiar = function () {
-                  hd.className = v.className;
+                  hd.className = actual.className;
                   hd.setAttribute("aria-hidden", "true");
-                  hd.poster = v.poster;
-                  v.replaceWith(hd);
+                  hd.poster = actual.poster;
+                  actual.replaceWith(hd);
                 };
                 if (p && p.then) p.then(cambiar).catch(function () {}); else cambiar();
               }, { once: true });
               hd.load();
             };
-            if (v.readyState >= 3) mejorar(); else v.addEventListener("canplaythrough", mejorar, { once: true });
+            if (!v.paused && v.readyState >= 3) mejorar(); else v.addEventListener("playing", mejorar, { once: true });
           })();
         </script>
       </div>
@@ -280,8 +282,8 @@
       </div>
       <div class="clase-video reveal" data-clase>
         <video muted loop playsinline preload="none" poster="/video/clase-poster.jpg" aria-label="Adelanto de la masterclass de SPECTRE">
-          <source data-src="/video/clase-1080.hevc.mp4?v=20261022142248" type='video/mp4; codecs="hvc1"' media="(min-width: 861px)" />
-          <source data-src="/video/clase-720.h264.mp4?v=20261022142248" type="video/mp4" />
+          <source data-src="/video/clase-1080.hevc.mp4?v=20261022142742" type='video/mp4; codecs="hvc1"' media="(min-width: 861px)" />
+          <source data-src="/video/clase-720.h264.mp4?v=20261022142742" type="video/mp4" />
         </video>
       </div>
     </section>
@@ -585,6 +587,6 @@
 
 
 
-  <script src="/js/main.js?v=20261022142248" defer></script>
+  <script src="/js/main.js?v=20261022142742" defer></script>
 </body>
 </html>
