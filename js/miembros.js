@@ -386,11 +386,8 @@ function pintar(datos, compra) {
       info.append(el("p", "descarga-titulo", d.titulo));
       if (d.detalle) info.append(el("p", "descarga-detalle", d.detalle));
       const mb = d.cifrado && d.cifrado.bytes ? Math.round(d.cifrado.bytes / 1e6) : 0;
-      if (mb) {
-        info.append(el("p", "descarga-peso", `${mb >= 1000 ? (mb / 1000).toFixed(1) + " GB" : mb + " MB"}`));
-        // archivos grandes en celular: se arman en la memoria del navegador, mejor bajarlos en la computadora
-        if (mb > 150 && window.matchMedia("(pointer: coarse)").matches) info.append(el("p", "descarga-nota", "Large file: we recommend downloading it on your computer."));
-      }
+      // archivos grandes en celular: se arman en la memoria del navegador, mejor bajarlos en la computadora
+      if (mb > 150 && window.matchMedia("(pointer: coarse)").matches) info.append(el("p", "descarga-nota", "Large file: we recommend downloading it on your computer."));
       let accion;
       if (d.cifrado) {
         accion = el("button", "descarga-boton", "DOWNLOAD ↓");
