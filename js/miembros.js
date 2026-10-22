@@ -123,12 +123,14 @@ async function bajarCifrado(c, boton) {
         }
       }
     };
+    const tipo = /\.mp4$/i.test(c.nombre) ? "video/mp4" : "application/zip";
     for (const p of partes) {
       const datos = await bajarParte(p.ruta);
-      listos.push(await crypto.subtle.decrypt({ name: "AES-GCM", iv: deB64(p.iv) }, llave, datos));
+      // cada parte descifrada se pasa a un Blob en cuanto está lista: el navegador puede guardarlo fuera de la
+      // memoria de la página, así un archivo de cientos de MB no la satura (antes se atoraba cerca del 84%)
+      listos.push(new Blob([await crypto.subtle.decrypt({ name: "AES-GCM", iv: deB64(p.iv) }, llave, datos)]));
     }
     boton.textContent = "PREPARING…";
-    const tipo = /\.mp4$/i.test(c.nombre) ? "video/mp4" : "application/zip";
     const url = URL.createObjectURL(new Blob(listos, { type: tipo }));
     const a = el("a");
     a.href = url;
@@ -240,9 +242,9 @@ function tarjetaVideo(v) {
     marco.append(el("span", "nota-mono", "COMING SOON"));
   }
   art.append(marco, el("h3", "video-titulo", v.titulo));
-  // si el dato debajo del título es solo el idioma ("SPANISH"), se muestra el de la versión que se va a reproducir
-  const soloIdioma = /^\s*(spanish|español|english|inglés)\s*$/i.test(v.duracion || "");
-  const meta = soloIdioma ? (id && id === idEn ? "ENGLISH" : "SPANISH") : v.duracion;
+  // si el dato debajo del título empieza con el idioma ("SPANISH · 49 MIN"), se muestra el de la versión que se va a reproducir
+  const idiomaMostrado = id && id === idEn ? "ENGLISH" : "SPANISH";
+  const meta = (v.duracion || "").replace(/^\s*(spanish|español|english|inglés)\b/i, idiomaMostrado);
   if (meta) art.append(el("p", "video-meta", meta));
   if (v.descripcion) art.append(el("p", "video-desc", v.descripcion));
   return art;
