@@ -3,10 +3,11 @@
 // Devuelve {trafico, paginas, fuentes, paises, dispositivos, eventos}; herramientas/metricas.mjs --desde <archivo> lo guarda.
 async () => {
   const SITIO = "add40efe-f309-476f-95a6-6367262a4434", ZONA = "America/Mexico_City", DIAS = 120;
-  const INICIO = "2026-10-22"; // día del lanzamiento (AAAA-MM-DD): nada de antes cuenta. Mismo valor que privado/metricas-inicio.txt
-  if (Date.parse(INICIO) > Date.now()) return { trafico: [], eventos: [], paginas: [], fuentes: [], paises: [], dispositivos: [] };
+  const INICIO = "2026-10-22T22:45:00Z"; // lanzamiento (día AAAA-MM-DD o momento exacto ISO): nada de antes cuenta. Mismo valor que privado/metricas-inicio.txt
+  const INICIO_MS = Date.parse(INICIO.includes("T") ? INICIO : INICIO + "T06:00:00Z");
+  if (INICIO_MS > Date.now()) return { trafico: [], eventos: [], paginas: [], fuentes: [], paises: [], dispositivos: [] };
   const tok = (localStorage.getItem("umami.auth") || "").replace(/^"|"$/g, "");
-  const fin = Date.now(), inicio = Math.max(fin - DIAS * 864e5, Date.parse(INICIO + "T06:00:00Z")), ini30 = Math.max(fin - 30 * 864e5, Date.parse(INICIO + "T06:00:00Z"));
+  const fin = Date.now(), inicio = Math.max(fin - DIAS * 864e5, INICIO_MS), ini30 = Math.max(fin - 30 * 864e5, INICIO_MS);
   const u = async (ruta, extra = {}, desde = inicio) => {
     const q = new URLSearchParams({ startAt: String(desde), endAt: String(fin), timezone: ZONA, ...extra });
     const r = await fetch(`/api/websites/${SITIO}${ruta}?${q}`, { headers: { Authorization: "Bearer " + tok } });

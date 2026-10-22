@@ -17,7 +17,10 @@ const DIAS = 120;
 // día del lanzamiento: antes de esta fecha todo se considera prueba y no entra al tablero.
 // Mientras no haya lanzamiento vale 2099-01-01 (tablero en ceros). Cambiar en privado/metricas-inicio.txt
 // y en la constante INICIO de herramientas/umami-navegador.js.
-const INICIO = existsSync(join(RAIZ, "privado", "metricas-inicio.txt")) ? readFileSync(join(RAIZ, "privado", "metricas-inicio.txt"), "utf8").trim() : "2099-01-01";
+const INICIO_TXT = existsSync(join(RAIZ, "privado", "metricas-inicio.txt")) ? readFileSync(join(RAIZ, "privado", "metricas-inicio.txt"), "utf8").trim() : "2099-01-01";
+// puede ser un día (AAAA-MM-DD, desde las 00:00 de México) o un momento exacto (2026-10-22T22:45:00Z)
+const INICIO_MS = Date.parse(INICIO_TXT.includes("T") ? INICIO_TXT : INICIO_TXT + "T06:00:00Z");
+const INICIO = new Date(INICIO_MS).toLocaleDateString("en-CA", { timeZone: "America/Mexico_City" }); // día del lanzamiento (para filas por día)
 
 if (process.argv[2] === "umami") {
   process.stdout.write("Pega la llave de la API de Umami y presiona Enter: ");
@@ -63,7 +66,7 @@ async function generar() {
   // el tablero no acepta un archivo vacío: sin ventas se manda una sola fila marcada (n = 0) que la página ignora
   const sinVentas = [{ n: 0, dia: dia(Date.now()), edicion: "—", monto: null, moneda: "", estado: "sin ventas", pais: "" }];
   const filasVentas = compras
-    .filter((c) => c.motivo !== "prueba" && c.motivo !== "prueba-ui" && c.motivo !== "manual" && dia(c.creada) >= INICIO)
+    .filter((c) => c.motivo !== "prueba" && c.motivo !== "prueba-ui" && c.motivo !== "manual" && Date.parse(c.creada) >= INICIO_MS)
     .map((c, i) => ({
       n: i + 1,
       dia: dia(c.creada),
@@ -140,7 +143,7 @@ async function generar() {
     const ruta = join(salida, nombre + ".json");
     let filas = existsSync(ruta) ? JSON.parse(readFileSync(ruta, "utf8")) : [];
     if (filas[0] && "dia" in filas[0]) filas = filas.filter((f) => f.dia >= INICIO);
-    else if (INICIO > hoy) filas = []; // agregados de 30 días: antes del lanzamiento no cuentan
+    else if (INICIO_MS > Date.now()) filas = []; // agregados de 30 días: antes del lanzamiento no cuentan (se vuelven a llenar con Umami ya desde el lanzamiento)
     guardar(nombre, filas.length ? filas : [fila0]); // el tablero no acepta archivos vacíos
   }
   if (process.argv.includes("--solo-limpiar")) return;

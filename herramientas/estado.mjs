@@ -20,7 +20,8 @@ const LINKS = { // payment links de SPECTRE
   plink_1UTTDOFethND82y0CnGx316m: { producto: "Upgrade a Full System", actual: true }, // $49 = la diferencia
 };
 // las ventas del tablero cuentan desde el lanzamiento (privado/metricas-inicio.txt, AAAA-MM-DD, hora de México)
-const INICIO_VENTAS = existsSync(PRIV("metricas-inicio.txt")) ? Date.parse(readFileSync(PRIV("metricas-inicio.txt"), "utf8").trim() + "T06:00:00Z") / 1000 : 0;
+const INICIO_TXT = existsSync(PRIV("metricas-inicio.txt")) ? readFileSync(PRIV("metricas-inicio.txt"), "utf8").trim() : "";
+const INICIO_VENTAS = INICIO_TXT ? Date.parse(INICIO_TXT.includes("T") ? INICIO_TXT : INICIO_TXT + "T06:00:00Z") / 1000 : 0;
 const PRUEBAS = ["prueba", "prueba-ui", "manual"];
 const RCLONE = join(process.env.HOME, "respaldo-grads-2026", "rclone");
 const RCLONE_CONF = PRIV("rclone.conf");
