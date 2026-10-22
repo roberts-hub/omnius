@@ -234,7 +234,7 @@ function tarjetaVideo(v) {
     img.alt = "";
     img.loading = "lazy";
     play.append(img, el("span", "video-play-icono"));
-    if (falta) play.append(el("span", "video-idioma-aviso", enIngles ? "ENGLISH VERSION COMING SOON · PLAYS IN SPANISH" : "VERSIÓN EN ESPAÑOL PRÓXIMAMENTE · SE REPRODUCE EN INGLÉS"));
+    if (falta) play.append(el("span", "video-idioma-aviso", enIngles ? "ENGLISH VERSION COMING SOON · PLAYS ORIGINAL (SPANISH)" : "VERSIÓN EN ESPAÑOL PRÓXIMAMENTE · SE REPRODUCE EN INGLÉS"));
     play.addEventListener("click", () => abrirVideo(id, v, id === idEn ? "en" : "es"));
     marco.append(play);
   } else {
@@ -301,8 +301,10 @@ function pintar(datos, compra) {
     const selector = el("div", "selector-idioma");
     selector.setAttribute("role", "group");
     selector.setAttribute("aria-label", "Video language");
-    const opciones = [["en", "ENGLISH"], ["es", "ESPAÑOL"]].map(([id, nombre]) => {
+    // la versión en español es la original (así se grabaron los tutoriales)
+    const opciones = [["en", "ENGLISH"], ["es", "ORIGINAL", "ESPAÑOL"]].map(([id, nombre, sub]) => {
       const b = el("button", "selector-idioma-opcion", nombre);
+      if (sub) { b.append(el("span", "selector-idioma-sub", sub)); b.setAttribute("aria-label", "Original version, in Spanish"); }
       b.type = "button";
       b.dataset.idioma = id;
       if (id === "en" && !hayIngles) b.append(el("span", "selector-idioma-pronto", "SOON"));

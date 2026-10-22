@@ -2089,3 +2089,4 @@ section.looks { max-width: var(--ancho); margin: 0 auto; padding: clamp(80px, 9v
 .miembros-intro .ir-descargas { width: auto; display: inline-flex; padding: 0 26px; margin-top: 26px; }
 #descargas { scroll-margin-top: 90px; }
 .descarga-nota { margin-top: 6px; font-size: 12px; color: var(--hueso); }
+.selector-idioma-sub { font-size: 9px; letter-spacing: 0.16em; opacity: 0.65; }
