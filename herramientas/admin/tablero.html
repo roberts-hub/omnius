@@ -1,0 +1,964 @@
+<link rel="stylesheet" href="fuentes.css">
+<style>
+  /* SPECTRE · Métricas — panel oscuro neutro: barra lateral con las secciones y el "en vivo",
+     panel principal un tono más claro con esquina redondeada, tarjetas con borde fino,
+     datos en blanco y grises (verde y rojo solo para subir o bajar). */
+  #dash-root { --dash-gutter: 0; }
+  .sx {
+    --ground: #0a0a0a; --panel: #111111; --card: #171717; --raised: #222222; --rule: #232323; --line: #2e2e2e;
+    --text: #f5f5f5; --muted: #a3a3a3; --faint: #7a7a7a; --dato: #e8e8e8; --dato-2: #3d3d3d;
+    --verde: #86efac; --verde-bg: rgba(134, 239, 172, 0.1); --verde-tenue: #2c4434; --azul: #93c5fd; --azul-bg: rgba(147, 197, 253, 0.1); --violeta: #c4b5fd; --violeta-bg: rgba(196, 181, 253, 0.1);
+    --pos: #22c55e; --pos-bg: rgba(34, 197, 94, 0.12); --neg: #f04452; --neg-bg: rgba(240, 68, 82, 0.12); --warn: #eab308; --warn-bg: rgba(234, 179, 8, 0.12);
+    --font: 'SX Archivo', 'Archivo', system-ui, -apple-system, sans-serif;
+    --mono: 'SX Mono', 'IBM Plex Mono', ui-monospace, Menlo, monospace;
+    --radius: 14px; --gap: 16px;
+    display: grid; grid-template-columns: 248px minmax(0, 1fr); min-height: 100vh;
+    background: var(--ground); color: var(--text); font: 400 14px/20px var(--font);
+    font-variant-numeric: tabular-nums; -webkit-font-smoothing: antialiased;
+  }
+  .sx *, .sx *::before, .sx *::after { box-sizing: border-box; }
+  .sx b, .sx strong { font-weight: 600; }
+  .sx a { color: inherit; }
+  .sx svg.ic { width: 18px; height: 18px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ── barra lateral ── */
+  .sx-lado { position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; gap: 6px; padding: 20px 14px 18px; overflow-y: auto; }
+  .sx-marca { display: flex; align-items: center; gap: 12px; padding: 4px 10px 18px; text-decoration: none; }
+  .sx-marca svg { width: 24px; height: 24px; color: var(--text); flex: none; }
+  .sx-marca span { font-family: var(--mono); font-size: 12px; letter-spacing: 0.4em; }
+  .sx-grupo { padding: 10px 12px 6px; color: var(--faint); font-size: 12px; }
+  .sx-tabs { display: flex; flex-direction: column; gap: 2px; }
+  .sx-tabs button { display: flex; align-items: center; gap: 12px; height: 40px; padding: 0 12px; border: 0; border-radius: 10px; background: none; color: var(--muted); font: 500 14px/1 var(--font); text-align: left; cursor: pointer; transition: background 0.15s, color 0.15s; }
+  .sx-tabs button:hover { color: var(--text); background: rgba(255, 255, 255, 0.04); }
+  .sx-tabs button[aria-selected="true"] { color: var(--text); background: var(--raised); }
+
+  /* en vivo: caja al pie de la barra */
+  .sx-vivo { margin-top: auto; background: var(--card); border: 1px solid var(--rule); border-radius: var(--radius); padding: 14px 14px 12px; }
+  .sx-vivo .et { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; }
+  .sx-vivo .punto { width: 8px; height: 8px; border-radius: 50%; background: var(--pos); flex: none; }
+  .sx-vivo .estado { display: flex; align-items: baseline; gap: 8px; margin-top: 10px; }
+  .sx-vivo .num { font-size: 30px; line-height: 34px; font-weight: 600; letter-spacing: -0.02em; }
+  .sx-vivo .txt { color: var(--muted); }
+  .sx-vivo .hace { margin-top: 2px; color: var(--faint); font-size: 12px; min-height: 16px; }
+  .sx-vivo .acciones { display: flex; gap: 8px; margin-top: 12px; }
+  .sx .sx-boton { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 32px; padding: 0 12px; border: 0; border-radius: 9px; background: var(--text); color: #0a0a0a; font: 600 12px/1 var(--font); text-decoration: none; white-space: nowrap; cursor: pointer; transition: background 0.15s, opacity 0.15s; }
+  .sx .sx-boton:hover { background: #fff; }
+  .sx .sx-boton.sec { background: var(--raised); color: var(--text); }
+  .sx .sx-boton.sec:hover { background: #2c2c2c; }
+  .sx .sx-boton[aria-busy="true"] { opacity: 0.55; }
+  .sx-vivo .acciones .sx-boton { flex: 1; }
+  .sx-boton:focus-visible, .sx button:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+  @media (prefers-reduced-motion: no-preference) {
+    .sx-vivo .punto { animation: sxLatido 2.4s ease-out infinite; }
+    @keyframes sxLatido { 0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.45); } 70%, 100% { box-shadow: 0 0 0 7px rgba(34, 197, 94, 0); } }
+  }
+  .sx-pie { padding: 12px 10px 0; color: var(--faint); font-size: 12px; line-height: 17px; }
+
+  /* ── panel principal ── */
+  .sx-main { background: var(--panel); border-left: 1px solid var(--rule); min-width: 0; padding: 26px 28px 48px; }
+  .sx-cabeza { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 14px 24px; margin-bottom: 20px; }
+  .sx-cabeza h1 { margin: 0; font-size: 22px; line-height: 28px; font-weight: 600; letter-spacing: -0.01em; }
+  .sx-cabeza p { margin: 4px 0 0; color: var(--muted); font-size: 14px; line-height: 20px; max-width: 72ch; }
+  .sx-periodo { display: inline-flex; height: 36px; padding: 3px; border-radius: 10px; background: var(--card); border: 1px solid var(--rule); gap: 2px; flex: none; }
+  .sx-periodo button { font: 500 13px/1 var(--font); color: var(--muted); background: none; border: 0; border-radius: 7px; padding: 0 12px; cursor: pointer; transition: color 0.15s, background 0.15s; }
+  .sx-periodo button:hover { color: var(--text); }
+  .sx-periodo button[aria-pressed="true"] { background: var(--raised); color: var(--text); }
+
+  /* cifras: tarjetas sueltas, etiqueta y cambio arriba, cifra grande abajo */
+  .sx-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--gap); margin-bottom: var(--gap); }
+  .sx-kpi { background: var(--card); border: 1px solid var(--rule); border-radius: var(--radius); padding: 18px 20px 18px; min-width: 0; }
+  .sx-kpi .top { display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 22px; }
+  .sx-kpi .et { color: var(--muted); font-size: 13px; font-weight: 500; }
+  .sx-kpi .val { margin-top: 14px; font-size: 28px; line-height: 34px; font-weight: 600; letter-spacing: -0.02em; white-space: nowrap; }
+  .sx-kpi .val small { font-size: 13px; color: var(--faint); margin-left: 4px; letter-spacing: 0; font-weight: 400; }
+  .sx-kpi .sub { margin-top: 4px; color: var(--faint); font-size: 12px; line-height: 16px; }
+
+  .sx-kpi .et { display: inline-flex; align-items: center; gap: 10px; }
+  .sx .chip { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 8px; flex: none; }
+  .sx .chip svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .sx .chip.verde { background: var(--verde-bg); color: var(--verde); }
+  .sx .chip.azul { background: var(--azul-bg); color: var(--azul); }
+  .sx .chip.violeta { background: var(--violeta-bg); color: var(--violeta); }
+  .sx .verde-txt { color: var(--verde); }
+  .sx-dinero.realce { background: linear-gradient(180deg, rgba(134, 239, 172, 0.06), rgba(134, 239, 172, 0) 55%), var(--card); border-color: rgba(134, 239, 172, 0.16); }
+  .sx-tabs button[aria-selected="true"] svg.ic { color: var(--verde); }
+
+  /* cambio contra el periodo anterior */
+  .sx .cambio { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+  .sx .cambio::before { content: '↑'; display: inline-grid; place-items: center; width: 15px; height: 15px; border-radius: 50%; font-size: 10px; line-height: 1; color: #0a0a0a; background: var(--pos); }
+  .sx .cambio.sube { color: var(--pos); }
+  .sx .cambio.baja { color: var(--neg); }
+  .sx .cambio.baja::before { content: '↓'; background: var(--neg); }
+  .sx .cambio.nada { display: none; }
+  .sx .cambio .vs { color: var(--faint); font-weight: 400; }
+
+  /* tarjetas */
+  .sx-fila { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gap); margin-bottom: var(--gap); align-items: stretch; }
+  .sx-fila > .sx-card { display: flex; flex-direction: column; }
+  .sx-fila.parejo .sx-embudo { flex: 1; align-content: space-between; }
+  .sx-card { background: var(--card); border: 1px solid var(--rule); border-radius: var(--radius); padding: 20px; min-width: 0; }
+  .sx-card.sola { margin-bottom: var(--gap); }
+  .sx-card .cab { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .sx-card h2 { margin: 0; font-size: 14px; line-height: 20px; font-weight: 500; color: var(--muted); }
+  .sx-card .cab .lado { color: var(--faint); font-size: 12px; white-space: nowrap; }
+  .sx-card .nota { margin: 2px 0 14px; color: var(--faint); font-size: 12px; line-height: 17px; }
+  .sx-listas { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px; }
+  .sx-listas.cinco { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 24px; }
+  .sx .bandera { font-size: 16px; margin-right: 8px; vertical-align: -1px; font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif; }
+  .sx-listas h3 { margin: 0 0 8px; font-size: 13px; line-height: 20px; font-weight: 500; color: var(--muted); }
+  .sx .solo-movil { display: none; }
+  .sx-total { margin: auto 0 0; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 12px; }
+  .sx-fila .sx-tabla { margin-bottom: 14px; }
+  .sx-vacio { margin: 4px 0 0; padding: 11px 14px; border: 1px dashed var(--line); border-radius: 10px; color: var(--muted); font-size: 13px; }
+
+  /* dinero en el tiempo */
+  .sx-dinero .cab { align-items: flex-start; }
+  .sx-dinero .grande { margin-top: 6px; font-size: 34px; line-height: 40px; font-weight: 600; letter-spacing: -0.02em; }
+  .sx-dinero .grande small { font-size: 14px; color: var(--faint); margin-left: 6px; font-weight: 400; letter-spacing: 0; }
+  .sx-dinero .detalle { margin-top: 2px; color: var(--faint); font-size: 12px; }
+  .sx-dinero .sx-graf { margin-top: 18px; }
+
+  /* tablas */
+  .sx-tabla { overflow-x: auto; }
+  .sx table { width: 100%; border-collapse: collapse; }
+  .sx th { font: 400 12px/16px var(--font); color: var(--faint); text-align: left; padding: 0 12px 10px; white-space: nowrap; }
+  .sx td { padding: 0 12px; height: 44px; border-top: 1px solid var(--rule); white-space: nowrap; }
+  .sx th:first-child, .sx td:first-child { padding-left: 0; }
+  .sx th:last-child, .sx td:last-child { padding-right: 0; }
+  .sx .r { text-align: right; }
+  .sx td.id { color: var(--text); font-weight: 500; }
+  .sx td.gris { color: var(--muted); }
+  .sx td.tenue { color: var(--faint); }
+  .sx tbody tr { transition: background 0.12s; }
+  .sx tbody tr:hover td { background: rgba(255, 255, 255, 0.025); }
+  .sx .celda-barra { position: relative; }
+  .sx .celda-barra .b { position: absolute; left: 0; bottom: 7px; height: 2px; border-radius: 2px; background: var(--dato-2); }
+  .sx .celda-barra .b.primera { background: var(--verde); }
+  .sx .alto { max-height: 468px; overflow: auto; }
+  .sx .alto th { position: sticky; top: 0; background: var(--card); z-index: 1; padding-top: 2px; }
+
+  /* estados */
+  .sx .pill { display: inline-flex; align-items: center; height: 22px; padding: 0 9px; border-radius: 999px; font-size: 12px; font-weight: 500; background: var(--raised); color: var(--muted); flex: none; white-space: nowrap; }
+  .sx .pill.ok { background: var(--pos-bg); color: var(--pos); }
+  .sx .pill.av { background: var(--warn-bg); color: var(--warn); }
+  .sx .pill.mal { background: var(--neg-bg); color: var(--neg); }
+  .sx .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 10px; background: var(--faint); vertical-align: 1px; }
+  .sx .dot.ok { background: var(--pos); } .sx .dot.av { background: var(--warn); } .sx .dot.mal { background: var(--neg); }
+  .sx-estado { display: flex; align-items: center; background: var(--card); border: 1px solid var(--rule); border-radius: var(--radius); padding: 16px 20px; margin-bottom: var(--gap); font-size: 15px; }
+
+  /* embudo: pistas planas en blanco */
+  .sx-embudo { display: grid; gap: 16px; }
+  .sx-paso { border: 1px solid var(--rule); border-radius: 12px; padding: 12px 14px; }
+  .sx-paso .fila { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; color: var(--muted); }
+  .sx-paso .fila b { font-size: 20px; font-weight: 600; color: var(--text); }
+  .sx-paso .pista { height: 6px; border-radius: 999px; background: var(--raised); margin-top: 10px; overflow: hidden; }
+  .sx-paso .lleno { height: 100%; border-radius: 999px; background: var(--dato); }
+  .sx-paso .perdida { margin-top: 8px; color: var(--faint); font-size: 12px; }
+  .sx-paso .perdida.mayor { color: var(--neg); }
+  .sx-paso.final .lleno { background: var(--verde); }
+  .sx-paso.final .fila b { color: var(--verde); }
+
+  /* gráficas */
+  .sx-graf { position: relative; min-height: 200px; }
+  .sx-graf svg { display: block; overflow: visible; touch-action: pan-y; }
+  .sx-graf .eje text { fill: var(--faint); font: 12px var(--font); }
+  .sx-graf .rejilla line { stroke: var(--line); stroke-dasharray: 3 4; }
+  .sx-tip { position: absolute; pointer-events: none; background: #1f1f1f; border: 1px solid var(--line); border-radius: 10px; padding: 8px 11px; font-size: 12px; line-height: 17px; white-space: nowrap; opacity: 0; transition: opacity 0.12s; z-index: 2; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); }
+  .sx-tip span { color: var(--muted); display: block; }
+  .sx-tip .linea { display: flex; align-items: center; gap: 8px; color: var(--text); margin-top: 2px; }
+  .sx-tip .linea i { width: 8px; height: 8px; border-radius: 50%; background: var(--verde); }
+  .sx-tip .linea b { margin-left: 10px; }
+  .sx-eje-pill { position: absolute; bottom: 0; transform: translateX(-50%); height: 26px; padding: 0 12px; border-radius: 999px; background: var(--text); color: #0a0a0a; font-size: 12px; font-weight: 600; line-height: 26px; white-space: nowrap; pointer-events: none; }
+
+  .sx [data-dash-source-state=refreshing] { opacity: 0.5; transition: opacity 0.3s; }
+  .sx [data-dash-source-state=empty] { color: transparent; }
+  .sx [hidden] { display: none !important; }
+
+  @media (max-width: 1180px) {
+    .sx-listas, .sx-listas.cinco { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+  }
+  @media (max-width: 960px) {
+    .sx { display: block; }
+    .sx-lado { position: sticky; z-index: 3; height: auto; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 0 12px; padding: 10px 16px 0; background: var(--ground); border-bottom: 1px solid var(--rule); overflow: visible; }
+    .sx-marca { padding: 4px 0; }
+    .sx-grupo, .sx-pie, .sx-vivo .et, .sx-vivo .hace { display: none; }
+    .sx-vivo { grid-column: 2; grid-row: 1; margin: 0; justify-self: end; display: flex; align-items: center; gap: 10px; padding: 0; background: none; border: 0; }
+    .sx-vivo .estado { margin: 0; align-items: center; }
+    .sx-vivo .estado::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--pos); }
+    .sx-vivo .num { font-size: 17px; line-height: 20px; }
+    .sx-vivo .acciones { margin: 0; }
+    .sx-vivo .acciones .tr { display: none; }
+    .sx-tabs { grid-column: 1 / -1; flex-direction: row; gap: 4px; margin-top: 10px; overflow-x: auto; scrollbar-width: none; }
+    .sx-tabs::-webkit-scrollbar { display: none; }
+    .sx-tabs button { height: 38px; padding: 0 12px; border-radius: 0; gap: 8px; border-bottom: 2px solid transparent; white-space: nowrap; flex: none; }
+    .sx-tabs button[aria-selected="true"] { background: none; border-bottom-color: var(--text); }
+    .sx-tabs svg.ic { width: 16px; height: 16px; }
+    .sx-main { border-left: 0; padding: 20px 16px 40px; }
+    .sx-fila { grid-template-columns: minmax(0, 1fr); }
+    .sx-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  }
+  @media (max-width: 640px) {
+    .sx-marca span { display: none; }
+    .sx-vivo .txt { font-size: 13px; }
+    .sx-cabeza h1 { font-size: 20px; }
+    .sx-periodo { width: 100%; }
+    .sx-periodo button { flex: 1; padding: 0 4px; }
+    .sx-kpi { padding: 14px 14px 14px; }
+    .sx-kpi .val { font-size: 22px; line-height: 28px; margin-top: 10px; }
+    .sx-kpi .sub { display: none; }
+    .sx-dinero .grande { font-size: 28px; line-height: 34px; }
+    .sx .ocultable { display: none; }
+    .sx .solo-movil { display: inline; color: var(--faint); font-size: 12px; margin-left: 4px; font-weight: 400; }
+    .sx-listas, .sx-listas.cinco { grid-template-columns: minmax(0, 1fr); }
+    .sx-card { padding: 16px; }
+  }
+</style>
+
+<div class="sx">
+  <aside class="sx-lado">
+    <a class="sx-marca" href="#resumen" aria-label="SPECTRE · Métricas">
+      <svg viewBox="18 18 64 64" fill="none" aria-hidden="true"><circle cx="50" cy="50" r="24" stroke="currentColor" stroke-width="2.4"/><line x1="50" y1="20" x2="50" y2="80" stroke="currentColor" stroke-width="1.6"/></svg>
+      <span>SPECTRE</span>
+    </a>
+    <div class="sx-grupo">Tablero</div>
+    <nav class="sx-tabs" role="tablist" aria-label="Secciones" aria-orientation="vertical">
+      <button role="tab" data-tab="resumen" id="tab-resumen"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg><span>Resumen</span></button>
+      <button role="tab" data-tab="ventas" id="tab-ventas"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18"/><path d="M16.5 7.5c0-1.7-2-3-4.5-3s-4.5 1.3-4.5 3 2 2.6 4.5 3.2 4.5 1.5 4.5 3.3-2 3-4.5 3-4.5-1.3-4.5-3"/></svg><span>Ventas</span></button>
+      <button role="tab" data-tab="trafico" id="tab-trafico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M21 20H3"/></svg><span>Tráfico</span></button>
+      <button role="tab" data-tab="cuentas" id="tab-cuentas"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.4 3.2-5.5 6.5-5.5s5.9 2.1 6.5 5.5"/><path d="M15.5 4.8a3.5 3.5 0 0 1 0 6.4"/><path d="M18 14.8c2 .7 3.2 2.6 3.5 5.2"/></svg><span>Cuentas</span></button>
+      <button role="tab" data-tab="sistema" id="tab-sistema"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h4l2.5-6 5 12 2.5-6H21"/></svg><span>Sistema</span></button>
+    </nav>
+    <div class="sx-vivo" id="en-vivo">
+      <div class="et"><span class="punto" aria-hidden="true"></span>En vivo</div>
+      <div class="estado"><b class="num" data-source="presencia" data-field="activos" data-row="0">—</b><span class="txt" id="vivo-txt">en el sitio</span></div>
+      <div class="hace" id="vivo-hace"></div>
+      <div class="acciones">
+        <button class="sx-boton" id="vivo-actualizar" type="button">Actualizar</button>
+        <a class="sx-boton sec tr" href="https://cloud.umami.is/analytics/us/websites/add40efe-f309-476f-95a6-6367262a4434/realtime" target="_blank" rel="noopener">Tiempo real ↗</a>
+      </div>
+    </div>
+    <div class="sx-pie">spectrecolor.com<br><span id="pie-act">Ventas, dinero y personas en vivo · lo demás cada hora</span></div>
+  </aside>
+
+  <main class="sx-main">
+    <div class="sx-cabeza">
+      <div>
+        <h1 id="titulo">Resumen</h1>
+        <p id="bajada">—</p>
+      </div>
+      <div class="sx-periodo" role="group" aria-label="Periodo" id="periodo">
+        <button data-p="hoy">Hoy</button><button data-p="7d">7 días</button><button data-p="30d">30 días</button><button data-p="todo">Todo</button>
+      </div>
+    </div>
+
+    <!-- ══════════ RESUMEN ══════════ -->
+    <section id="resumen" data-pagina="resumen">
+      <div class="sx-kpis" id="cifras">
+        <div class="sx-kpi"><div class="top"><span class="et"><i class="chip verde" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M16.5 7.5c0-1.7-2-3-4.5-3s-4.5 1.3-4.5 3 2 2.6 4.5 3.2 4.5 1.5 4.5 3.3-2 3-4.5 3-4.5-1.3-4.5-3"/></svg></i>Ventas</span><span class="cambio nada" data-source="resumen" data-field="cambio_ventas" data-where="periodo=hoy">—</span></div><div class="val" data-source="resumen" data-field="ventas" data-where="periodo=hoy">—</div><div class="sub" id="n-gratis">—</div></div>
+        <div class="sx-kpi"><div class="top"><span class="et"><i class="chip azul" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.4 3.2-5.5 6.5-5.5s5.9 2.1 6.5 5.5"/><path d="M15.5 4.8a3.5 3.5 0 0 1 0 6.4"/><path d="M18 14.8c2 .7 3.2 2.6 3.5 5.2"/></svg></i>Visitantes</span><span class="cambio nada" data-source="resumen" data-field="cambio_visitantes" data-where="periodo=hoy">—</span></div><div class="val" data-source="resumen" data-field="visitantes" data-where="periodo=hoy">—</div><div class="sub">Personas distintas</div></div>
+        <div class="sx-kpi"><div class="top"><span class="et"><i class="chip violeta" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 17l6-6 4 4 6-7"/><path d="M15 8h5v5"/></svg></i>Conversión</span></div><div class="val"><span data-source="resumen" data-field="conversion" data-where="periodo=hoy">—</span><small>%</small></div><div class="sub">Ventas por cada 100 visitantes</div></div>
+        <div class="sx-kpi"><div class="top"><span class="et"><i class="chip verde" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 12h4l2.5-6 5 12 2.5-6H21"/></svg></i>En el sitio ahora</span></div><div class="val" data-source="presencia" data-field="activos" data-row="0">—</div><div class="sub" id="n-vivo-r">—</div></div>
+      </div>
+      <div class="sx-card sola sx-dinero realce" id="dinero">
+        <div class="cab">
+          <div>
+            <h2>Ganado en total</h2>
+            <div class="grande verde-txt">$<span data-source="resumen" data-field="total_mxn" data-where="periodo=hoy">—</span><small>MXN</small></div>
+            <div class="detalle" id="n-tc">—</div>
+          </div>
+          <span class="cambio nada" data-source="resumen" data-field="cambio_total" data-where="periodo=hoy">—</span>
+        </div>
+        <div class="sx-graf" data-source="serie_dinero" id="graf-dinero"></div>
+      </div>
+      <div class="sx-fila parejo">
+        <div class="sx-card" id="canales">
+          <div class="cab"><h2>Ventas por canal</h2><span class="lado" id="canales-lado"></span></div>
+          <p class="nota">De dónde llegó cada visita y cada venta.</p>
+          <div class="sx-tabla"><table data-source="por_canal" data-row-key="periodo,canal"><thead><tr><th data-field="canal">Canal</th><th class="r" data-field="visitas">Visitas</th><th class="r" data-field="clics">Clic en pagar</th><th class="r" data-field="ventas">Ventas</th><th class="r ocultable" data-field="ingresos">Ingresos</th></tr></thead><tbody></tbody></table></div>
+          <p class="sx-vacio" id="canales-vacio" hidden>Sin visitas en este periodo.</p>
+          <p class="sx-total" id="canales-total" data-source="por_canal"></p>
+        </div>
+        <div class="sx-card" id="embudo">
+          <div class="cab"><h2>Dónde se quedan</h2><span class="lado" id="embudo-lado"></span></div>
+          <p class="nota">De quien entra al sitio a quien paga. En rojo, el paso donde más gente se va.</p>
+          <div class="sx-embudo" data-source="resumen" id="embudo-pasos"></div>
+        </div>
+      </div>
+      <div class="sx-card sola" id="ultimas">
+        <div class="cab"><h2>Últimas ventas</h2><span class="lado">Hora de México</span></div>
+        <p class="nota">Cada compra pagada, la más reciente arriba. En vivo desde la base de clientes.</p>
+        <div class="sx-tabla"><table data-source="ventas" data-row-key="n"><thead><tr><th data-field="fecha">Fecha</th><th data-field="edicion">Producto</th><th class="r" data-field="monto">Monto</th><th class="ocultable" data-field="moneda">Moneda</th><th data-field="fuente">Canal</th><th class="ocultable" data-field="pais">País</th></tr></thead><tbody></tbody></table></div>
+        <p class="sx-vacio" id="ultimas-vacio" hidden>Todavía no hay ventas en este periodo.</p>
+      </div>
+    </section>
+
+    <!-- ══════════ VENTAS ══════════ -->
+    <section id="ventas" data-pagina="ventas" hidden>
+      <div class="sx-card sola sx-dinero realce" id="ingresos-dia">
+        <div class="cab">
+          <div>
+            <h2 id="ing-titulo">Ingresos por día</h2>
+            <div class="grande verde-txt">$<span data-source="resumen" data-field="total_mxn" data-where="periodo=hoy">—</span><small>MXN</small></div>
+            <div class="detalle" id="ing-detalle">—</div>
+          </div>
+          <span class="cambio nada" data-source="resumen" data-field="cambio_total" data-where="periodo=hoy">—</span>
+        </div>
+        <div class="sx-graf" data-source="dinero_por_dia" id="graf-ingresos"></div>
+      </div>
+      <div class="sx-fila parejo">
+        <div class="sx-card" id="ventas-dia">
+          <div class="cab"><h2>Ventas por día</h2><span class="lado">Hora de México</span></div>
+          <p class="nota">Compras pagadas cada día; en blanco, el periodo elegido.</p>
+          <div class="sx-graf" data-source="ventas" id="graf-ventas"></div>
+        </div>
+        <div class="sx-card" id="productos">
+          <div class="cab"><h2>Por producto</h2></div>
+          <p class="nota">Cuánto vendió cada edición en el periodo.</p>
+          <div class="sx-tabla"><table data-source="por_producto" data-row-key="periodo,producto"><thead><tr><th data-field="producto">Producto</th><th class="r" data-field="ventas">Ventas</th><th class="r" data-field="ingresos_usd">USD</th><th class="r" data-field="ingresos_mxn">MXN</th></tr></thead><tbody></tbody></table></div>
+          <p class="sx-total" id="productos-total" data-source="por_producto"></p>
+        </div>
+      </div>
+      <div class="sx-card sola" id="codigos">
+        <div class="cab"><h2>Códigos de descuento</h2><span class="lado">Activos</span></div>
+        <p class="nota">Usos de cada código. Valen en el Full System y el LUT Pack.</p>
+        <div class="sx-tabla"><table data-source="codigos" data-row-key="codigo"><thead><tr><th data-field="codigo">Código</th><th data-field="descuento">Descuento</th><th class="r" data-field="usados">Usados</th><th class="r" data-field="limite">Límite</th><th class="r" data-field="restantes">Quedan</th><th data-field="estado">Estado</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="sx-card sola" id="todas-ventas">
+        <div class="cab"><h2>Todas las ventas del periodo</h2><span class="lado">Desde Stripe</span></div>
+        <p class="nota">Producto, monto, código, canal, país y si la cuenta tiene acceso.</p>
+        <div class="sx-tabla alto"><table data-source="ventas_stripe" data-row-key="n"><thead><tr><th data-field="fecha">Fecha</th><th data-field="producto">Producto</th><th class="r" data-field="monto">Monto</th><th data-field="moneda">Moneda</th><th data-field="codigo">Código</th><th data-field="fuente">Canal</th><th data-field="pais">País</th><th data-field="acceso">Acceso</th></tr></thead><tbody></tbody></table></div>
+        <p class="sx-vacio" id="todas-vacio" hidden>Sin ventas en este periodo.</p>
+      </div>
+    </section>
+
+    <!-- ══════════ TRÁFICO ══════════ -->
+    <section id="trafico" data-pagina="trafico" hidden>
+      <div class="sx-kpis">
+        <div class="sx-kpi"><div class="top"><span class="et"><i class="chip verde" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 12h4l2.5-6 5 12 2.5-6H21"/></svg></i>En el sitio ahora</span></div><div class="val" data-source="presencia" data-field="activos" data-row="0">—</div><div class="sub" id="n-vivo">—</div></div>
+        <div class="sx-kpi"><div class="top"><span class="et">Visitantes en 24 h</span></div><div class="val" data-source="en_vivo" data-field="visitantes_24h" data-row="0">—</div></div>
+        <div class="sx-kpi"><div class="top"><span class="et">Visitas en 24 h</span></div><div class="val" data-source="en_vivo" data-field="visitas_24h" data-row="0">—</div><div class="sub">Una persona puede volver</div></div>
+        <div class="sx-kpi"><div class="top"><span class="et">Páginas vistas en 24 h</span></div><div class="val" data-source="en_vivo" data-field="vistas_24h" data-row="0">—</div></div>
+      </div>
+      <div class="sx-card sola" id="visitantes-dia">
+        <div class="cab"><h2>Visitantes por día</h2><span class="lado">Personas distintas</span></div>
+        <p class="nota">Cuántas personas entraron cada día; en blanco, hoy.</p>
+        <div class="sx-graf" data-source="trafico" id="graf-trafico"></div>
+      </div>
+      <div class="sx-fila" id="origen">
+        <div class="sx-card" id="paises">
+          <div class="cab"><h2>De qué país vienen</h2><span class="lado">Desde el lanzamiento</span></div>
+          <p class="nota">Personas distintas por país.</p>
+          <div class="sx-tabla"><table data-source="paises" data-row-key="pais"><thead><tr><th data-field="pais">País</th><th class="r" data-field="visitantes">Visitantes</th></tr></thead><tbody></tbody></table></div>
+        </div>
+        <div class="sx-card" id="ciudades">
+          <div class="cab"><h2>Ciudades</h2><span class="lado">Desde el lanzamiento</span></div>
+          <p class="nota">Las ciudades con más visitantes.</p>
+          <div class="sx-tabla alto"><table data-source="ciudades" data-row-key="ciudad,pais"><thead><tr><th data-field="ciudad">Ciudad</th><th class="r" data-field="visitantes">Visitantes</th></tr></thead><tbody></tbody></table></div>
+        </div>
+      </div>
+      <div class="sx-card sola" id="audiencia">
+        <div class="cab"><h2>Cómo llegan y qué usan</h2><span class="lado">Desde el lanzamiento</span></div>
+        <p class="nota">Sitio que los mandó, páginas que vieron, dispositivo, navegador y sistema.</p>
+        <div class="sx-listas cinco">
+          <div id="fuentes"><h3>De dónde llegan</h3><table data-source="fuentes" data-row-key="fuente"><thead><tr><th data-field="fuente">Sitio</th><th class="r" data-field="visitantes">Visitantes</th></tr></thead><tbody></tbody></table></div>
+          <div id="paginas"><h3>Páginas más vistas</h3><table data-source="paginas" data-row-key="pagina"><thead><tr><th data-field="pagina">Página</th><th class="r" data-field="vistas">Vistas</th></tr></thead><tbody></tbody></table></div>
+          <div id="dispositivos"><h3>Dispositivos</h3><table data-source="dispositivos" data-row-key="dispositivo"><thead><tr><th data-field="dispositivo">Dispositivo</th><th class="r" data-field="visitantes">Visitantes</th></tr></thead><tbody></tbody></table></div>
+          <div id="navegadores"><h3>Navegadores</h3><table data-source="navegadores" data-row-key="navegador"><thead><tr><th data-field="navegador">Navegador</th><th class="r" data-field="visitantes">Visitantes</th></tr></thead><tbody></tbody></table></div>
+          <div id="sistemas"><h3>Sistemas</h3><table data-source="sistemas" data-row-key="sistema"><thead><tr><th data-field="sistema">Sistema</th><th class="r" data-field="visitantes">Visitantes</th></tr></thead><tbody></tbody></table></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ CUENTAS ══════════ -->
+    <section id="cuentas" data-pagina="cuentas" hidden>
+      <div class="sx-kpis">
+        <div class="sx-kpi"><div class="top"><span class="et">Compradores</span></div><div class="val" data-source="cuentas_resumen" data-field="cuentas" data-row="0">—</div><div class="sub">Cuentas con acceso, sin las de prueba</div></div>
+        <div class="sx-kpi"><div class="top"><span class="et">Entraron en 24 h</span></div><div class="val" data-source="cuentas_resumen" data-field="activas_24h" data-row="0">—</div></div>
+        <div class="sx-kpi"><div class="top"><span class="et">Descargas</span></div><div class="val" data-source="cuentas_resumen" data-field="descargas" data-row="0">—</div><div class="sub">Archivos bajados en total</div></div>
+        <div class="sx-kpi"><div class="top"><span class="et">Con alerta</span></div><div class="val" data-source="cuentas_resumen" data-field="alertas" data-row="0">—</div><div class="sub">Muchas entradas o lugares</div></div>
+      </div>
+      <div class="sx-card sola" id="tabla-cuentas">
+        <div class="cab"><h2>Todas las cuentas</h2></div>
+        <p class="nota">Qué compró cada quien, cuándo entró y qué descargó. Sin las cuentas de prueba.</p>
+        <div class="sx-tabla alto"><table data-source="usuarios" data-row-key="correo"><thead><tr><th data-field="correo">Correo</th><th data-field="compro">Compró</th><th class="ocultable" data-field="ultima_entrada">Última entrada</th><th class="r" data-field="entradas_24h">Entradas 24 h</th><th class="r" data-field="descargas_total">Descargas</th><th class="ocultable" data-field="alerta">Alerta</th></tr></thead><tbody></tbody></table></div>
+      </div>
+    </section>
+
+    <!-- ══════════ SISTEMA ══════════ -->
+    <section id="sistema" data-pagina="sistema" hidden>
+      <div class="sx-estado" id="estado-general" data-source="salud"><span class="dot"></span><span id="estado-texto">—</span></div>
+      <div class="sx-card sola" id="revision">
+        <div class="cab"><h2>Revisión de sistemas</h2><span class="lado" id="revision-lado"></span></div>
+        <p class="nota">Sitio, pagos, cuentas, descargas y seguridad. Se revisa cada hora.</p>
+        <div class="sx-tabla"><table data-source="salud" data-row-key="area,punto"><thead><tr><th data-field="area">Área</th><th data-field="punto">Qué</th><th data-field="estado">Estado</th><th class="ocultable" data-field="detalle">Detalle</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="sx-card sola" id="respaldos">
+        <div class="cab"><h2>Respaldos</h2></div>
+        <p class="nota">Copias de la base de clientes y del sitio.</p>
+        <div class="sx-tabla"><table data-source="respaldos" data-row-key="respaldo"><thead><tr><th data-field="respaldo">Respaldo</th><th class="ocultable" data-field="donde">Dónde</th><th data-field="ultimo">Último</th><th class="ocultable" data-field="guarda">Guarda</th><th data-field="estado">Estado</th></tr></thead><tbody></tbody></table></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  // ── cálculos (cada uno da filas para los 4 periodos: el filtro elige cuáles se ven) ──
+  const SX_ZONA = 'America/Mexico_City';
+  const sxHoy = () => new Date().toLocaleDateString('en-CA', { timeZone: SX_ZONA });
+  const sxDesde = (p) => { const h = sxHoy(); if (p === 'hoy') return h; if (p === 'todo') return '0000-00-00'; const n = p === '7d' ? 6 : 29; return new Date(Date.parse(h + 'T12:00:00Z') - n * 864e5).toISOString().slice(0, 10); };
+  const SX_PERIODOS = ['hoy', '7d', '30d', 'todo'];
+  window.SX = { hoy: sxHoy, desde: sxDesde, periodos: SX_PERIODOS };
+
+  // personas en el sitio en vivo: misma forma de respuesta que las ventas (texto con la lista JSON entre etiquetas)
+  dash.loader('presencia', {
+    description: 'Saca la fila de la respuesta de Supabase (execute_sql) y deja los conteos como números.',
+    fn: ({ answer }) => {
+      let r = answer;
+      if (typeof r === 'string') { try { r = JSON.parse(r); } catch (e) { /* texto tal cual */ } }
+      if (r && typeof r === 'object' && !Array.isArray(r) && r.error) throw new Error(typeof r.error === 'string' ? r.error : r.error.message || JSON.stringify(r.error));
+      const texto = typeof r === 'string' ? r : r && typeof r.result === 'string' ? r.result : null;
+      let filas = Array.isArray(r) ? r : null;
+      if (!filas && texto) {
+        const m = texto.match(/<untrusted-data-([\w-]+)>\s*(\[[\s\S]*?\])\s*<\/untrusted-data-\1>/);
+        try { filas = JSON.parse(m ? m[2] : texto); } catch (e) { throw new Error(texto.slice(0, 300)); }
+      }
+      if (!Array.isArray(filas)) throw new Error('Supabase no devolvió filas');
+      return filas.map((f) => ({ ...f, activos: Number(f.activos), visitantes_24h: Number(f.visitantes_24h) }));
+    },
+  });
+
+  // ventas en vivo: la consulta a Supabase responde texto con la lista JSON entre etiquetas; aquí solo se convierte en filas
+  dash.loader('ventas', {
+    description: 'Saca la lista de filas de la respuesta de Supabase (execute_sql) y deja montos y números como números.',
+    fn: ({ answer }) => {
+      let r = answer;
+      if (typeof r === 'string') { try { r = JSON.parse(r); } catch (e) { /* texto tal cual */ } }
+      if (r && typeof r === 'object' && !Array.isArray(r) && r.error) throw new Error(typeof r.error === 'string' ? r.error : r.error.message || JSON.stringify(r.error));
+      const texto = typeof r === 'string' ? r : r && typeof r.result === 'string' ? r.result : null;
+      let filas = Array.isArray(r) ? r : null;
+      if (!filas && texto) {
+        // la etiqueta también aparece en la frase de aviso: se toma la que abre la lista ([…])
+        const m = texto.match(/<untrusted-data-([\w-]+)>\s*(\[[\s\S]*?\])\s*<\/untrusted-data-\1>/);
+        try { filas = JSON.parse(m ? m[2] : texto); } catch (e) { throw new Error(texto.slice(0, 300)); }
+      }
+      if (!Array.isArray(filas)) throw new Error('Supabase no devolvió filas');
+      return filas.map((f) => ({ ...f, n: Number(f.n), monto: f.monto == null ? null : Number(f.monto) }));
+    },
+  });
+
+  dash.calc('resumen', {
+    title: 'Resumen por periodo',
+    description: 'Ventas pagadas, ingresos por moneda, total en pesos (dólares al tipo de cambio del día), visitantes, clics en pagar, conversión y el cambio en % contra el periodo anterior del mismo largo, para hoy, 7 días, 30 días y todo.',
+    inputs: ['ventas', 'trafico', 'eventos', 'tipo_cambio'],
+    fn: (ventas, trafico, eventos, tipo_cambio) => {
+      const tc = Number(tipo_cambio[0] && tipo_cambio[0].usd_mxn) || 0;
+      const hoy = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Mexico_City' });
+      const desde = (p) => (p === 'hoy' ? hoy : p === 'todo' ? '0000-00-00' : new Date(Date.parse(hoy + 'T12:00:00Z') - (p === '7d' ? 6 : 29) * 864e5).toISOString().slice(0, 10));
+      return ['hoy', '7d', '30d', 'todo'].map((periodo) => {
+        const d = desde(periodo);
+        const v = ventas.filter((x) => Number(x.n) > 0 && x.estado === 'pagada' && x.dia >= d);
+        const suma = (mon) => Math.round(v.filter((x) => String(x.moneda).toUpperCase() === mon).reduce((s, x) => s + (Number(x.monto) || 0), 0) * 100) / 100;
+        const visitantes = trafico.filter((t) => t.dia >= d).reduce((s, t) => s + (Number(t.visitantes) || 0), 0);
+        const clics = eventos.filter((e) => e.dia >= d && e.evento === 'checkout').reduce((s, e) => s + (Number(e.total) || 0), 0);
+        const usd = suma('USD'), mxn = suma('MXN');
+        // periodo anterior del mismo largo (ayer, los 7 o 30 días previos); "todo" no tiene
+        const dp = periodo === 'todo' ? null : new Date(Date.parse(d + 'T12:00:00Z') - (periodo === 'hoy' ? 1 : periodo === '7d' ? 7 : 30) * 864e5).toISOString().slice(0, 10);
+        const vp = dp ? ventas.filter((x) => Number(x.n) > 0 && x.estado === 'pagada' && x.dia >= dp && x.dia < d) : [];
+        const totalPrev = vp.reduce((s, x) => s + (String(x.moneda).toUpperCase() === 'USD' ? (Number(x.monto) || 0) * tc : String(x.moneda).toUpperCase() === 'MXN' ? Number(x.monto) || 0 : 0), 0);
+        const visPrev = dp ? trafico.filter((t) => t.dia >= dp && t.dia < d).reduce((s, t) => s + (Number(t.visitantes) || 0), 0) : 0;
+        const cambio = (ahora, antes) => (antes > 0 ? Math.round(((ahora - antes) / antes) * 1000) / 10 : null);
+        const total = Math.round((mxn + usd * tc) * 100) / 100;
+        return { periodo, cambio_total: cambio(total, totalPrev), cambio_ventas: cambio(v.length, vp.length), cambio_visitantes: cambio(visitantes, visPrev), ventas: v.length, gratis: v.filter((x) => Number(x.monto) === 0).length, ingresos_usd: usd, ingresos_mxn: mxn, total_mxn: Math.round((mxn + usd * tc) * 100) / 100, tipo_cambio: tc, visitantes, clics, conversion: visitantes ? Math.round((v.length / visitantes) * 1000) / 10 : 0 };
+      });
+    },
+  });
+
+  dash.calc('serie_dinero', {
+    title: 'Ganado en el tiempo',
+    description: 'Total acumulado en pesos (dólares al tipo de cambio del día) de las ventas pagadas: por hora si el periodo cabe en un día, si no por día.',
+    inputs: ['ventas', 'tipo_cambio'],
+    fn: (ventas, tipo_cambio) => {
+      const tc = Number(tipo_cambio[0] && tipo_cambio[0].usd_mxn) || 0;
+      const zona = 'America/Mexico_City';
+      const hoy = new Date().toLocaleDateString('en-CA', { timeZone: zona });
+      const horaAhora = Number(new Date().toLocaleTimeString('en-GB', { timeZone: zona, hour: '2-digit', hour12: false }).slice(0, 2));
+      const pagadas = ventas.filter((x) => Number(x.n) > 0 && x.estado === 'pagada');
+      const pesos = (x) => { const m = String(x.moneda).toUpperCase(); return m === 'USD' ? (Number(x.monto) || 0) * tc : m === 'MXN' ? Number(x.monto) || 0 : 0; };
+      const dias = (a, b) => { const o = []; for (let t = Date.parse(a + 'T12:00:00Z'); t <= Date.parse(b + 'T12:00:00Z'); t += 864e5) o.push(new Date(t).toISOString().slice(0, 10)); return o; };
+      const etq = (d) => new Date(d + 'T12:00:00Z').toLocaleDateString('es-MX', { day: 'numeric', month: 'short', timeZone: 'UTC' });
+      const primero = pagadas.length ? pagadas.map((x) => x.dia).sort()[0] : hoy;
+      const filas = [];
+      for (const periodo of ['hoy', '7d', '30d', 'todo']) {
+        const desde = periodo === 'hoy' ? hoy : periodo === 'todo' ? primero : new Date(Date.parse(hoy + 'T12:00:00Z') - (periodo === '7d' ? 6 : 29) * 864e5).toISOString().slice(0, 10);
+        const v = pagadas.filter((x) => x.dia >= desde);
+        let acum = 0, n = 0;
+        if (desde >= hoy) {
+          const horas = v.filter((x) => x.dia === hoy).map((x) => Number(String(x.fecha || '').slice(11, 13)) || 0);
+          const h0 = periodo === 'todo' && horas.length ? Math.max(0, Math.min(...horas) - 1) : 0;
+          for (let h = h0; h <= horaAhora; h++) {
+            for (const x of v.filter((y) => y.dia === hoy && (Number(String(y.fecha || '').slice(11, 13)) || 0) === h)) { acum += pesos(x); n += 1; }
+            const hh = String(h).padStart(2, '0') + ':00';
+            filas.push({ periodo, clave: hh, etiqueta: hh, total_mxn: Math.round(acum * 100) / 100, ventas: n });
+          }
+        } else {
+          for (const d of dias(desde, hoy)) {
+            for (const x of v.filter((y) => y.dia === d)) { acum += pesos(x); n += 1; }
+            filas.push({ periodo, clave: d, etiqueta: etq(d), total_mxn: Math.round(acum * 100) / 100, ventas: n });
+          }
+        }
+      }
+      return filas;
+    },
+  });
+
+  dash.calc('dinero_por_dia', {
+    title: 'Ingresos por día',
+    description: 'Lo vendido cada día en pesos (dólares al tipo de cambio del día) y cuántas ventas, de los últimos 30 días o desde la primera venta si fue antes.',
+    inputs: ['ventas', 'tipo_cambio'],
+    fn: (ventas, tipo_cambio) => {
+      const tc = Number(tipo_cambio[0] && tipo_cambio[0].usd_mxn) || 0;
+      const hoy = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Mexico_City' });
+      const pagadas = ventas.filter((x) => Number(x.n) > 0 && x.estado === 'pagada');
+      const pesos = (x) => { const m = String(x.moneda).toUpperCase(); return m === 'USD' ? (Number(x.monto) || 0) * tc : m === 'MXN' ? Number(x.monto) || 0 : 0; };
+      const hace29 = new Date(Date.parse(hoy + 'T12:00:00Z') - 29 * 864e5).toISOString().slice(0, 10);
+      const primera = pagadas.length ? pagadas.map((x) => x.dia).sort()[0] : hoy;
+      const filas = [];
+      for (let t = Date.parse((primera < hace29 ? primera : hace29) + 'T12:00:00Z'); t <= Date.parse(hoy + 'T12:00:00Z'); t += 864e5) {
+        const dia = new Date(t).toISOString().slice(0, 10);
+        const v = pagadas.filter((x) => x.dia === dia);
+        filas.push({ dia, total_mxn: Math.round(v.reduce((s, x) => s + pesos(x), 0) * 100) / 100, ventas: v.length });
+      }
+      return filas;
+    },
+  });
+
+  dash.calc('por_canal', {
+    title: 'Ventas por canal',
+    description: 'Por periodo y canal: visitas (evento llegada-<canal>), clics en pagar (checkout-<canal>) y compras pagadas con su canal e ingresos.',
+    inputs: ['eventos', 'ventas'],
+    fn: (eventos, ventas) => {
+      const NOMBRES = { ig: 'Instagram', yt: 'YouTube', fb: 'Facebook', tt: 'TikTok', wa: 'WhatsApp', youtube: 'YouTube', instagram: 'Instagram', tiktok: 'TikTok', whatsapp: 'WhatsApp', facebook: 'Facebook', google: 'Google', x: 'X', linkedin: 'LinkedIn', pinterest: 'Pinterest', reddit: 'Reddit', telegram: 'Telegram', snapchat: 'Snapchat', buscador: 'Otro buscador', correo: 'Correo', twowaves: 'Two Waves', 'otro-sitio': 'Otro sitio', directo: 'Directo' };
+      const hoy = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Mexico_City' });
+      const desde = (p) => (p === 'hoy' ? hoy : p === 'todo' ? '0000-00-00' : new Date(Date.parse(hoy + 'T12:00:00Z') - (p === '7d' ? 6 : 29) * 864e5).toISOString().slice(0, 10));
+      const filas = [];
+      for (const periodo of ['hoy', '7d', '30d', 'todo']) {
+        const d = desde(periodo), m = new Map();
+        const fila = (k) => { const canal = NOMBRES[k] || k; if (!m.has(canal)) m.set(canal, { periodo, canal, visitas: 0, clics: 0, ventas: 0, suma: {} }); return m.get(canal); };
+        for (const e of eventos.filter((x) => x.dia >= d)) {
+          const ev = String(e.evento || '');
+          if (ev.startsWith('llegada-')) fila(ev.slice(8)).visitas += Number(e.total) || 0;
+          else if (ev.startsWith('checkout-')) fila(ev.slice(9)).clics += Number(e.total) || 0;
+        }
+        for (const v of ventas.filter((x) => Number(x.n) > 0 && x.estado === 'pagada' && x.dia >= d)) {
+          const f = fila(v.canal || 'directo'); f.ventas += 1;
+          const mon = String(v.moneda || '').toUpperCase(); f.suma[mon] = (f.suma[mon] || 0) + (Number(v.monto) || 0);
+        }
+        for (const f of m.values()) filas.push({ periodo, canal: f.canal, visitas: f.visitas, clics: f.clics, ventas: f.ventas, ingresos: Object.entries(f.suma).filter(([, s]) => s > 0).map(([mon, s]) => '$' + s.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ' + mon).join(' + ') || '—' });
+      }
+      return filas.sort((a, b) => b.ventas - a.ventas || b.visitas - a.visitas);
+    },
+  });
+
+  dash.calc('por_producto', {
+    title: 'Ventas por producto',
+    description: 'Por periodo: compras pagadas e ingresos (USD y MXN) de cada edición.',
+    inputs: ['ventas'],
+    fn: (ventas) => {
+      const hoy = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Mexico_City' });
+      const desde = (p) => (p === 'hoy' ? hoy : p === 'todo' ? '0000-00-00' : new Date(Date.parse(hoy + 'T12:00:00Z') - (p === '7d' ? 6 : 29) * 864e5).toISOString().slice(0, 10));
+      const filas = [];
+      for (const periodo of ['hoy', '7d', '30d', 'todo']) {
+        const d = desde(periodo), m = new Map();
+        for (const p of ['Full System', 'LUT Pack', 'Upgrade a Full System']) m.set(p, { periodo, producto: p, ventas: 0, ingresos_usd: 0, ingresos_mxn: 0 });
+        for (const v of ventas.filter((x) => Number(x.n) > 0 && x.estado === 'pagada' && x.dia >= d)) {
+          const p = v.edicion || '—';
+          if (!m.has(p)) m.set(p, { periodo, producto: p, ventas: 0, ingresos_usd: 0, ingresos_mxn: 0 });
+          const f = m.get(p); f.ventas += 1;
+          const mon = String(v.moneda || '').toUpperCase();
+          if (mon === 'USD') f.ingresos_usd = Math.round((f.ingresos_usd + (Number(v.monto) || 0)) * 100) / 100;
+          if (mon === 'MXN') f.ingresos_mxn = Math.round((f.ingresos_mxn + (Number(v.monto) || 0)) * 100) / 100;
+        }
+        filas.push(...m.values());
+      }
+      return filas;
+    },
+  });
+
+  dash.calc('cuentas_resumen', {
+    title: 'Resumen de cuentas',
+    description: 'Cuentas de compradores reales (sin las de prueba), las que entraron en 24 h, descargas totales y alertas.',
+    inputs: ['usuarios'],
+    fn: (usuarios) => {
+      const reales = usuarios.filter((u) => u.tipo !== 'prueba' && u.correo);
+      return [{ cuentas: reales.length, activas_24h: reales.filter((u) => Number(u.entradas_24h) > 0).length, descargas: reales.reduce((s, u) => s + (Number(u.descargas_total) || 0), 0), alertas: reales.filter((u) => u.alerta).length }];
+    },
+  });
+</script>
+
+<script>
+  const $ = (s, el = document) => el.querySelector(s);
+  const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+  const NUM = d3.format(',');
+  const DINERO = (n) => (Number(n) || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const NOMBRE_P = { hoy: 'Hoy', '7d': 'Últimos 7 días', '30d': 'Últimos 30 días', todo: 'Desde el lanzamiento' };
+  const NOMBRE_T = { resumen: 'Resumen', ventas: 'Ventas', trafico: 'Tráfico', cuentas: 'Cuentas', sistema: 'Sistema' };
+  const VS_P = { hoy: 'vs ayer', '7d': 'vs 7 días antes', '30d': 'vs 30 días antes', todo: '' };
+  const periodo = () => (SX.periodos.includes(dash.params().periodo) ? dash.params().periodo : 'hoy');
+  let tab = 'resumen';
+
+  // ── controles ──
+  $$('#periodo button').forEach((b) => b.addEventListener('click', () => dash.setParams({ periodo: b.dataset.p })));
+  const mostrarTab = (t) => {
+    tab = t;
+    $$('[data-pagina]').forEach((s) => (s.hidden = s.dataset.pagina !== t));
+    $$('.sx-tabs button').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === t)));
+    $('#periodo').style.visibility = t === 'resumen' || t === 'ventas' ? 'visible' : 'hidden';
+    $('#titulo').textContent = NOMBRE_T[t];
+    $('#bajada').hidden = t !== 'resumen' && t !== 'ventas';
+    dash.setLink(t);
+    dibujar();
+  };
+  $$('.sx-tabs button').forEach((b) => b.addEventListener('click', () => mostrarTab(b.dataset.tab)));
+
+  // ── ayudas de dibujo ──
+  const quitarEsqueleto = (el) => el && el.classList.remove('dash-skeleton');
+  const celda = (tr, txt, cls) => { const td = document.createElement('td'); if (txt instanceof Node) td.append(txt); else td.textContent = txt == null || txt === '' ? '—' : txt; if (cls) td.className = cls; tr.append(td); return td; };
+  const etiqueta = (txt, clase) => { const s = document.createElement('span'); s.className = 'pill ' + (clase || ''); s.textContent = txt; return s; };
+  const claseEstado = (e) => (/^(ok|activo|activa|con acceso|pagada|vigente)/i.test(e) ? 'ok' : /(falla|error|sin acceso|bloque|reembols)/i.test(e) ? 'mal' : /(aviso|agotado|prueba|revisar)/i.test(e) ? 'av' : '');
+  // bandera (emoji) y nombre en español a partir del código de país de 2 letras
+  const bandera = (c) => (/^[A-Z]{2}$/.test(String(c || '')) ? String.fromCodePoint(...[...c].map((l) => 0x1f1a5 + l.charCodeAt(0))) : '');
+  let nombresPais; try { nombresPais = new Intl.DisplayNames(['es'], { type: 'region' }); } catch (e) { nombresPais = null; }
+  const nombrePais = (c) => { try { return (nombresPais && /^[A-Z]{2}$/.test(c) && nombresPais.of(c)) || c; } catch (e) { return c; } };
+  const conBandera = (c, texto) => { const s = document.createElement('span'); const b = bandera(c); if (b) { const i = document.createElement('span'); i.className = 'bandera'; i.setAttribute('aria-hidden', 'true'); i.textContent = b; s.append(i); } s.append(texto == null || texto === '' ? (c || '—') : texto); return s; };
+  const NAVEGADORES = { chrome: 'Chrome', crios: 'Chrome (iPhone)', ios: 'Safari (iPhone)', 'ios-webview': 'App en iPhone', safari: 'Safari', instagram: 'Instagram (app)', facebook: 'Facebook (app)', 'edge-chromium': 'Edge', edge: 'Edge', firefox: 'Firefox', fxios: 'Firefox (iPhone)', samsung: 'Samsung Internet', opera: 'Opera', 'chromium-webview': 'App en Android', android: 'Android', tiktok: 'TikTok (app)' };
+  const fijarDonde = (el, p) => el.setAttribute('data-where', 'periodo=' + p);
+  const hace = (iso) => {
+    const ms = Date.now() - Date.parse(iso);
+    if (!iso || isNaN(ms)) return '';
+    const min = Math.round(ms / 60000);
+    return min < 1 ? 'medido ahora' : min < 60 ? `medido hace ${min} min` : `medido hace ${Math.round(min / 60)} h`;
+  };
+
+  function tablaSimple(sel, filas, cols, opciones = {}) {
+    const tb = $(sel + ' tbody'); tb.replaceChildren();
+    const max = opciones.barra ? d3.max(filas, (f) => Number(f[opciones.barra])) || 1 : 0;
+    for (const f of filas) {
+      const tr = document.createElement('tr'); tr.dataset.key = opciones.clave ? opciones.clave(f) : f[cols[0][0]];
+      for (const [c, cls, formato] of cols) {
+        const td = celda(tr, formato ? formato(f[c], f) : f[c], cls);
+        if (opciones.barra && c === cols[0][0]) { td.classList.add('celda-barra'); const b = document.createElement('span'); b.className = 'b' + (tb.children.length === 0 ? ' primera' : ''); b.style.width = (Number(f[opciones.barra]) / max) * 88 + '%'; td.append(b); }
+      }
+      tb.append(tr);
+    }
+  }
+
+  function barras(caja, puntos, { etiqueta: etq, color = '#e8e8e8', apagado = '#3d3d3d', resaltar, alto: altoOpc, formatoY } = {}) {
+    caja.replaceChildren();
+    const ancho = Math.max(caja.clientWidth, 260), alto = altoOpc || 200, m = { t: 10, r: 0, b: 26, l: 28 };
+    if (!puntos.length) { const p = document.createElement('p'); p.className = 'sx-vacio'; p.textContent = 'Aún no hay datos en este periodo.'; caja.append(p); return; }
+    caja.style.minHeight = alto + 'px';
+    const svg = d3.select(caja).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${ancho} ${alto}`).attr('height', alto);
+    const x = d3.scaleBand(puntos.map((d) => d.x), [m.l, ancho - m.r]).padding(0.28);
+    const ymax = d3.max(puntos, (d) => d.y) || 1;
+    const y = d3.scaleLinear([0, ymax], [alto - m.b, m.t]).nice();
+    const ticks = y.ticks(Math.min(4, Math.max(1, Math.ceil(ymax)))).filter((t) => Number.isInteger(t) || ymax > 5);
+    svg.append('g').attr('class', 'rejilla').selectAll('line').data(ticks).join('line').attr('x1', m.l).attr('x2', ancho - m.r).attr('y1', y).attr('y2', y);
+    svg.append('g').attr('class', 'eje').attr('transform', `translate(${m.l - 6},0)`).call(d3.axisLeft(y).tickValues(ticks).tickFormat(formatoY || d3.format('~s')).tickSize(0)).attr('font-size', null).attr('font-family', null).select('.domain').remove();
+    const cada = Math.ceil(puntos.length / Math.max(1, Math.floor((ancho - m.l) / 58)));
+    svg.append('g').attr('class', 'eje').attr('transform', `translate(0,${alto - m.b + 6})`).call(d3.axisBottom(x).tickValues(puntos.map((d) => d.x).filter((_, i) => i % cada === 0)).tickFormat((d) => etq(d)).tickSize(0)).attr('font-size', null).attr('font-family', null).select('.domain').remove();
+    const bw = Math.min(x.bandwidth(), 34);
+    const tip = document.createElement('div'); tip.className = 'sx-tip'; caja.append(tip);
+    svg.append('g').selectAll('rect').data(puntos).join('rect')
+      .attr('x', (d) => x(d.x) + (x.bandwidth() - bw) / 2).attr('width', bw)
+      .attr('y', (d) => y(d.y)).attr('height', (d) => Math.max(0, y(0) - y(d.y))).attr('rx', 3)
+      .attr('fill', (d) => (resaltar && resaltar(d) ? color : apagado))
+      .on('mousemove', (ev, d) => { const [px, py] = d3.pointer(ev, caja); tip.innerHTML = ''; const a = document.createElement('span'); a.textContent = etq(d.x, true); const b = document.createElement('b'); b.textContent = d.texto || NUM(d.y); tip.append(a, b); tip.style.opacity = 1; tip.style.left = Math.min(px + 12, caja.clientWidth - tip.offsetWidth) + 'px'; tip.style.top = Math.max(0, py - 44) + 'px'; })
+      .on('mouseleave', () => (tip.style.opacity = 0));
+  }
+
+  // área acumulada con cruz que sigue al cursor; sin cursor marca el último punto
+  function areaDinero(caja, puntos) {
+    caja.replaceChildren();
+    const ancho = Math.max(caja.clientWidth, 260), alto = ancho < 560 ? 200 : 250, m = { t: 12, r: 8, b: 40, l: 44 };
+    caja.style.minHeight = alto + 'px';
+    if (!puntos.length) { const p = document.createElement('p'); p.className = 'sx-vacio'; p.textContent = 'Aún no hay datos en este periodo.'; caja.append(p); return; }
+    const svg = d3.select(caja).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${ancho} ${alto}`).attr('height', alto);
+    const x = d3.scalePoint(puntos.map((d) => d.x), [m.l, ancho - m.r]).padding(puntos.length === 1 ? 0.5 : 0);
+    const y = d3.scaleLinear([0, d3.max(puntos, (d) => d.y) || 1], [alto - m.b, m.t]).nice(4);
+    const ticks = y.ticks(4);
+    const def = svg.append('defs').append('linearGradient').attr('id', 'sxDegradado').attr('x1', 0).attr('x2', 0).attr('y1', 0).attr('y2', 1);
+    def.append('stop').attr('offset', '0%').attr('stop-color', '#86efac').attr('stop-opacity', 0.24);
+    def.append('stop').attr('offset', '100%').attr('stop-color', '#86efac').attr('stop-opacity', 0);
+    svg.append('g').attr('class', 'rejilla').selectAll('line').data(ticks).join('line').attr('x1', m.l).attr('x2', ancho - m.r).attr('y1', y).attr('y2', y);
+    svg.append('g').attr('class', 'eje').selectAll('text').data(ticks).join('text').attr('x', 0).attr('y', (t) => y(t) + 4).text((t) => (t >= 1000 ? d3.format('~s')(t).replace('k', 'k') : NUM(t)));
+    const cada = Math.ceil(puntos.length / Math.max(1, Math.floor((ancho - m.l) / 70)));
+    const etqX = svg.append('g').attr('class', 'eje').selectAll('text').data(puntos.filter((_, i) => i % cada === 0 || i === puntos.length - 1 && puntos.length < 3)).join('text')
+      .attr('x', (d) => x(d.x)).attr('y', alto - 12).attr('text-anchor', (d, i, n) => (puntos.length > 1 && d === puntos[0] ? 'start' : 'middle')).text((d) => d.etiqueta);
+    const curva = d3.curveMonotoneX;
+    svg.append('path').datum(puntos).attr('fill', 'url(#sxDegradado)').attr('d', d3.area().x((d) => x(d.x)).y0(y(0)).y1((d) => y(d.y)).curve(curva));
+    svg.append('path').datum(puntos).attr('fill', 'none').attr('stroke', '#86efac').attr('stroke-width', 1.8).attr('d', d3.line().x((d) => x(d.x)).y((d) => y(d.y)).curve(curva));
+    const guia = svg.append('line').attr('stroke', '#f5f5f5').attr('stroke-width', 1).attr('y1', m.t).attr('y2', alto - m.b + 4);
+    const punto = svg.append('circle').attr('r', 4.5).attr('fill', '#86efac').attr('stroke', '#171717').attr('stroke-width', 2);
+    const tip = document.createElement('div'); tip.className = 'sx-tip'; caja.append(tip);
+    const pill = document.createElement('div'); pill.className = 'sx-eje-pill'; caja.append(pill);
+    const marcar = (d) => {
+      const px = x(d.x), py = y(d.y);
+      guia.attr('x1', px).attr('x2', px); punto.attr('cx', px).attr('cy', py);
+      tip.replaceChildren();
+      const a = document.createElement('span'); a.textContent = d.largo + ' · ' + d.ventas + (d.ventas === 1 ? ' venta' : ' ventas');
+      const l = document.createElement('div'); l.className = 'linea'; const i = document.createElement('i'); const t = document.createElement('span'); t.textContent = 'Acumulado'; t.style.display = 'inline'; const b = document.createElement('b'); b.textContent = '$' + DINERO(d.y) + ' MXN'; l.append(i, t, b);
+      tip.append(a, l); tip.style.opacity = 1;
+      const izq = px + 14 + tip.offsetWidth > caja.clientWidth ? px - 14 - tip.offsetWidth : px + 14;
+      tip.style.left = Math.max(0, izq) + 'px'; tip.style.top = Math.max(0, Math.min(py - 20, alto - m.b - tip.offsetHeight)) + 'px';
+      pill.textContent = d.etiqueta;
+      pill.style.left = Math.min(Math.max(px, pill.offsetWidth / 2), caja.clientWidth - pill.offsetWidth / 2) + 'px';
+      const centro = Math.min(Math.max(px, pill.offsetWidth / 2), caja.clientWidth - pill.offsetWidth / 2) * (ancho / caja.clientWidth);
+      etqX.attr('opacity', (e) => (Math.abs(x(e.x) - centro) < pill.offsetWidth / 2 + 26 ? 0 : 1));
+    };
+    const ultimo = puntos[puntos.length - 1];
+    marcar(ultimo);
+    svg.append('rect').attr('x', m.l).attr('y', 0).attr('width', Math.max(1, ancho - m.l - m.r)).attr('height', alto).attr('fill', 'transparent')
+      .on('pointermove', (ev) => { const [px] = d3.pointer(ev); const i = d3.minIndex(puntos, (d) => Math.abs(x(d.x) - px)); marcar(puntos[i]); })
+      .on('pointerleave', () => marcar(ultimo));
+  }
+  const diasEntre = (desde, hasta) => { const out = []; for (let t = Date.parse(desde + 'T12:00:00Z'); t <= Date.parse(hasta + 'T12:00:00Z'); t += 864e5) out.push(new Date(t).toISOString().slice(0, 10)); return out; };
+  const etqDia = (d, largo) => { const f = new Date(d + 'T12:00:00Z'); return f.toLocaleDateString('es-MX', largo ? { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' } : { day: 'numeric', month: 'short', timeZone: 'UTC' }); };
+
+  // ── dibujo ──
+  function dibujar() {
+    const p = periodo();
+    $$('#periodo button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.p === p)));
+    $$('[data-source="resumen"][data-where]').forEach((el) => fijarDonde(el, p));
+
+    // en vivo
+    const vivo = dash.data('en_vivo');
+    const fv = vivo.status === 'ok' && vivo.data[0] ? vivo.data[0] : null;
+    $$('[data-source="en_vivo"]').forEach((el) => { if (fv && el.dataset.field) el.textContent = NUM(Number(fv[el.dataset.field]) || 0); });
+    // personas en el sitio ahora: en vivo desde Supabase (latido de cada página abierta)
+    const pr = dash.data('presencia');
+    const fp = pr.status === 'ok' && pr.data[0] ? pr.data[0] : null;
+    $$('[data-source="presencia"][data-field]').forEach((el) => { el.textContent = fp ? NUM(Number(fp[el.dataset.field]) || 0) : '—'; });
+    $('#vivo-actualizar').setAttribute('aria-busy', String(!!pr.refreshing || pr.status === 'loading'));
+    if (fp) {
+      const n = Number(fp.activos) || 0;
+      const hora = String(fp.revisado || '').slice(11, 16);
+      $('#vivo-txt').textContent = n === 1 ? 'persona en el sitio' : 'personas en el sitio';
+      $('#vivo-hace').textContent = hora ? 'en vivo · ' + hora : 'en vivo';
+      $('#n-vivo').textContent = (hora ? 'En vivo a las ' + hora : 'En vivo') + ' · activos en los últimos 2 min';
+      $('#n-vivo-r').textContent = hora ? 'Activos en 2 min · ' + hora : 'Activos en los últimos 2 min';
+    } else {
+      $('#vivo-hace').textContent = ''; $('#n-vivo').textContent = $('#n-vivo-r').textContent = pr.status === 'loading' ? 'Cargando…' : '—';
+    }
+
+    // resumen
+    const r = dash.data('resumen');
+    const fr = r.status === 'ok' ? r.data.find((x) => x.periodo === p) : null;
+    $$('[data-source="resumen"][data-field]').forEach((el) => { if (!fr) return;
+      const c = el.dataset.field, v = fr[c];
+      if (c.startsWith('cambio')) { const ok = typeof v === 'number' && isFinite(v); el.textContent = ok ? (v > 0 ? '+' : '') + d3.format('.1f')(v) + '%' : '—'; el.className = 'cambio ' + (!ok ? 'nada' : v >= 0 ? 'sube' : 'baja'); el.title = ok ? VS_P[p] : ''; return; }
+      el.textContent = c.startsWith('ingresos') || c === 'total_mxn' ? DINERO(v) : c === 'conversion' ? d3.format('.1f')(v) : NUM(v); });
+    if (fr) {
+      const partes = [];
+      if (fr.ingresos_usd) partes.push('$' + DINERO(fr.ingresos_usd) + ' USD');
+      if (fr.ingresos_mxn) partes.push('$' + DINERO(fr.ingresos_mxn) + ' MXN');
+      const pc0 = dash.data('por_canal');
+      const top = pc0.status === 'ok' ? pc0.data.filter((x) => x.periodo === p && x.ventas > 0).sort((a, b) => b.ventas - a.ventas)[0] : null;
+      const canalTxt = top && fr.ventas ? (top.ventas === fr.ventas ? ` Todas llegaron de ${top.canal}.` : ` ${top.canal} trajo ${top.ventas} de ${fr.ventas}.`) : '';
+      $('#bajada').textContent = `${NOMBRE_P[p]}: ${NUM(fr.ventas)} ${fr.ventas === 1 ? 'venta' : 'ventas'} · $${DINERO(fr.total_mxn)} MXN en total · ${NUM(fr.visitantes)} ${fr.visitantes === 1 ? 'visitante' : 'visitantes'}.${canalTxt}`;
+      const tcTxt = fr.tipo_cambio ? `dólar a $${d3.format('.2f')(fr.tipo_cambio)}` : 'sin tipo de cambio todavía';
+      $('#n-tc').textContent = (partes.length ? partes.join(' + ') + ' · ' : 'Sin ingresos todavía · ') + tcTxt;
+      $('#ing-detalle').textContent = $('#n-tc').textContent;
+      $('#ing-titulo').textContent = 'Ingresos · ' + NOMBRE_P[p];
+      $('#n-gratis').textContent = fr.gratis ? `${fr.gratis} con código 100%` : (fr.ventas ? 'Todas pagadas' : 'Sin ventas todavía');
+      $('#canales-lado').textContent = NOMBRE_P[p];
+      $('#embudo-lado').textContent = NOMBRE_P[p];
+    }
+
+    if (tab === 'resumen') dibujarResumen(p, fr);
+    if (tab === 'ventas') dibujarVentas(p);
+    if (tab === 'trafico') dibujarTrafico();
+    if (tab === 'cuentas') dibujarCuentas();
+    if (tab === 'sistema') dibujarSistema();
+
+    const fechas = ['ventas', 'trafico', 'salud'].map((id) => dash.data(id)).filter((d) => d.status === 'ok');
+    $('#pie-act').textContent = 'Ventas, dinero y personas en vivo · lo demás cada hora' + (fv && hace(fv.revisado) ? ' · tráfico ' + hace(fv.revisado) : '');
+    const sa = dash.data('salud'); if (sa.status === 'ok' && sa.data[0]) $('#revision-lado').textContent = 'Revisado ' + (sa.data[0].revisado || '');
+  }
+
+  function dibujarResumen(p, fr) {
+    // dinero en el tiempo
+    const sd = dash.data('serie_dinero');
+    if (sd.status === 'ok') {
+      const filas = sd.data.filter((x) => x.periodo === p);
+      const porHora = filas.length && filas[0].clave.includes(':');
+      areaDinero($('#graf-dinero'), filas.map((f) => ({ x: f.clave, y: Number(f.total_mxn) || 0, ventas: Number(f.ventas) || 0, etiqueta: f.etiqueta, largo: porHora ? 'Hasta las ' + f.etiqueta.replace(':00', ':59') : etqDia(f.clave, true) })));
+    }
+    // embudo
+    const caja = $('#embudo-pasos'); caja.replaceChildren();
+    if (fr) {
+      const pasos = [['Entraron al sitio', fr.visitantes], ['Clic en pagar', fr.clics], ['Pagaron', fr.ventas]];
+      const max = Math.max(1, pasos[0][1], pasos[1][1], pasos[2][1]);
+      const perdidas = pasos.slice(1).map((s, i) => (pasos[i][1] && s[1] < pasos[i][1] ? 1 - s[1] / pasos[i][1] : 0));
+      const peor = perdidas.indexOf(Math.max(...perdidas));
+      pasos.forEach(([nombre, n], i) => {
+        const d = document.createElement('div'); d.className = 'sx-paso' + (i === 2 ? ' final' : '');
+        const fila = document.createElement('div'); fila.className = 'fila';
+        const a = document.createElement('span'); a.textContent = nombre; const b = document.createElement('b'); b.textContent = NUM(n); fila.append(a, b);
+        const pista = document.createElement('div'); pista.className = 'pista'; const ll = document.createElement('div'); ll.className = 'lleno'; ll.style.width = Math.max(n ? 2 : 0, (n / max) * 100) + '%'; pista.append(ll);
+        d.append(fila, pista);
+        if (i > 0) { const pe = document.createElement('div'); const prev = pasos[i - 1][1]; pe.className = 'perdida' + (i - 1 === peor && perdidas[peor] > 0 ? ' mayor' : ''); pe.textContent = !prev ? 'Sin datos del paso anterior' : n > prev ? 'Más clics que personas: algunas dieron clic más de una vez' : `${d3.format('.0%')(1 - n / prev)} no siguió a este paso`; d.append(pe); }
+        caja.append(d);
+      });
+    }
+    // canales
+    const pc = dash.data('por_canal');
+    const filasC = pc.status === 'ok' ? pc.data.filter((x) => x.periodo === p) : [];
+    tablaSimple('#canales', filasC, [['canal', 'id'], ['visitas', 'r', NUM], ['clics', 'r', NUM], ['ventas', 'r id', NUM], ['ingresos', 'r ocultable gris']], { clave: (f) => f.periodo + ',' + encodeURIComponent(f.canal), barra: 'visitas' });
+    $('#canales-vacio').hidden = !(pc.status === 'ok' && !filasC.length);
+    const sum = (k) => filasC.reduce((s, f) => s + (Number(f[k]) || 0), 0);
+    $('#canales-total').textContent = filasC.length ? `En total: ${NUM(sum('visitas'))} visitas · ${NUM(sum('clics'))} clics en pagar · ${NUM(sum('ventas'))} ${sum('ventas') === 1 ? 'venta' : 'ventas'} · ${filasC.length} ${filasC.length === 1 ? 'canal' : 'canales'}` : '';
+    // últimas ventas
+    ultimasVentas(p);
+  }
+
+  function ultimasVentas(p) {
+    const v = dash.data('ventas');
+    const d = SX.desde(p);
+    const filas = v.status === 'ok' ? v.data.filter((x) => Number(x.n) > 0 && x.estado === 'pagada' && x.dia >= d).reverse().slice(0, 8) : [];
+    const tb = $('#ultimas tbody'); tb.replaceChildren();
+    for (const f of filas) {
+      const tr = document.createElement('tr'); tr.dataset.key = f.n;
+      celda(tr, f.fecha, 'gris'); celda(tr, f.edicion, 'id'); const tdm = celda(tr, DINERO(f.monto), 'r id'); const sm = document.createElement('small'); sm.className = 'solo-movil'; sm.textContent = f.moneda; tdm.append(sm); celda(tr, f.moneda, 'tenue ocultable');
+      celda(tr, f.fuente); celda(tr, f.pais ? conBandera(f.pais) : '—', 'ocultable gris');
+      tb.append(tr);
+    }
+    $('#ultimas-vacio').hidden = !(v.status === 'ok' && !filas.length);
+  }
+
+  function ventasTabla(sel, p, limite, conAcceso) {
+    const vs = dash.data('ventas_stripe');
+    const d = SX.desde(p);
+    const filas = vs.status === 'ok' ? vs.data.filter((x) => Number(x.n) > 0 && x.tipo !== 'prueba' && x.dia >= d).reverse().slice(0, limite || 9999) : [];
+    const tb = $(sel + ' tbody'); tb.replaceChildren();
+    for (const f of filas) {
+      const tr = document.createElement('tr'); tr.dataset.key = f.n;
+      celda(tr, f.fecha, 'gris'); celda(tr, f.producto, 'id'); const tdm = celda(tr, DINERO(f.monto), 'r id'); const sm = document.createElement('small'); sm.className = 'solo-movil'; sm.textContent = f.moneda; tdm.append(sm); celda(tr, f.moneda, 'tenue ocultable');
+      celda(tr, f.codigo ? etiqueta(f.codigo) : '—', conAcceso ? '' : 'ocultable'); celda(tr, f.fuente); celda(tr, f.pais ? conBandera(f.pais) : '—', conAcceso ? 'tenue' : 'ocultable gris');
+      if (conAcceso) celda(tr, etiqueta(f.acceso, claseEstado(f.acceso)));
+      tb.append(tr);
+    }
+    const vacio = $(sel === '#ultimas' ? '#ultimas-vacio' : '#todas-vacio');
+    if (vacio) vacio.hidden = !(vs.status === 'ok' && !filas.length);
+  }
+
+  function dibujarVentas(p) {
+    // ingresos por día (verde): hoy muestra la última semana con hoy encendido
+    const dd = dash.data('dinero_por_dia');
+    if (dd.status === 'ok') {
+      const hoyD = SX.hoy();
+      const primera = (dd.data.find((x) => Number(x.ventas) > 0) || { dia: hoyD }).dia;
+      const desdeD = p === 'todo' ? (primera < SX.desde('7d') ? primera : SX.desde('7d')) : SX.desde(p === 'hoy' ? '7d' : p);
+      const enPeriodo = p === 'hoy' ? (d) => d.x === hoyD : p === 'todo' ? (d) => d.x >= primera : () => true;
+      barras($('#graf-ingresos'), dd.data.filter((x) => x.dia >= desdeD).map((x) => ({ x: x.dia, y: Number(x.total_mxn) || 0, texto: `$${DINERO(x.total_mxn)} MXN · ${x.ventas} ${Number(x.ventas) === 1 ? 'venta' : 'ventas'}` })),
+        { etiqueta: etqDia, color: '#86efac', apagado: '#2c4434', resaltar: enPeriodo, alto: 220, formatoY: (t) => '$' + d3.format('~s')(t) });
+    }
+    const v = dash.data('ventas');
+    const hoy = SX.hoy();
+    const desde = p === 'hoy' ? SX.desde('7d') : p === 'todo' ? null : SX.desde(p);
+    if (v.status === 'ok') {
+      const reales = v.data.filter((x) => Number(x.n) > 0 && x.estado === 'pagada');
+      const inicio = desde || (reales.length ? d3.min(reales, (x) => x.dia) : hoy);
+      const porDia = d3.rollup(reales, (g) => g.length, (x) => x.dia);
+      const puntos = diasEntre(inicio, hoy).map((dia) => ({ x: dia, y: porDia.get(dia) || 0, texto: `${porDia.get(dia) || 0} ${porDia.get(dia) === 1 ? 'venta' : 'ventas'}` }));
+      barras($('#graf-ventas'), puntos, { etiqueta: etqDia, resaltar: (d) => d.x === hoy || p !== 'hoy' });
+    }
+    const pp = dash.data('por_producto');
+    const filasP = pp.status === 'ok' ? pp.data.filter((x) => x.periodo === p) : [];
+    tablaSimple('#productos', filasP, [['producto', 'id'], ['ventas', 'r', NUM], ['ingresos_usd', 'r', DINERO], ['ingresos_mxn', 'r', DINERO]], { clave: (f) => f.periodo + ',' + encodeURIComponent(f.producto) });
+    const sp = (k) => filasP.reduce((s, f) => s + (Number(f[k]) || 0), 0);
+    $('#productos-total').textContent = `En total: ${NUM(sp('ventas'))} ${sp('ventas') === 1 ? 'venta' : 'ventas'} · $${DINERO(sp('ingresos_usd'))} USD · $${DINERO(sp('ingresos_mxn'))} MXN`;
+    const cg = dash.data('codigos');
+    if (cg.status === 'ok') {
+      const tb = $('#codigos tbody'); tb.replaceChildren();
+      for (const f of cg.data.filter((x) => x.codigo && x.estado !== 'desactivado' && x.tipo !== 'prueba')) {
+        const tr = document.createElement('tr'); tr.dataset.key = f.codigo;
+        celda(tr, f.codigo, 'id'); celda(tr, f.descuento); celda(tr, NUM(Number(f.usados) || 0), 'r'); celda(tr, f.limite, 'r tenue'); celda(tr, f.restantes, 'r'); celda(tr, etiqueta(f.estado, claseEstado(f.estado)));
+        tb.append(tr);
+      }
+    }
+    ventasTabla('#todas-ventas', p, 0, true);
+  }
+
+  function dibujarTrafico() {
+    const t = dash.data('trafico');
+    if (t.status === 'ok') {
+      const filas = t.data.filter((x) => x.dia && x.dia !== '—');
+      const hoy = SX.hoy();
+      const inicio = filas.length ? d3.min(filas, (x) => x.dia) : hoy;
+      const m = new Map(filas.map((x) => [x.dia, Number(x.visitantes) || 0]));
+      const dias = diasEntre(inicio < SX.desde('7d') ? inicio : SX.desde('7d'), hoy);
+      barras($('#graf-trafico'), dias.map((dia) => ({ x: dia, y: m.get(dia) || 0, texto: `${NUM(m.get(dia) || 0)} visitantes` })), { etiqueta: etqDia, resaltar: (d) => d.x === hoy, alto: 170 });
+    }
+    for (const [id, col, val] of [['fuentes', 'fuente', 'visitantes'], ['paginas', 'pagina', 'vistas'], ['dispositivos', 'dispositivo', 'visitantes'], ['sistemas', 'sistema', 'visitantes']]) {
+      const d = dash.data(id);
+      tablaSimple('#' + id, d.status === 'ok' ? d.data.filter((x) => Number(x[val]) > 0) : [], [[col, ''], [val, 'r id', NUM]], { barra: val });
+    }
+    const nv = dash.data('navegadores');
+    tablaSimple('#navegadores', nv.status === 'ok' ? nv.data.filter((x) => Number(x.visitantes) > 0) : [], [['navegador', '', (v) => NAVEGADORES[v] || (v ? v[0].toUpperCase() + v.slice(1) : '—')], ['visitantes', 'r id', NUM]], { barra: 'visitantes' });
+    // países con bandera y nombre en español
+    const ps = dash.data('paises');
+    const filasP = ps.status === 'ok' ? ps.data.filter((x) => Number(x.visitantes) > 0) : [];
+    tablaSimple('#paises', filasP, [['pais', 'id', (v) => conBandera(v, nombrePais(v))], ['visitantes', 'r id', NUM]], { barra: 'visitantes' });
+    const cd = dash.data('ciudades');
+    tablaSimple('#ciudades', cd.status === 'ok' ? cd.data.filter((x) => Number(x.visitantes) > 0) : [], [['ciudad', '', (v, f) => conBandera(f.pais, v)], ['visitantes', 'r id', NUM]], { barra: 'visitantes', clave: (f) => encodeURIComponent(f.ciudad) + ',' + encodeURIComponent(f.pais) });
+  }
+
+  function dibujarCuentas() {
+    const cr = dash.data('cuentas_resumen');
+    $$('[data-source="cuentas_resumen"]').forEach((el) => { if (cr.status === 'ok' && cr.data[0]) el.textContent = NUM(cr.data[0][el.dataset.field]); });
+    const u = dash.data('usuarios');
+    if (u.status !== 'ok') return;
+    const tb = $('#tabla-cuentas tbody'); tb.replaceChildren();
+    for (const f of u.data.filter((x) => x.correo && x.tipo !== 'prueba')) {
+      const tr = document.createElement('tr'); tr.dataset.key = f.correo;
+      celda(tr, f.correo, 'id'); celda(tr, f.compro);
+      celda(tr, f.ultima_entrada, 'ocultable gris'); celda(tr, NUM(Number(f.entradas_24h) || 0), 'r'); celda(tr, NUM(Number(f.descargas_total) || 0), 'r');
+      celda(tr, f.alerta ? etiqueta(f.alerta, 'mal') : '—', 'ocultable');
+      tb.append(tr);
+    }
+  }
+
+  function dibujarSistema() {
+    const s = dash.data('salud');
+    if (s.status === 'ok') {
+      const filas = s.data.filter((x) => x.punto);
+      const fallas = filas.filter((x) => x.estado === 'falla'), avisos = filas.filter((x) => x.estado === 'aviso');
+      const g = $('#estado-general');
+      $('.dot', g).className = 'dot ' + (fallas.length ? 'mal' : avisos.length ? 'av' : 'ok');
+      $('#estado-texto').textContent = fallas.length ? `${fallas.length} ${fallas.length === 1 ? 'cosa falla' : 'cosas fallan'}: ${fallas.map((x) => x.punto).join(', ')}` : avisos.length ? `Todo funciona · ${avisos.length} ${avisos.length === 1 ? 'aviso' : 'avisos'} para revisar` : `Todo funciona · ${filas.length} puntos revisados`;
+      const tb = $('#revision tbody'); tb.replaceChildren();
+      for (const f of [...filas].sort((a, b) => ({ falla: 0, aviso: 1 }[a.estado] ?? 2) - ({ falla: 0, aviso: 1 }[b.estado] ?? 2))) {
+        const tr = document.createElement('tr'); tr.dataset.key = encodeURIComponent(f.area) + ',' + encodeURIComponent(f.punto);
+        celda(tr, f.area, 'gris'); celda(tr, f.punto, 'id'); celda(tr, etiqueta(f.estado, claseEstado(f.estado))); celda(tr, f.detalle, 'ocultable gris');
+        tb.append(tr);
+      }
+    }
+    const rs = dash.data('respaldos');
+    if (rs.status === 'ok') {
+      const tb = $('#respaldos tbody'); tb.replaceChildren();
+      for (const f of rs.data.filter((x) => x.respaldo)) {
+        const tr = document.createElement('tr'); tr.dataset.key = f.respaldo;
+        celda(tr, f.respaldo, 'id'); celda(tr, f.donde, 'ocultable gris'); celda(tr, f.ultimo); celda(tr, f.guarda, 'ocultable gris'); celda(tr, etiqueta(f.estado, claseEstado(f.estado)));
+        tb.append(tr);
+      }
+    }
+  }
+
+  $('#vivo-actualizar').addEventListener('click', () => { dash.refresh('presencia'); dash.refresh('ventas'); });
+
+  // pestaña desde el link (#ventas, #trafico…) y redibujo con cada cambio de datos, filtro o ancho
+  const inicial = location.hash.slice(1);
+  dash.onData(dibujar);
+  mostrarTab(['resumen', 'ventas', 'trafico', 'cuentas', 'sistema'].includes(inicial) ? inicial : 'resumen');
+</script>

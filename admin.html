@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Page not found | SPECTRE</title>
+  <meta name="robots" content="noindex, nofollow, noarchive" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src https://ytmqltxidizdaxueooso.supabase.co; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests" />
+  <meta name="referrer" content="no-referrer" />
+  <meta name="theme-color" content="#0b0b0a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="SPECTRE" />
+  <link rel="manifest" href="/admin.webmanifest" />
+  <link rel="icon" href="/img/marca/icono-192.png" type="image/png" sizes="192x192" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="preload" href="/fonts/archivo-latin-0186fb.woff2" as="font" type="font/woff2" crossorigin />
+  <style>
+    @font-face { font-family: 'Archivo'; font-style: normal; font-weight: 300 700; font-display: swap; src: url(/fonts/archivo-latin-0186fb.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+    @font-face { font-family: 'Archivo'; font-style: normal; font-weight: 300 700; font-display: swap; src: url(/fonts/archivo-latin-ext-c628a8.woff2) format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+    @font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 400; font-display: swap; src: url(/fonts/ibm-plex-mono-latin-bc87d8.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2212, U+FEFF, U+FFFD; }
+    html, body { margin: 0; background: #0b0b0a; color: #eae0c5; }
+    body.en-panel { background: #0a0a0a; }
+    [hidden] { display: none !important; }
+    /* entrada */
+    .ad-acceso { min-height: 100vh; min-height: 100dvh; display: grid; place-items: center; padding: 24px 16px 96px; box-sizing: border-box; font: 400 14px/20px 'Archivo', system-ui, sans-serif; }
+    .ad-404 { max-width: 440px; text-align: center; }
+    .ad-404 svg { width: 54px; height: 54px; color: #eae0c5; margin-bottom: 26px; }
+    .ad-404 .kicker { margin: 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10px; letter-spacing: 0.3em; color: #b0a595; }
+    .ad-404 h1 { margin: 16px 0 0; font-size: clamp(32px, 4vw, 48px); font-weight: 700; letter-spacing: -0.05em; line-height: 1; }
+    .ad-404 .texto { margin: 18px 0 0; font-size: 16px; font-weight: 300; line-height: 1.7; color: #b0a595; }
+    .ad-404 .ayuda { margin: 28px 0 0; font-size: 13px; color: #b0a595; }
+    .ad-404 a { color: #eae0c5; text-underline-offset: 3px; }
+    .ad-oculto { position: fixed; left: 50%; bottom: calc(8px + env(safe-area-inset-bottom)); transform: translateX(-50%); width: 72px; height: 48px; border: 0; padding: 0; background: transparent; opacity: 0; cursor: default; -webkit-tap-highlight-color: transparent; }
+    .ad-caja { width: 100%; max-width: 360px; background: #171717; border: 1px solid #232323; border-radius: 16px; padding: 28px 24px 24px; box-sizing: border-box; }
+    .ad-marca { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; }
+    .ad-marca svg { width: 26px; height: 26px; }
+    .ad-marca span { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.4em; }
+    .ad-caja h1 { margin: 0 0 4px; font-size: 20px; line-height: 26px; font-weight: 600; }
+    .ad-caja p { margin: 0 0 20px; color: #a3a3a3; }
+    .ad-caja label { display: block; margin: 0 0 6px; color: #a3a3a3; font-size: 13px; }
+    .ad-caja input[type=email], .ad-caja input[type=password] { width: 100%; box-sizing: border-box; height: 44px; margin-bottom: 14px; padding: 0 14px; border-radius: 10px; border: 1px solid #2e2e2e; background: #111; color: #f5f5f5; font: 400 16px 'Archivo', system-ui, sans-serif; }
+    .ad-caja input:focus { outline: 2px solid #86efac; outline-offset: 1px; border-color: transparent; }
+    .ad-caja button { width: 100%; height: 44px; border: 0; border-radius: 10px; background: #f5f5f5; color: #0a0a0a; font: 600 15px 'Archivo', system-ui, sans-serif; cursor: pointer; }
+    .ad-caja button:disabled { opacity: 0.6; }
+    .ad-error { min-height: 20px; margin: 12px 0 0 !important; color: #f04452 !important; font-size: 13px; }
+    .sx-pie a { color: #a3a3a3; }
+    @media (max-width: 960px) { .sx-lado { padding-top: calc(10px + env(safe-area-inset-top)) !important; } }
+  </style>
+  <style>
+  /* SPECTRE · Métricas — panel oscuro neutro: barra lateral con las secciones y el "en vivo",
+     panel principal un tono más claro con esquina redondeada, tarjetas con borde fino,
+     datos en blanco y grises (verde y rojo solo para subir o bajar). */
+  #dash-root { --dash-gutter: 0; }
+  .sx {
+    --ground: #0a0a0a; --panel: #111111; --card: #171717; --raised: #222222; --rule: #232323; --line: #2e2e2e;
+    --text: #f5f5f5; --muted: #a3a3a3; --faint: #7a7a7a; --dato: #e8e8e8; --dato-2: #3d3d3d;
+    --verde: #86efac; --verde-bg: rgba(134, 239, 172, 0.1); --verde-tenue: #2c4434; --azul: #93c5fd; --azul-bg: rgba(147, 197, 253, 0.1); --violeta: #c4b5fd; --violeta-bg: rgba(196, 181, 253, 0.1);
+    --pos: #22c55e; --pos-bg: rgba(34, 197, 94, 0.12); --neg: #f04452; --neg-bg: rgba(240, 68, 82, 0.12); --warn: #eab308; --warn-bg: rgba(234, 179, 8, 0.12);
+    --font: 'SX Archivo', 'Archivo', system-ui, -apple-system, sans-serif;
+    --mono: 'SX Mono', 'IBM Plex Mono', ui-monospace, Menlo, monospace;
+    --radius: 14px; --gap: 16px;
+    display: grid; grid-template-columns: 248px minmax(0, 1fr); min-height: 100vh;
+    background: var(--ground); color: var(--text); font: 400 14px/20px var(--font);
+    font-variant-numeric: tabular-nums; -webkit-font-smoothing: antialiased;
+  }
+  .sx *, .sx *::before, .sx *::after { box-sizing: border-box; }
+  .sx b, .sx strong { font-weight: 600; }
+  .sx a { color: inherit; }
+  .sx svg.ic { width: 18px; height: 18px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ── barra lateral ── */
+  .sx-lado { position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; gap: 6px; padding: 20px 14px 18px; overflow-y: auto; }
+  .sx-marca { display: flex; align-items: center; gap: 12px; padding: 4px 10px 18px; text-decoration: none; }
+  .sx-marca svg { width: 24px; height: 24px; color: var(--text); flex: none; }
+  .sx-marca span { font-family: var(--mono); font-size: 12px; letter-spacing: 0.4em; }
+  .sx-grupo { padding: 10px 12px 6px; color: var(--faint); font-size: 12px; }
+  .sx-tabs { display: flex; flex-direction: column; gap: 2px; }
+  .sx-tabs button { display: flex; align-items: center; gap: 12px; height: 40px; padding: 0 12px; border: 0; border-radius: 10px; background: none; color: var(--muted); font: 500 14px/1 var(--font); text-align: left; cursor: pointer; transition: background 0.15s, color 0.15s; }
+  .sx-tabs button:hover { color: var(--text); background: rgba(255, 255, 255, 0.04); }
+  .sx-tabs button[aria-selected="true"] { color: var(--text); background: var(--raised); }
+
+  /* en vivo: caja al pie de la barra */
+  .sx-vivo { margin-top: auto; background: var(--card); border: 1px solid var(--rule); border-radius: var(--radius); padding: 14px 14px 12px; }
+  .sx-vivo .et { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; }
+  .sx-vivo .punto { width: 8px; height: 8px; border-radius: 50%; background: var(--pos); flex: none; }
+  .sx-vivo .estado { display: flex; align-items: baseline; gap: 8px; margin-top: 10px; }
+  .sx-vivo .num { font-size: 30px; line-height: 34px; font-weight: 600; letter-spacing: -0.02em; }
+  .sx-vivo .txt { color: var(--muted); }
+  .sx-vivo .hace { margin-top: 2px; color: var(--faint); font-size: 12px; min-height: 16px; }
+  .sx-vivo .acciones { display: flex; gap: 8px; margin-top: 12px; }
+  .sx .sx-boton { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 32px; padding: 0 12px; border: 0; border-radius: 9px; background: var(--text); color: #0a0a0a; font: 600 12px/1 var(--font); text-decoration: none; white-space: nowrap; cursor: pointer; transition: background 0.15s, opacity 0.15s; }
+  .sx .sx-boton:hover { background: #fff; }
+  .sx .sx-boton.sec { background: var(--raised); color: var(--text); }
+  .sx .sx-boton.sec:hover { background: #2c2c2c; }
+  .sx .sx-boton[aria-busy="true"] { opacity: 0.55; }
+  .sx-vivo .acciones .sx-boton { flex: 1; }
+  .sx-boton:focus-visible, .sx button:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+  @media (prefers-reduced-motion: no-preference) {
+    .sx-vivo .punto { animation: sxLatido 2.4s ease-out infinite; }
+    @keyframes sxLatido { 0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.45); } 70%, 100% { box-shadow: 0 0 0 7px rgba(34, 197, 94, 0); } }
+  }
+  .sx-pie { padding: 12px 10px 0; color: var(--faint); font-size: 12px; line-height: 17px; }
+
+  /* ── panel principal ── */
+  .sx-main { background: var(--panel); border-left: 1px solid var(--rule); min-width: 0; padding: 26px 28px 48px; }
+  .sx-cabeza { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 14px 24px; margin-bottom: 20px; }
+  .sx-cabeza h1 { margin: 0; font-size: 22px; line-height: 28px; font-weight: 600; letter-spacing: -0.01em; }
+  .sx-cabeza p { margin: 4px 0 0; color: var(--muted); font-size: 14px; line-height: 20px; max-width: 72ch; }
+  .sx-periodo { display: inline-flex; height: 36px; padding: 3px; border-radius: 10px; background: var(--card); border: 1px solid var(--rule); gap: 2px; flex: none; }
+  .sx-periodo button { font: 500 13px/1 var(--font); color: var(--muted); background: none; border: 0; border-radius: 7px; padding: 0 12px; cursor: pointer; transition: color 0.15s, background 0.15s; }
+  .sx-periodo button:hover { color: var(--text); }
+  .sx-periodo button[aria-pressed="true"] { background: var(--raised); color: var(--text); }
+
+  /* cifras: tarjetas sueltas, etiqueta y cambio arriba, cifra grande abajo */
+  .sx-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--gap); margin-bottom: var(--gap); }
+  .sx-kpi { background: var(--card); border: 1px solid var(--rule); border-radius: var(--radius); padding: 18px 20px 18px; min-width: 0; }
+  .sx-kpi .top { display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 22px; }
+  .sx-kpi .et { color: var(--muted); font-size: 13px; font-weight: 500; }
+  .sx-kpi .val { margin-top: 14px; font-size: 28px; line-height: 34px; font-weight: 600; letter-spacing: -0.02em; white-space: nowrap; }
+  .sx-kpi .val small { font-size: 13px; color: var(--faint); margin-left: 4px; letter-spacing: 0; font-weight: 400; }
+  .sx-kpi .sub { margin-top: 4px; color: var(--faint); font-size: 12px; line-height: 16px; }
+
+  .sx-kpi .et { display: inline-flex; align-items: center; gap: 10px; }
+  .sx .chip { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 8px; flex: none; }
+  .sx .chip svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .sx .chip.verde { background: var(--verde-bg); color: var(--verde); }
+  .sx .chip.azul { background: var(--azul-bg); color: var(--azul); }
+  .sx .chip.violeta { background: var(--violeta-bg); color: var(--violeta); }
+  .sx .verde-txt { color: var(--verde); }
+  .sx-dinero.realce { background: linear-gradient(180deg, rgba(134, 239, 172, 0.06), rgba(134, 239, 172, 0) 55%), var(--card); border-color: rgba(134, 239, 172, 0.16); }
+  .sx-tabs button[aria-selected="true"] svg.ic { color: var(--verde); }
+
+  /* cambio contra el periodo anterior */
+  .sx .cambio { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+  .sx .cambio::before { content: '↑'; display: inline-grid; place-items: center; width: 15px; height: 15px; border-radius: 50%; font-size: 10px; line-height: 1; color: #0a0a0a; background: var(--pos); }
+  .sx .cambio.sube { color: var(--pos); }
+  .sx .cambio.baja { color: var(--neg); }
+  .sx .cambio.baja::before { content: '↓'; background: var(--neg); }
+  .sx .cambio.nada { display: none; }
+  .sx .cambio .vs { color: var(--faint); font-weight: 400; }
+
+  /* tarjetas */
+  .sx-fila { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gap); margin-bottom: var(--gap); align-items: stretch; }
+  .sx-fila > .sx-card { display: flex; flex-direction: column; }
+  .sx-fila.parejo .sx-embudo { flex: 1; align-content: space-between; }
+  .sx-card { background: var(--card); border: 1px solid var(--rule); border-radius: var(--radius); padding: 20px; min-width: 0; }
+  .sx-card.sola { margin-bottom: var(--gap); }
+  .sx-card .cab { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .sx-card h2 { margin: 0; font-size: 14px; line-height: 20px; font-weight: 500; color: var(--muted); }
+  .sx-card .cab .lado { color: var(--faint); font-size: 12px; white-space: nowrap; }
+  .sx-card .nota { margin: 2px 0 14px; color: var(--faint); font-size: 12px; line-height: 17px; }
+  .sx-listas { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px; }
+  .sx-listas.cinco { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 24px; }
+  .sx .bandera { font-size: 16px; margin-right: 8px; vertical-align: -1px; font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif; }
+  .sx-listas h3 { margin: 0 0 8px; font-size: 13px; line-height: 20px; font-weight: 500; color: var(--muted); }
+  .sx .solo-movil { display: none; }
+  .sx-total { margin: auto 0 0; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 12px; }
+  .sx-fila .sx-tabla { margin-bottom: 14px; }
+  .sx-vacio { margin: 4px 0 0; padding: 11px 14px; border: 1px dashed var(--line); border-radius: 10px; color: var(--muted); font-size: 13px; }
+
+  /* dinero en el tiempo */
+  .sx-dinero .cab { align-items: flex-start; }
+  .sx-dinero .grande { margin-top: 6px; font-size: 34px; line-height: 40px; font-weight: 600; letter-spacing: -0.02em; }
+  .sx-dinero .grande small { font-size: 14px; color: var(--faint); margin-left: 6px; font-weight: 400; letter-spacing: 0; }
+  .sx-dinero .detalle { margin-top: 2px; color: var(--faint); font-size: 12px; }
+  .sx-dinero .sx-graf { margin-top: 18px; }
+
+  /* tablas */
+  .sx-tabla { overflow-x: auto; }
+  .sx table { width: 100%; border-collapse: collapse; }
+  .sx th { font: 400 12px/16px var(--font); color: var(--faint); text-align: left; padding: 0 12px 10px; white-space: nowrap; }
+  .sx td { padding: 0 12px; height: 44px; border-top: 1px solid var(--rule); white-space: nowrap; }
+  .sx th:first-child, .sx td:first-child { padding-left: 0; }
+  .sx th:last-child, .sx td:last-child { padding-right: 0; }
+  .sx .r { text-align: right; }
+  .sx td.id { color: var(--text); font-weight: 500; }
+  .sx td.gris { color: var(--muted); }
+  .sx td.tenue { color: var(--faint); }
+  .sx tbody tr { transition: background 0.12s; }
+  .sx tbody tr:hover td { background: rgba(255, 255, 255, 0.025); }
+  .sx .celda-barra { position: relative; }
+  .sx .celda-barra .b { position: absolute; left: 0; bottom: 7px; height: 2px; border-radius: 2px; background: var(--dato-2); }
+  .sx .celda-barra .b.primera { background: var(--verde); }
+  .sx .alto { max-height: 468px; overflow: auto; }
+  .sx .alto th { position: sticky; top: 0; background: var(--card); z-index: 1; padding-top: 2px; }
+
+  /* estados */
+  .sx .pill { display: inline-flex; align-items: center; height: 22px; padding: 0 9px; border-radius: 999px; font-size: 12px; font-weight: 500; background: var(--raised); color: var(--muted); flex: none; white-space: nowrap; }
+  .sx .pill.ok { background: var(--pos-bg); color: var(--pos); }
+  .sx .pill.av { background: var(--warn-bg); color: var(--warn); }
+  .sx .pill.mal { background: var(--neg-bg); color: var(--neg); }
+  .sx .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 10px; background: var(--faint); vertical-align: 1px; }
+  .sx .dot.ok { background: var(--pos); } .sx .dot.av { background: var(--warn); } .sx .dot.mal { background: var(--neg); }
+  .sx-estado { display: flex; align-items: center; background: var(--card); border: 1px solid var(--rule); border-radius: var(--radius); padding: 16px 20px; margin-bottom: var(--gap); font-size: 15px; }
+
+  /* embudo: pistas planas en blanco */
+  .sx-embudo { display: grid; gap: 16px; }
+  .sx-paso { border: 1px solid var(--rule); border-radius: 12px; padding: 12px 14px; }
+  .sx-paso .fila { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; color: var(--muted); }
+  .sx-paso .fila b { font-size: 20px; font-weight: 600; color: var(--text); }
+  .sx-paso .pista { height: 6px; border-radius: 999px; background: var(--raised); margin-top: 10px; overflow: hidden; }
+  .sx-paso .lleno { height: 100%; border-radius: 999px; background: var(--dato); }
+  .sx-paso .perdida { margin-top: 8px; color: var(--faint); font-size: 12px; }
+  .sx-paso .perdida.mayor { color: var(--neg); }
+  .sx-paso.final .lleno { background: var(--verde); }
+  .sx-paso.final .fila b { color: var(--verde); }
+
+  /* gráficas */
+  .sx-graf { position: relative; min-height: 200px; }
+  .sx-graf svg { display: block; overflow: visible; touch-action: pan-y; }
+  .sx-graf .eje text { fill: var(--faint); font: 12px var(--font); }
+  .sx-graf .rejilla line { stroke: var(--line); stroke-dasharray: 3 4; }
+  .sx-tip { position: absolute; pointer-events: none; background: #1f1f1f; border: 1px solid var(--line); border-radius: 10px; padding: 8px 11px; font-size: 12px; line-height: 17px; white-space: nowrap; opacity: 0; transition: opacity 0.12s; z-index: 2; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); }
+  .sx-tip span { color: var(--muted); display: block; }
+  .sx-tip .linea { display: flex; align-items: center; gap: 8px; color: var(--text); margin-top: 2px; }
+  .sx-tip .linea i { width: 8px; height: 8px; border-radius: 50%; background: var(--verde); }
+  .sx-tip .linea b { margin-left: 10px; }
+  .sx-eje-pill { position: absolute; bottom: 0; transform: translateX(-50%); height: 26px; padding: 0 12px; border-radius: 999px; background: var(--text); color: #0a0a0a; font-size: 12px; font-weight: 600; line-height: 26px; white-space: nowrap; pointer-events: none; }
+
+  .sx [data-dash-source-state=refreshing] { opacity: 0.5; transition: opacity 0.3s; }
+  .sx [data-dash-source-state=empty] { color: transparent; }
+  .sx [hidden] { display: none !important; }
+
+  @media (max-width: 1180px) {
+    .sx-listas, .sx-listas.cinco { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+  }
+  @media (max-width: 960px) {
+    .sx { display: block; }
+    .sx-lado { position: sticky; z-index: 3; height: auto; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 0 12px; padding: 10px 16px 0; background: var(--ground); border-bottom: 1px solid var(--rule); overflow: visible; }
+    .sx-marca { padding: 4px 0; }
+    .sx-grupo, .sx-pie, .sx-vivo .et, .sx-vivo .hace { display: none; }
+    .sx-vivo { grid-column: 2; grid-row: 1; margin: 0; justify-self: end; display: flex; align-items: center; gap: 10px; padding: 0; background: none; border: 0; }
+    .sx-vivo .estado { margin: 0; align-items: center; }
+    .sx-vivo .estado::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--pos); }
+    .sx-vivo .num { font-size: 17px; line-height: 20px; }
+    .sx-vivo .acciones { margin: 0; }
+    .sx-vivo .acciones .tr { display: none; }
+    .sx-tabs { grid-column: 1 / -1; flex-direction: row; gap: 4px; margin-top: 10px; overflow-x: auto; scrollbar-width: none; }
+    .sx-tabs::-webkit-scrollbar { display: none; }
+    .sx-tabs button { height: 38px; padding: 0 12px; border-radius: 0; gap: 8px; border-bottom: 2px solid transparent; white-space: nowrap; flex: none; }
+    .sx-tabs button[aria-selected="true"] { background: none; border-bottom-color: var(--text); }
+    .sx-tabs svg.ic { width: 16px; height: 16px; }
+    .sx-main { border-left: 0; padding: 20px 16px 40px; }
+    .sx-fila { grid-template-columns: minmax(0, 1fr); }
+    .sx-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  }
+  @media (max-width: 640px) {
+    .sx-marca span { display: none; }
+    .sx-vivo .txt { font-size: 13px; }
+    .sx-cabeza h1 { font-size: 20px; }
+    .sx-periodo { width: 100%; }
+    .sx-periodo button { flex: 1; padding: 0 4px; }
+    .sx-kpi { padding: 14px 14px 14px; }
+    .sx-kpi .val { font-size: 22px; line-height: 28px; margin-top: 10px; }
+    .sx-kpi .sub { display: none; }
+    .sx-dinero .grande { font-size: 28px; line-height: 34px; }
+    .sx .ocultable { display: none; }
+    .sx .solo-movil { display: inline; color: var(--faint); font-size: 12px; margin-left: 4px; font-weight: 400; }
+    .sx-listas, .sx-listas.cinco { grid-template-columns: minmax(0, 1fr); }
+    .sx-card { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+  <main class="ad-acceso" id="acceso">
+    <section class="ad-404" id="falso" lang="en">
+      <svg viewBox="18 18 64 64" fill="none" aria-hidden="true"><circle cx="50" cy="50" r="24" stroke="currentColor" stroke-width="2"/><line x1="50" y1="20" x2="50" y2="80" stroke="currentColor" stroke-width="1.2"/></svg>
+      <p class="kicker">ERROR 404</p>
+      <h1>Nothing to grade here.</h1>
+      <p class="texto">This page doesn't exist. Head back to SPECTRE.</p>
+      <p class="ayuda"><a href="/">spectrecolor.com</a> · <a href="/get">Get SPECTRE</a></p>
+    </section>
+    <form class="ad-caja" id="acceso-form" autocomplete="on" hidden>
+      <div class="ad-marca"><svg viewBox="18 18 64 64" fill="none" aria-hidden="true"><circle cx="50" cy="50" r="24" stroke="currentColor" stroke-width="2.4"/><line x1="50" y1="20" x2="50" y2="80" stroke="currentColor" stroke-width="1.6"/></svg><span>SPECTRE</span></div>
+      <h1>Panel</h1>
+      <p>Entra con tu cuenta.</p>
+      <label for="correo">Correo</label>
+      <input id="correo" name="correo" type="email" autocomplete="username" required />
+      <label for="clave">Contraseña</label>
+      <input id="clave" name="clave" type="password" autocomplete="current-password" required />
+      <button type="submit">Entrar</button>
+      <p class="ad-error" id="acceso-error" role="alert"></p>
+    </form>
+    <button class="ad-oculto" id="abrir-acceso" type="button" tabindex="-1" aria-hidden="true"></button>
+  </main>
+  <div id="dash-root" hidden>
+<div class="sx">
+  <aside class="sx-lado">
+    <a class="sx-marca" href="#resumen" aria-label="SPECTRE · Métricas">
+      <svg viewBox="18 18 64 64" fill="none" aria-hidden="true"><circle cx="50" cy="50" r="24" stroke="currentColor" stroke-width="2.4"/><line x1="50" y1="20" x2="50" y2="80" stroke="currentColor" stroke-width="1.6"/></svg>
+      <span>SPECTRE</span>
+    </a>
+    <div class="sx-grupo">Tablero</div>
+    <nav class="sx-tabs" role="tablist" aria-label="Secciones" aria-orientation="vertical">
+      <button role="tab" data-tab="resumen" id="tab-resumen"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg><span>Resumen</span></button>
+      <button role="tab" data-tab="ventas" id="tab-ventas"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18"/><path d="M16.5 7.5c0-1.7-2-3-4.5-3s-4.5 1.3-4.5 3 2 2.6 4.5 3.2 4.5 1.5 4.5 3.3-2 3-4.5 3-4.5-1.3-4.5-3"/></svg><span>Ventas</span></button>
+      <button role="tab" data-tab="trafico" id="tab-trafico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M21 20H3"/></svg><span>Tráfico</span></button>
+      <button role="tab" data-tab="cuentas" id="tab-cuentas"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.4 3.2-5.5 6.5-5.5s5.9 2.1 6.5 5.5"/><path d="M15.5 4.8a3.5 3.5 0 0 1 0 6.4"/><path d="M18 14.8c2 .7 3.2 2.6 3.5 5.2"/></svg><span>Cuentas</span></button>
+      <button role="tab" data-tab="sistema" id="tab-sistema"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h4l2.5-6 5 12 2.5-6H21"/></svg><span>Sistema</span></button>
+    </nav>
+    <div class="sx-vivo" id="en-vivo">
+      <div class="et"><span class="punto" aria-hidden="true"></span>En vivo</div>
+      <div class="estado"><b class="num" data-source="presencia" data-field="activos" data-row="0">—</b><span class="txt" id="vivo-txt">en el sitio</span></div>
+      <div class="hace" id="vivo-hace"></div>
+      <div class="acciones">
+        <button class="sx-boton" id="vivo-actualizar" type="button">Actualizar</button>
+        <a class="sx-boton sec tr" href="https://cloud.umami.is/analytics/us/websites/add40efe-f309-476f-95a6-6367262a4434/realtime" target="_blank" rel="noopener">Tiempo real ↗</a>
+      </div>
+    </div>
+    <div class="sx-pie">spectrecolor.com · <a href="#" id="salir">Cerrar sesión</a><br><span id="pie-act">En vivo cada 20 s · lo demás cada hora</span></div>
+  </aside>
+
+  <main class="sx-main">
+    <div class="sx-cabeza">
+      <div>
+        <h1 id="titulo">Resumen</h1>
+        <p id="bajada">—</p>
+      </div>
+      <div class="sx-periodo" role="group" aria-label="Periodo" id="periodo">
+        <button data-p="hoy">Hoy</button><button data-p="7d">7 días</button><button data-p="30d">30 días</button><button data-p="todo">Todo</button>
+      </div>
+    </div>
+
+    <!-- ══════════ RESUMEN ══════════ -->
+    <section id="resumen" data-pagina="resumen">
+      <div class="sx-kpis" id="cifras">
+        <div class="sx-kpi"><div class="top"><span class="et"><i class="chip verde" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M16.5 7.5c0-1.7-2-3-4.5-3s-4.5 1.3-4.5 3 2 2.6 4.5 3.2 4.5 1.5 4.5 3.3-2 3-4.5 3-4.5-1.3-4.5-3"/></svg></i>Ventas</span><span class="cambio nada" data-source="resumen" data-field="cambio_ventas" data-where="periodo=hoy">—</span></div><div class="val" data-source="resumen" data-field="ventas" data-where="periodo=hoy">—</div><div class="sub" id="n-gratis">—</div></div>
+        <div class="sx-kpi"><div class="top"><span class="et"><i class="chip azul" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.4 3.2-5.5 6.5-5.5s5.9 2.1 6.5 5.5"/><path d="M15.5 4.8a3.5 3.5 0 0 1 0 6.4"/><path d="M18 14.8c2 .7 3.2 2.6 3.5 5.2"/></svg></i>Visitantes</span><span class="cambio nada" data-source="resumen" data-field="cambio_visitantes" data-where="periodo=hoy">—</span></div><div class="val" data-source="resumen" data-field="visitantes" data-where="periodo=hoy">—</div><div class="sub">Personas distintas</div></div>
+        <div class="sx-kpi"><div class="top"><span class="et"><i class="chip violeta" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 17l6-6 4 4 6-7"/><path d="M15 8h5v5"/></svg></i>Conversión</span></div><div class="val"><span data-source="resumen" data-field="conversion" data-where="periodo=hoy">—</span><small>%</small></div><div class="sub">Ventas por cada 100 visitantes</div></div>
+        <div class="sx-kpi"><div class="top"><span class="et"><i class="chip verde" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 12h4l2.5-6 5 12 2.5-6H21"/></svg></i>En el sitio ahora</span></div><div class="val" data-source="presencia" data-field="activos" data-row="0">—</div><div class="sub" id="n-vivo-r">—</div></div>
+      </div>
+      <div class="sx-card sola sx-dinero realce" id="dinero">
+        <div class="cab">
+          <div>
+            <h2>Ganado en total</h2>
+            <div class="grande verde-txt">$<span data-source="resumen" data-field="total_mxn" data-where="periodo=hoy">—</span><small>MXN</small></div>
+            <div class="detalle" id="n-tc">—</div>
+          </div>
+          <span class="cambio nada" data-source="resumen" data-field="cambio_total" data-where="periodo=hoy">—</span>
+        </div>
+        <div class="sx-graf" data-source="serie_dinero" id="graf-dinero"></div>
+      </div>
+      <div class="sx-fila parejo">
+        <div class="sx-card" id="canales">
+          <div class="cab"><h2>Ventas por canal</h2><span class="lado" id="canales-lado"></span></div>
+          <p class="nota">De dónde llegó cada visita y cada venta.</p>
+          <div class="sx-tabla"><table data-source="por_canal" data-row-key="periodo,canal"><thead><tr><th data-field="canal">Canal</th><th class="r" data-field="visitas">Visitas</th><th class="r" data-field="clics">Clic en pagar</th><th class="r" data-field="ventas">Ventas</th><th class="r ocultable" data-field="ingresos">Ingresos</th></tr></thead><tbody></tbody></table></div>
+          <p class="sx-vacio" id="canales-vacio" hidden>Sin visitas en este periodo.</p>
+          <p class="sx-total" id="canales-total" data-source="por_canal"></p>
+        </div>
+        <div class="sx-card" id="embudo">
+          <div class="cab"><h2>Dónde se quedan</h2><span class="lado" id="embudo-lado"></span></div>
+          <p class="nota">De quien entra al sitio a quien paga. En rojo, el paso donde más gente se va.</p>
+          <div class="sx-embudo" data-source="resumen" id="embudo-pasos"></div>
+        </div>
+      </div>
+      <div class="sx-card sola" id="ultimas">
+        <div class="cab"><h2>Últimas ventas</h2><span class="lado">Hora de México</span></div>
+        <p class="nota">Cada compra pagada, la más reciente arriba. En vivo desde la base de clientes.</p>
+        <div class="sx-tabla"><table data-source="ventas" data-row-key="n"><thead><tr><th data-field="fecha">Fecha</th><th data-field="edicion">Producto</th><th class="r" data-field="monto">Monto</th><th class="ocultable" data-field="moneda">Moneda</th><th data-field="fuente">Canal</th><th class="ocultable" data-field="pais">País</th></tr></thead><tbody></tbody></table></div>
+        <p class="sx-vacio" id="ultimas-vacio" hidden>Todavía no hay ventas en este periodo.</p>
+      </div>
+    </section>
+
+    <!-- ══════════ VENTAS ══════════ -->
+    <section id="ventas" data-pagina="ventas" hidden>
+      <div class="sx-card sola sx-dinero realce" id="ingresos-dia">
+        <div class="cab">
+          <div>
+            <h2 id="ing-titulo">Ingresos por día</h2>
+            <div class="grande verde-txt">$<span data-source="resumen" data-field="total_mxn" data-where="periodo=hoy">—</span><small>MXN</small></div>
+            <div class="detalle" id="ing-detalle">—</div>
+          </div>
+          <span class="cambio nada" data-source="resumen" data-field="cambio_total" data-where="periodo=hoy">—</span>
+        </div>
+        <div class="sx-graf" data-source="dinero_por_dia" id="graf-ingresos"></div>
+      </div>
+      <div class="sx-fila parejo">
+        <div class="sx-card" id="ventas-dia">
+          <div class="cab"><h2>Ventas por día</h2><span class="lado">Hora de México</span></div>
+          <p class="nota">Compras pagadas cada día; en blanco, el periodo elegido.</p>
+          <div class="sx-graf" data-source="ventas" id="graf-ventas"></div>
+        </div>
+        <div class="sx-card" id="productos">
+          <div class="cab"><h2>Por producto</h2></div>
+          <p class="nota">Cuánto vendió cada edición en el periodo.</p>
+          <div class="sx-tabla"><table data-source="por_producto" data-row-key="periodo,producto"><thead><tr><th data-field="producto">Producto</th><th class="r" data-field="ventas">Ventas</th><th class="r" data-field="ingresos_usd">USD</th><th class="r" data-field="ingresos_mxn">MXN</th></tr></thead><tbody></tbody></table></div>
+          <p class="sx-total" id="productos-total" data-source="por_producto"></p>
+        </div>
+      </div>
+      <div class="sx-card sola" id="codigos">
+        <div class="cab"><h2>Códigos de descuento</h2><span class="lado">Activos</span></div>
+        <p class="nota">Usos de cada código. Valen en el Full System y el LUT Pack.</p>
+        <div class="sx-tabla"><table data-source="codigos" data-row-key="codigo"><thead><tr><th data-field="codigo">Código</th><th data-field="descuento">Descuento</th><th class="r" data-field="usados">Usados</th><th class="r" data-field="limite">Límite</th><th class="r" data-field="restantes">Quedan</th><th data-field="estado">Estado</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="sx-card sola" id="todas-ventas">
+        <div class="cab"><h2>Todas las ventas del periodo</h2><span class="lado">Desde Stripe</span></div>
+        <p class="nota">Producto, monto, código, canal, país y si la cuenta tiene acceso.</p>
+        <div class="sx-tabla alto"><table data-source="ventas_stripe" data-row-key="n"><thead><tr><th data-field="fecha">Fecha</th><th data-field="producto">Producto</th><th class="r" data-field="monto">Monto</th><th data-field="moneda">Moneda</th><th data-field="codigo">Código</th><th data-field="fuente">Canal</th><th data-field="pais">País</th><th data-field="acceso">Acceso</th></tr></thead><tbody></tbody></table></div>
+        <p class="sx-vacio" id="todas-vacio" hidden>Sin ventas en este periodo.</p>
+      </div>
+    </section>
+
+    <!-- ══════════ TRÁFICO ══════════ -->
+    <section id="trafico" data-pagina="trafico" hidden>
+      <div class="sx-kpis">
+        <div class="sx-kpi"><div class="top"><span class="et"><i class="chip verde" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 12h4l2.5-6 5 12 2.5-6H21"/></svg></i>En el sitio ahora</span></div><div class="val" data-source="presencia" data-field="activos" data-row="0">—</div><div class="sub" id="n-vivo">—</div></div>
+        <div class="sx-kpi"><div class="top"><span class="et">Visitantes en 24 h</span></div><div class="val" data-source="en_vivo" data-field="visitantes_24h" data-row="0">—</div></div>
+        <div class="sx-kpi"><div class="top"><span class="et">Visitas en 24 h</span></div><div class="val" data-source="en_vivo" data-field="visitas_24h" data-row="0">—</div><div class="sub">Una persona puede volver</div></div>
+        <div class="sx-kpi"><div class="top"><span class="et">Páginas vistas en 24 h</span></div><div class="val" data-source="en_vivo" data-field="vistas_24h" data-row="0">—</div></div>
+      </div>
+      <div class="sx-card sola" id="visitantes-dia">
+        <div class="cab"><h2>Visitantes por día</h2><span class="lado">Personas distintas</span></div>
+        <p class="nota">Cuántas personas entraron cada día; en blanco, hoy.</p>
+        <div class="sx-graf" data-source="trafico" id="graf-trafico"></div>
+      </div>
+      <div class="sx-fila" id="origen">
+        <div class="sx-card" id="paises">
+          <div class="cab"><h2>De qué país vienen</h2><span class="lado">Desde el lanzamiento</span></div>
+          <p class="nota">Personas distintas por país.</p>
+          <div class="sx-tabla"><table data-source="paises" data-row-key="pais"><thead><tr><th data-field="pais">País</th><th class="r" data-field="visitantes">Visitantes</th></tr></thead><tbody></tbody></table></div>
+        </div>
+        <div class="sx-card" id="ciudades">
+          <div class="cab"><h2>Ciudades</h2><span class="lado">Desde el lanzamiento</span></div>
+          <p class="nota">Las ciudades con más visitantes.</p>
+          <div class="sx-tabla alto"><table data-source="ciudades" data-row-key="ciudad,pais"><thead><tr><th data-field="ciudad">Ciudad</th><th class="r" data-field="visitantes">Visitantes</th></tr></thead><tbody></tbody></table></div>
+        </div>
+      </div>
+      <div class="sx-card sola" id="audiencia">
+        <div class="cab"><h2>Cómo llegan y qué usan</h2><span class="lado">Desde el lanzamiento</span></div>
+        <p class="nota">Sitio que los mandó, páginas que vieron, dispositivo, navegador y sistema.</p>
+        <div class="sx-listas cinco">
+          <div id="fuentes"><h3>De dónde llegan</h3><table data-source="fuentes" data-row-key="fuente"><thead><tr><th data-field="fuente">Sitio</th><th class="r" data-field="visitantes">Visitantes</th></tr></thead><tbody></tbody></table></div>
+          <div id="paginas"><h3>Páginas más vistas</h3><table data-source="paginas" data-row-key="pagina"><thead><tr><th data-field="pagina">Página</th><th class="r" data-field="vistas">Vistas</th></tr></thead><tbody></tbody></table></div>
+          <div id="dispositivos"><h3>Dispositivos</h3><table data-source="dispositivos" data-row-key="dispositivo"><thead><tr><th data-field="dispositivo">Dispositivo</th><th class="r" data-field="visitantes">Visitantes</th></tr></thead><tbody></tbody></table></div>
+          <div id="navegadores"><h3>Navegadores</h3><table data-source="navegadores" data-row-key="navegador"><thead><tr><th data-field="navegador">Navegador</th><th class="r" data-field="visitantes">Visitantes</th></tr></thead><tbody></tbody></table></div>
+          <div id="sistemas"><h3>Sistemas</h3><table data-source="sistemas" data-row-key="sistema"><thead><tr><th data-field="sistema">Sistema</th><th class="r" data-field="visitantes">Visitantes</th></tr></thead><tbody></tbody></table></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ CUENTAS ══════════ -->
+    <section id="cuentas" data-pagina="cuentas" hidden>
+      <div class="sx-kpis">
+        <div class="sx-kpi"><div class="top"><span class="et">Compradores</span></div><div class="val" data-source="cuentas_resumen" data-field="cuentas" data-row="0">—</div><div class="sub">Cuentas con acceso, sin las de prueba</div></div>
+        <div class="sx-kpi"><div class="top"><span class="et">Entraron en 24 h</span></div><div class="val" data-source="cuentas_resumen" data-field="activas_24h" data-row="0">—</div></div>
+        <div class="sx-kpi"><div class="top"><span class="et">Descargas</span></div><div class="val" data-source="cuentas_resumen" data-field="descargas" data-row="0">—</div><div class="sub">Archivos bajados en total</div></div>
+        <div class="sx-kpi"><div class="top"><span class="et">Con alerta</span></div><div class="val" data-source="cuentas_resumen" data-field="alertas" data-row="0">—</div><div class="sub">Muchas entradas o lugares</div></div>
+      </div>
+      <div class="sx-card sola" id="tabla-cuentas">
+        <div class="cab"><h2>Todas las cuentas</h2></div>
+        <p class="nota">Qué compró cada quien, cuándo entró y qué descargó. Sin las cuentas de prueba.</p>
+        <div class="sx-tabla alto"><table data-source="usuarios" data-row-key="correo"><thead><tr><th data-field="correo">Correo</th><th data-field="compro">Compró</th><th class="ocultable" data-field="ultima_entrada">Última entrada</th><th class="r" data-field="entradas_24h">Entradas 24 h</th><th class="r" data-field="descargas_total">Descargas</th><th class="ocultable" data-field="alerta">Alerta</th></tr></thead><tbody></tbody></table></div>
+      </div>
+    </section>
+
+    <!-- ══════════ SISTEMA ══════════ -->
+    <section id="sistema" data-pagina="sistema" hidden>
+      <div class="sx-estado" id="estado-general" data-source="salud"><span class="dot"></span><span id="estado-texto">—</span></div>
+      <div class="sx-card sola" id="revision">
+        <div class="cab"><h2>Revisión de sistemas</h2><span class="lado" id="revision-lado"></span></div>
+        <p class="nota">Sitio, pagos, cuentas, descargas y seguridad. Se revisa cada hora.</p>
+        <div class="sx-tabla"><table data-source="salud" data-row-key="area,punto"><thead><tr><th data-field="area">Área</th><th data-field="punto">Qué</th><th data-field="estado">Estado</th><th class="ocultable" data-field="detalle">Detalle</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="sx-card sola" id="respaldos">
+        <div class="cab"><h2>Respaldos</h2></div>
+        <p class="nota">Copias de la base de clientes y del sitio.</p>
+        <div class="sx-tabla"><table data-source="respaldos" data-row-key="respaldo"><thead><tr><th data-field="respaldo">Respaldo</th><th class="ocultable" data-field="donde">Dónde</th><th data-field="ultimo">Último</th><th class="ocultable" data-field="guarda">Guarda</th><th data-field="estado">Estado</th></tr></thead><tbody></tbody></table></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+  </div>
+  <script src="/js/cuentas-config.js?v=20261022211157"></script>
+  <script src="/js/vendor/d3-7.9.0.min.js"></script>
+  <script src="/js/admin.js?v=20261022211157"></script>
+  <script src="/js/admin-tablero.js?v=20261022211157"></script>
+</body>
+</html>
