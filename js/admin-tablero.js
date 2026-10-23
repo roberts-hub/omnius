@@ -228,6 +228,10 @@
 
   // ── controles ──
   $$('#periodo button').forEach((b) => b.addEventListener('click', () => dash.setParams({ periodo: b.dataset.p })));
+  function menu(abrir) {
+    $('.sx-lado').classList.toggle('abierto', abrir); $('.sx').classList.toggle('cajon', abrir);
+    $('#sx-menu').setAttribute('aria-expanded', String(abrir)); $('#sx-menu').setAttribute('aria-label', abrir ? 'Cerrar menú' : 'Abrir menú');
+  }
   const mostrarTab = (t) => {
     tab = t;
     $$('[data-pagina]').forEach((s) => (s.hidden = s.dataset.pagina !== t));
@@ -236,18 +240,21 @@
     $('#titulo').textContent = NOMBRE_T[t];
     $('#bajada').hidden = t !== 'resumen' && t !== 'ventas';
     $('#sx-menu-txt').textContent = NOMBRE_T[t];
-    $('.sx-lado').classList.remove('abierto'); $('#sx-menu').setAttribute('aria-expanded', 'false');
-    animadas.clear();
+    menu(false);
+    animadas.clear(); listasAnimadas.clear();
     try { window.scrollTo(0, 0); } catch (e) { /* sin desplazamiento */ }
     dash.setLink(t);
     dibujar();
   };
   $$('.sx-tabs button').forEach((b) => b.addEventListener('click', () => mostrarTab(b.dataset.tab)));
-  // menú desplegable (móvil): se abre con el botón y se cierra al elegir, al tocar fuera o con Escape
-  const menu = (abrir) => { $('.sx-lado').classList.toggle('abierto', abrir); $('#sx-menu').setAttribute('aria-expanded', String(abrir)); };
+  // menú lateral (móvil): entra de izquierda a derecha con el botón ☰; se cierra al elegir, al tocar fuera o con Escape
   $('#sx-menu').addEventListener('click', (ev) => { ev.stopPropagation(); menu(!$('.sx-lado').classList.contains('abierto')); });
-  document.addEventListener('click', (ev) => { if (!ev.target.closest('.sx-lado')) menu(false); });
+  $('#sx-velo').addEventListener('click', () => menu(false));
   document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') menu(false); });
+  // deslizar hacia la izquierda sobre el menú lo cierra
+  let toqueX = null;
+  $('.sx-lado').addEventListener('touchstart', (ev) => { toqueX = ev.touches[0].clientX; }, { passive: true });
+  $('.sx-lado').addEventListener('touchend', (ev) => { if (toqueX != null && toqueX - ev.changedTouches[0].clientX > 60) menu(false); toqueX = null; }, { passive: true });
 
   // ── ayudas de dibujo ──
   const quitarEsqueleto = (el) => el && el.classList.remove('dash-skeleton');
@@ -360,6 +367,8 @@
   function dibujar() {
     const p = periodo();
     $$('#periodo button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.p === p)));
+    const elegido = $('#periodo button[aria-pressed="true"]'), ind = $('.sx-periodo-ind');
+    if (elegido && ind && elegido.offsetWidth) { ind.style.width = elegido.offsetWidth + 'px'; ind.style.transform = `translateX(${elegido.offsetLeft}px)`; }
     $$('[data-source="resumen"][data-where]').forEach((el) => fijarDonde(el, p));
 
     // en vivo
@@ -371,6 +380,7 @@
     const fp = pr.status === 'ok' && pr.data[0] ? pr.data[0] : null;
     $$('[data-source="presencia"][data-field]').forEach((el) => { el.textContent = fp ? NUM(Number(fp[el.dataset.field]) || 0) : '—'; });
     $('#vivo-actualizar').setAttribute('aria-busy', String(!!pr.refreshing || pr.status === 'loading'));
+    $('#vivo-actualizar-m').setAttribute('aria-busy', String(!!pr.refreshing || pr.status === 'loading'));
     if (fp) {
       const n = Number(fp.activos) || 0;
       const hora = String(fp.revisado || '').slice(11, 16);
@@ -522,44 +532,111 @@
     ventasTabla('#todas-ventas', p, 0, true);
   }
 
+  // lista estilo Umami: nombre, número y porcentaje, con una barra de fondo del tamaño de su parte
+  const listasAnimadas = new Set();
+  function listaUx(caja, filas, nombre, valor) {
+    if (!caja) return;
+    const datos = filas.filter((f) => Number(f[valor]) > 0).sort((a, b) => Number(b[valor]) - Number(a[valor]));
+    const total = datos.reduce((s, f) => s + Number(f[valor]), 0) || 1;
+    const max = Number(datos[0] && datos[0][valor]) || 1;
+    const abierta = caja.dataset.todo === '1';
+    caja.replaceChildren();
+    for (const f of datos.slice(0, abierta ? 100 : 8)) {
+      const fila = document.createElement('div'); fila.className = 'ux-fila';
+      fila.style.setProperty('--p', Math.max(2, (Number(f[valor]) / max) * 100) + '%');
+      const n = document.createElement('span'); n.className = 'ux-nombre'; const t = nombre(f); if (t instanceof Node) n.append(t); else n.textContent = t;
+      const v = document.createElement('span'); v.className = 'ux-num'; v.textContent = NUM(Number(f[valor]));
+      const pc = document.createElement('span'); pc.className = 'ux-pct'; pc.textContent = Math.round((Number(f[valor]) / total) * 100) + '%';
+      fila.append(n, v, pc); caja.append(fila);
+    }
+    if (!datos.length) { const e = document.createElement('div'); e.className = 'ux-vacia'; e.textContent = 'Sin datos todavía.'; caja.append(e); }
+    // la barra de fondo se llena solo la primera vez que se ve la lista desde que se abrió la sección
+    if (!listasAnimadas.has(caja) && datos.length && !caja.hidden) { listasAnimadas.add(caja); caja.classList.remove('anima'); void caja.offsetWidth; caja.classList.add('anima'); }
+    const card = caja.closest('.ux'), mas = card && card.querySelector('.ux-mas');
+    if (mas && !caja.hidden) { mas.hidden = datos.length <= 8; mas.textContent = abierta ? 'Ver menos' : `Ver todo (${datos.length})`; }
+  }
   const CANALES_VIVO = { youtube: 'YouTube', instagram: 'Instagram', tiktok: 'TikTok', whatsapp: 'WhatsApp', facebook: 'Facebook', google: 'Google', x: 'X', linkedin: 'LinkedIn', pinterest: 'Pinterest', reddit: 'Reddit', telegram: 'Telegram', snapchat: 'Snapchat', buscador: 'Otro buscador', correo: 'Correo', twowaves: 'Two Waves', 'otro-sitio': 'Otro sitio', directo: 'Directo' };
   const DISPOSITIVOS_VIVO = { celular: 'Celular', computadora: 'Computadora', tablet: 'Tablet' };
-  function dibujarVivoHoy() {
-    const v = dash.data('vivo_hoy');
-    const filas = v.status === 'ok' ? v.data.filter((x) => Number(x.visitantes) > 0) : [];
-    const clave = (f) => encodeURIComponent(f.tipo) + ',' + encodeURIComponent(f.clave);
-    tablaSimple('#vivo-paises', filas.filter((x) => x.tipo === 'pais'), [['clave', 'id', (c) => (c ? conBandera(c, nombrePais(c)) : 'Sin dato')], ['visitantes', 'r id', NUM]], { barra: 'visitantes', clave });
-    tablaSimple('#vivo-canales', filas.filter((x) => x.tipo === 'canal'), [['clave', 'id', (c) => (c ? CANALES_VIVO[c] || c[0].toUpperCase() + c.slice(1) : 'Sin dato')], ['visitantes', 'r id', NUM]], { barra: 'visitantes', clave });
-    tablaSimple('#vivo-dispositivos', filas.filter((x) => x.tipo === 'dispositivo'), [['clave', 'id', (c) => DISPOSITIVOS_VIVO[c] || 'Sin dato'], ['visitantes', 'r id', NUM]], { barra: 'visitantes', clave });
-    $('#vivo-vacio').hidden = !(v.status === 'ok' && !filas.length);
-    const pr = dash.data('presencia');
-    const hora = pr.status === 'ok' && pr.data[0] ? String(pr.data[0].revisado || '').slice(11, 16) : '';
-    $('#hoy-vivo-lado').textContent = hora ? 'En vivo · ' + hora : 'Contador propio';
+  const DISPOSITIVOS_UMAMI = { mobile: 'Celular', desktop: 'Computadora', laptop: 'Laptop', tablet: 'Tablet' };
+  const VALOR_UX = { paginas: 'Vistas' };
+  // pestañas de cada tarjeta: muestra su lista, cambia el encabezado y mueve la línea verde
+  function pestanaUx(card, boton) {
+    $$('.ux-tabs button', card).forEach((b) => b.setAttribute('aria-selected', String(b === boton)));
+    $$('.ux-lista', card).forEach((l) => (l.hidden = l.dataset.lista !== boton.dataset.ux));
+    $('.ux-col', card).textContent = boton.dataset.col;
+    $('.ux-enc span:last-child', card).textContent = VALOR_UX[boton.dataset.ux] || 'Visitantes';
+    const linea = $('.ux-linea', card);
+    if (linea && boton.offsetWidth) { linea.style.width = boton.offsetWidth + 'px'; linea.style.transform = `translateX(${boton.offsetLeft}px)`; }
   }
+  $$('.ux').forEach((card) => {
+    $$('.ux-tabs button', card).forEach((b) => b.addEventListener('click', () => { pestanaUx(card, b); dibujarTrafico(); }));
+    $('.ux-mas', card).addEventListener('click', () => { const l = $('.ux-lista:not([hidden])', card); l.dataset.todo = l.dataset.todo === '1' ? '' : '1'; dibujarTrafico(); });
+  });
 
   function dibujarTrafico() {
-    dibujarVivoHoy();
+    $$('.ux').forEach((card) => { const b = $('.ux-tabs button[aria-selected="true"]', card); if (b) pestanaUx(card, b); });
+    // hoy, en vivo (contador propio)
+    const v = dash.data('vivo_hoy');
+    const vivo = v.status === 'ok' ? v.data : [];
+    listaUx($('[data-lista="vivo-pais"]'), vivo.filter((x) => x.tipo === 'pais'), (f) => (f.clave ? conBandera(f.clave, nombrePais(f.clave)) : 'Sin dato'), 'visitantes');
+    listaUx($('[data-lista="vivo-canal"]'), vivo.filter((x) => x.tipo === 'canal'), (f) => (f.clave ? CANALES_VIVO[f.clave] || f.clave[0].toUpperCase() + f.clave.slice(1) : 'Sin dato'), 'visitantes');
+    listaUx($('[data-lista="vivo-dispositivo"]'), vivo.filter((x) => x.tipo === 'dispositivo'), (f) => DISPOSITIVOS_VIVO[f.clave] || 'Sin dato', 'visitantes');
+    const pr = dash.data('presencia');
+    const hora = pr.status === 'ok' && pr.data[0] ? String(pr.data[0].revisado || '').slice(11, 16) : '';
+    $('#ux-hoy-lado').textContent = hora ? 'En vivo · ' + hora : 'Contador propio';
+    // Umami (cada hora)
+    const d = (id) => { const x = dash.data(id); return x.status === 'ok' ? x.data : []; };
+    listaUx($('[data-lista="paises"]'), d('paises'), (f) => conBandera(f.pais, nombrePais(f.pais)), 'visitantes');
+    listaUx($('[data-lista="ciudades"]'), d('ciudades'), (f) => conBandera(f.pais, f.ciudad), 'visitantes');
+    listaUx($('[data-lista="fuentes"]'), d('fuentes'), (f) => f.fuente, 'visitantes');
+    listaUx($('[data-lista="paginas"]'), d('paginas'), (f) => f.pagina, 'vistas');
+    listaUx($('[data-lista="dispositivos"]'), d('dispositivos'), (f) => DISPOSITIVOS_UMAMI[f.dispositivo] || f.dispositivo, 'visitantes');
+    listaUx($('[data-lista="navegadores"]'), d('navegadores'), (f) => NAVEGADORES[f.navegador] || (f.navegador ? f.navegador[0].toUpperCase() + f.navegador.slice(1) : '—'), 'visitantes');
+    listaUx($('[data-lista="sistemas"]'), d('sistemas'), (f) => f.sistema, 'visitantes');
+    // visitantes y vistas por día (barras dobles como Umami)
     const t = dash.data('trafico');
     if (t.status === 'ok') {
       const filas = t.data.filter((x) => x.dia && x.dia !== '—');
       const hoy = SX.hoy();
       const inicio = filas.length ? d3.min(filas, (x) => x.dia) : hoy;
-      const m = new Map(filas.map((x) => [x.dia, Number(x.visitantes) || 0]));
+      const m = new Map(filas.map((x) => [x.dia, x]));
       const dias = diasEntre(inicio < SX.desde('7d') ? inicio : SX.desde('7d'), hoy);
-      barras($('#graf-trafico'), dias.map((dia) => ({ x: dia, y: m.get(dia) || 0, texto: `${NUM(m.get(dia) || 0)} visitantes` })), { etiqueta: etqDia, resaltar: (d) => d.x === hoy, alto: 170 });
+      barrasDobles($('#graf-trafico'), dias.map((dia) => ({ x: dia, a: Number(m.get(dia)?.visitantes) || 0, b: Number(m.get(dia)?.vistas) || 0 })));
     }
-    for (const [id, col, val] of [['fuentes', 'fuente', 'visitantes'], ['paginas', 'pagina', 'vistas'], ['dispositivos', 'dispositivo', 'visitantes'], ['sistemas', 'sistema', 'visitantes']]) {
-      const d = dash.data(id);
-      tablaSimple('#' + id, d.status === 'ok' ? d.data.filter((x) => Number(x[val]) > 0) : [], [[col, ''], [val, 'r id', NUM]], { barra: val });
-    }
-    const nv = dash.data('navegadores');
-    tablaSimple('#navegadores', nv.status === 'ok' ? nv.data.filter((x) => Number(x.visitantes) > 0) : [], [['navegador', '', (v) => NAVEGADORES[v] || (v ? v[0].toUpperCase() + v.slice(1) : '—')], ['visitantes', 'r id', NUM]], { barra: 'visitantes' });
-    // países con bandera y nombre en español
-    const ps = dash.data('paises');
-    const filasP = ps.status === 'ok' ? ps.data.filter((x) => Number(x.visitantes) > 0) : [];
-    tablaSimple('#paises', filasP, [['pais', 'id', (v) => conBandera(v, nombrePais(v))], ['visitantes', 'r id', NUM]], { barra: 'visitantes' });
-    const cd = dash.data('ciudades');
-    tablaSimple('#ciudades', cd.status === 'ok' ? cd.data.filter((x) => Number(x.visitantes) > 0) : [], [['ciudad', '', (v, f) => conBandera(f.pais, v)], ['visitantes', 'r id', NUM]], { barra: 'visitantes', clave: (f) => encodeURIComponent(f.ciudad) + ',' + encodeURIComponent(f.pais) });
+  }
+
+  // dos barras por día: vistas (gris, atrás) y visitantes (verde, al frente), con globo al pasar
+  function barrasDobles(caja, puntos) {
+    caja.replaceChildren();
+    const ancho = Math.max(caja.clientWidth, 260), alto = 210, m = { t: 10, r: 0, b: 26, l: 34 };
+    if (!puntos.length) { const p = document.createElement('p'); p.className = 'sx-vacio'; p.textContent = 'Aún no hay datos.'; caja.append(p); return; }
+    caja.style.minHeight = alto + 'px';
+    const svg = d3.select(caja).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${ancho} ${alto}`).attr('height', alto);
+    const x = d3.scaleBand(puntos.map((d) => d.x), [m.l, ancho - m.r]).padding(0.22);
+    const ymax = d3.max(puntos, (d) => Math.max(d.a, d.b)) || 1;
+    const y = d3.scaleLinear([0, ymax], [alto - m.b, m.t]).nice(4);
+    const ticks = y.ticks(4).filter((t) => Number.isInteger(t));
+    svg.append('g').attr('class', 'rejilla').selectAll('line').data(ticks).join('line').attr('x1', m.l).attr('x2', ancho - m.r).attr('y1', y).attr('y2', y);
+    svg.append('g').attr('class', 'eje').selectAll('text').data(ticks).join('text').attr('x', 0).attr('y', (t) => y(t) + 4).text((t) => d3.format('~s')(t));
+    const cada = Math.ceil(puntos.length / Math.max(1, Math.floor((ancho - m.l) / 58)));
+    svg.append('g').attr('class', 'eje').selectAll('text').data(puntos.filter((_, i) => i % cada === 0)).join('text').attr('x', (d) => x(d.x) + x.bandwidth() / 2).attr('y', alto - 6).attr('text-anchor', 'middle').text((d) => etqDia(d.x));
+    animarSiPrimera(caja, svg);
+    const bw = Math.min(x.bandwidth(), 40), bi = bw * 0.62;
+    const g = svg.append('g');
+    g.selectAll('rect.b').data(puntos).join('rect').attr('class', 'barra b').attr('x', (d) => x(d.x) + (x.bandwidth() - bw) / 2).attr('width', bw).attr('y', (d) => y(d.b)).attr('height', (d) => Math.max(0, y(0) - y(d.b))).attr('rx', 4).attr('fill', '#333333');
+    g.selectAll('rect.a').data(puntos).join('rect').attr('class', 'barra a').attr('x', (d) => x(d.x) + (x.bandwidth() - bi) / 2).attr('width', bi).attr('y', (d) => y(d.a)).attr('height', (d) => Math.max(0, y(0) - y(d.a))).attr('rx', 3).attr('fill', '#86efac');
+    const tip = document.createElement('div'); tip.className = 'sx-tip'; caja.append(tip);
+    svg.append('g').selectAll('rect').data(puntos).join('rect').attr('x', (d) => x(d.x)).attr('width', x.bandwidth()).attr('y', 0).attr('height', alto).attr('fill', 'transparent')
+      .on('pointermove', (ev, d) => {
+        tip.replaceChildren();
+        const a = document.createElement('span'); a.textContent = etqDia(d.x, true);
+        const l1 = document.createElement('div'); l1.className = 'linea'; const i1 = document.createElement('i'); const t1 = document.createElement('span'); t1.style.display = 'inline'; t1.textContent = 'Visitantes'; const b1 = document.createElement('b'); b1.textContent = NUM(d.a); l1.append(i1, t1, b1);
+        const l2 = document.createElement('div'); l2.className = 'linea'; const i2 = document.createElement('i'); i2.style.background = '#555'; const t2 = document.createElement('span'); t2.style.display = 'inline'; t2.textContent = 'Vistas'; const b2 = document.createElement('b'); b2.textContent = NUM(d.b); l2.append(i2, t2, b2);
+        tip.append(a, l1, l2); tip.style.opacity = 1;
+        const [px, py] = d3.pointer(ev, caja);
+        tip.style.left = Math.max(0, Math.min(px + 12, caja.clientWidth - tip.offsetWidth)) + 'px'; tip.style.top = Math.max(0, py - 70) + 'px';
+      })
+      .on('pointerleave', () => (tip.style.opacity = 0));
   }
 
   function dibujarCuentas() {
@@ -603,7 +680,9 @@
     }
   }
 
-  $('#vivo-actualizar').addEventListener('click', () => { dash.refresh('presencia'); dash.refresh('ventas'); });
+  const actualizar = () => { dash.refresh('presencia'); dash.refresh('ventas'); dash.refresh('vivo_hoy'); };
+  $('#vivo-actualizar').addEventListener('click', actualizar);
+  $('#vivo-actualizar-m').addEventListener('click', actualizar);
 
   // pestaña desde el link (#ventas, #trafico…) y redibujo con cada cambio de datos, filtro o ancho
   const inicial = location.hash.slice(1);

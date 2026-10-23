@@ -100,7 +100,6 @@ html = f"""<!DOCTYPE html>
     .ad-avisos-txt b {{ color: #f5f5f5; font-size: 14px; font-weight: 600; }}
     .ad-avisos-x {{ flex: none; width: 28px; height: 28px; border: 0; background: none; color: #7a7a7a; font-size: 20px; line-height: 1; cursor: pointer; }}
     .por-contar [data-source="resumen"][data-field="total_mxn"], .por-contar [data-source="resumen"][data-field="ingresos_usd"], .por-contar [data-source="resumen"][data-field="ingresos_mxn"] {{ visibility: hidden; }}
-    @media (max-width: 960px) {{ .sx-lado {{ padding-top: calc(10px + env(safe-area-inset-top)) !important; }} }}
   </style>
   <style>{estilos[0]}</style>
 </head>
