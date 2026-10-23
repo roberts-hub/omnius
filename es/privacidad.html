@@ -15,7 +15,7 @@
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cloud.umami.is; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://i.ytimg.com; media-src 'self'; frame-src https://www.youtube-nocookie.com; connect-src 'self' https://gateway.umami.is https://cloud.umami.is; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cloud.umami.is; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://i.ytimg.com; media-src 'self'; frame-src https://www.youtube-nocookie.com; connect-src 'self' https://gateway.umami.is https://cloud.umami.is https://ytmqltxidizdaxueooso.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
   <link rel="icon" href="/favicon.ico" sizes="any" />
   <link rel="icon" href="/img/marca/icono-48.png" type="image/png" sizes="48x48" />
@@ -30,6 +30,7 @@
   <link rel="stylesheet" href="/css/estilo.css?v=20261022190029" />
   <!-- Umami: analítica sin cookies (cloud.umami.is) — visitas, clics de checkout y embudo -->
   <script defer src="https://cloud.umami.is/script.js" data-exclude-hash="true" data-website-id="add40efe-f309-476f-95a6-6367262a4434" data-domains="spectrecolor.com"></script>
+  <script src="/js/latido.js?v=20261022202209" defer></script>
 </head>
 <body class="listo pagina-legal">
 
@@ -75,6 +76,7 @@
         <li><strong>Tu cuenta:</strong> tu correo electrónico y tu contraseña, que se guarda cifrada (nadie, ni yo, puede leerla).</li>
         <li><strong>Al usar el área de miembros:</strong> la fecha y hora de cada inicio de sesión, la dirección IP, el tipo de dispositivo y navegador usados, y qué archivos descargas.</li>
         <li><strong>Al visitar el sitio:</strong> estadísticas anónimas de visitas (páginas vistas, país, tipo de dispositivo y el sitio desde el que llegaste), medidas con Umami sin cookies y sin identificarte.</li>
+        <li><strong>Mientras tienes una página abierta:</strong> una señal anónima cada 30 segundos (un número al azar que cambia cada 24 horas y la página en la que estás), para saber cuántas personas hay en el sitio en ese momento. No incluye tu dirección IP, correo ni nombre, y se borra a los 3 días.</li>
         <li><strong>Cuando me escribes:</strong> tu correo y el contenido de tu mensaje.</li>
       </ul>
       <p>No recabo datos personales sensibles.</p>
@@ -131,7 +133,7 @@
       <p>
         Este sitio no usa cookies de publicidad ni de rastreo. El área de miembros guarda en tu propio navegador tu sesión
         (solo si eliges "Keep me logged in on this device"; si no, se borra al cerrar el navegador), tu aceptación de los Términos y el idioma que
-        prefieres para los videos.
+        prefieres para los videos. Todo el sitio guarda además el número al azar de la señal anónima de visitas (cambia cada 24 horas) y, por 30 días, el canal por el que llegaste (por ejemplo YouTube o Instagram).
       </p>
     </section>
 
