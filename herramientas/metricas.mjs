@@ -83,6 +83,13 @@ async function generar() {
     }));
   guardar("ventas", filasVentas.length ? filasVentas : sinVentas);
 
+  // ── tipo de cambio USD→MXN (Banco Central Europeo vía frankfurter.dev, un valor por día hábil) ──
+  // El tablero suma los ingresos en dólares y en pesos en un solo total en pesos con este valor.
+  try {
+    const tc = await (await fetch("https://api.frankfurter.dev/v1/latest?base=USD&symbols=MXN", { signal: AbortSignal.timeout(10000) })).json();
+    if (tc?.rates?.MXN) guardar("tipo_cambio", [{ usd_mxn: tc.rates.MXN, fecha: tc.date, fuente: "Banco Central Europeo" }]);
+  } catch (e) { console.log("  (tipo de cambio: no respondió; se queda el anterior)"); }
+
   // ── usuarios (página "Usuarios" del tablero): una fila por cuenta con sus entradas, descargas y alertas ──
   // Lleva correos: el tablero es privado de Roberto (no compartir su link).
   const leer = async (ruta, init = {}) => {
