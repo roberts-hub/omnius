@@ -19,19 +19,52 @@ const botonesCheckout = document.querySelectorAll("[data-checkout]");
 const IDIOMA_PAGO = document.documentElement.lang === "es" ? "es" : "en";
 const conIdioma = (u) => (u && u.includes("buy.stripe.com") ? u + (u.includes("?") ? "&" : "?") + "locale=" + IDIOMA_PAGO : u);
 
-// ── De dónde vino el comprador (YouTube, Instagram…) ──
-// La guardan los links cortos (/yt, /ig, /tt, /wa → js/corto.js) o un link con ?utm_source=. Dura 30 días en este
-// dispositivo y viaja a Stripe como client_reference_id ("src_youtube_video_masterclass"): el webhook la guarda con la
-// compra y el tablero muestra qué canal vendió. Solo el canal, nada de la persona.
+// ── De dónde vino el visitante (YouTube, Instagram…) ──
+// 1) los links cortos (/yt, /ig, /tt, /wa → js/corto.js) o un link con ?utm_source= (lo más preciso: dice qué video o post)
+// 2) si no, se detecta solo: la página de la que vino (referrer) o el navegador interno de la app (Instagram, Facebook,
+//    TikTok…, que se identifica aunque esconda el referrer). Un link corto no lo pisa una detección automática.
+// Dura 30 días en este dispositivo y viaja a Stripe como client_reference_id ("src_youtube_video_masterclass"): el webhook
+// lo guarda con la compra. En Umami cada visita deja un evento "llegada-<canal>" (una vez por sesión). Solo el canal.
 const ORIGEN = (() => {
   const limpio = (x) => String(x || "").toLowerCase().replace(/[^a-z0-9-]/g, "").slice(0, 40);
+  const ahora = Date.now(), DIAS30 = 30 * 864e5;
   const q = new URLSearchParams(location.search);
+  const detectar = () => {
+    const ua = navigator.userAgent || "";
+    if (/Instagram/i.test(ua)) return "instagram";
+    if (/FBAN|FBAV|FB_IAB|FBIOS/i.test(ua)) return "facebook";
+    if (/musical_ly|Bytedance|TikTok/i.test(ua)) return "tiktok";
+    if (/Snapchat/i.test(ua)) return "snapchat";
+    if (/LinkedInApp/i.test(ua)) return "linkedin";
+    let host = "";
+    try { host = new URL(document.referrer).hostname.replace(/^www\./, ""); } catch (_) { return ""; }
+    if (!host || /(^|\.)spectrecolor\.com$/.test(host) || host === "buy.stripe.com" || host === "checkout.stripe.com") return "";
+    const reglas = [[/(^|\.)(youtube\.com|youtu\.be)$/, "youtube"], [/(^|\.)instagram\.com$/, "instagram"], [/(^|\.)(facebook\.com|fb\.com|messenger\.com)$/, "facebook"],
+      [/(^|\.)tiktok\.com$/, "tiktok"], [/(^|\.)(t\.co|twitter\.com|x\.com)$/, "x"], [/(^|\.)(linkedin\.com|lnkd\.in)$/, "linkedin"], [/(^|\.)pinterest\./, "pinterest"],
+      [/(^|\.)reddit\.com$/, "reddit"], [/(^|\.)(whatsapp\.com|wa\.me)$/, "whatsapp"], [/(^|\.)(t\.me|telegram\.org)$/, "telegram"], [/(^|\.)google\./, "google"],
+      [/(^|\.)(bing\.com|duckduckgo\.com|yahoo\.com|ecosia\.org|search\.brave\.com)$/, "buscador"], [/(mail\.|outlook\.|proton\.)/, "correo"], [/(^|\.)twowaves\.mx$/, "twowaves"]];
+    for (const [re, canal] of reglas) if (re.test(host)) return canal;
+    return "otro-sitio";
+  };
   try {
+    let o = JSON.parse(localStorage.getItem("spectre-origen") || "null");
+    if (o && ahora - (o.t || 0) > DIAS30) o = null;
     if (q.get("utm_source")) {
-      localStorage.setItem("spectre-origen", JSON.stringify({ fuente: limpio(q.get("utm_source")), medio: limpio(q.get("utm_medium")), campana: limpio(q.get("utm_campaign")), t: Date.now() }));
+      o = { fuente: limpio(q.get("utm_source")), medio: limpio(q.get("utm_medium")), campana: limpio(q.get("utm_campaign")), t: ahora };
+      localStorage.setItem("spectre-origen", JSON.stringify(o));
+    } else {
+      const auto = detectar();
+      // la detección automática solo reemplaza otra automática (o nada): un link corto manda por 30 días
+      if (auto && (!o || o.medio === "auto")) { o = { fuente: auto, medio: "auto", campana: "", t: ahora }; localStorage.setItem("spectre-origen", JSON.stringify(o)); }
     }
-    const o = JSON.parse(localStorage.getItem("spectre-origen") || "null");
-    if (!o || !o.fuente || Date.now() - (o.t || 0) > 30 * 864e5) return "";
+    // Umami: un evento por sesión con el canal ("llegada-youtube", "llegada-directo"…) para contar visitas por canal
+    if (!sessionStorage.getItem("spectre-llegada")) {
+      sessionStorage.setItem("spectre-llegada", "1");
+      const canal = (o && limpio(o.fuente)) || "directo";
+      const mandar = () => window.umami && window.umami.track("llegada-" + canal);
+      if (window.umami) mandar(); else window.addEventListener("load", () => setTimeout(mandar, 300), { once: true });
+    }
+    if (!o || !o.fuente) return "";
     return ["src", limpio(o.fuente), limpio(o.medio), limpio(o.campana)].filter(Boolean).join("_").slice(0, 120);
   } catch (_) { return ""; }
 })();
@@ -39,6 +72,9 @@ const conOrigen = (u) => (ORIGEN && u && u.includes("buy.stripe.com") ? u + (u.i
 const urlDe = (b) => conOrigen(conIdioma(CHECKOUT_URLS[b.dataset.checkout || edicion]));
 // el clic en "comprar" también lleva la fuente en Umami (embudo por canal)
 if (ORIGEN) botonesCheckout.forEach((b) => b.setAttribute("data-umami-event-origen", ORIGEN.replace(/^src_/, "")));
+// y un evento por canal ("checkout-youtube", "checkout-directo") para el embudo por canal del tablero
+const CANAL = ORIGEN ? ORIGEN.split("_")[1] : "directo";
+botonesCheckout.forEach((b) => b.addEventListener("click", () => { try { window.umami && window.umami.track("checkout-" + CANAL); } catch (_) {} }));
 const actualizarCheckout = () => botonesCheckout.forEach((b) => {
   const u = urlDe(b);
   if (urlLista(u)) b.href = u;
