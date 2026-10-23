@@ -50,7 +50,10 @@ const ORIGEN = (() => {
     let o = JSON.parse(localStorage.getItem("spectre-origen") || "null");
     if (o && ahora - (o.t || 0) > DIAS30) o = null;
     if (q.get("utm_source")) {
-      o = { fuente: limpio(q.get("utm_source")), medio: limpio(q.get("utm_medium")), campana: limpio(q.get("utm_campaign")), t: ahora };
+      // alias que ponen las apps solas (Instagram agrega ?utm_source=ig a los links de la bio y las historias)
+      const ALIAS = { ig: "instagram", yt: "youtube", fb: "facebook", tt: "tiktok", wa: "whatsapp", tw: "x", twitter: "x" };
+      const fuente = limpio(q.get("utm_source"));
+      o = { fuente: ALIAS[fuente] || fuente, medio: limpio(q.get("utm_medium")), campana: limpio(q.get("utm_campaign")), t: ahora };
       localStorage.setItem("spectre-origen", JSON.stringify(o));
     } else {
       const auto = detectar();

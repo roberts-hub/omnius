@@ -21,7 +21,7 @@ const INICIO_TXT = existsSync(join(RAIZ, "privado", "metricas-inicio.txt")) ? re
 // puede ser un día (AAAA-MM-DD, desde las 00:00 de México) o un momento exacto (2026-10-22T22:45:00Z)
 const INICIO_MS = Date.parse(INICIO_TXT.includes("T") ? INICIO_TXT : INICIO_TXT + "T06:00:00Z");
 // canal de la compra ("youtube_video_masterclass" → "YouTube · video · masterclass"); sin canal = directo/otro
-const CANALES = { youtube: "YouTube", instagram: "Instagram", tiktok: "TikTok", whatsapp: "WhatsApp", facebook: "Facebook", google: "Google", x: "X", linkedin: "LinkedIn", pinterest: "Pinterest", reddit: "Reddit", telegram: "Telegram", snapchat: "Snapchat", buscador: "Otro buscador", correo: "Correo", twowaves: "Two Waves", "otro-sitio": "Otro sitio" };
+const CANALES = { ig: "Instagram", yt: "YouTube", fb: "Facebook", tt: "TikTok", wa: "WhatsApp", youtube: "YouTube", instagram: "Instagram", tiktok: "TikTok", whatsapp: "WhatsApp", facebook: "Facebook", google: "Google", x: "X", linkedin: "LinkedIn", pinterest: "Pinterest", reddit: "Reddit", telegram: "Telegram", snapchat: "Snapchat", buscador: "Otro buscador", correo: "Correo", twowaves: "Two Waves", "otro-sitio": "Otro sitio" };
 const fuenteBonita = (o) => (o ? o.split("_").filter((x) => x !== "auto").map((x, i) => (i === 0 ? CANALES[x] || x : x)).join(" · ") : "Directo / otro");
 const INICIO = new Date(INICIO_MS).toLocaleDateString("en-CA", { timeZone: "America/Mexico_City" }); // día del lanzamiento (para filas por día)
 
@@ -79,7 +79,7 @@ async function generar() {
       estado: c.activa ? "pagada" : c.motivo || "reembolsada",
       pais: c.pais || "",
       fuente: fuenteBonita(c.origen),
-      canal: c.origen ? c.origen.split("_")[0] : "directo", // clave del canal: se cruza con los eventos "llegada-<canal>" de Umami
+      canal: c.origen ? ({ ig: "instagram", yt: "youtube", fb: "facebook", tt: "tiktok", wa: "whatsapp" })[c.origen.split("_")[0]] || c.origen.split("_")[0] : "directo", // clave del canal: se cruza con los eventos "llegada-<canal>" de Umami
     }));
   guardar("ventas", filasVentas.length ? filasVentas : sinVentas);
 
