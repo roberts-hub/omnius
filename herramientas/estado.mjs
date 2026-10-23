@@ -20,6 +20,9 @@ const LINKS = { // payment links de SPECTRE
   plink_1UTTDOFethND82y0CnGx316m: { producto: "Upgrade a Full System", actual: true }, // $49 = la diferencia
 };
 // las ventas del tablero cuentan desde el lanzamiento (privado/metricas-inicio.txt, AAAA-MM-DD, hora de México)
+// canal de la venta para el tablero ("youtube_video_masterclass" → "YouTube · video · masterclass"; "auto" no se muestra)
+const CANALES = { ig: "Instagram", yt: "YouTube", fb: "Facebook", tt: "TikTok", wa: "WhatsApp", youtube: "YouTube", instagram: "Instagram", tiktok: "TikTok", whatsapp: "WhatsApp", facebook: "Facebook", google: "Google", x: "X", linkedin: "LinkedIn", pinterest: "Pinterest", reddit: "Reddit", telegram: "Telegram", snapchat: "Snapchat", buscador: "Otro buscador", correo: "Correo", twowaves: "Two Waves", "otro-sitio": "Otro sitio" };
+const canalBonito = (o) => (o ? o.split("_").filter((x) => x && x !== "auto").map((x, i) => (i === 0 ? CANALES[x] || x : x)).join(" · ") : "Directo / otro");
 const INICIO_TXT = existsSync(PRIV("metricas-inicio.txt")) ? readFileSync(PRIV("metricas-inicio.txt"), "utf8").trim() : "";
 const INICIO_VENTAS = INICIO_TXT ? Date.parse(INICIO_TXT.includes("T") ? INICIO_TXT : INICIO_TXT + "T06:00:00Z") / 1000 : 0;
 const PRUEBAS = ["prueba", "prueba-ui", "manual"];
@@ -87,7 +90,7 @@ await intenta("Seguridad", "Cuentas sospechosas", async () => {
   const r = await sql(`select (select count(*) from public.bloqueos) bloqueadas, (select count(*) from public.actividad_cuentas() a where a.bandera) bandera`);
   const x = r[0];
   punto("Seguridad", "Cuentas sospechosas", Number(x.bloqueadas) || Number(x.bandera) ? "aviso" : "ok",
-    Number(x.bloqueadas) || Number(x.bandera) ? `${x.bandera} con bandera roja · ${x.bloqueadas} bloqueada(s): revisa la pestaña Usuarios` : "Ninguna cuenta compartida ni bloqueada");
+    Number(x.bloqueadas) || Number(x.bandera) ? `${x.bandera} con bandera roja · ${x.bloqueadas} bloqueada(s): revisa la pestaña Cuentas` : "Ninguna cuenta compartida ni bloqueada");
 });
 await intenta("Stripe", "Upgrades por revisar", async () => {
   // pagos del upgrade ($49) que NO se aplicaron: la cuenta no tenía LUT Pack o ya tenía el Full System
@@ -175,7 +178,7 @@ const ventas = sesiones.filter((s) => s.created >= INICIO_VENTAS).sort((a, b) =>
   return {
     n: i + 1, fecha: hora(s.created * 1000), dia: hora(s.created * 1000).slice(0, 10), producto: l.producto,
     monto: s.amount_total / 100, moneda: (s.currency || "").toUpperCase(), codigo, pais: s.customer_details?.address?.country || "",
-    fuente: /^src_/.test(s.client_reference_id || "") ? s.client_reference_id.slice(4).replace(/_/g, " · ") : "Directo / otro",
+    fuente: canalBonito(/^src_/.test(s.client_reference_id || "") ? s.client_reference_id.slice(4) : ""),
     tipo: prueba ? "prueba" : "real",
     acceso: c ? (c.activa ? "con acceso" : `sin acceso (${c.motivo || "reembolso"})`) : l.prueba ? "prueba borrada" : "SIN CUENTA",
   };

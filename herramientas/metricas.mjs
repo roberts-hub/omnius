@@ -73,7 +73,7 @@ async function generar() {
     .map((c, i) => ({
       n: i + 1,
       dia: dia(c.creada),
-      edicion: c.edicion === "full" ? "Full System" : "LUT Pack",
+      edicion: c.motivo === "upgrade desde LUT Pack" ? "Upgrade a Full System" : c.edicion === "full" ? "Full System" : "LUT Pack",
       monto: c.monto == null ? null : Number(c.monto),
       moneda: (c.moneda || "").toUpperCase(),
       estado: c.activa ? "pagada" : c.motivo || "reembolsada",
@@ -143,7 +143,8 @@ async function generar() {
   // ── archivos de Umami (los escribe la revisión diaria con umami-navegador.js): solo desde el lanzamiento ──
   const hoy = dia(Date.now());
   const cero = { trafico: { dia: hoy, vistas: 0, visitantes: 0 }, eventos: { dia: hoy, evento: "—", total: 0 }, paginas: { pagina: "—", vistas: 0 },
-    fuentes: { fuente: "—", visitantes: 0 }, paises: { pais: "—", visitantes: 0 }, dispositivos: { dispositivo: "—", visitantes: 0 } };
+    fuentes: { fuente: "—", visitantes: 0 }, paises: { pais: "—", visitantes: 0 }, dispositivos: { dispositivo: "—", visitantes: 0 },
+    en_vivo: { activos: 0, revisado: "", visitantes_24h: 0, visitas_24h: 0, vistas_24h: 0 } };
   for (const [nombre, fila0] of Object.entries(cero)) {
     const ruta = join(salida, nombre + ".json");
     let filas = existsSync(ruta) ? JSON.parse(readFileSync(ruta, "utf8")) : [];
