@@ -1,11 +1,11 @@
 // SPECTRE · lee las métricas de Umami desde la sesión ya abierta en cloud.umami.is (sin plan Pro).
 // Se ejecuta DENTRO de la página https://cloud.umami.is (Playwright: browser_evaluate con este texto como función).
-// Devuelve {trafico, paginas, fuentes, paises, dispositivos, eventos}; herramientas/metricas.mjs --desde <archivo> lo guarda.
+// Devuelve {trafico, paginas, fuentes, paises, dispositivos, ciudades, navegadores, sistemas, eventos, en_vivo}; herramientas/metricas.mjs --desde <archivo> lo guarda.
 async () => {
   const SITIO = "add40efe-f309-476f-95a6-6367262a4434", ZONA = "America/Mexico_City", DIAS = 120;
   const INICIO = "2026-10-22T22:45:00Z"; // lanzamiento (día AAAA-MM-DD o momento exacto ISO): nada de antes cuenta. Mismo valor que privado/metricas-inicio.txt
   const INICIO_MS = Date.parse(INICIO.includes("T") ? INICIO : INICIO + "T06:00:00Z");
-  if (INICIO_MS > Date.now()) return { trafico: [], eventos: [], paginas: [], fuentes: [], paises: [], dispositivos: [], en_vivo: [] };
+  if (INICIO_MS > Date.now()) return { trafico: [], eventos: [], paginas: [], fuentes: [], paises: [], dispositivos: [], ciudades: [], navegadores: [], sistemas: [], en_vivo: [] };
   const tok = (localStorage.getItem("umami.auth") || "").replace(/^"|"$/g, "");
   const fin = Date.now(), inicio = Math.max(fin - DIAS * 864e5, INICIO_MS), ini30 = Math.max(fin - 30 * 864e5, INICIO_MS);
   const u = async (ruta, extra = {}, desde = inicio) => {
@@ -30,6 +30,9 @@ async () => {
     fuentes: (await m30("referrer")).map((r) => ({ fuente: r.x || "Directo / sin fuente", visitantes: r.y })),
     paises: (await m30("country")).map((r) => ({ pais: r.x || "Desconocido", visitantes: r.y })),
     dispositivos: (await m30("device")).map((r) => ({ dispositivo: r.x || "Desconocido", visitantes: r.y })),
+    ciudades: (await m30("city").catch(() => [])).map((r) => ({ ciudad: r.x || "Desconocida", pais: r.country || "", visitantes: r.y })),
+    navegadores: (await m30("browser").catch(() => [])).map((r) => ({ navegador: r.x || "Desconocido", visitantes: r.y })),
+    sistemas: (await m30("os").catch(() => [])).map((r) => ({ sistema: r.x || "Desconocido", visitantes: r.y })),
     eventos: (Array.isArray(series) ? series : []).map((e) => ({ dia: String(e.t).slice(0, 10), evento: e.x, total: e.y })),
     en_vivo: [{ activos: num(activos.visitors ?? activos.x), revisado: new Date().toISOString(), visitantes_24h: num(s24.visitors), visitas_24h: num(s24.visits), vistas_24h: num(s24.pageviews) }],
   };

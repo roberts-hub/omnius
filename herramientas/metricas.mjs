@@ -151,6 +151,7 @@ async function generar() {
   const hoy = dia(Date.now());
   const cero = { trafico: { dia: hoy, vistas: 0, visitantes: 0 }, eventos: { dia: hoy, evento: "—", total: 0 }, paginas: { pagina: "—", vistas: 0 },
     fuentes: { fuente: "—", visitantes: 0 }, paises: { pais: "—", visitantes: 0 }, dispositivos: { dispositivo: "—", visitantes: 0 },
+    ciudades: { ciudad: "—", pais: "", visitantes: 0 }, navegadores: { navegador: "—", visitantes: 0 }, sistemas: { sistema: "—", visitantes: 0 },
     en_vivo: { activos: 0, revisado: "", visitantes_24h: 0, visitas_24h: 0, vistas_24h: 0 } };
   for (const [nombre, fila0] of Object.entries(cero)) {
     const ruta = join(salida, nombre + ".json");
