@@ -2,6 +2,7 @@
 // Protegido con RESUMEN_TOKEN (secreto compartido solo con el Apps Script). Devuelve las cuentas con
 // bandera roja o bloqueadas y un conteo general. Nunca devuelve contenido ni llaves.
 // Con ?bloquear=<correo> (POST) bloquea esa cuenta (botón del correo de alerta).
+// Con ?ventas=1 devuelve las compras de los últimos 3 días (aviso de venta por correo).
 // Con ?respaldo=1 devuelve además la base de clientes completa (compras, cuentas, entradas y bloqueos)
 // para el respaldo diario en Google Drive. Tampoco incluye contenido, llaves ni contraseñas.
 const URL_SB = Deno.env.get("SUPABASE_URL")!;
@@ -40,6 +41,13 @@ Deno.serve(async (req) => {
       if (!r.ok) throw new Error("bloqueo " + r.status);
       await fetch(URL_SB + `/auth/v1/admin/users/${id}/logout`, { method: "POST", headers: CAB }).catch(() => {});
       return Response.json({ ok: true, mensaje: `${correo} quedó bloqueada: ya no puede abrir el área de miembros.` });
+    }
+
+    // ?ventas=1: compras de los últimos 3 días para el aviso de venta por correo (Apps Script, cada 5 min)
+    if (params.get("ventas") === "1") {
+      const desde = new Date(Date.now() - 3 * 864e5).toISOString();
+      const ventas = await leer(`/rest/v1/compras?creada=gt.${desde}&select=id,creada,email,edicion,monto,moneda,pais,origen,motivo,activa&order=creada`);
+      return Response.json({ ventas });
     }
 
     const filas = await leer("/rest/v1/rpc/actividad_cuentas", { method: "POST", body: "{}" });
