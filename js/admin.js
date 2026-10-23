@@ -9,6 +9,7 @@
   const SESION = "spectre-admin-sesion", PERIODO = "spectre-admin-periodo";
   const VIVO_MS = 20000, ARCHIVOS_MS = 300000;
   const $ = (s) => document.querySelector(s);
+  if (location.hash) try { history.replaceState(null, "", location.pathname); } catch (_) {}
 
   // ── sesión ──
   let sesion = null; // { access_token, refresh_token, expires_at, recordar }
@@ -70,7 +71,7 @@
     params() { return { ...params }; },
     setParams(p) { params = { ...params, ...p }; try { localStorage.setItem(PERIODO, params.periodo); } catch (_) {} avisar(); },
     resetParams() { params = { periodo: "hoy" }; avisar(); },
-    setLink(n) { if (!document.body.classList.contains("en-panel")) return; try { history.replaceState(null, "", "#" + n); } catch (_) {} }, // con el 404 a la vista, la dirección queda limpia
+    setLink() {}, // la dirección queda siempre limpia (/admin): sin #sección no salta al recargar ni delata el panel
     refresh() { cargarVivo(); },
     colors: [],
   };
@@ -136,7 +137,19 @@
     relojVivo = setInterval(() => { if (document.visibilityState === "visible") cargarVivo(); }, VIVO_MS);
     relojArchivos = setInterval(() => { if (document.visibilityState === "visible") cargarArchivos(); }, ARCHIVOS_MS);
   }
-  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && sesion) cargarVivo(); });
+  // al volver a la app (el ícono de la pantalla de inicio la reanuda sin recargar): si estuvo fuera más de 30 s,
+  // se repite la animación del dinero y de las gráficas con los datos nuevos
+  let ocultaDesde = 0;
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") { ocultaDesde = Date.now(); return; }
+    if (!sesion || $("#dash-root").hidden) return;
+    if (ocultaDesde && Date.now() - ocultaDesde > 30000) {
+      document.body.classList.add("por-contar");
+      if (window.SX && window.SX.reanimar) window.SX.reanimar();
+      Promise.all([cargarVivo(), cargarArchivos()]).then(animarDinero, () => document.body.classList.remove("por-contar"));
+    } else cargarVivo();
+  });
+  addEventListener("pageshow", (ev) => { if (ev.persisted && sesion && !$("#dash-root").hidden) { ocultaDesde = 1; document.dispatchEvent(new Event("visibilitychange")); } });
   function salir(mensaje) {
     borrarSesion(); clearInterval(relojVivo); clearInterval(relojArchivos);
     for (const k of Object.keys(crudo)) delete crudo[k];

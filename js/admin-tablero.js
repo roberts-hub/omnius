@@ -203,6 +203,9 @@
   const VS_P = { hoy: 'vs ayer', '7d': 'vs 7 días antes', '30d': 'vs 30 días antes', todo: '' };
   const periodo = () => (SX.periodos.includes(dash.params().periodo) ? dash.params().periodo : 'hoy');
   let tab = 'resumen';
+  const animadas = new Set(); // gráficas ya animadas desde que se abrió la sección
+  const animarSiPrimera = (caja, svg) => { if (!animadas.has(caja.id)) { animadas.add(caja.id); svg.classed('crece', true); } };
+  window.SX.reanimar = () => animadas.clear();
 
   // ── controles ──
   $$('#periodo button').forEach((b) => b.addEventListener('click', () => dash.setParams({ periodo: b.dataset.p })));
@@ -213,10 +216,19 @@
     $('#periodo').style.visibility = t === 'resumen' || t === 'ventas' ? 'visible' : 'hidden';
     $('#titulo').textContent = NOMBRE_T[t];
     $('#bajada').hidden = t !== 'resumen' && t !== 'ventas';
+    $('#sx-menu-txt').textContent = NOMBRE_T[t];
+    $('.sx-lado').classList.remove('abierto'); $('#sx-menu').setAttribute('aria-expanded', 'false');
+    animadas.clear();
+    try { window.scrollTo(0, 0); } catch (e) { /* sin desplazamiento */ }
     dash.setLink(t);
     dibujar();
   };
   $$('.sx-tabs button').forEach((b) => b.addEventListener('click', () => mostrarTab(b.dataset.tab)));
+  // menú desplegable (móvil): se abre con el botón y se cierra al elegir, al tocar fuera o con Escape
+  const menu = (abrir) => { $('.sx-lado').classList.toggle('abierto', abrir); $('#sx-menu').setAttribute('aria-expanded', String(abrir)); };
+  $('#sx-menu').addEventListener('click', (ev) => { ev.stopPropagation(); menu(!$('.sx-lado').classList.contains('abierto')); });
+  document.addEventListener('click', (ev) => { if (!ev.target.closest('.sx-lado')) menu(false); });
+  document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') menu(false); });
 
   // ── ayudas de dibujo ──
   const quitarEsqueleto = (el) => el && el.classList.remove('dash-skeleton');
@@ -266,7 +278,8 @@
     svg.append('g').attr('class', 'eje').attr('transform', `translate(0,${alto - m.b + 6})`).call(d3.axisBottom(x).tickValues(puntos.map((d) => d.x).filter((_, i) => i % cada === 0)).tickFormat((d) => etq(d)).tickSize(0)).attr('font-size', null).attr('font-family', null).select('.domain').remove();
     const bw = Math.min(x.bandwidth(), 34);
     const tip = document.createElement('div'); tip.className = 'sx-tip'; caja.append(tip);
-    svg.append('g').selectAll('rect').data(puntos).join('rect')
+    animarSiPrimera(caja, svg);
+    svg.append('g').selectAll('rect').data(puntos).join('rect').attr('class', 'barra')
       .attr('x', (d) => x(d.x) + (x.bandwidth() - bw) / 2).attr('width', bw)
       .attr('y', (d) => y(d.y)).attr('height', (d) => Math.max(0, y(0) - y(d.y))).attr('rx', 3)
       .attr('fill', (d) => (resaltar && resaltar(d) ? color : apagado))
@@ -293,8 +306,10 @@
     const etqX = svg.append('g').attr('class', 'eje').selectAll('text').data(puntos.filter((_, i) => i % cada === 0 || i === puntos.length - 1 && puntos.length < 3)).join('text')
       .attr('x', (d) => x(d.x)).attr('y', alto - 12).attr('text-anchor', (d, i, n) => (puntos.length > 1 && d === puntos[0] ? 'start' : 'middle')).text((d) => d.etiqueta);
     const curva = d3.curveMonotoneX;
-    svg.append('path').datum(puntos).attr('fill', 'url(#sxDegradado)').attr('d', d3.area().x((d) => x(d.x)).y0(y(0)).y1((d) => y(d.y)).curve(curva));
-    svg.append('path').datum(puntos).attr('fill', 'none').attr('stroke', '#86efac').attr('stroke-width', 1.8).attr('d', d3.line().x((d) => x(d.x)).y((d) => y(d.y)).curve(curva));
+    animarSiPrimera(caja, svg);
+    const trazo = svg.append('g').attr('class', 'trazo');
+    trazo.append('path').datum(puntos).attr('fill', 'url(#sxDegradado)').attr('d', d3.area().x((d) => x(d.x)).y0(y(0)).y1((d) => y(d.y)).curve(curva));
+    trazo.append('path').datum(puntos).attr('fill', 'none').attr('stroke', '#86efac').attr('stroke-width', 1.8).attr('d', d3.line().x((d) => x(d.x)).y((d) => y(d.y)).curve(curva));
     const guia = svg.append('line').attr('stroke', '#f5f5f5').attr('stroke-width', 1).attr('y1', m.t).attr('y2', alto - m.b + 4);
     const punto = svg.append('circle').attr('r', 4.5).attr('fill', '#86efac').attr('stroke', '#171717').attr('stroke-width', 2);
     const tip = document.createElement('div'); tip.className = 'sx-tip'; caja.append(tip);

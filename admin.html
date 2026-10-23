@@ -79,6 +79,7 @@
   .sx-marca span { font-family: var(--mono); font-size: 12px; letter-spacing: 0.4em; }
   .sx-grupo { padding: 10px 12px 6px; color: var(--faint); font-size: 12px; }
   .sx-tabs { display: flex; flex-direction: column; gap: 2px; }
+  .sx-menu { display: none; }
   .sx-tabs button { display: flex; align-items: center; gap: 12px; height: 40px; padding: 0 12px; border: 0; border-radius: 10px; background: none; color: var(--muted); font: 500 14px/1 var(--font); text-align: left; cursor: pointer; transition: background 0.15s, color 0.15s; }
   .sx-tabs button:hover { color: var(--text); background: rgba(255, 255, 255, 0.04); }
   .sx-tabs button[aria-selected="true"] { color: var(--text); background: var(--raised); }
@@ -221,6 +222,27 @@
   .sx-tip .linea b { margin-left: 10px; }
   .sx-eje-pill { position: absolute; bottom: 0; transform: translateX(-50%); height: 26px; padding: 0 12px; border-radius: 999px; background: var(--text); color: #0a0a0a; font-size: 12px; font-weight: 600; line-height: 26px; white-space: nowrap; pointer-events: none; }
 
+  /* animaciones ligeras: las tarjetas entran al abrir una sección, las barras crecen y la curva se dibuja
+     (solo al abrir o cambiar de sección, no en cada actualización) */
+  @media (prefers-reduced-motion: no-preference) {
+    @keyframes sxEntra { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+    @keyframes sxCrece { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+    @keyframes sxRevela { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+    @keyframes sxBaja { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+    .sx [data-pagina]:not([hidden]) > *, .sx [data-pagina]:not([hidden]) .sx-kpis > *, .sx [data-pagina]:not([hidden]) .sx-fila > * { animation: sxEntra 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+    .sx [data-pagina]:not([hidden]) > *:nth-child(2) { animation-delay: 0.08s; }
+    .sx [data-pagina]:not([hidden]) > *:nth-child(3) { animation-delay: 0.16s; }
+    .sx [data-pagina]:not([hidden]) > *:nth-child(n+4) { animation-delay: 0.24s; }
+    .sx [data-pagina]:not([hidden]) .sx-kpis > *:nth-child(2), .sx [data-pagina]:not([hidden]) .sx-fila > *:nth-child(2) { animation-delay: 0.06s; }
+    .sx [data-pagina]:not([hidden]) .sx-kpis > *:nth-child(3) { animation-delay: 0.12s; }
+    .sx [data-pagina]:not([hidden]) .sx-kpis > *:nth-child(4) { animation-delay: 0.18s; }
+    .sx svg.crece rect.barra { transform-box: fill-box; transform-origin: 50% 100%; animation: sxCrece 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+    .sx svg.crece .trazo { animation: sxRevela 1.1s cubic-bezier(0.3, 0.7, 0.2, 1) both; }
+    .sx-lado.abierto .sx-tabs { animation: sxBaja 0.18s ease-out both; }
+    .sx .sx-boton, .sx-tabs button, .sx-periodo button { transition: background 0.18s, color 0.18s, transform 0.12s; }
+    .sx .sx-boton:active, .sx-periodo button:active, .sx-menu:active { transform: scale(0.97); }
+  }
+
   .sx [data-dash-source-state=refreshing] { opacity: 0.5; transition: opacity 0.3s; }
   .sx [data-dash-source-state=empty] { color: transparent; }
   .sx [hidden] { display: none !important; }
@@ -239,11 +261,14 @@
     .sx-vivo .num { font-size: 17px; line-height: 20px; }
     .sx-vivo .acciones { margin: 0; }
     .sx-vivo .acciones .tr { display: none; }
-    .sx-tabs { grid-column: 1 / -1; flex-direction: row; gap: 4px; margin-top: 10px; overflow-x: auto; scrollbar-width: none; }
-    .sx-tabs::-webkit-scrollbar { display: none; }
-    .sx-tabs button { height: 38px; padding: 0 12px; border-radius: 0; gap: 8px; border-bottom: 2px solid transparent; white-space: nowrap; flex: none; }
-    .sx-tabs button[aria-selected="true"] { background: none; border-bottom-color: var(--text); }
-    .sx-tabs svg.ic { width: 16px; height: 16px; }
+    /* menú: un botón con la sección actual que despliega la lista */
+    .sx-menu { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; width: 100%; height: 46px; margin-top: 8px; padding: 0 2px; border: 0; border-top: 1px solid var(--rule); background: none; color: var(--text); font: 600 15px/1 var(--font); text-align: left; cursor: pointer; }
+    .sx-menu svg.ic { color: var(--verde); }
+    .sx-menu .flecha { margin-left: auto; width: 16px; height: 16px; color: var(--muted); transition: transform 0.2s; }
+    .sx-lado.abierto .sx-menu .flecha { transform: rotate(180deg); }
+    .sx-tabs { display: none; position: absolute; left: 0; right: 0; top: 100%; z-index: 4; padding: 6px 12px 12px; background: var(--ground); border-bottom: 1px solid var(--rule); box-shadow: 0 18px 30px rgba(0, 0, 0, 0.45); }
+    .sx-lado.abierto .sx-tabs { display: flex; }
+    .sx-tabs button { height: 46px; }
     .sx-main { border-left: 0; padding: 20px 16px 40px; }
     .sx-fila { grid-template-columns: minmax(0, 1fr); }
     .sx-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
@@ -295,7 +320,8 @@
       <span>SPECTRE</span>
     </a>
     <div class="sx-grupo">Tablero</div>
-    <nav class="sx-tabs" role="tablist" aria-label="Secciones" aria-orientation="vertical">
+    <button class="sx-menu" id="sx-menu" type="button" aria-expanded="false" aria-controls="sx-nav"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg><span id="sx-menu-txt">Resumen</span><svg class="ic flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+    <nav class="sx-tabs" id="sx-nav" role="tablist" aria-label="Secciones" aria-orientation="vertical">
       <button role="tab" data-tab="resumen" id="tab-resumen"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg><span>Resumen</span></button>
       <button role="tab" data-tab="ventas" id="tab-ventas"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18"/><path d="M16.5 7.5c0-1.7-2-3-4.5-3s-4.5 1.3-4.5 3 2 2.6 4.5 3.2 4.5 1.5 4.5 3.3-2 3-4.5 3-4.5-1.3-4.5-3"/></svg><span>Ventas</span></button>
       <button role="tab" data-tab="trafico" id="tab-trafico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M21 20H3"/></svg><span>Tráfico</span></button>
@@ -476,9 +502,9 @@
   </main>
 </div>
   </div>
-  <script src="/js/cuentas-config.js?v=20261022212219"></script>
+  <script src="/js/cuentas-config.js?v=20261022212835"></script>
   <script src="/js/vendor/d3-7.9.0.min.js"></script>
-  <script src="/js/admin.js?v=20261022212219"></script>
-  <script src="/js/admin-tablero.js?v=20261022212219"></script>
+  <script src="/js/admin.js?v=20261022212835"></script>
+  <script src="/js/admin-tablero.js?v=20261022212835"></script>
 </body>
 </html>
