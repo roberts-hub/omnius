@@ -168,7 +168,7 @@ const comandos = {
 
   async instalar() {
     const { ref } = config();
-    for (const m of ["0001_cuentas.sql", "0002_accesos.sql", "0003_panel.sql", "0004_clientes.sql", "0005_revocaciones.sql", "0006_permisos.sql", "0007_upgrades.sql"]) await sql(readFileSync(join(RAIZ, "supabase/migrations", m), "utf8"));
+    for (const m of ["0001_cuentas.sql", "0002_accesos.sql", "0003_panel.sql", "0004_clientes.sql", "0005_revocaciones.sql", "0006_permisos.sql", "0007_upgrades.sql", "0008_origen.sql"]) await sql(readFileSync(join(RAIZ, "supabase/migrations", m), "utf8"));
     console.log("✓ Tablas, permisos (RLS), registro de accesos y bloqueos");
     await api(`/v1/projects/${ref}/config/auth`, {
       method: "PATCH",

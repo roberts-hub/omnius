@@ -174,6 +174,8 @@ async function registrarCompra(sesion: any) {
       pais: sesion.customer_details?.address?.country ?? null,
       monto: typeof sesion.amount_total === "number" ? sesion.amount_total / 100 : null,
       moneda: sesion.currency ?? null,
+      // canal del que vino (links cortos /yt, /ig… o ?utm_source): el sitio lo manda como client_reference_id "src_…"
+      origen: /^src_[a-z0-9_-]{1,120}$/i.test(String(sesion.client_reference_id || "")) ? String(sesion.client_reference_id).slice(4) : null,
       // pregunta del checkout "Email me new looks and updates?" (dropdown): sí = acepta recibir novedades
       novedades: (sesion.custom_fields ?? []).some((f: any) => f.dropdown?.value === "yeskeepmeposted")
         ? true : (sesion.custom_fields ?? []).some((f: any) => f.dropdown?.value) ? false : null,

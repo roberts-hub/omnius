@@ -18,7 +18,27 @@ const botonesCheckout = document.querySelectorAll("[data-checkout]");
 // no en el del teléfono del comprador (Stripe lo traduciría solo y quedaría mezclado)
 const IDIOMA_PAGO = document.documentElement.lang === "es" ? "es" : "en";
 const conIdioma = (u) => (u && u.includes("buy.stripe.com") ? u + (u.includes("?") ? "&" : "?") + "locale=" + IDIOMA_PAGO : u);
-const urlDe = (b) => conIdioma(CHECKOUT_URLS[b.dataset.checkout || edicion]);
+
+// ── De dónde vino el comprador (YouTube, Instagram…) ──
+// La guardan los links cortos (/yt, /ig, /tt, /wa → js/corto.js) o un link con ?utm_source=. Dura 30 días en este
+// dispositivo y viaja a Stripe como client_reference_id ("src_youtube_video_masterclass"): el webhook la guarda con la
+// compra y el tablero muestra qué canal vendió. Solo el canal, nada de la persona.
+const ORIGEN = (() => {
+  const limpio = (x) => String(x || "").toLowerCase().replace(/[^a-z0-9-]/g, "").slice(0, 40);
+  const q = new URLSearchParams(location.search);
+  try {
+    if (q.get("utm_source")) {
+      localStorage.setItem("spectre-origen", JSON.stringify({ fuente: limpio(q.get("utm_source")), medio: limpio(q.get("utm_medium")), campana: limpio(q.get("utm_campaign")), t: Date.now() }));
+    }
+    const o = JSON.parse(localStorage.getItem("spectre-origen") || "null");
+    if (!o || !o.fuente || Date.now() - (o.t || 0) > 30 * 864e5) return "";
+    return ["src", limpio(o.fuente), limpio(o.medio), limpio(o.campana)].filter(Boolean).join("_").slice(0, 120);
+  } catch (_) { return ""; }
+})();
+const conOrigen = (u) => (ORIGEN && u && u.includes("buy.stripe.com") ? u + (u.includes("?") ? "&" : "?") + "client_reference_id=" + ORIGEN : u);
+const urlDe = (b) => conOrigen(conIdioma(CHECKOUT_URLS[b.dataset.checkout || edicion]));
+// el clic en "comprar" también lleva la fuente en Umami (embudo por canal)
+if (ORIGEN) botonesCheckout.forEach((b) => b.setAttribute("data-umami-event-origen", ORIGEN.replace(/^src_/, "")));
 const actualizarCheckout = () => botonesCheckout.forEach((b) => {
   const u = urlDe(b);
   if (urlLista(u)) b.href = u;

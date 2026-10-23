@@ -20,6 +20,9 @@ const DIAS = 120;
 const INICIO_TXT = existsSync(join(RAIZ, "privado", "metricas-inicio.txt")) ? readFileSync(join(RAIZ, "privado", "metricas-inicio.txt"), "utf8").trim() : "2099-01-01";
 // puede ser un día (AAAA-MM-DD, desde las 00:00 de México) o un momento exacto (2026-10-22T22:45:00Z)
 const INICIO_MS = Date.parse(INICIO_TXT.includes("T") ? INICIO_TXT : INICIO_TXT + "T06:00:00Z");
+// canal de la compra ("youtube_video_masterclass" → "YouTube · video · masterclass"); sin canal = directo/otro
+const CANALES = { youtube: "YouTube", instagram: "Instagram", tiktok: "TikTok", whatsapp: "WhatsApp" };
+const fuenteBonita = (o) => (o ? o.split("_").map((x, i) => (i === 0 ? CANALES[x] || x : x)).join(" · ") : "Directo / otro");
 const INICIO = new Date(INICIO_MS).toLocaleDateString("en-CA", { timeZone: "America/Mexico_City" }); // día del lanzamiento (para filas por día)
 
 if (process.argv[2] === "umami") {
@@ -60,11 +63,11 @@ async function generar() {
   const token = readFileSync(PRIV("supabase-token.txt"), "utf8").trim();
   const ks = await (await fetch(`https://api.supabase.com/v1/projects/${ref}/api-keys?reveal=true`, { headers: { Authorization: "Bearer " + token } })).json();
   const servicio = ks.find((k) => k.name === "service_role").api_key;
-  const compras = await (await fetch(`https://${ref}.supabase.co/rest/v1/compras?select=creada,edicion,monto,moneda,activa,motivo,pais&order=creada`, {
+  const compras = await (await fetch(`https://${ref}.supabase.co/rest/v1/compras?select=creada,edicion,monto,moneda,activa,motivo,pais,origen&order=creada`, {
     headers: { apikey: servicio, Authorization: "Bearer " + servicio },
   })).json();
   // el tablero no acepta un archivo vacío: sin ventas se manda una sola fila marcada (n = 0) que la página ignora
-  const sinVentas = [{ n: 0, dia: dia(Date.now()), edicion: "—", monto: null, moneda: "", estado: "sin ventas", pais: "" }];
+  const sinVentas = [{ n: 0, dia: dia(Date.now()), edicion: "—", monto: null, moneda: "", estado: "sin ventas", pais: "", fuente: "" }];
   const filasVentas = compras
     .filter((c) => c.motivo !== "prueba" && c.motivo !== "prueba-ui" && c.motivo !== "manual" && Date.parse(c.creada) >= INICIO_MS)
     .map((c, i) => ({
@@ -75,6 +78,7 @@ async function generar() {
       moneda: (c.moneda || "").toUpperCase(),
       estado: c.activa ? "pagada" : c.motivo || "reembolsada",
       pais: c.pais || "",
+      fuente: fuenteBonita(c.origen),
     }));
   guardar("ventas", filasVentas.length ? filasVentas : sinVentas);
 

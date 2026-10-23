@@ -175,6 +175,7 @@ const ventas = sesiones.filter((s) => s.created >= INICIO_VENTAS).sort((a, b) =>
   return {
     n: i + 1, fecha: hora(s.created * 1000), dia: hora(s.created * 1000).slice(0, 10), producto: l.producto,
     monto: s.amount_total / 100, moneda: (s.currency || "").toUpperCase(), codigo, pais: s.customer_details?.address?.country || "",
+    fuente: /^src_/.test(s.client_reference_id || "") ? s.client_reference_id.slice(4).replace(/_/g, " · ") : "Directo / otro",
     tipo: prueba ? "prueba" : "real",
     acceso: c ? (c.activa ? "con acceso" : `sin acceso (${c.motivo || "reembolso"})`) : l.prueba ? "prueba borrada" : "SIN CUENTA",
   };
@@ -222,6 +223,6 @@ const guardar = (nombre, filas) => { writeFileSync(join(salida, nombre + ".json"
 guardar("salud", salud.map((s) => ({ ...s, revisado: hora(ahora) })));
 guardar("respaldos", respaldos);
 guardar("codigos", codigos.length ? codigos : [{ codigo: "—", descuento: "", porcentaje: 0, usados: 0, limite: 0, restantes: 0, estado: "sin códigos", tipo: "real", expira: "" }]);
-guardar("ventas_stripe", ventas.length ? ventas : [{ n: 0, fecha: "", dia: "", producto: "—", monto: 0, moneda: "", codigo: "", pais: "", tipo: "real", acceso: "sin ventas" }]);
+guardar("ventas_stripe", ventas.length ? ventas : [{ n: 0, fecha: "", dia: "", producto: "—", monto: 0, moneda: "", codigo: "", pais: "", fuente: "", tipo: "real", acceso: "sin ventas" }]);
 const malos = salud.filter((s) => s.estado !== "ok");
 console.log(malos.length ? `⚠ ${malos.length} punto(s) por revisar:\n` + malos.map((m) => `  ${m.estado === "falla" ? "✗" : "!"} ${m.area} · ${m.punto}: ${m.detalle}`).join("\n") : "✓ Todo en orden");
