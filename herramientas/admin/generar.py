@@ -73,6 +73,7 @@ html = f"""<!DOCTYPE html>
     .ad-caja button:disabled {{ opacity: 0.6; }}
     .ad-error {{ min-height: 20px; margin: 12px 0 0 !important; color: #f04452 !important; font-size: 13px; }}
     .sx-pie a {{ color: #a3a3a3; }}
+    .por-contar [data-source="resumen"][data-field="total_mxn"], .por-contar [data-source="resumen"][data-field="ingresos_usd"], .por-contar [data-source="resumen"][data-field="ingresos_mxn"] {{ visibility: hidden; }}
     @media (max-width: 960px) {{ .sx-lado {{ padding-top: calc(10px + env(safe-area-inset-top)) !important; }} }}
   </style>
   <style>{estilos[0]}</style>

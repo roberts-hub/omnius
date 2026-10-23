@@ -107,12 +107,31 @@
     return false;
   }
 
+  // al abrir el panel, las cifras de dinero suben de $0 a su valor (una sola vez; sin animación si el sistema pide menos movimiento)
+  function animarDinero() {
+    const listo = () => document.body.classList.remove("por-contar");
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return listo();
+    const els = [...document.querySelectorAll('[data-source="resumen"][data-field="total_mxn"], [data-source="resumen"][data-field="ingresos_usd"], [data-source="resumen"][data-field="ingresos_mxn"]')];
+    const metas = els.map((el) => Number(String(el.textContent).replace(/[^0-9.-]/g, "")));
+    if (!els.length || metas.every((m) => !isFinite(m) || m <= 0)) return listo();
+    const fmt = (n) => n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const DURA = 1400, t0 = performance.now();
+    els.forEach((el) => (el.textContent = fmt(0))); listo();
+    const paso = () => {
+      const k = Math.min(1, (performance.now() - t0) / DURA), e = 1 - Math.pow(1 - k, 3);
+      els.forEach((el, i) => { if (isFinite(metas[i])) el.textContent = fmt(metas[i] * e); });
+      if (k < 1) setTimeout(paso, 16); else avisar(); // al final el tablero vuelve a poner la cifra exacta
+    };
+    paso();
+  }
+
   let relojVivo = null, relojArchivos = null;
   function arrancar() {
     $("#acceso").hidden = true; $("#dash-root").hidden = false; document.body.classList.add("en-panel");
     document.title = "SPECTRE · Panel";
     avisar();
-    cargarVivo(); cargarArchivos();
+    document.body.classList.add("por-contar"); // el dinero no se ve hasta que empieza a contar desde $0
+    Promise.all([cargarVivo(), cargarArchivos()]).then(animarDinero, () => document.body.classList.remove("por-contar"));
     clearInterval(relojVivo); clearInterval(relojArchivos);
     relojVivo = setInterval(() => { if (document.visibilityState === "visible") cargarVivo(); }, VIVO_MS);
     relojArchivos = setInterval(() => { if (document.visibilityState === "visible") cargarArchivos(); }, ARCHIVOS_MS);
