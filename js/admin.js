@@ -51,9 +51,9 @@
     if (sesion.expires_at - Date.now() / 1000 < 60) guardarSesion(await auth("token?grant_type=refresh_token", { refresh_token: sesion.refresh_token }), sesion.recordar);
     return sesion.access_token;
   }
-  async function rpc(nombre) {
+  async function rpc(nombre, args) {
     const token = await tokenVigente();
-    const r = await fetch(`${CFG.url}/rest/v1/rpc/${nombre}`, { method: "POST", headers: { apikey: CFG.llave, Authorization: "Bearer " + token, "Content-Type": "application/json" }, body: "{}" });
+    const r = await fetch(`${CFG.url}/rest/v1/rpc/${nombre}`, { method: "POST", headers: { apikey: CFG.llave, Authorization: "Bearer " + token, "Content-Type": "application/json" }, body: JSON.stringify(args || {}) });
     const d = await r.json().catch(() => null);
     if (!r.ok) throw Object.assign(new Error((d && d.message) || "error " + r.status), { codigo: (d && d.code) || r.status });
     return d;
@@ -147,6 +147,72 @@
     paso();
   }
 
+  // ── avisos en el celular (Web Push) ──
+  // En iPhone solo funcionan con el panel agregado a la pantalla de inicio y abierto desde el ícono (iOS 16.4+).
+  const VAPID = (document.querySelector('meta[name="vapid"]') || {}).content || "";
+  const AVISOS_OCULTO = "spectre-avisos-oculto";
+  let registro = null;
+  const llaveVapid = () => { const t = VAPID.replace(/-/g, "+").replace(/_/g, "/"); const b = atob(t + "===".slice((t.length + 3) % 4)); return Uint8Array.from(b, (c) => c.charCodeAt(0)); };
+  const mostrarAvisos = (titulo, sub, conBoton) => {
+    $("#avisos-titulo").textContent = titulo; $("#avisos-sub").textContent = sub;
+    $("#avisos-btn").hidden = !conBoton; $("#avisos").hidden = false;
+  };
+  async function guardarSuscripcion(sub) {
+    const j = sub.toJSON();
+    await rpc("admin_guardar_push", { p_endpoint: j.endpoint, p_p256dh: j.keys.p256dh, p_auth: j.keys.auth });
+  }
+  async function avisoDePrueba() {
+    const token = await tokenVigente();
+    const r = await fetch(`${CFG.url}/functions/v1/push`, { method: "POST", headers: { apikey: CFG.llave, Authorization: "Bearer " + token, "Content-Type": "application/json" }, body: JSON.stringify({ tipo: "prueba" }) });
+    return r.ok ? r.json() : null;
+  }
+  async function prepararAvisos() {
+    const caja = $("#avisos"); if (!caja) return;
+    caja.hidden = true;
+    let oculto = false; try { oculto = localStorage.getItem(AVISOS_OCULTO) === "1"; } catch (_) {}
+    const ios = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    const app = matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+    const soporta = "serviceWorker" in navigator && "PushManager" in window && "Notification" in window && VAPID;
+    if (!soporta) {
+      if (ios && !app && !oculto) mostrarAvisos("Recibe cada venta en tu iPhone", "Toca Compartir → Agregar a inicio y abre SPECTRE desde el ícono para activar los avisos.", false);
+      return;
+    }
+    try {
+      registro = await navigator.serviceWorker.register("/admin-sw.js", { scope: "/admin" });
+      await navigator.serviceWorker.ready;
+      const sub = await registro.pushManager.getSubscription();
+      if (sub && Notification.permission === "granted") { await guardarSuscripcion(sub); $("#avisos-pie").hidden = false; return; }
+      if (Notification.permission === "denied") { if (!oculto) mostrarAvisos("Los avisos están bloqueados", ios ? "Actívalos en Ajustes → Notificaciones → SPECTRE." : "Actívalos en los permisos de este sitio en tu navegador.", false); return; }
+      if (!oculto) mostrarAvisos("Recibe cada venta en tu celular", "Un aviso con el logo de SPECTRE en cuanto alguien compra.", true);
+    } catch (e) { console.error(e); }
+  }
+  $("#avisos-btn") && $("#avisos-btn").addEventListener("click", async () => {
+    const b = $("#avisos-btn"); b.disabled = true; b.textContent = "Activando…";
+    try {
+      const permiso = await Notification.requestPermission(); // debe pedirse con el toque (así lo exige iPhone)
+      if (permiso !== "granted") { mostrarAvisos("No se activaron los avisos", "Puedes activarlos después en Ajustes → Notificaciones.", false); return; }
+      if (!registro) registro = await navigator.serviceWorker.register("/admin-sw.js", { scope: "/admin" });
+      await navigator.serviceWorker.ready;
+      const sub = (await registro.pushManager.getSubscription()) || (await registro.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: llaveVapid() }));
+      await guardarSuscripcion(sub);
+      const r = await avisoDePrueba();
+      mostrarAvisos("Listo, avisos activados", r && r.entregados ? "Te mandé un aviso de prueba. Así te llegará cada venta." : "Quedaron activados. Si no ves la prueba, revisa Ajustes → Notificaciones.", false);
+      $("#avisos-pie").hidden = false;
+      setTimeout(() => { $("#avisos").hidden = true; }, 7000);
+    } catch (e) {
+      console.error(e);
+      mostrarAvisos("No se pudieron activar", "Intenta de nuevo en un momento.", true);
+    } finally { b.disabled = false; b.textContent = "Activar"; }
+  });
+  $("#avisos-cerrar") && $("#avisos-cerrar").addEventListener("click", () => { $("#avisos").hidden = true; try { localStorage.setItem(AVISOS_OCULTO, "1"); } catch (_) {} });
+  document.addEventListener("click", async (ev) => {
+    if (!ev.target.closest("#avisos-probar")) return;
+    ev.preventDefault();
+    const a = ev.target.closest("#avisos-probar"); a.textContent = "Enviando…";
+    try { const r = await avisoDePrueba(); a.textContent = r && r.entregados ? "Aviso enviado" : "No se pudo enviar"; } catch (_) { a.textContent = "No se pudo enviar"; }
+    setTimeout(() => (a.textContent = "Probar aviso"), 4000);
+  });
+
   let relojVivo = null, relojArchivos = null;
   function arrancar() {
     $("#acceso").hidden = true; $("#dash-root").hidden = false; document.body.classList.add("en-panel");
@@ -163,6 +229,7 @@
       Promise.all([cargarVivo(), cargarArchivos()]).then(animarDinero, () => document.body.classList.remove("por-contar"));
     }
     revisarVersion();
+    prepararAvisos();
     clearInterval(relojVivo); clearInterval(relojArchivos);
     relojVivo = setInterval(() => { if (document.visibilityState === "visible") cargarVivo(); }, VIVO_MS);
     relojArchivos = setInterval(() => { if (document.visibilityState === "visible") cargarArchivos(); }, ARCHIVOS_MS);
@@ -213,7 +280,16 @@
   $("#abrir-acceso").addEventListener("click", () => { $("#falso").hidden = true; $("#acceso-form").hidden = false; $("#correo").focus(); });
 
   // cerrar sesión (botón en la barra lateral)
-  document.addEventListener("click", (ev) => { if (ev.target.closest("#salir")) { ev.preventDefault(); salir(""); } });
+  document.addEventListener("click", async (ev) => {
+    if (!ev.target.closest("#salir")) return;
+    ev.preventDefault();
+    // al cerrar sesión, este celular deja de recibir avisos
+    try {
+      const sub = registro && (await registro.pushManager.getSubscription());
+      if (sub) { await rpc("admin_quitar_push", { p_endpoint: sub.endpoint }).catch(() => {}); await sub.unsubscribe(); }
+    } catch (_) {}
+    salir("");
+  });
 
   // sesión guardada en este dispositivo: abre el panel de inmediato, sin pasar por el 404 ni esperar al servidor.
   // Si la sesión ya no sirve o la cuenta perdió el permiso, la primera petición de datos lo detecta y regresa a la entrada.

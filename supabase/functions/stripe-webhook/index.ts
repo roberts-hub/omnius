@@ -206,6 +206,21 @@ async function desactivar(pagoId: string, motivo: string) {
   return filas?.length ? `acceso retirado (${motivo})` : `${motivo} anotado (la compra aún no llega; entrará desactivada)`;
 }
 
+// aviso al celular (función "push"): se manda DESPUÉS de registrar la compra y nunca la afecta. Si falla o tarda,
+// la venta y el acceso del cliente quedan igual (solo se anota en el log). "push" avisa cada venta una sola vez.
+const PUSH_TOKEN = Deno.env.get("PUSH_TOKEN") ?? "";
+function avisarPush(sesionId: string) {
+  if (!PUSH_TOKEN || !sesionId) return;
+  const tarea = fetch(`${URL_SB}/functions/v1/push`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "x-push-token": PUSH_TOKEN, Authorization: "Bearer " + SERVICIO },
+    body: JSON.stringify({ tipo: "venta", sesion: sesionId }),
+    signal: AbortSignal.timeout(8000),
+  }).then((r) => r.text()).then((t) => console.log("aviso push", t.slice(0, 160))).catch((e) => console.error("aviso push falló", String(e)));
+  // deja que el aviso termine aunque ya se haya respondido a Stripe
+  try { (globalThis as any).EdgeRuntime?.waitUntil?.(tarea); } catch (_) { /* sin EdgeRuntime: igual corre */ }
+}
+
 Deno.serve(async (req) => {
   if (req.method !== "POST") return responder(405, "solo POST");
   const cuerpo = await req.text();
@@ -217,6 +232,7 @@ Deno.serve(async (req) => {
     let resultado = "ignorado";
     if (evento.type === "checkout.session.completed" || evento.type === "checkout.session.async_payment_succeeded") {
       resultado = await registrarCompra(o);
+      avisarPush(o.id);
     } else if (evento.type === "charge.refunded" && o.refunded) {
       resultado = await desactivar(o.payment_intent, "reembolso");
     } else if (evento.type === "charge.dispute.created") {

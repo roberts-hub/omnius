@@ -2,11 +2,13 @@
 # la misma página del tablero "SPECTRE Métricas" de Claude).
 # Uso: python3 herramientas/admin/generar.py   → escribe admin.html y js/admin-tablero.js
 # La página no trae datos: js/admin.js inicia sesión y los pide a Supabase (solo correos en public.admins).
-import pathlib, re, time
+import json, pathlib, re, time
 
 RAIZ = pathlib.Path(__file__).resolve().parents[2]
 fuente = (RAIZ / "herramientas/admin/tablero.html").read_text()
 V = time.strftime("%Y%m%d%H%M%S")
+# llave PÚBLICA de los avisos (la privada vive solo en privado/ y en los secretos de Supabase)
+VAPID = json.loads((RAIZ / "privado/push-vapid.json").read_text())["publica"]
 
 estilos = re.findall(r"<style>([\s\S]*?)</style>", fuente)
 scripts = re.findall(r"<script>([\s\S]*?)</script>", fuente)
@@ -15,7 +17,16 @@ cuerpo = cuerpo.replace('<link rel="stylesheet" href="fuentes.css">', "").strip(
 assert len(estilos) == 1 and len(scripts) == 2, (len(estilos), len(scripts))
 
 # ajustes del panel: cerrar sesión y el texto de cada cuánto se actualiza
-cuerpo = cuerpo.replace('<div class="sx-pie">spectrecolor.com<br>', '<div class="sx-pie">spectrecolor.com · <a href="#" id="salir">Cerrar sesión</a><br>')
+cuerpo = cuerpo.replace('<div class="sx-pie">spectrecolor.com<br>', '<div class="sx-pie">spectrecolor.com · <a href="#" id="salir">Cerrar sesión</a><span id="avisos-pie" hidden> · <a href="#" id="avisos-probar">Probar aviso</a></span><br>')
+# aviso para activar las notificaciones en el celular (arriba del panel)
+AVISOS = """<div class="ad-avisos" id="avisos" hidden>
+      <span class="ad-avisos-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></span>
+      <div class="ad-avisos-txt"><b id="avisos-titulo">Recibe cada venta en tu celular</b><span id="avisos-sub">Un aviso con el logo de SPECTRE en cuanto alguien compra.</span></div>
+      <button class="sx-boton" id="avisos-btn" type="button">Activar</button>
+      <button class="ad-avisos-x" id="avisos-cerrar" type="button" aria-label="Ocultar">×</button>
+    </div>"""
+assert cuerpo.count('<main class="sx-main">') == 1
+cuerpo = cuerpo.replace('<main class="sx-main">', '<main class="sx-main">\n    ' + AVISOS)
 cuerpo = cuerpo.replace("Ventas, dinero y personas en vivo · lo demás cada hora", "En vivo cada 20 s · lo demás cada hora")
 js = "\n".join("(() => {\n" + s.strip("\n") + "\n})();\n" for s in scripts)
 js = js.replace("'Ventas, dinero y personas en vivo · lo demás cada hora'", "'En vivo cada 20 s · lo demás cada hora'")
@@ -32,6 +43,7 @@ html = f"""<!DOCTYPE html>
   <title>Page not found | SPECTRE</title>
   <meta name="robots" content="noindex, nofollow, noarchive" />
   <meta name="version" content="{V}" />
+  <meta name="vapid" content="{VAPID}" />
   <meta http-equiv="Content-Security-Policy" content="{CSP}" />
   <meta name="referrer" content="no-referrer" />
   <meta name="theme-color" content="#0b0b0a" />
@@ -81,6 +93,12 @@ html = f"""<!DOCTYPE html>
     .ad-caja button:disabled {{ opacity: 0.6; }}
     .ad-error {{ min-height: 20px; margin: 12px 0 0 !important; color: #f04452 !important; font-size: 13px; }}
     .sx-pie a {{ color: #a3a3a3; }}
+    .ad-avisos {{ display: flex; align-items: center; gap: 14px; margin: 0 0 18px; padding: 14px 14px 14px 16px; border-radius: 14px; background: linear-gradient(180deg, rgba(134, 239, 172, 0.08), rgba(134, 239, 172, 0.02)), #171717; border: 1px solid rgba(134, 239, 172, 0.2); }}
+    .ad-avisos-ic {{ display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; flex: none; background: rgba(134, 239, 172, 0.12); color: #86efac; }}
+    .ad-avisos-ic svg {{ width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }}
+    .ad-avisos-txt {{ flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; font-size: 13px; line-height: 18px; color: #a3a3a3; }}
+    .ad-avisos-txt b {{ color: #f5f5f5; font-size: 14px; font-weight: 600; }}
+    .ad-avisos-x {{ flex: none; width: 28px; height: 28px; border: 0; background: none; color: #7a7a7a; font-size: 20px; line-height: 1; cursor: pointer; }}
     .por-contar [data-source="resumen"][data-field="total_mxn"], .por-contar [data-source="resumen"][data-field="ingresos_usd"], .por-contar [data-source="resumen"][data-field="ingresos_mxn"] {{ visibility: hidden; }}
     @media (max-width: 960px) {{ .sx-lado {{ padding-top: calc(10px + env(safe-area-inset-top)) !important; }} }}
   </style>

@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Page not found | SPECTRE</title>
   <meta name="robots" content="noindex, nofollow, noarchive" />
-  <meta name="version" content="20261022213657" />
+  <meta name="version" content="20261022214903" />
+  <meta name="vapid" content="BJlDkj2XiL_lhf5Q-DF_py43kqDLkZTTqN8Fp9akg9RlvA-YSTUA2sRqf3eCDhV-E026LKlDKunjyC1cVyDHNNM" />
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://ytmqltxidizdaxueooso.supabase.co; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests" />
   <meta name="referrer" content="no-referrer" />
   <meta name="theme-color" content="#0b0b0a" />
@@ -17,7 +18,7 @@
   <link rel="icon" href="/img/marca/icono-192.png" type="image/png" sizes="192x192" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <link rel="preload" href="/fonts/archivo-latin-0186fb.woff2" as="font" type="font/woff2" crossorigin />
-  <script src="/js/admin-arranque.js?v=20261022213657"></script>
+  <script src="/js/admin-arranque.js?v=20261022214903"></script>
   <style>
     @font-face { font-family: 'Archivo'; font-style: normal; font-weight: 300 700; font-display: swap; src: url(/fonts/archivo-latin-0186fb.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
     @font-face { font-family: 'Archivo'; font-style: normal; font-weight: 300 700; font-display: swap; src: url(/fonts/archivo-latin-ext-c628a8.woff2) format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
@@ -55,6 +56,12 @@
     .ad-caja button:disabled { opacity: 0.6; }
     .ad-error { min-height: 20px; margin: 12px 0 0 !important; color: #f04452 !important; font-size: 13px; }
     .sx-pie a { color: #a3a3a3; }
+    .ad-avisos { display: flex; align-items: center; gap: 14px; margin: 0 0 18px; padding: 14px 14px 14px 16px; border-radius: 14px; background: linear-gradient(180deg, rgba(134, 239, 172, 0.08), rgba(134, 239, 172, 0.02)), #171717; border: 1px solid rgba(134, 239, 172, 0.2); }
+    .ad-avisos-ic { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; flex: none; background: rgba(134, 239, 172, 0.12); color: #86efac; }
+    .ad-avisos-ic svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .ad-avisos-txt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; font-size: 13px; line-height: 18px; color: #a3a3a3; }
+    .ad-avisos-txt b { color: #f5f5f5; font-size: 14px; font-weight: 600; }
+    .ad-avisos-x { flex: none; width: 28px; height: 28px; border: 0; background: none; color: #7a7a7a; font-size: 20px; line-height: 1; cursor: pointer; }
     .por-contar [data-source="resumen"][data-field="total_mxn"], .por-contar [data-source="resumen"][data-field="ingresos_usd"], .por-contar [data-source="resumen"][data-field="ingresos_mxn"] { visibility: hidden; }
     @media (max-width: 960px) { .sx-lado { padding-top: calc(10px + env(safe-area-inset-top)) !important; } }
   </style>
@@ -346,10 +353,16 @@
         <a class="sx-boton sec tr" href="https://cloud.umami.is/analytics/us/websites/add40efe-f309-476f-95a6-6367262a4434/realtime" target="_blank" rel="noopener">Tiempo real ↗</a>
       </div>
     </div>
-    <div class="sx-pie">spectrecolor.com · <a href="#" id="salir">Cerrar sesión</a><br><span id="pie-act">En vivo cada 20 s · lo demás cada hora</span></div>
+    <div class="sx-pie">spectrecolor.com · <a href="#" id="salir">Cerrar sesión</a><span id="avisos-pie" hidden> · <a href="#" id="avisos-probar">Probar aviso</a></span><br><span id="pie-act">En vivo cada 20 s · lo demás cada hora</span></div>
   </aside>
 
   <main class="sx-main">
+    <div class="ad-avisos" id="avisos" hidden>
+      <span class="ad-avisos-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></span>
+      <div class="ad-avisos-txt"><b id="avisos-titulo">Recibe cada venta en tu celular</b><span id="avisos-sub">Un aviso con el logo de SPECTRE en cuanto alguien compra.</span></div>
+      <button class="sx-boton" id="avisos-btn" type="button">Activar</button>
+      <button class="ad-avisos-x" id="avisos-cerrar" type="button" aria-label="Ocultar">×</button>
+    </div>
     <div class="sx-cabeza">
       <div>
         <h1 id="titulo">Resumen</h1>
@@ -511,9 +524,9 @@
   </main>
 </div>
   </div>
-  <script src="/js/cuentas-config.js?v=20261022213657"></script>
+  <script src="/js/cuentas-config.js?v=20261022214903"></script>
   <script src="/js/vendor/d3-7.9.0.min.js"></script>
-  <script src="/js/admin.js?v=20261022213657"></script>
-  <script src="/js/admin-tablero.js?v=20261022213657"></script>
+  <script src="/js/admin.js?v=20261022214903"></script>
+  <script src="/js/admin-tablero.js?v=20261022214903"></script>
 </body>
 </html>
