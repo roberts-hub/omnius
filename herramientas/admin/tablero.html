@@ -105,6 +105,7 @@
   .sx-card .nota { margin: 2px 0 14px; color: var(--faint); font-size: 12px; line-height: 17px; }
   .sx-listas { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px; }
   .sx-listas.cinco { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 24px; }
+  .sx-listas.tres { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
   .sx .bandera { font-size: 16px; margin-right: 8px; vertical-align: -1px; font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif; }
   .sx-listas h3 { margin: 0 0 8px; font-size: 13px; line-height: 20px; font-weight: 500; color: var(--muted); }
   .sx .solo-movil { display: none; }
@@ -197,7 +198,7 @@
   .sx [hidden] { display: none !important; }
 
   @media (max-width: 1180px) {
-    .sx-listas, .sx-listas.cinco { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+    .sx-listas, .sx-listas.cinco, .sx-listas.tres { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
   }
   @media (max-width: 960px) {
     .sx { display: block; }
@@ -234,7 +235,7 @@
     .sx-dinero .grande { font-size: 28px; line-height: 34px; }
     .sx .ocultable { display: none; }
     .sx .solo-movil { display: inline; color: var(--faint); font-size: 12px; margin-left: 4px; font-weight: 400; }
-    .sx-listas, .sx-listas.cinco { grid-template-columns: minmax(0, 1fr); }
+    .sx-listas, .sx-listas.cinco, .sx-listas.tres { grid-template-columns: minmax(0, 1fr); }
     .sx-card { padding: 16px; }
   }
 </style>
@@ -292,7 +293,7 @@
       </div>
       <div class="sx-kpis" id="cifras">
         <div class="sx-kpi"><div class="top"><span class="et"><i class="chip verde" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M16.5 7.5c0-1.7-2-3-4.5-3s-4.5 1.3-4.5 3 2 2.6 4.5 3.2 4.5 1.5 4.5 3.3-2 3-4.5 3-4.5-1.3-4.5-3"/></svg></i>Ventas</span><span class="cambio nada" data-source="resumen" data-field="cambio_ventas" data-where="periodo=hoy">—</span></div><div class="val" data-source="resumen" data-field="ventas" data-where="periodo=hoy">—</div><div class="sub" id="n-gratis">—</div></div>
-        <div class="sx-kpi"><div class="top"><span class="et"><i class="chip azul" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.4 3.2-5.5 6.5-5.5s5.9 2.1 6.5 5.5"/><path d="M15.5 4.8a3.5 3.5 0 0 1 0 6.4"/><path d="M18 14.8c2 .7 3.2 2.6 3.5 5.2"/></svg></i>Visitantes</span><span class="cambio nada" data-source="resumen" data-field="cambio_visitantes" data-where="periodo=hoy">—</span></div><div class="val" data-source="resumen" data-field="visitantes" data-where="periodo=hoy">—</div><div class="sub">Personas distintas</div></div>
+        <div class="sx-kpi"><div class="top"><span class="et"><i class="chip azul" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.4 3.2-5.5 6.5-5.5s5.9 2.1 6.5 5.5"/><path d="M15.5 4.8a3.5 3.5 0 0 1 0 6.4"/><path d="M18 14.8c2 .7 3.2 2.6 3.5 5.2"/></svg></i>Visitantes</span><span class="cambio nada" data-source="resumen" data-field="cambio_visitantes" data-where="periodo=hoy">—</span></div><div class="val" data-source="resumen" data-field="visitantes" data-where="periodo=hoy">—</div><div class="sub" id="n-visitantes">Personas distintas</div></div>
         <div class="sx-kpi"><div class="top"><span class="et"><i class="chip violeta" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 17l6-6 4 4 6-7"/><path d="M15 8h5v5"/></svg></i>Conversión</span></div><div class="val"><span data-source="resumen" data-field="conversion" data-where="periodo=hoy">—</span><small>%</small></div><div class="sub">Ventas por cada 100 visitantes</div></div>
         <div class="sx-kpi"><div class="top"><span class="et"><i class="chip verde" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 12h4l2.5-6 5 12 2.5-6H21"/></svg></i>En el sitio ahora</span></div><div class="val" data-source="presencia" data-field="activos" data-row="0">—</div><div class="sub" id="n-vivo-r">—</div></div>
       </div>
@@ -361,9 +362,19 @@
     <section id="trafico" data-pagina="trafico" hidden>
       <div class="sx-kpis">
         <div class="sx-kpi"><div class="top"><span class="et"><i class="chip verde" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 12h4l2.5-6 5 12 2.5-6H21"/></svg></i>En el sitio ahora</span></div><div class="val" data-source="presencia" data-field="activos" data-row="0">—</div><div class="sub" id="n-vivo">—</div></div>
-        <div class="sx-kpi"><div class="top"><span class="et">Visitantes en 24 h</span></div><div class="val" data-source="en_vivo" data-field="visitantes_24h" data-row="0">—</div></div>
+        <div class="sx-kpi"><div class="top"><span class="et"><i class="chip azul" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.4 3.2-5.5 6.5-5.5s5.9 2.1 6.5 5.5"/></svg></i>Visitantes hoy</span></div><div class="val" data-source="presencia" data-field="visitantes_hoy" data-row="0">—</div><div class="sub">En vivo · personas distintas</div></div>
         <div class="sx-kpi"><div class="top"><span class="et">Visitas en 24 h</span></div><div class="val" data-source="en_vivo" data-field="visitas_24h" data-row="0">—</div><div class="sub">Una persona puede volver</div></div>
         <div class="sx-kpi"><div class="top"><span class="et">Páginas vistas en 24 h</span></div><div class="val" data-source="en_vivo" data-field="vistas_24h" data-row="0">—</div></div>
+      </div>
+      <div class="sx-card sola" id="hoy-vivo">
+        <div class="cab"><h2>Hoy, en vivo</h2><span class="lado" id="hoy-vivo-lado">Contador propio</span></div>
+        <p class="nota">Quién entró hoy (hora de México): país aproximado, canal por el que llegó y dispositivo.</p>
+        <div class="sx-listas tres">
+          <div id="vivo-paises"><h3>País</h3><table data-source="vivo_hoy" data-row-key="tipo,clave"><thead><tr><th data-field="clave">País</th><th class="r" data-field="visitantes">Visitantes</th></tr></thead><tbody></tbody></table></div>
+          <div id="vivo-canales"><h3>Canal</h3><table data-source="vivo_hoy" data-row-key="tipo,clave"><thead><tr><th data-field="clave">Canal</th><th class="r" data-field="visitantes">Visitantes</th></tr></thead><tbody></tbody></table></div>
+          <div id="vivo-dispositivos"><h3>Dispositivo</h3><table data-source="vivo_hoy" data-row-key="tipo,clave"><thead><tr><th data-field="clave">Dispositivo</th><th class="r" data-field="visitantes">Visitantes</th></tr></thead><tbody></tbody></table></div>
+        </div>
+        <p class="sx-vacio" id="vivo-vacio" hidden>Todavía no hay visitas hoy.</p>
       </div>
       <div class="sx-card sola" id="visitantes-dia">
         <div class="cab"><h2>Visitantes por día</h2><span class="lado">Personas distintas</span></div>
@@ -450,7 +461,25 @@
         try { filas = JSON.parse(m ? m[2] : texto); } catch (e) { throw new Error(texto.slice(0, 300)); }
       }
       if (!Array.isArray(filas)) throw new Error('Supabase no devolvió filas');
-      return filas.map((f) => ({ ...f, activos: Number(f.activos), visitantes_24h: Number(f.visitantes_24h) }));
+      return filas.map((f) => ({ ...f, activos: Number(f.activos), visitantes_24h: Number(f.visitantes_24h), visitantes_hoy: f.visitantes_hoy == null ? null : Number(f.visitantes_hoy) }));
+    },
+  });
+
+  // visitantes de hoy por país, canal y dispositivo: misma forma de respuesta de Supabase
+  dash.loader('vivo_hoy', {
+    description: 'Saca las filas de la respuesta de Supabase (execute_sql) y deja los conteos como números.',
+    fn: ({ answer }) => {
+      let r = answer;
+      if (typeof r === 'string') { try { r = JSON.parse(r); } catch (e) { /* texto tal cual */ } }
+      if (r && typeof r === 'object' && !Array.isArray(r) && r.error) throw new Error(typeof r.error === 'string' ? r.error : r.error.message || JSON.stringify(r.error));
+      const texto = typeof r === 'string' ? r : r && typeof r.result === 'string' ? r.result : null;
+      let filas = Array.isArray(r) ? r : null;
+      if (!filas && texto) {
+        const m = texto.match(/<untrusted-data-([\w-]+)>\s*(\[[\s\S]*?\])\s*<\/untrusted-data-\1>/);
+        try { filas = JSON.parse(m ? m[2] : texto); } catch (e) { throw new Error(texto.slice(0, 300)); }
+      }
+      if (!Array.isArray(filas)) throw new Error('Supabase no devolvió filas');
+      return filas.map((f) => ({ tipo: f.tipo, clave: f.clave == null ? '' : String(f.clave), visitantes: Number(f.visitantes) }));
     },
   });
 
@@ -475,9 +504,10 @@
 
   dash.calc('resumen', {
     title: 'Resumen por periodo',
-    description: 'Ventas pagadas, ingresos por moneda, total en pesos (dólares al tipo de cambio del día), visitantes, clics en pagar, conversión y el cambio en % contra el periodo anterior del mismo largo, para hoy, 7 días, 30 días y todo.',
-    inputs: ['ventas', 'trafico', 'eventos', 'tipo_cambio'],
-    fn: (ventas, trafico, eventos, tipo_cambio) => {
+    description: 'Ventas pagadas, ingresos por moneda, total en pesos (dólares al tipo de cambio del día), visitantes (hoy: contador propio en vivo; otros periodos: Umami cada hora), clics en pagar, conversión y el cambio en % contra el periodo anterior del mismo largo.',
+    inputs: ['ventas', 'trafico', 'eventos', 'tipo_cambio', 'presencia'],
+    fn: (ventas, trafico, eventos, tipo_cambio, presencia) => {
+      const vivoHoy = presencia[0] && presencia[0].visitantes_hoy != null ? Number(presencia[0].visitantes_hoy) : null;
       const tc = Number(tipo_cambio[0] && tipo_cambio[0].usd_mxn) || 0;
       const hoy = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Mexico_City' });
       const desde = (p) => (p === 'hoy' ? hoy : p === 'todo' ? '0000-00-00' : new Date(Date.parse(hoy + 'T12:00:00Z') - (p === '7d' ? 6 : 29) * 864e5).toISOString().slice(0, 10));
@@ -485,7 +515,7 @@
         const d = desde(periodo);
         const v = ventas.filter((x) => Number(x.n) > 0 && x.estado === 'pagada' && x.dia >= d);
         const suma = (mon) => Math.round(v.filter((x) => String(x.moneda).toUpperCase() === mon).reduce((s, x) => s + (Number(x.monto) || 0), 0) * 100) / 100;
-        const visitantes = trafico.filter((t) => t.dia >= d).reduce((s, t) => s + (Number(t.visitantes) || 0), 0);
+        const visitantes = periodo === 'hoy' && vivoHoy != null ? vivoHoy : trafico.filter((t) => t.dia >= d).reduce((s, t) => s + (Number(t.visitantes) || 0), 0);
         const clics = eventos.filter((e) => e.dia >= d && e.evento === 'checkout').reduce((s, e) => s + (Number(e.total) || 0), 0);
         const usd = suma('USD'), mxn = suma('MXN');
         // periodo anterior del mismo largo (ayer, los 7 o 30 días previos); "todo" no tiene
@@ -495,7 +525,7 @@
         const visPrev = dp ? trafico.filter((t) => t.dia >= dp && t.dia < d).reduce((s, t) => s + (Number(t.visitantes) || 0), 0) : 0;
         const cambio = (ahora, antes) => (antes > 0 ? Math.round(((ahora - antes) / antes) * 1000) / 10 : null);
         const total = Math.round((mxn + usd * tc) * 100) / 100;
-        return { periodo, cambio_total: cambio(total, totalPrev), cambio_ventas: cambio(v.length, vp.length), cambio_visitantes: cambio(visitantes, visPrev), ventas: v.length, gratis: v.filter((x) => Number(x.monto) === 0).length, ingresos_usd: usd, ingresos_mxn: mxn, total_mxn: Math.round((mxn + usd * tc) * 100) / 100, tipo_cambio: tc, visitantes, clics, conversion: visitantes ? Math.round((v.length / visitantes) * 1000) / 10 : 0 };
+        return { periodo, cambio_total: cambio(total, totalPrev), cambio_ventas: cambio(v.length, vp.length), cambio_visitantes: periodo === 'hoy' && vivoHoy != null ? null : cambio(visitantes, visPrev), ventas: v.length, gratis: v.filter((x) => Number(x.monto) === 0).length, ingresos_usd: usd, ingresos_mxn: mxn, total_mxn: Math.round((mxn + usd * tc) * 100) / 100, tipo_cambio: tc, visitantes, clics, conversion: visitantes ? Math.round((v.length / visitantes) * 1000) / 10 : 0 };
       });
     },
   });
@@ -811,6 +841,7 @@
       $('#n-tc').textContent = (partes.length ? partes.join(' + ') + ' · ' : 'Sin ingresos todavía · ') + tcTxt;
       $('#ing-detalle').textContent = $('#n-tc').textContent;
       $('#ing-titulo').textContent = 'Ingresos · ' + NOMBRE_P[p];
+      $('#n-visitantes').textContent = p === 'hoy' ? 'En vivo · personas distintas' : 'Personas distintas · Umami, cada hora';
       $('#n-gratis').textContent = fr.gratis ? `${fr.gratis} con código 100%` : (fr.ventas ? 'Todas pagadas' : 'Sin ventas todavía');
       $('#canales-lado').textContent = NOMBRE_P[p];
       $('#embudo-lado').textContent = NOMBRE_P[p];
@@ -931,7 +962,23 @@
     ventasTabla('#todas-ventas', p, 0, true);
   }
 
+  const CANALES_VIVO = { youtube: 'YouTube', instagram: 'Instagram', tiktok: 'TikTok', whatsapp: 'WhatsApp', facebook: 'Facebook', google: 'Google', x: 'X', linkedin: 'LinkedIn', pinterest: 'Pinterest', reddit: 'Reddit', telegram: 'Telegram', snapchat: 'Snapchat', buscador: 'Otro buscador', correo: 'Correo', twowaves: 'Two Waves', 'otro-sitio': 'Otro sitio', directo: 'Directo' };
+  const DISPOSITIVOS_VIVO = { celular: 'Celular', computadora: 'Computadora', tablet: 'Tablet' };
+  function dibujarVivoHoy() {
+    const v = dash.data('vivo_hoy');
+    const filas = v.status === 'ok' ? v.data.filter((x) => Number(x.visitantes) > 0) : [];
+    const clave = (f) => encodeURIComponent(f.tipo) + ',' + encodeURIComponent(f.clave);
+    tablaSimple('#vivo-paises', filas.filter((x) => x.tipo === 'pais'), [['clave', 'id', (c) => (c ? conBandera(c, nombrePais(c)) : 'Sin dato')], ['visitantes', 'r id', NUM]], { barra: 'visitantes', clave });
+    tablaSimple('#vivo-canales', filas.filter((x) => x.tipo === 'canal'), [['clave', 'id', (c) => (c ? CANALES_VIVO[c] || c[0].toUpperCase() + c.slice(1) : 'Sin dato')], ['visitantes', 'r id', NUM]], { barra: 'visitantes', clave });
+    tablaSimple('#vivo-dispositivos', filas.filter((x) => x.tipo === 'dispositivo'), [['clave', 'id', (c) => DISPOSITIVOS_VIVO[c] || 'Sin dato'], ['visitantes', 'r id', NUM]], { barra: 'visitantes', clave });
+    $('#vivo-vacio').hidden = !(v.status === 'ok' && !filas.length);
+    const pr = dash.data('presencia');
+    const hora = pr.status === 'ok' && pr.data[0] ? String(pr.data[0].revisado || '').slice(11, 16) : '';
+    $('#hoy-vivo-lado').textContent = hora ? 'En vivo · ' + hora : 'Contador propio';
+  }
+
   function dibujarTrafico() {
+    dibujarVivoHoy();
     const t = dash.data('trafico');
     if (t.status === 'ok') {
       const filas = t.data.filter((x) => x.dia && x.dia !== '—');

@@ -105,6 +105,7 @@
       const r = await rpc("admin_vivo");
       crudo.ventas = { status: "ok", data: r.ventas || [] };
       crudo.presencia = { status: "ok", data: r.presencia || [] };
+      crudo.vivo_hoy = { status: "ok", data: r.vivo_hoy || [] };
       guardarCopia();
     } catch (e) { if (!manejarError(e)) { crudo.ventas = crudo.ventas || { status: "error", data: [] }; } }
     refrescando = false; cargandoVivo = false; avisar();
