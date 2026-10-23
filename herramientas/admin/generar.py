@@ -22,7 +22,7 @@ js = js.replace("'Ventas, dinero y personas en vivo · lo demás cada hora'", "'
 assert "En vivo cada 20 s" in cuerpo and "#salir" not in js
 
 CSP = ("default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; "
-       "connect-src https://ytmqltxidizdaxueooso.supabase.co; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests")
+       "connect-src 'self' https://ytmqltxidizdaxueooso.supabase.co; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests")
 
 html = f"""<!DOCTYPE html>
 <html lang="es">
@@ -31,6 +31,7 @@ html = f"""<!DOCTYPE html>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Page not found | SPECTRE</title>
   <meta name="robots" content="noindex, nofollow, noarchive" />
+  <meta name="version" content="{V}" />
   <meta http-equiv="Content-Security-Policy" content="{CSP}" />
   <meta name="referrer" content="no-referrer" />
   <meta name="theme-color" content="#0b0b0a" />
@@ -42,6 +43,7 @@ html = f"""<!DOCTYPE html>
   <link rel="icon" href="/img/marca/icono-192.png" type="image/png" sizes="192x192" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <link rel="preload" href="/fonts/archivo-latin-0186fb.woff2" as="font" type="font/woff2" crossorigin />
+  <script src="/js/admin-arranque.js?v={V}"></script>
   <style>
     @font-face {{ font-family: 'Archivo'; font-style: normal; font-weight: 300 700; font-display: swap; src: url(/fonts/archivo-latin-0186fb.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }}
     @font-face {{ font-family: 'Archivo'; font-style: normal; font-weight: 300 700; font-display: swap; src: url(/fonts/archivo-latin-ext-c628a8.woff2) format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }}
@@ -59,6 +61,12 @@ html = f"""<!DOCTYPE html>
     .ad-404 .ayuda {{ margin: 28px 0 0; font-size: 13px; color: #b0a595; }}
     .ad-404 a {{ color: #eae0c5; text-underline-offset: 3px; }}
     .ad-oculto {{ position: fixed; left: 50%; bottom: calc(8px + env(safe-area-inset-bottom)); transform: translateX(-50%); width: 72px; height: 48px; border: 0; padding: 0; background: transparent; cursor: default; -webkit-tap-highlight-color: transparent; }}
+    .ad-carga {{ display: none; }}
+    .con-sesion #falso, .con-sesion #abrir-acceso {{ display: none !important; }}
+    .con-sesion .ad-carga {{ display: block; width: 46px; height: 46px; color: #eae0c5; }}
+    @media (prefers-reduced-motion: no-preference) {{ .con-sesion .ad-carga {{ animation: adPulso 1.2s ease-in-out infinite; }} }}
+    @keyframes adPulso {{ 0%, 100% {{ opacity: 0.35; }} 50% {{ opacity: 1; }} }}
+    html.con-sesion, html.con-sesion body {{ background: #0a0a0a; }}
     .ad-oculto::before {{ content: ''; position: absolute; left: 50%; top: 50%; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: #1c1c1a; }}
     .ad-caja {{ width: 100%; max-width: 360px; background: #171717; border: 1px solid #232323; border-radius: 16px; padding: 28px 24px 24px; box-sizing: border-box; }}
     .ad-marca {{ display: flex; align-items: center; gap: 12px; margin-bottom: 22px; }}
@@ -80,6 +88,7 @@ html = f"""<!DOCTYPE html>
 </head>
 <body>
   <main class="ad-acceso" id="acceso">
+    <svg class="ad-carga" viewBox="18 18 64 64" fill="none" aria-hidden="true"><circle cx="50" cy="50" r="24" stroke="currentColor" stroke-width="2.4"/><line x1="50" y1="20" x2="50" y2="80" stroke="currentColor" stroke-width="1.6"/></svg>
     <section class="ad-404" id="falso" lang="en">
       <svg viewBox="18 18 64 64" fill="none" aria-hidden="true"><circle cx="50" cy="50" r="24" stroke="currentColor" stroke-width="2"/><line x1="50" y1="20" x2="50" y2="80" stroke="currentColor" stroke-width="1.2"/></svg>
       <p class="kicker">ERROR 404</p>

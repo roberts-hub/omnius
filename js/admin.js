@@ -6,7 +6,7 @@
 // ventas y personas en el sitio se piden cada 20 s; lo de cada hora (Umami, Stripe, cuentas, sistema) cada 5 min.
 (() => {
   const CFG = window.SPECTRE_CUENTAS;
-  const SESION = "spectre-admin-sesion", PERIODO = "spectre-admin-periodo";
+  const SESION = "spectre-admin-sesion", PERIODO = "spectre-admin-periodo", COPIA = "spectre-admin-copia";
   const VIVO_MS = 20000, ARCHIVOS_MS = 300000;
   const $ = (s) => document.querySelector(s);
   if (location.hash) try { history.replaceState(null, "", location.pathname); } catch (_) {}
@@ -17,10 +17,29 @@
     sesion = { access_token: s.access_token, refresh_token: s.refresh_token, expires_at: Date.now() / 1000 + (s.expires_in || 3600), recordar };
     try {
       localStorage.removeItem(SESION); sessionStorage.removeItem(SESION);
-      (recordar ? localStorage : sessionStorage).setItem(SESION, JSON.stringify({ refresh_token: sesion.refresh_token }));
+      (recordar ? localStorage : sessionStorage).setItem(SESION, JSON.stringify({ refresh_token: sesion.refresh_token, access_token: sesion.access_token, expires_at: sesion.expires_at }));
     } catch (_) {}
   };
-  const borrarSesion = () => { sesion = null; try { localStorage.removeItem(SESION); sessionStorage.removeItem(SESION); } catch (_) {} };
+  const borrarSesion = () => { sesion = null; try { localStorage.removeItem(SESION); sessionStorage.removeItem(SESION); localStorage.removeItem(COPIA); } catch (_) {} };
+
+  // copia de los últimos números en este dispositivo: el panel abre al instante con ellos y se actualiza en cuanto llegan
+  // los nuevos (sin la lista de cuentas, que lleva correos de clientes)
+  const guardarCopia = () => { try { const c = {}; for (const [k, v] of Object.entries(crudo)) if (k !== "usuarios" && v.status === "ok") c[k] = v.data; localStorage.setItem(COPIA, JSON.stringify(c)); } catch (_) {} };
+  const leerCopia = () => { try { return JSON.parse(localStorage.getItem(COPIA) || "null"); } catch (_) { return null; } };
+
+  // versión nueva publicada: la app de la pantalla de inicio guarda la página vieja, así que al abrir o volver se revisa
+  // y se recarga sola una vez si hay otra versión
+  const VERSION = (document.querySelector('meta[name="version"]') || {}).content || "";
+  async function revisarVersion() {
+    try {
+      const html = await (await fetch("/admin?nc=" + Date.now(), { cache: "no-store" })).text();
+      const nueva = (html.match(/<meta name="version" content="(\d+)"/) || [])[1];
+      if (nueva && VERSION && nueva !== VERSION && sessionStorage.getItem("spectre-admin-recarga") !== nueva) {
+        sessionStorage.setItem("spectre-admin-recarga", nueva);
+        location.reload();
+      }
+    } catch (_) {}
+  }
   async function auth(ruta, cuerpo) {
     const r = await fetch(`${CFG.url}/auth/v1/${ruta}`, { method: "POST", headers: { apikey: CFG.llave, "Content-Type": "application/json" }, body: JSON.stringify(cuerpo) });
     const d = await r.json().catch(() => ({}));
@@ -86,6 +105,7 @@
       const r = await rpc("admin_vivo");
       crudo.ventas = { status: "ok", data: r.ventas || [] };
       crudo.presencia = { status: "ok", data: r.presencia || [] };
+      guardarCopia();
     } catch (e) { if (!manejarError(e)) { crudo.ventas = crudo.ventas || { status: "error", data: [] }; } }
     refrescando = false; cargandoVivo = false; avisar();
   }
@@ -94,6 +114,7 @@
       const r = await rpc("admin_archivos");
       for (const [id, v] of Object.entries(r || {})) crudo[id] = { status: "ok", data: Array.isArray(v.datos) ? v.datos : [], at: v.actualizado };
       for (const id of ["usuarios", "trafico", "eventos", "paginas", "fuentes", "paises", "dispositivos", "ciudades", "navegadores", "sistemas", "salud", "respaldos", "codigos", "ventas_stripe", "en_vivo", "tipo_cambio"]) if (!crudo[id]) crudo[id] = { status: "ok", data: [] };
+      guardarCopia();
     } catch (e) { manejarError(e); }
     avisar();
   }
@@ -130,9 +151,18 @@
   function arrancar() {
     $("#acceso").hidden = true; $("#dash-root").hidden = false; document.body.classList.add("en-panel");
     document.title = "SPECTRE · Panel";
-    avisar();
-    document.body.classList.add("por-contar"); // el dinero no se ve hasta que empieza a contar desde $0
-    Promise.all([cargarVivo(), cargarArchivos()]).then(animarDinero, () => document.body.classList.remove("por-contar"));
+    const copia = leerCopia();
+    if (copia) {
+      // abre al instante con los últimos números guardados (el dinero cuenta desde $0) y luego llegan los nuevos
+      for (const [k, v] of Object.entries(copia)) crudo[k] = { status: "ok", data: Array.isArray(v) ? v : [] };
+      avisar(); animarDinero();
+      cargarVivo(); cargarArchivos();
+    } else {
+      avisar();
+      document.body.classList.add("por-contar"); // el dinero no se ve hasta que empieza a contar desde $0
+      Promise.all([cargarVivo(), cargarArchivos()]).then(animarDinero, () => document.body.classList.remove("por-contar"));
+    }
+    revisarVersion();
     clearInterval(relojVivo); clearInterval(relojArchivos);
     relojVivo = setInterval(() => { if (document.visibilityState === "visible") cargarVivo(); }, VIVO_MS);
     relojArchivos = setInterval(() => { if (document.visibilityState === "visible") cargarArchivos(); }, ARCHIVOS_MS);
@@ -144,6 +174,7 @@
     if (document.visibilityState === "hidden") { ocultaDesde = Date.now(); return; }
     if (!sesion || $("#dash-root").hidden) return;
     if (ocultaDesde && Date.now() - ocultaDesde > 30000) {
+      revisarVersion();
       document.body.classList.add("por-contar");
       if (window.SX && window.SX.reanimar) window.SX.reanimar();
       Promise.all([cargarVivo(), cargarArchivos()]).then(animarDinero, () => document.body.classList.remove("por-contar"));
@@ -153,7 +184,7 @@
   function salir(mensaje) {
     borrarSesion(); clearInterval(relojVivo); clearInterval(relojArchivos);
     for (const k of Object.keys(crudo)) delete crudo[k];
-    $("#dash-root").hidden = true; $("#acceso").hidden = false; document.body.classList.remove("en-panel");
+    $("#dash-root").hidden = true; $("#acceso").hidden = false; document.body.classList.remove("en-panel"); document.documentElement.classList.remove("con-sesion");
     document.title = "Page not found | SPECTRE";
     try { history.replaceState(null, "", location.pathname); } catch (_) {}
     // con aviso (sesión vencida o cuenta sin permiso) se queda la entrada a la vista; sin aviso vuelve el 404
@@ -184,14 +215,15 @@
   // cerrar sesión (botón en la barra lateral)
   document.addEventListener("click", (ev) => { if (ev.target.closest("#salir")) { ev.preventDefault(); salir(""); } });
 
-  // sesión guardada en este dispositivo
-  (async () => {
+  // sesión guardada en este dispositivo: abre el panel de inmediato, sin pasar por el 404 ni esperar al servidor.
+  // Si la sesión ya no sirve o la cuenta perdió el permiso, la primera petición de datos lo detecta y regresa a la entrada.
+  const inicio = () => {
     let g = null, recordar = false;
     try { const l = localStorage.getItem(SESION), t = sessionStorage.getItem(SESION); g = JSON.parse(l || t || "null"); recordar = !!l; } catch (_) {}
-    if (!g || !g.refresh_token) return;
-    try {
-      guardarSesion(await auth("token?grant_type=refresh_token", { refresh_token: g.refresh_token }), recordar);
-      if ((await rpc("es_admin")) === true) arrancar(); else salir("Esta cuenta no tiene acceso al panel.");
-    } catch (_) { salir(""); }
-  })();
+    if (!g || !g.refresh_token) { document.documentElement.classList.remove("con-sesion"); return; }
+    sesion = { access_token: g.access_token || "", refresh_token: g.refresh_token, expires_at: Number(g.expires_at) || 0, recordar };
+    arrancar();
+  };
+  // espera a que cargue también el diseño del tablero (js/admin-tablero.js, que va después de este archivo)
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", inicio); else inicio();
 })();
