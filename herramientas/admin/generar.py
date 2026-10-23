@@ -58,7 +58,8 @@ html = f"""<!DOCTYPE html>
     .ad-404 .texto {{ margin: 18px 0 0; font-size: 16px; font-weight: 300; line-height: 1.7; color: #b0a595; }}
     .ad-404 .ayuda {{ margin: 28px 0 0; font-size: 13px; color: #b0a595; }}
     .ad-404 a {{ color: #eae0c5; text-underline-offset: 3px; }}
-    .ad-oculto {{ position: fixed; left: 50%; bottom: calc(8px + env(safe-area-inset-bottom)); transform: translateX(-50%); width: 72px; height: 48px; border: 0; padding: 0; background: transparent; opacity: 0; cursor: default; -webkit-tap-highlight-color: transparent; }}
+    .ad-oculto {{ position: fixed; left: 50%; bottom: calc(8px + env(safe-area-inset-bottom)); transform: translateX(-50%); width: 72px; height: 48px; border: 0; padding: 0; background: transparent; cursor: default; -webkit-tap-highlight-color: transparent; }}
+    .ad-oculto::before {{ content: ''; position: absolute; left: 50%; top: 50%; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: #1c1c1a; }}
     .ad-caja {{ width: 100%; max-width: 360px; background: #171717; border: 1px solid #232323; border-radius: 16px; padding: 28px 24px 24px; box-sizing: border-box; }}
     .ad-marca {{ display: flex; align-items: center; gap: 12px; margin-bottom: 22px; }}
     .ad-marca svg {{ width: 26px; height: 26px; }}
