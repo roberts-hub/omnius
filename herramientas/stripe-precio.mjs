@@ -17,6 +17,7 @@ const CODIGOS = [
   { codigo: "WF80", porcentaje: 80, usos: 2 },
   { codigo: "WF69", porcentaje: 69, usos: 1 },
   { codigo: "WF20", porcentaje: 20, usos: 18 }, // 8 originales + 5 + 5 (22 oct 2026: código recreado con 13 usos y luego con 18)
+  { codigo: "WAITLIST50", porcentaje: 50, usos: 50 }, // 23 oct 2026: creado a mano, vale en el Full System y el LUT Pack
 ];
 
 function preguntar(texto) {
