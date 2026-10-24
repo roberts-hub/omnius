@@ -1,6 +1,7 @@
 // SPECTRE · avisos en el celular (Web Push) para el panel spectrecolor.com/admin.
 // POST {tipo:"venta", sesion}  → lo llama stripe-webhook (cabecera x-push-token). Avisa cada compra UNA vez.
 // POST {tipo:"prueba"}         → lo llama el panel con la sesión de una cuenta en public.admins: manda un aviso de prueba.
+// POST {tipo:"aviso", titulo, texto} → avisos de soporte desde las tareas de la Mac (cabecera x-push-token).
 // Secretos: VAPID_PUBLICA, VAPID_PRIVADA (JWK), VAPID_SUJETO, PUSH_TOKEN. Se despliega con --no-verify-jwt.
 import { enviar } from "./webpush.ts";
 
@@ -94,6 +95,13 @@ Deno.serve(async (req) => {
       const r = await avisoDeVenta(String(cuerpo.sesion || ""));
       console.log("venta", cuerpo.sesion, JSON.stringify(r));
       return responder(200, r);
+    }
+    // aviso libre (soporte, seguimientos): lo mandan las tareas de la Mac con el mismo x-push-token
+    if (cuerpo.tipo === "aviso") {
+      if (!igual(req.headers.get("x-push-token") || "", TOKEN)) return responder(401, { error: "sin permiso" });
+      const titulo = String(cuerpo.titulo || "SPECTRE").slice(0, 80), texto = String(cuerpo.texto || "").slice(0, 240);
+      const r = await repartir({ title: titulo, body: texto, url: "/admin", tag: "aviso-" + Date.now() });
+      return responder(200, { resultado: "aviso enviado", ...r });
     }
     if (cuerpo.tipo === "prueba") {
       if (!(await esAdmin(req))) return responder(401, { error: "sin permiso" });
