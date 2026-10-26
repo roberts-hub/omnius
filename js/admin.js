@@ -59,6 +59,9 @@
     return d;
   }
 
+  // para js/admin-reviews.js (la sección Reviews del panel)
+  window.SPECTRE_ADMIN = { rpc };
+
   // ── "dash": lo que el tablero espera ──
   const crudo = {}; // id → { data, status, at, message }
   const calcs = {}, subs = [];

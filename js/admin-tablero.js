@@ -218,7 +218,7 @@
   const NUM = d3.format(',');
   const DINERO = (n) => (Number(n) || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const NOMBRE_P = { hoy: 'Hoy', '7d': 'Últimos 7 días', '30d': 'Últimos 30 días', todo: 'Desde el lanzamiento' };
-  const NOMBRE_T = { resumen: 'Resumen', ventas: 'Ventas', trafico: 'Tráfico', cuentas: 'Cuentas', sistema: 'Sistema' };
+  const NOMBRE_T = { resumen: 'Resumen', ventas: 'Ventas', trafico: 'Tráfico', cuentas: 'Cuentas', sistema: 'Sistema', reviews: 'Reviews' };
   const VS_P = { hoy: 'vs ayer', '7d': 'vs 7 días antes', '30d': 'vs 30 días antes', todo: '' };
   const periodo = () => (SX.periodos.includes(dash.params().periodo) ? dash.params().periodo : 'hoy');
   let tab = 'resumen';

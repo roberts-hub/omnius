@@ -28,8 +28,33 @@ AVISOS = """<div class="ad-avisos" id="avisos" hidden>
 assert cuerpo.count('<main class="sx-main">') == 1
 cuerpo = cuerpo.replace('<main class="sx-main">', '<main class="sx-main">\n    ' + AVISOS)
 cuerpo = cuerpo.replace("Ventas, dinero y personas en vivo · lo demás cada hora", "En vivo cada 20 s · lo demás cada hora")
+
+# sección Reviews (solo en el panel, no en el tablero de Claude): la llena js/admin-reviews.js
+TAB_REVIEWS = '<button role="tab" data-tab="reviews" id="tab-reviews"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.5l-5.2 2.8 1-5.8-4.3-4.1 5.9-.8z"/></svg><span>Reviews</span><span class="rv-insignia" id="reviews-pend" hidden></span></button>'
+SECCION_REVIEWS = """<!-- ══════════ REVIEWS ══════════ -->
+    <section id="reviews" data-pagina="reviews" hidden>
+      <div class="sx-kpis">
+        <div class="sx-kpi"><div class="top"><span class="et">Calificación</span></div><div class="val" id="rv-promedio">—</div><div class="sub">Promedio de los publicados</div></div>
+        <div class="sx-kpi"><div class="top"><span class="et">Publicados</span></div><div class="val" id="rv-publicados">—</div><div class="sub">Se ven en spectrecolor.com</div></div>
+        <div class="sx-kpi"><div class="top"><span class="et">Por aprobar</span></div><div class="val" id="rv-pendientes">—</div><div class="sub">Esperan tu visto bueno</div></div>
+        <div class="sx-kpi"><div class="top"><span class="et">Correos enviados</span></div><div class="val" id="rv-invitados">—</div><div class="sub" id="rv-sin">—</div></div>
+      </div>
+      <div class="sx-card sola">
+        <div class="cab"><h2>Reviews de compradores</h2><span class="lado" id="rv-lado"></span></div>
+        <p class="nota">Solo pueden escribir quienes compraron, con el link del correo de los 7 días. Nada sale en la página hasta que lo publicas.</p>
+        <div id="rv-lista"><p class="rv-vacio">Cargando…</p></div>
+      </div>
+    </section>
+
+    <!-- ══════════ SISTEMA ══════════ -->"""
+ANCLA_TAB = '<button role="tab" data-tab="sistema"'
+assert cuerpo.count(ANCLA_TAB) == 1 and cuerpo.count("<!-- ══════════ SISTEMA ══════════ -->") == 1
+cuerpo = cuerpo.replace(ANCLA_TAB, TAB_REVIEWS + "\n      " + ANCLA_TAB)
+cuerpo = cuerpo.replace("<!-- ══════════ SISTEMA ══════════ -->", SECCION_REVIEWS)
 js = "\n".join("(() => {\n" + s.strip("\n") + "\n})();\n" for s in scripts)
 js = js.replace("'Ventas, dinero y personas en vivo · lo demás cada hora'", "'En vivo cada 20 s · lo demás cada hora'")
+assert js.count("sistema: 'Sistema' };") == 1
+js = js.replace("sistema: 'Sistema' };", "sistema: 'Sistema', reviews: 'Reviews' };")
 assert "En vivo cada 20 s" in cuerpo and "#salir" not in js
 
 CSP = ("default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; "
@@ -100,6 +125,20 @@ html = f"""<!DOCTYPE html>
     .ad-avisos-txt b {{ color: #f5f5f5; font-size: 14px; font-weight: 600; }}
     .ad-avisos-x {{ flex: none; width: 28px; height: 28px; border: 0; background: none; color: #7a7a7a; font-size: 20px; line-height: 1; cursor: pointer; }}
     .por-contar [data-source="resumen"][data-field="total_mxn"], .por-contar [data-source="resumen"][data-field="ingresos_usd"], .por-contar [data-source="resumen"][data-field="ingresos_mxn"] {{ visibility: hidden; }}
+    .sx-tabs .rv-insignia {{ margin-left: auto; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; background: #86efac; color: #0a0a0a; font: 600 11px/20px 'Archivo', system-ui, sans-serif; text-align: center; box-sizing: border-box; }}
+    #rv-lista {{ display: flex; flex-direction: column; gap: 12px; }}
+    .rv-vacio {{ margin: 6px 0; color: #7a7a7a; font-size: 13px; line-height: 19px; }}
+    .rv-item {{ padding: 16px; border: 1px solid #232323; border-radius: 12px; background: #121212; }}
+    .rv-item.nuevo {{ border-color: rgba(250, 204, 21, 0.35); }}
+    .rv-cab {{ display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }}
+    .rv-estrellas {{ color: #facc15; letter-spacing: 2px; font-size: 15px; }}
+    .rv-fecha {{ margin-left: auto; color: #7a7a7a; font-size: 12px; }}
+    .rv-quien {{ margin: 10px 0 0; color: #a3a3a3; font-size: 13px; line-height: 19px; }}
+    .rv-quien b {{ color: #f5f5f5; font-weight: 600; }}
+    .rv-texto {{ margin: 8px 0 0; color: #e5e5e5; font-size: 14px; line-height: 22px; white-space: pre-line; overflow-wrap: anywhere; }}
+    .rv-pie {{ display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 14px; }}
+    .rv-correo {{ color: #6b6b6b; font-size: 12px; overflow-wrap: anywhere; }}
+    .rv-acciones {{ display: flex; gap: 8px; }}
   </style>
   <style>{estilos[0]}</style>
 </head>
@@ -133,6 +172,7 @@ html = f"""<!DOCTYPE html>
   <script src="/js/vendor/d3-7.9.0.min.js"></script>
   <script src="/js/admin.js?v={V}"></script>
   <script src="/js/admin-tablero.js?v={V}"></script>
+  <script src="/js/admin-reviews.js?v={V}"></script>
 </body>
 </html>
 """

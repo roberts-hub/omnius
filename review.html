@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Review | SPECTRE</title>
+  <meta name="description" content="Leave your SPECTRE review." />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="canonical" href="https://spectrecolor.com/review" />
+  <meta property="og:title" content="Review | SPECTRE" />
+  <meta property="og:site_name" content="SPECTRE" />
+  <meta property="og:image" content="https://spectrecolor.com/img/og-spectre-logo.jpg" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cloud.umami.is; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; media-src 'self'; connect-src 'self' https://*.supabase.co https://gateway.umami.is https://cloud.umami.is; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests" />
+  <meta name="referrer" content="no-referrer" />
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" href="/img/marca/icono-192.png" type="image/png" sizes="192x192" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <meta name="theme-color" content="#0b0b0a" />
+  <script>document.documentElement.classList.add("js", "sin-intro");</script>
+  <link rel="preload" href="/fonts/archivo-latin-0186fb.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/ibm-plex-mono-latin-bc87d8.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="css/estilo.css?v=20261022190029" />
+  <!-- el link personal del correo (?t=…) se guarda aquí y se borra de la barra ANTES de que cargue la analítica -->
+  <script>
+    (function () {
+      var q = new URLSearchParams(location.search);
+      window.SPECTRE_REVIEW = { t: q.get("t") || "", l: q.get("l") || "", e: Number(q.get("e")) || 0 };
+      if (q.has("t")) history.replaceState(null, "", location.pathname);
+    })();
+  </script>
+  <script defer src="https://cloud.umami.is/script.js" data-website-id="add40efe-f309-476f-95a6-6367262a4434" data-domains="spectrecolor.com"></script>
+  <script src="/js/latido.js?v=20261023084924" defer></script>
+  <style>
+    .review-caja { max-width: 520px; margin: 0 auto; text-align: center; }
+    .review-caja .titulo { margin-top: 16px; font-size: clamp(32px, 4vw, 46px); }
+    .review-form { margin-top: 34px; text-align: left; }
+    .review-estrellas { display: flex; justify-content: center; gap: 6px; margin: 4px 0 6px; border: 0; padding: 0; }
+    .review-estrellas legend { width: 100%; margin-bottom: 14px; text-align: center; }
+    .review-estrella { width: 52px; height: 52px; display: grid; place-items: center; border: 0; border-radius: 12px; background: none; color: rgba(234, 224, 197, 0.22); cursor: pointer; transition: color 0.2s ease, transform 0.2s var(--ease); }
+    .review-estrella svg { width: 34px; height: 34px; fill: currentColor; }
+    .review-estrella.encendida { color: var(--hueso); }
+    .review-estrella:hover { transform: scale(1.08); }
+    .review-estrella:focus-visible { outline: 1px solid var(--hueso); outline-offset: 2px; }
+    .review-estrellas-txt { min-height: 20px; text-align: center; font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; color: var(--greige); }
+    .review-form .acceso-etiqueta { margin-top: 26px; }
+    .review-form textarea, .review-form input[type="text"] {
+      display: block; width: 100%; margin-top: 10px; padding: 15px 18px; border-radius: 14px;
+      border: 1px solid rgba(234, 224, 197, 0.22); background: rgba(255, 255, 255, 0.03); color: var(--hueso);
+      font-family: var(--sans); font-size: 16px; line-height: 1.6; outline: none; transition: border-color 0.3s ease;
+    }
+    .review-form textarea { min-height: 150px; resize: vertical; }
+    .review-form textarea:focus, .review-form input[type="text"]:focus { border-color: var(--hueso); }
+    .review-form textarea::placeholder, .review-form input::placeholder { color: rgba(176, 165, 149, 0.55); }
+    .review-cuenta { margin-top: 8px; text-align: right; font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; color: var(--greige); opacity: 0.7; }
+    .review-form .btn-compra { border: 0; cursor: pointer; margin-top: 28px; }
+    .review-form .btn-compra:disabled { opacity: 0.6; cursor: wait; }
+    .review-idioma { margin-top: 30px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.25em; color: var(--greige); }
+    .review-idioma button { padding: 6px 4px; border: 0; background: none; color: inherit; font: inherit; letter-spacing: inherit; cursor: pointer; }
+    .review-idioma button[aria-pressed="true"] { color: var(--hueso); text-decoration: underline; text-underline-offset: 4px; }
+    [data-review-vista] { animation: reviewEntra 0.5s var(--ease) both; }
+    @keyframes reviewEntra { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) { [data-review-vista] { animation: none; } .review-estrella { transition: none; } }
+  </style>
+</head>
+<body class="listo pagina-acceso">
+
+  <header class="cabecera solida">
+    <a class="marca" href="/" translate="no">
+      <svg class="marca-icono" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+        <circle cx="50" cy="50" r="30" stroke="currentColor" stroke-width="5"/>
+        <line x1="50" y1="12" x2="50" y2="88" stroke="currentColor" stroke-width="3"/>
+      </svg>
+      SPECTRE
+    </a>
+    <a class="link-mono" href="/" data-t="volver">← BACK TO SPECTRE</a>
+  </header>
+
+  <!-- ══════════ REVIEW DE COMPRADOR VERIFICADO ══════════
+       Solo se llega con el link personal del correo de los 7 días (supabase/migrations/0014_reviews.sql).
+       Roberto aprueba cada review en /admin antes de que salga en la página. -->
+  <main class="acceso">
+    <section class="review-caja">
+      <svg class="acceso-icono" viewBox="18 18 64 64" fill="none" aria-hidden="true">
+        <circle cx="50" cy="50" r="24" stroke="currentColor" stroke-width="2"/>
+        <line x1="50" y1="20" x2="50" y2="80" stroke="currentColor" stroke-width="1.2"/>
+      </svg>
+      <p class="kicker" data-t="kicker">VERIFIED BUYER</p>
+
+      <div data-review-vista="cargando">
+        <p class="acceso-texto" data-t="cargando">Loading…</p>
+      </div>
+
+      <div data-review-vista="form" hidden>
+        <h1 class="titulo" data-t="titulo">How has SPECTRE been?</h1>
+        <p class="acceso-texto" data-texto-intro></p>
+        <form class="review-form" novalidate>
+          <fieldset class="review-estrellas" role="radiogroup" aria-labelledby="estrellas-et">
+            <legend class="acceso-etiqueta" id="estrellas-et" data-t="estrellas">YOUR RATING</legend>
+          </fieldset>
+          <p class="review-estrellas-txt" data-estrellas-txt aria-live="polite"></p>
+
+          <label class="acceso-etiqueta" for="texto" data-t="texto">YOUR REVIEW</label>
+          <textarea id="texto" name="texto" maxlength="1500" required></textarea>
+          <p class="review-cuenta" data-cuenta>0 / 1500</p>
+
+          <label class="acceso-etiqueta" for="nombre" data-t="nombre">YOUR NAME (AS IT WILL APPEAR)</label>
+          <input id="nombre" name="nombre" type="text" maxlength="60" autocomplete="name" required />
+
+          <label class="acceso-etiqueta" for="rol" data-t="rol">WHAT YOU DO (OPTIONAL)</label>
+          <input id="rol" name="rol" type="text" maxlength="60" autocomplete="organization-title" />
+
+          <p class="acceso-nota" data-t="nota">Your review will appear on spectrecolor.com with your name, country and what you do. We never show your email.</p>
+          <button class="btn-compra" type="submit"><span data-t="enviar">SEND REVIEW</span> <span class="flecha" aria-hidden="true">→</span></button>
+          <p class="acceso-error" data-error role="alert" hidden></p>
+        </form>
+      </div>
+
+      <div data-review-vista="gracias" hidden>
+        <h1 class="titulo" data-gracias-titulo>Thank you.</h1>
+        <p class="acceso-texto" data-t="gracias">We read every review. Once we check it, it will appear on spectrecolor.com.</p>
+        <p class="acceso-ayuda"><a href="/" data-t="ir">Back to SPECTRE</a> · <a href="/access" data-t="miembros">Members area</a></p>
+      </div>
+
+      <div data-review-vista="error" hidden>
+        <h1 class="titulo" data-t="error-titulo">This link doesn't work.</h1>
+        <p class="acceso-texto" data-error-texto></p>
+        <p class="acceso-ayuda"><a href="mailto:support@spectrecolor.com">support@spectrecolor.com</a></p>
+      </div>
+
+      <p class="review-idioma"><button type="button" data-idioma="es">ES</button> / <button type="button" data-idioma="en">EN</button></p>
+    </section>
+  </main>
+
+  <footer class="cierre cierre-corto">
+    <div class="cierre-pie">
+      <span class="marca-texto" translate="no">SPECTRE</span>
+      <span class="cierre-links">
+        <a href="https://instagram.com/robert.arre" target="_blank" rel="noopener">@ROBERT.ARRE</a>
+        <a href="mailto:support@spectrecolor.com">CONTACT</a>
+        <a href="/terms">TERMS</a>
+        <a href="/terms#privacy">PRIVACY</a>
+        <a href="/access">ACCESS PRODUCTS</a>
+      </span>
+      <span>© 2026 ROBERTO ARECHEDERRA</span>
+    </div>
+  </footer>
+
+  <script src="js/cuentas-config.js?v=20261022190029"></script>
+  <script src="js/review.js?v=20261026160000" defer></script>
+</body>
+</html>

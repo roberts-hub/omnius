@@ -574,7 +574,8 @@ if (looksSec && looksSec.querySelector(".looks-rejilla")) {
 
 // ── carrusel de reseñas (scroll nativo con snap: en celular se desliza con el dedo) ──
 const resenas = document.querySelector(".resenas-pista");
-if (resenas && !resenas.closest("[hidden]")) {
+// espera a que js/resenas-verificadas.js agregue los reviews de compradores (máximo 2.5 s; en otras páginas no espera)
+if (resenas && !resenas.closest("[hidden]")) Promise.resolve(window.SPECTRE_RESENAS).then(() => {
   const tarjetas = [...resenas.children];
   const flechasR = document.querySelectorAll(".resenas-flecha");
   const puntosR = document.querySelector(".resenas-puntos");
@@ -664,7 +665,7 @@ if (resenas && !resenas.closest("[hidden]")) {
       ir(Math.round(resenas.scrollLeft / paso()) * paso() + paso(), true);
     }, INTERVALO);
   }
-}
+});
 
 // ── la clase: montaje en loop sin sonido; se carga al acercarse y se pausa fuera de pantalla ──
 const clase = document.querySelector("[data-clase]");

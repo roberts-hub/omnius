@@ -3,6 +3,7 @@
 // bandera roja o bloqueadas y un conteo general. Nunca devuelve contenido ni llaves.
 // Con ?bloquear=<correo> (POST) bloquea esa cuenta (botón del correo de alerta).
 // Con ?ventas=1 devuelve las compras de los últimos 3 días (aviso de venta por correo).
+// Con ?reviews=invitar / enviada / nuevas maneja el correo de review a los 7 días (ver 0014_reviews.sql).
 // Con ?respaldo=1 devuelve además la base de clientes completa (compras, cuentas, entradas y bloqueos)
 // para el respaldo diario en Google Drive. Tampoco incluye contenido, llaves ni contraseñas.
 const URL_SB = Deno.env.get("SUPABASE_URL")!;
@@ -48,6 +49,35 @@ Deno.serve(async (req) => {
       const desde = new Date(Date.now() - 3 * 864e5).toISOString();
       const ventas = await leer(`/rest/v1/compras?creada=gt.${desde}&select=id,creada,email,edicion,monto,moneda,pais,origen,motivo,activa&order=creada`);
       return Response.json({ ventas });
+    }
+
+    // ?reviews=invitar: compradores que cumplieron 7 días desde su última compra (el Apps Script les manda el correo).
+    // Mientras el secreto REVIEWS_ACTIVAS no sea "1" no devuelve a nadie (así se prueba sin escribirle a clientes).
+    if (params.get("reviews") === "invitar") {
+      if (Deno.env.get("REVIEWS_ACTIVAS") !== "1") return Response.json({ activas: false, invitar: [] });
+      const invitar = await leer("/rest/v1/rpc/reviews_por_invitar", { method: "POST", body: "{}" });
+      return Response.json({ activas: true, invitar });
+    }
+    // ?reviews=enviada&token=… (POST): el correo ya salió
+    if (params.get("reviews") === "enviada") {
+      if (req.method !== "POST") return new Response("usa POST", { status: 405 });
+      const token = params.get("token") ?? "";
+      if (!/^[0-9a-f-]{36}$/.test(token)) return new Response("token", { status: 400 });
+      await fetch(URL_SB + "/rest/v1/rpc/review_marcar_invitada", { method: "POST", headers: CAB, body: JSON.stringify({ p_token: token }) });
+      return Response.json({ ok: true });
+    }
+    // ?reviews=nuevas: reviews recién escritas → aviso al celular aquí y correo desde el Apps Script
+    if (params.get("reviews") === "nuevas") {
+      const nuevas = await leer("/rest/v1/rpc/reviews_nuevas", { method: "POST", body: "{}" });
+      const PUSH = Deno.env.get("PUSH_TOKEN") ?? "";
+      for (const n of nuevas) {
+        const estrellas = "★".repeat(n.estrellas) + "☆".repeat(5 - n.estrellas);
+        await fetch(URL_SB + "/functions/v1/push", {
+          method: "POST", headers: { "Content-Type": "application/json", "x-push-token": PUSH },
+          body: JSON.stringify({ tipo: "aviso", titulo: `Nuevo review · ${estrellas}`, texto: `${n.nombre}: ${String(n.texto).slice(0, 140)}\nApruébalo en el panel → Reviews` }),
+        }).catch(() => {});
+      }
+      return Response.json({ nuevas });
     }
 
     const filas = await leer("/rest/v1/rpc/actividad_cuentas", { method: "POST", body: "{}" });

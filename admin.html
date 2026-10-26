@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Page not found | SPECTRE</title>
   <meta name="robots" content="noindex, nofollow, noarchive" />
-  <meta name="version" content="20261023093744" />
+  <meta name="version" content="20261026153709" />
   <meta name="vapid" content="BJlDkj2XiL_lhf5Q-DF_py43kqDLkZTTqN8Fp9akg9RlvA-YSTUA2sRqf3eCDhV-E026LKlDKunjyC1cVyDHNNM" />
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://ytmqltxidizdaxueooso.supabase.co; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests" />
   <meta name="referrer" content="no-referrer" />
@@ -18,7 +18,7 @@
   <link rel="icon" href="/img/marca/icono-192.png" type="image/png" sizes="192x192" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <link rel="preload" href="/fonts/archivo-latin-0186fb.woff2" as="font" type="font/woff2" crossorigin />
-  <script src="/js/admin-arranque.js?v=20261023093744"></script>
+  <script src="/js/admin-arranque.js?v=20261026153709"></script>
   <style>
     @font-face { font-family: 'Archivo'; font-style: normal; font-weight: 300 700; font-display: swap; src: url(/fonts/archivo-latin-0186fb.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
     @font-face { font-family: 'Archivo'; font-style: normal; font-weight: 300 700; font-display: swap; src: url(/fonts/archivo-latin-ext-c628a8.woff2) format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
@@ -63,6 +63,20 @@
     .ad-avisos-txt b { color: #f5f5f5; font-size: 14px; font-weight: 600; }
     .ad-avisos-x { flex: none; width: 28px; height: 28px; border: 0; background: none; color: #7a7a7a; font-size: 20px; line-height: 1; cursor: pointer; }
     .por-contar [data-source="resumen"][data-field="total_mxn"], .por-contar [data-source="resumen"][data-field="ingresos_usd"], .por-contar [data-source="resumen"][data-field="ingresos_mxn"] { visibility: hidden; }
+    .sx-tabs .rv-insignia { margin-left: auto; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; background: #86efac; color: #0a0a0a; font: 600 11px/20px 'Archivo', system-ui, sans-serif; text-align: center; box-sizing: border-box; }
+    #rv-lista { display: flex; flex-direction: column; gap: 12px; }
+    .rv-vacio { margin: 6px 0; color: #7a7a7a; font-size: 13px; line-height: 19px; }
+    .rv-item { padding: 16px; border: 1px solid #232323; border-radius: 12px; background: #121212; }
+    .rv-item.nuevo { border-color: rgba(250, 204, 21, 0.35); }
+    .rv-cab { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .rv-estrellas { color: #facc15; letter-spacing: 2px; font-size: 15px; }
+    .rv-fecha { margin-left: auto; color: #7a7a7a; font-size: 12px; }
+    .rv-quien { margin: 10px 0 0; color: #a3a3a3; font-size: 13px; line-height: 19px; }
+    .rv-quien b { color: #f5f5f5; font-weight: 600; }
+    .rv-texto { margin: 8px 0 0; color: #e5e5e5; font-size: 14px; line-height: 22px; white-space: pre-line; overflow-wrap: anywhere; }
+    .rv-pie { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
+    .rv-correo { color: #6b6b6b; font-size: 12px; overflow-wrap: anywhere; }
+    .rv-acciones { display: flex; gap: 8px; }
   </style>
   <style>
   /* SPECTRE · Métricas — panel oscuro neutro: barra lateral con las secciones y el "en vivo",
@@ -412,6 +426,7 @@
       <button role="tab" data-tab="ventas" id="tab-ventas"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18"/><path d="M16.5 7.5c0-1.7-2-3-4.5-3s-4.5 1.3-4.5 3 2 2.6 4.5 3.2 4.5 1.5 4.5 3.3-2 3-4.5 3-4.5-1.3-4.5-3"/></svg><span>Ventas</span></button>
       <button role="tab" data-tab="trafico" id="tab-trafico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M21 20H3"/></svg><span>Tráfico</span></button>
       <button role="tab" data-tab="cuentas" id="tab-cuentas"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.4 3.2-5.5 6.5-5.5s5.9 2.1 6.5 5.5"/><path d="M15.5 4.8a3.5 3.5 0 0 1 0 6.4"/><path d="M18 14.8c2 .7 3.2 2.6 3.5 5.2"/></svg><span>Cuentas</span></button>
+      <button role="tab" data-tab="reviews" id="tab-reviews"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.5l-5.2 2.8 1-5.8-4.3-4.1 5.9-.8z"/></svg><span>Reviews</span><span class="rv-insignia" id="reviews-pend" hidden></span></button>
       <button role="tab" data-tab="sistema" id="tab-sistema"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h4l2.5-6 5 12 2.5-6H21"/></svg><span>Sistema</span></button>
     </nav>
     <div class="sx-vivo" id="en-vivo">
@@ -588,6 +603,21 @@
       </div>
     </section>
 
+    <!-- ══════════ REVIEWS ══════════ -->
+    <section id="reviews" data-pagina="reviews" hidden>
+      <div class="sx-kpis">
+        <div class="sx-kpi"><div class="top"><span class="et">Calificación</span></div><div class="val" id="rv-promedio">—</div><div class="sub">Promedio de los publicados</div></div>
+        <div class="sx-kpi"><div class="top"><span class="et">Publicados</span></div><div class="val" id="rv-publicados">—</div><div class="sub">Se ven en spectrecolor.com</div></div>
+        <div class="sx-kpi"><div class="top"><span class="et">Por aprobar</span></div><div class="val" id="rv-pendientes">—</div><div class="sub">Esperan tu visto bueno</div></div>
+        <div class="sx-kpi"><div class="top"><span class="et">Correos enviados</span></div><div class="val" id="rv-invitados">—</div><div class="sub" id="rv-sin">—</div></div>
+      </div>
+      <div class="sx-card sola">
+        <div class="cab"><h2>Reviews de compradores</h2><span class="lado" id="rv-lado"></span></div>
+        <p class="nota">Solo pueden escribir quienes compraron, con el link del correo de los 7 días. Nada sale en la página hasta que lo publicas.</p>
+        <div id="rv-lista"><p class="rv-vacio">Cargando…</p></div>
+      </div>
+    </section>
+
     <!-- ══════════ SISTEMA ══════════ -->
     <section id="sistema" data-pagina="sistema" hidden>
       <div class="sx-estado" id="estado-general" data-source="salud"><span class="dot"></span><span id="estado-texto">—</span></div>
@@ -606,9 +636,10 @@
   </main>
 </div>
   </div>
-  <script src="/js/cuentas-config.js?v=20261023093744"></script>
+  <script src="/js/cuentas-config.js?v=20261026153709"></script>
   <script src="/js/vendor/d3-7.9.0.min.js"></script>
-  <script src="/js/admin.js?v=20261023093744"></script>
-  <script src="/js/admin-tablero.js?v=20261023093744"></script>
+  <script src="/js/admin.js?v=20261026153709"></script>
+  <script src="/js/admin-tablero.js?v=20261026153709"></script>
+  <script src="/js/admin-reviews.js?v=20261026153709"></script>
 </body>
 </html>
