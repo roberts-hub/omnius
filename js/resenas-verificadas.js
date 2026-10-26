@@ -19,12 +19,19 @@
   function tarjeta(r) {
     const fig = el("figure", "resena resena-verificada");
     const autor = el("figcaption", "resena-autor");
-    const perfil = el("span", "resena-perfil");
+    // con Instagram, el nombre lleva a su perfil (como las reseñas de los creadores)
+    const ig = /^[a-z0-9._]{1,30}$/.test(r.instagram || "") ? r.instagram : "";
+    const perfil = el(ig ? "a" : "span", "resena-perfil");
+    if (ig) {
+      perfil.href = "https://www.instagram.com/" + ig + "/";
+      perfil.target = "_blank"; perfil.rel = "noopener nofollow ugc";
+      perfil.dataset.umamiEvent = "resena-instagram";
+    }
     const avatar = el("span", "resena-avatar resena-iniciales", iniciales(r.nombre));
     avatar.setAttribute("aria-hidden", "true");
     const quien = el("span", "resena-quien");
     quien.append(el("span", "resena-nombre", r.nombre));
-    if (r.rol) quien.append(el("span", "resena-ig", r.rol));
+    if (ig) quien.append(el("span", "resena-ig", "@" + ig));
     perfil.append(avatar, quien);
     autor.append(perfil);
     if (/^[A-Z]{2}$/.test(r.pais || "")) autor.append(el("span", "resena-pais", r.pais));

@@ -74,7 +74,7 @@ Deno.serve(async (req) => {
         const estrellas = "★".repeat(n.estrellas) + "☆".repeat(5 - n.estrellas);
         await fetch(URL_SB + "/functions/v1/push", {
           method: "POST", headers: { "Content-Type": "application/json", "x-push-token": PUSH },
-          body: JSON.stringify({ tipo: "aviso", titulo: `Nuevo review · ${estrellas}`, texto: `${n.nombre}: ${String(n.texto).slice(0, 140)}\nApruébalo en el panel → Reviews` }),
+          body: JSON.stringify({ tipo: "aviso", titulo: `Nuevo review · ${estrellas}`, texto: `${n.nombre}${n.instagram ? " (@" + n.instagram + ")" : ""}: ${String(n.texto).slice(0, 140)}\nApruébalo en el panel → Reviews` }),
         }).catch(() => {});
       }
       return Response.json({ nuevas });

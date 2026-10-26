@@ -135,6 +135,7 @@ html = f"""<!DOCTYPE html>
     .rv-fecha {{ margin-left: auto; color: #7a7a7a; font-size: 12px; }}
     .rv-quien {{ margin: 10px 0 0; color: #a3a3a3; font-size: 13px; line-height: 19px; }}
     .rv-quien b {{ color: #f5f5f5; font-weight: 600; }}
+    .rv-ig {{ color: #86efac; text-decoration: none; }}
     .rv-texto {{ margin: 8px 0 0; color: #e5e5e5; font-size: 14px; line-height: 22px; white-space: pre-line; overflow-wrap: anywhere; }}
     .rv-pie {{ display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 14px; }}
     .rv-correo {{ color: #6b6b6b; font-size: 12px; overflow-wrap: anywhere; }}

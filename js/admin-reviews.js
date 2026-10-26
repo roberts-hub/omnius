@@ -38,7 +38,12 @@
       cab.append(est, el("span", "pill " + cls, txt), el("span", "rv-fecha", fecha(r.escrita)));
       const quien = el("p", "rv-quien");
       quien.append(el("b", "", r.nombre || "—"));
-      const extra = [r.rol, (bandera(r.pais) + " " + pais(r.pais)).trim(), r.producto === "full" ? "Full System" : "LUT Pack"].filter(Boolean).join(" · ");
+      if (r.instagram) {
+        const a = el("a", "rv-ig", "@" + r.instagram);
+        a.href = "https://www.instagram.com/" + encodeURIComponent(r.instagram) + "/"; a.target = "_blank"; a.rel = "noopener noreferrer";
+        quien.append(" · ", a);
+      }
+      const extra = [(bandera(r.pais) + " " + pais(r.pais)).trim(), r.producto === "full" ? "Full System" : "LUT Pack"].filter(Boolean).join(" · ");
       if (extra) quien.append(" · " + extra);
       const texto = el("p", "rv-texto", r.texto || "");
       const pie = el("div", "rv-pie");
