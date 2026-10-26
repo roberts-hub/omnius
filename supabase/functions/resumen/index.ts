@@ -51,7 +51,8 @@ Deno.serve(async (req) => {
     }
 
     const filas = await leer("/rest/v1/rpc/actividad_cuentas", { method: "POST", body: "{}" });
-    const alertas = filas.filter((f: any) => f.bandera || f.bloqueada);
+    // las cuentas @example.com son de herramientas/prueba-seguridad.mjs (se borran solas): no se avisan
+    const alertas = filas.filter((f: any) => (f.bandera || f.bloqueada) && !/@example\.com$/i.test(f.email || ""));
     if (params.get("respaldo") !== "1") {
       // para el correo de alerta: las entradas de las últimas 24 h de cada cuenta con bandera (hora, IP, dispositivo)
       if (alertas.length) {
