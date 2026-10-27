@@ -488,7 +488,7 @@
       </div>
       <div class="sx-card sola" id="tabla-cuentas">
         <div class="cab"><h2>Todas las cuentas</h2></div>
-        <p class="nota">Quién compró, qué compró, cuándo entró y qué descargó. Los más recientes arriba. Sin las cuentas de prueba.</p>
+        <p class="nota">Quién compró, qué compró, cuándo entró y qué descargó. En vivo, los más recientes arriba. Sin las cuentas de prueba.</p>
         <div class="sx-tabla alto"><table data-source="usuarios" data-row-key="correo"><thead><tr><th data-field="nombre">Nombre</th><th data-field="correo">Correo</th><th data-field="compro">Compró</th><th class="ocultable" data-field="cuenta_creada">Desde</th><th class="ocultable" data-field="ultima_entrada">Última entrada</th><th class="r" data-field="entradas_24h">Entradas 24 h</th><th class="r" data-field="descargas_total">Descargas</th><th class="ocultable" data-field="alerta">Alerta</th></tr></thead><tbody></tbody></table></div>
       </div>
     </section>
@@ -571,6 +571,25 @@
       }
       if (!Array.isArray(filas)) throw new Error('Supabase no devolvió filas');
       return filas.map((f) => ({ ...f, n: Number(f.n), monto: f.monto == null ? null : Number(f.monto) }));
+    },
+  });
+
+  // compradores en vivo (nombre, correo, compra, entradas, descargas y alertas): public.usuarios_tablero() en Supabase
+  dash.loader('usuarios', {
+    description: 'Saca las filas de la respuesta de Supabase (execute_sql) y deja los conteos como números.',
+    fn: ({ answer }) => {
+      let r = answer;
+      if (typeof r === 'string') { try { r = JSON.parse(r); } catch (e) { /* texto tal cual */ } }
+      if (r && typeof r === 'object' && !Array.isArray(r) && r.error) throw new Error(typeof r.error === 'string' ? r.error : r.error.message || JSON.stringify(r.error));
+      const texto = typeof r === 'string' ? r : r && typeof r.result === 'string' ? r.result : null;
+      let filas = Array.isArray(r) ? r : null;
+      if (!filas && texto) {
+        const m = texto.match(/<untrusted-data-([\w-]+)>\s*(\[[\s\S]*?\])\s*<\/untrusted-data-\1>/);
+        try { filas = JSON.parse(m ? m[2] : texto); } catch (e) { throw new Error(texto.slice(0, 300)); }
+      }
+      if (!Array.isArray(filas)) throw new Error('Supabase no devolvió filas');
+      const num = (v) => Number(v) || 0;
+      return filas.map((f) => ({ ...f, entradas_total: num(f.entradas_total), entradas_24h: num(f.entradas_24h), ips_total: num(f.ips_total), descargas_full: num(f.descargas_full), descargas_luts: num(f.descargas_luts), descargas_practica: num(f.descargas_practica), descargas_total: num(f.descargas_total) }));
     },
   });
 
@@ -1195,9 +1214,12 @@
     }
   }
 
-  const actualizar = () => { dash.refresh('presencia'); dash.refresh('ventas'); dash.refresh('vivo_hoy'); };
+  const actualizar = () => { dash.refresh('presencia'); dash.refresh('ventas'); dash.refresh('vivo_hoy'); dash.refresh('usuarios'); };
   $('#vivo-actualizar').addEventListener('click', actualizar);
   $('#vivo-actualizar-m').addEventListener('click', actualizar);
+  // lo que está en vivo se vuelve a pedir solo cada minuto mientras el tablero está a la vista
+  // (el panel /admin tiene su propio reloj de 20 s, así que ahí no hace falta)
+  if (!window.SPECTRE_ADMIN) setInterval(() => { if (document.visibilityState === 'visible') actualizar(); }, 60 * 1000);
 
   // pestaña desde el link (#ventas, #trafico…) y redibujo con cada cambio de datos, filtro o ancho
   const inicial = location.hash.slice(1);

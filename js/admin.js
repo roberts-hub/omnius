@@ -109,6 +109,8 @@
       crudo.ventas = { status: "ok", data: r.ventas || [] };
       crudo.presencia = { status: "ok", data: r.presencia || [] };
       crudo.vivo_hoy = { status: "ok", data: r.vivo_hoy || [] };
+      // compradores en vivo (nombre, correo, compra…): ya no esperan al archivo de cada hora
+      try { crudo.usuarios = { status: "ok", data: (await rpc("admin_usuarios")) || [], vivo: true }; } catch (e) { /* se queda el de cada hora */ }
       guardarCopia();
     } catch (e) { if (!manejarError(e)) { crudo.ventas = crudo.ventas || { status: "error", data: [] }; } }
     refrescando = false; cargandoVivo = false; avisar();
@@ -116,7 +118,10 @@
   async function cargarArchivos() {
     try {
       const r = await rpc("admin_archivos");
-      for (const [id, v] of Object.entries(r || {})) crudo[id] = { status: "ok", data: Array.isArray(v.datos) ? v.datos : [], at: v.actualizado };
+      for (const [id, v] of Object.entries(r || {})) {
+        if (id === "usuarios" && crudo.usuarios && crudo.usuarios.vivo) continue; // el de en vivo es más nuevo
+        crudo[id] = { status: "ok", data: Array.isArray(v.datos) ? v.datos : [], at: v.actualizado };
+      }
       for (const id of ["usuarios", "trafico", "eventos", "paginas", "fuentes", "paises", "dispositivos", "ciudades", "navegadores", "sistemas", "salud", "respaldos", "codigos", "ventas_stripe", "en_vivo", "tipo_cambio"]) if (!crudo[id]) crudo[id] = { status: "ok", data: [] };
       guardarCopia();
     } catch (e) { manejarError(e); }

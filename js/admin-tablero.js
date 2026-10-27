@@ -62,6 +62,25 @@
     },
   });
 
+  // compradores en vivo (nombre, correo, compra, entradas, descargas y alertas): public.usuarios_tablero() en Supabase
+  dash.loader('usuarios', {
+    description: 'Saca las filas de la respuesta de Supabase (execute_sql) y deja los conteos como números.',
+    fn: ({ answer }) => {
+      let r = answer;
+      if (typeof r === 'string') { try { r = JSON.parse(r); } catch (e) { /* texto tal cual */ } }
+      if (r && typeof r === 'object' && !Array.isArray(r) && r.error) throw new Error(typeof r.error === 'string' ? r.error : r.error.message || JSON.stringify(r.error));
+      const texto = typeof r === 'string' ? r : r && typeof r.result === 'string' ? r.result : null;
+      let filas = Array.isArray(r) ? r : null;
+      if (!filas && texto) {
+        const m = texto.match(/<untrusted-data-([\w-]+)>\s*(\[[\s\S]*?\])\s*<\/untrusted-data-\1>/);
+        try { filas = JSON.parse(m ? m[2] : texto); } catch (e) { throw new Error(texto.slice(0, 300)); }
+      }
+      if (!Array.isArray(filas)) throw new Error('Supabase no devolvió filas');
+      const num = (v) => Number(v) || 0;
+      return filas.map((f) => ({ ...f, entradas_total: num(f.entradas_total), entradas_24h: num(f.entradas_24h), ips_total: num(f.ips_total), descargas_full: num(f.descargas_full), descargas_luts: num(f.descargas_luts), descargas_practica: num(f.descargas_practica), descargas_total: num(f.descargas_total) }));
+    },
+  });
+
   dash.calc('resumen', {
     title: 'Resumen por periodo',
     description: 'Ventas pagadas, ingresos por moneda, total en pesos (dólares al tipo de cambio del día), visitantes (hoy: contador propio en vivo; otros periodos: Umami cada hora), clics en pagar, conversión y el cambio en % contra el periodo anterior del mismo largo.',
@@ -683,9 +702,12 @@
     }
   }
 
-  const actualizar = () => { dash.refresh('presencia'); dash.refresh('ventas'); dash.refresh('vivo_hoy'); };
+  const actualizar = () => { dash.refresh('presencia'); dash.refresh('ventas'); dash.refresh('vivo_hoy'); dash.refresh('usuarios'); };
   $('#vivo-actualizar').addEventListener('click', actualizar);
   $('#vivo-actualizar-m').addEventListener('click', actualizar);
+  // lo que está en vivo se vuelve a pedir solo cada minuto mientras el tablero está a la vista
+  // (el panel /admin tiene su propio reloj de 20 s, así que ahí no hace falta)
+  if (!window.SPECTRE_ADMIN) setInterval(() => { if (document.visibilityState === 'visible') actualizar(); }, 60 * 1000);
 
   // pestaña desde el link (#ventas, #trafico…) y redibujo con cada cambio de datos, filtro o ancho
   const inicial = location.hash.slice(1);
