@@ -2163,4 +2163,6 @@ section.looks { max-width: var(--ancho); margin: 0 auto; padding: clamp(80px, 9v
   .promo-foto img { height: 140px; }
   .promo-cuerpo { padding: 2px 20px 16px; }
 }
+html.promo-fija, html.promo-fija body { overflow: hidden; }
+.promo-caja { overscroll-behavior: contain; }
 @media (prefers-reduced-motion: reduce) { .promo-caja, .promo-velo { transition: none; } }

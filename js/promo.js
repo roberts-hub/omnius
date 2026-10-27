@@ -6,7 +6,7 @@
 // Nunca: después del vencimiento, a quien ya trae un código, a compradores con sesión en /access, ni en robots.
 // Vista previa sin activarlo: ?promo=ver (normal) o ?promo=regreso (al volver del pago).
 (() => {
-  const ACTIVO = false; // ← se activa cuando Roberto apruebe el mensaje y el diseño
+  const ACTIVO = true; // aprobado por Roberto el 27 oct 2026
   const CODIGO = "EARLY-20";
   const VENCE = Date.parse("2026-10-29T01:53:34Z");
   const ESPERA = 60 * 1000;
@@ -84,6 +84,7 @@
         </div>
       </div>`;
     document.body.append(raiz);
+    document.documentElement.classList.add("promo-fija"); // la página de atrás no se mueve mientras está abierto
     antesFoco = document.activeElement;
     void raiz.offsetWidth; // fija el estado inicial para que la entrada se anime sin depender de requestAnimationFrame
     raiz.classList.add("abierto");
@@ -125,6 +126,7 @@
     clearInterval(reloj);
     document.removeEventListener("keydown", tecla);
     raiz.classList.remove("abierto");
+    document.documentElement.classList.remove("promo-fija");
     setTimeout(() => raiz.remove(), 350);
     if (porUsuario) { guardar(localStorage, "spectre-promo-cerrado", String(Date.now())); evento("promo-cerrar"); }
     if (antesFoco && antesFoco.focus) antesFoco.focus({ preventScroll: true });
