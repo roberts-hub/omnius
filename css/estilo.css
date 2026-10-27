@@ -2129,3 +2129,38 @@ section.looks { max-width: var(--ancho); margin: 0 auto; padding: clamp(80px, 9v
 
 /* ── código de descuento que llegó por link (?codigo=…), debajo del botón de compra ── */
 .codigo-aplicado { margin-top: 12px; text-align: center; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.2em; color: #86c79b; }
+
+/* ── pop up early bird (js/promo.js): centrado en computadora, hoja que sube en celular ── */
+.promo { position: fixed; inset: 0; z-index: 10000; display: grid; place-items: center; padding: 20px; }
+.promo-velo { position: absolute; inset: 0; background: rgba(5, 5, 4, 0.62); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); opacity: 0; transition: opacity 0.35s var(--ease); }
+.promo-caja { position: relative; width: min(440px, 100%); max-height: calc(100dvh - 40px); overflow: auto; border-radius: 22px; border: 1px solid rgba(234, 224, 197, 0.14); background: #121211; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55); opacity: 0; transform: translateY(18px) scale(0.98); transition: opacity 0.35s var(--ease), transform 0.45s var(--ease); scrollbar-width: none; }
+.promo.abierto .promo-velo { opacity: 1; }
+.promo.abierto .promo-caja { opacity: 1; transform: none; }
+.promo-foto img { display: block; width: 100%; height: 170px; object-fit: cover; }
+.promo-foto { position: relative; display: block; }
+.promo-foto::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 45%, #121211 100%); }
+.promo-x { position: absolute; top: 12px; right: 12px; z-index: 2; width: 36px; height: 36px; border: 0; border-radius: 50%; background: rgba(11, 11, 10, 0.55); color: var(--hueso); font-size: 22px; line-height: 1; cursor: pointer; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+.promo-x:hover { background: rgba(11, 11, 10, 0.8); }
+.promo-cuerpo { padding: 4px 26px 22px; text-align: center; }
+.promo-kicker { font-family: var(--mono); font-size: 10px; letter-spacing: 0.3em; color: #86c79b; }
+.promo-titulo { margin-top: 12px; font-size: clamp(26px, 6vw, 32px); font-weight: 700; letter-spacing: -0.04em; line-height: 1.05; color: var(--hueso); }
+.promo-texto { margin-top: 12px; font-size: 14.5px; font-weight: 300; line-height: 1.65; color: var(--greige); }
+.promo-fila { display: grid; grid-template-columns: 1.15fr 1fr; gap: 10px; margin-top: 20px; }
+.promo-codigo, .promo-reloj { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 10px; border-radius: 14px; border: 1px dashed rgba(234, 224, 197, 0.28); background: rgba(255, 255, 255, 0.025); }
+.promo-reloj { border-style: solid; border-color: rgba(234, 224, 197, 0.12); }
+.promo-et { font-family: var(--mono); font-size: 9px; letter-spacing: 0.25em; color: var(--greige); }
+.promo-codigo b, .promo-reloj b { font-family: var(--mono); font-size: 18px; font-weight: 500; letter-spacing: 0.12em; color: var(--hueso); font-variant-numeric: tabular-nums; }
+.promo-copiar { padding: 2px 6px; border: 0; background: none; color: var(--greige); font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.2em; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.promo-copiar:hover { color: var(--hueso); }
+.promo-usar { display: flex; align-items: center; justify-content: center; gap: 12px; min-height: 52px; margin-top: 16px; border-radius: 14px; background: var(--hueso); color: var(--fondo); font-family: var(--mono); font-size: 12px; font-weight: 500; letter-spacing: 0.26em; text-decoration: none; transition: transform 0.25s var(--ease), background 0.25s ease; }
+.promo-usar:hover { background: #fff6dc; transform: translateY(-1px); }
+.promo-usar:focus-visible, .promo-x:focus-visible, .promo-no:focus-visible { outline: 1px solid var(--hueso); outline-offset: 3px; }
+.promo-no { margin-top: 10px; padding: 8px 12px; border: 0; background: none; color: var(--greige); font: inherit; font-size: 13px; cursor: pointer; }
+.promo-no:hover { color: var(--hueso); }
+@media (max-width: 560px) {
+  .promo { place-items: end center; padding: 0; }
+  .promo-caja { width: 100%; max-height: 92dvh; border-radius: 22px 22px 0 0; border-bottom: 0; transform: translateY(100%); padding-bottom: env(safe-area-inset-bottom); }
+  .promo-foto img { height: 140px; }
+  .promo-cuerpo { padding: 2px 20px 16px; }
+}
+@media (prefers-reduced-motion: reduce) { .promo-caja, .promo-velo { transition: none; } }
