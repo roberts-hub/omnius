@@ -21,6 +21,8 @@ const CODIGOS = [
 ];
 // EARLY-20: 20%, Full System y LUT Pack, sin límite de usos, solo 48 h (creado a mano el 26 oct 2026, vence el
 // 28 oct 2026 19:53 hora de México; cupón O19NSVlo). Link: spectrecolor.com/get?codigo=EARLY-20 (js/main.js lo pone en el pago).
+// TWOWAVES70: 70% para proveedores de Two Waves, Full System y LUT Pack, sin límite de usos ni vencimiento (creado a mano el
+// 27 oct 2026; cupón j6iq6Rlx). Link: spectrecolor.com/get?codigo=TWOWAVES70.
 
 function preguntar(texto) {
   return new Promise((ok) => {
