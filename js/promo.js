@@ -31,18 +31,13 @@
     if (leer(localStorage, "spectre-promo-cerrado") && Date.now() - Number(leer(localStorage, "spectre-promo-cerrado")) < 864e5) return;
   }
 
-  const MXN = { full: "MX$1,439", luts: "MX$719" }, USD = { full: "$78.40", luts: "$39.20" };
   const T = es ? {
     titulo: "20% en SPECTRE, solo por 48 horas.",
-    texto: "Para quienes llegan primero. Toca el botón y el descuento se aplica solo al pagar.",
     tituloR: "Llévatelo con 20% menos.",
-    textoR: `Por el lanzamiento, con ${CODIGO} el Full System queda en ${MXN.full} y el LUT Pack en ${MXN.luts}.`,
     termina: "TERMINA EN", codigo: "TU CÓDIGO", copiar: "COPIAR", copiado: "COPIADO", usar: "USAR MI 20%", no: "Ahora no", cerrar: "Cerrar",
   } : {
     titulo: "20% off SPECTRE, for 48 hours only.",
-    texto: "For the ones who show up first. Tap the button and the discount is applied at checkout.",
     tituloR: "Take it home for 20% less.",
-    textoR: `For launch, ${CODIGO} brings the Full System to ${USD.full} and the LUT Pack to ${USD.luts}.`,
     termina: "ENDS IN", codigo: "YOUR CODE", copiar: "COPY", copiado: "COPIED", usar: "USE MY 20%", no: "Not now", cerrar: "Close",
   };
 
@@ -69,7 +64,6 @@
         </picture>
         <div class="promo-cuerpo">
           <h2 class="promo-titulo" id="promo-titulo">${regreso ? T.tituloR : T.titulo}</h2>
-          <p class="promo-texto">${regreso ? T.textoR : T.texto}</p>
           <div class="promo-fila">
             <div class="promo-codigo"><span class="promo-et">${T.codigo}</span><b>${CODIGO}</b><button type="button" class="promo-copiar">${T.copiar}</button></div>
             <div class="promo-reloj"><span class="promo-et">${T.termina}</span><b data-reloj>${resta()}</b></div>

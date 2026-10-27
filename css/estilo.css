@@ -2143,7 +2143,6 @@ section.looks { max-width: var(--ancho); margin: 0 auto; padding: clamp(80px, 9v
 .promo-x:hover { background: rgba(11, 11, 10, 0.8); }
 .promo-cuerpo { padding: 4px 26px 22px; text-align: center; }
 .promo-titulo { margin-top: 6px; font-size: clamp(26px, 6vw, 32px); font-weight: 700; letter-spacing: -0.04em; line-height: 1.05; color: var(--hueso); }
-.promo-texto { margin-top: 12px; font-size: 14.5px; font-weight: 300; line-height: 1.65; color: var(--greige); }
 .promo-fila { display: grid; grid-template-columns: 1.15fr 1fr; gap: 10px; margin-top: 20px; }
 .promo-codigo, .promo-reloj { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 10px; border-radius: 14px; border: 1px dashed rgba(234, 224, 197, 0.28); background: rgba(255, 255, 255, 0.025); }
 .promo-reloj { border-style: solid; border-color: rgba(234, 224, 197, 0.12); }
