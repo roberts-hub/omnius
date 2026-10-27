@@ -72,7 +72,30 @@ const ORIGEN = (() => {
   } catch (_) { return ""; }
 })();
 const conOrigen = (u) => (ORIGEN && u && u.includes("buy.stripe.com") ? u + (u.includes("?") ? "&" : "?") + "client_reference_id=" + ORIGEN : u);
-const urlDe = (b) => conOrigen(conIdioma(CHECKOUT_URLS[b.dataset.checkout || edicion]));
+// ── código de descuento por link: spectrecolor.com/get?codigo=EARLY-20 (también ?code= o ?promo=) ──
+// Se guarda 48 h en este dispositivo y viaja a Stripe como prefilled_promo_code: el comprador lo ve ya puesto en el pago
+// (y lo puede quitar). Stripe decide si vale (vigencia, usos, producto); mayúsculas o minúsculas da igual.
+const CODIGO = (() => {
+  const limpio = (x) => String(x || "").trim().toUpperCase().replace(/[^A-Z0-9-]/g, "").slice(0, 30);
+  try {
+    const q = new URLSearchParams(location.search);
+    const nuevo = limpio(q.get("codigo") || q.get("code") || q.get("promo"));
+    if (nuevo.length >= 3) { localStorage.setItem("spectre-codigo", JSON.stringify({ c: nuevo, t: Date.now() })); return nuevo; }
+    const g = JSON.parse(localStorage.getItem("spectre-codigo") || "null");
+    if (g && Date.now() - g.t < 48 * 36e5) return limpio(g.c);
+  } catch (_) {}
+  return "";
+})();
+const conCodigo = (u) => (CODIGO && u && u.includes("buy.stripe.com") ? u + (u.includes("?") ? "&" : "?") + "prefilled_promo_code=" + encodeURIComponent(CODIGO) : u);
+const urlDe = (b) => conCodigo(conOrigen(conIdioma(CHECKOUT_URLS[b.dataset.checkout || edicion])));
+// aviso debajo del botón de compra: el código ya va puesto en el pago
+const ctaCompra = document.getElementById("cta-comprar");
+if (CODIGO && ctaCompra) {
+  const aviso = document.createElement("p");
+  aviso.className = "codigo-aplicado";
+  aviso.textContent = IDIOMA_PAGO === "es" ? `✓ CÓDIGO ${CODIGO} · SE APLICA AL PAGAR` : `✓ CODE ${CODIGO} · APPLIED AT CHECKOUT`;
+  ctaCompra.after(aviso);
+}
 // el clic en "comprar" también lleva la fuente en Umami (embudo por canal)
 if (ORIGEN) botonesCheckout.forEach((b) => b.setAttribute("data-umami-event-origen", ORIGEN.replace(/^src_/, "")));
 // y un evento por canal ("checkout-youtube", "checkout-directo") para el embudo por canal del tablero

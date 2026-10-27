@@ -2126,3 +2126,6 @@ section.looks { max-width: var(--ancho); margin: 0 auto; padding: clamp(80px, 9v
 .resena-estrella-vacia { color: rgba(234, 224, 197, 0.22); }
 .resena-verificado { margin-top: 12px; font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.2em; color: #86c79b; }
 .resena-verificada .resena-texto { display: -webkit-box; -webkit-line-clamp: 9; -webkit-box-orient: vertical; overflow: hidden; white-space: pre-line; }
+
+/* ── código de descuento que llegó por link (?codigo=…), debajo del botón de compra ── */
+.codigo-aplicado { margin-top: 12px; text-align: center; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.2em; color: #86c79b; }

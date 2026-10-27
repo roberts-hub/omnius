@@ -19,6 +19,8 @@ const CODIGOS = [
   { codigo: "WF20", porcentaje: 20, usos: 18 }, // 8 originales + 5 + 5 (22 oct 2026: código recreado con 13 usos y luego con 18)
   { codigo: "WAITLIST50", porcentaje: 50, usos: 50 }, // 23 oct 2026: creado a mano, vale en el Full System y el LUT Pack
 ];
+// EARLY-20: 20%, Full System y LUT Pack, sin límite de usos, solo 48 h (creado a mano el 26 oct 2026, vence el
+// 28 oct 2026 19:53 hora de México; cupón O19NSVlo). Link: spectrecolor.com/get?codigo=EARLY-20 (js/main.js lo pone en el pago).
 
 function preguntar(texto) {
   return new Promise((ok) => {
