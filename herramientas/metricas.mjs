@@ -104,7 +104,7 @@ async function generar() {
     if (users.length < 1000) break;
   }
   const [comprasTodas, accesos, descargas, bloqueos, lim] = await Promise.all([
-    leer("/rest/v1/compras?select=user_id,edicion,activa,motivo,creada&order=creada"),
+    leer("/rest/v1/compras?select=user_id,edicion,activa,motivo,creada,nombre&order=creada"),
     leer("/rest/v1/accesos?select=user_id,ip,creada&order=creada.desc&limit=50000"),
     leer("/rest/v1/descargas?select=user_id,archivo,creada&limit=50000"),
     leer("/rest/v1/bloqueos?select=user_id,motivo"),
@@ -129,6 +129,8 @@ async function generar() {
     if (ipsTotal >= 8) alertas.push(`${ipsTotal} IPs distintas en total`);
     for (const [nombre, n] of [["Full System", cuenta(/full system/i)], ["LUT Pack", cuenta(/lut pack/i)]]) if (n >= 6) alertas.push(`${n} descargas del ${nombre}`);
     return {
+      // nombre con el que pagó en Stripe (el de su compra más reciente que lo tenga)
+      nombre: [...cs].reverse().map((c) => (c.nombre || "").trim()).find(Boolean) || "",
       correo: u.email,
       compro: [...new Set(cs.map((c) => (c.edicion === "full" ? "Full System" : "LUT Pack")))].join(" + ") || "—",
       estado: bloqueo ? "bloqueada" : activa ? "activa" : cs.length ? "sin acceso (reembolso)" : "sin compra",
@@ -145,7 +147,7 @@ async function generar() {
       alerta: alertas.join(" · "),
     };
   }).sort((a, b) => (b.alerta ? 1 : 0) - (a.alerta ? 1 : 0) || (b.ultima_entrada || "").localeCompare(a.ultima_entrada || ""));
-  guardar("usuarios", filasUsuarios.length ? filasUsuarios : [{ correo: "—", compro: "—", estado: "sin cuentas", tipo: "", cuenta_creada: dia(Date.now()), ultima_entrada: "", entradas_total: 0, entradas_24h: 0, ips_total: 0, descargas_full: 0, descargas_luts: 0, descargas_practica: 0, descargas_total: 0, alerta: "" }]);
+  guardar("usuarios", filasUsuarios.length ? filasUsuarios : [{ nombre: "", correo: "—", compro: "—", estado: "sin cuentas", tipo: "", cuenta_creada: dia(Date.now()), ultima_entrada: "", entradas_total: 0, entradas_24h: 0, ips_total: 0, descargas_full: 0, descargas_luts: 0, descargas_practica: 0, descargas_total: 0, alerta: "" }]);
 
   // ── archivos de Umami (los escribe la revisión diaria con umami-navegador.js): solo desde el lanzamiento ──
   const hoy = dia(Date.now());

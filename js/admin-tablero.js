@@ -645,10 +645,13 @@
     const u = dash.data('usuarios');
     if (u.status !== 'ok') return;
     const tb = $('#tabla-cuentas tbody'); tb.replaceChildren();
-    for (const f of u.data.filter((x) => x.correo && x.tipo !== 'prueba')) {
+    // los compradores más recientes arriba (las cuentas con alerta primero)
+    const filas = u.data.filter((x) => x.correo && x.tipo !== 'prueba')
+      .sort((a, b) => (b.alerta ? 1 : 0) - (a.alerta ? 1 : 0) || String(b.cuenta_creada || '').localeCompare(String(a.cuenta_creada || '')));
+    for (const f of filas) {
       const tr = document.createElement('tr'); tr.dataset.key = f.correo;
-      celda(tr, f.correo, 'id'); celda(tr, f.compro);
-      celda(tr, f.ultima_entrada, 'ocultable gris'); celda(tr, NUM(Number(f.entradas_24h) || 0), 'r'); celda(tr, NUM(Number(f.descargas_total) || 0), 'r');
+      celda(tr, f.nombre || '—'); celda(tr, f.correo, 'id'); celda(tr, f.compro);
+      celda(tr, f.cuenta_creada, 'ocultable gris'); celda(tr, f.ultima_entrada, 'ocultable gris'); celda(tr, NUM(Number(f.entradas_24h) || 0), 'r'); celda(tr, NUM(Number(f.descargas_total) || 0), 'r');
       celda(tr, f.alerta ? etiqueta(f.alerta, 'mal') : '—', 'ocultable');
       tb.append(tr);
     }
