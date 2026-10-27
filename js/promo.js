@@ -34,19 +34,14 @@
   const T = es ? {
     titulo: "20% en SPECTRE, solo por 48 horas.",
     tituloR: "Llévatelo con 20% menos.",
-    termina: "TERMINA EN", codigo: "TU CÓDIGO", copiar: "COPIAR", copiado: "COPIADO", usar: "USAR MI 20%", no: "Ahora no", cerrar: "Cerrar",
+    codigo: "TU CÓDIGO", copiar: "COPIAR", copiado: "COPIADO", usar: "USAR MI 20%", no: "Ahora no", cerrar: "Cerrar",
   } : {
     titulo: "20% off SPECTRE, for 48 hours only.",
     tituloR: "Take it home for 20% less.",
-    termina: "ENDS IN", codigo: "YOUR CODE", copiar: "COPY", copiado: "COPIED", usar: "USE MY 20%", no: "Not now", cerrar: "Close",
+    codigo: "YOUR CODE", copiar: "COPY", copiado: "COPIED", usar: "USE MY 20%", no: "Not now", cerrar: "Close",
   };
 
   let abierto = false, reloj = 0, antesFoco = null;
-  const dos = (n) => String(n).padStart(2, "0");
-  const resta = () => {
-    const s = Math.max(0, Math.floor((VENCE - Date.now()) / 1000));
-    return `${dos(Math.floor(s / 3600))}:${dos(Math.floor((s % 3600) / 60))}:${dos(s % 60)}`;
-  };
 
   function mostrar(regreso) {
     if (abierto) return;
@@ -66,7 +61,6 @@
           <h2 class="promo-titulo" id="promo-titulo">${regreso ? T.tituloR : T.titulo}</h2>
           <div class="promo-fila">
             <div class="promo-codigo"><span class="promo-et">${T.codigo}</span><b>${CODIGO}</b><button type="button" class="promo-copiar">${T.copiar}</button></div>
-            <div class="promo-reloj"><span class="promo-et">${T.termina}</span><b data-reloj>${resta()}</b></div>
           </div>
           <a class="promo-usar" href="#">${T.usar} <span aria-hidden="true">→</span></a>
           <button class="promo-no" type="button" data-cerrar>${T.no}</button>
@@ -80,11 +74,8 @@
     raiz.querySelector(".promo-usar").focus({ preventScroll: true });
     evento("promo-visto", { tipo: regreso ? "regreso" : "normal" });
 
-    reloj = setInterval(() => {
-      const r = raiz.querySelector("[data-reloj]");
-      if (r) r.textContent = resta();
-      if (Date.now() >= VENCE && !vista) cerrar(false);
-    }, 1000);
+    // si vence mientras está abierto, se cierra solo
+    reloj = setInterval(() => { if (Date.now() >= VENCE && !vista) cerrar(false); }, 1000);
 
     raiz.addEventListener("click", (ev) => { if (ev.target.closest("[data-cerrar]")) cerrar(true); });
     raiz.querySelector(".promo-copiar").addEventListener("click", (ev) => {

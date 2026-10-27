@@ -2127,8 +2127,6 @@ section.looks { max-width: var(--ancho); margin: 0 auto; padding: clamp(80px, 9v
 .resena-verificado { margin-top: 12px; font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.2em; color: #86c79b; }
 .resena-verificada .resena-texto { display: -webkit-box; -webkit-line-clamp: 9; -webkit-box-orient: vertical; overflow: hidden; white-space: pre-line; }
 
-/* ── código de descuento que llegó por link (?codigo=…), debajo del botón de compra ── */
-.codigo-aplicado { margin-top: 12px; text-align: center; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.2em; color: #86c79b; }
 
 /* ── pop up early bird (js/promo.js): centrado en computadora, hoja que sube en celular ── */
 .promo { position: fixed; inset: 0; z-index: 10000; display: grid; place-items: center; padding: 20px; }
@@ -2143,11 +2141,10 @@ section.looks { max-width: var(--ancho); margin: 0 auto; padding: clamp(80px, 9v
 .promo-x:hover { background: rgba(11, 11, 10, 0.8); }
 .promo-cuerpo { padding: 4px 26px 22px; text-align: center; }
 .promo-titulo { margin-top: 6px; font-size: clamp(26px, 6vw, 32px); font-weight: 700; letter-spacing: -0.04em; line-height: 1.05; color: var(--hueso); }
-.promo-fila { display: grid; grid-template-columns: 1.15fr 1fr; gap: 10px; margin-top: 20px; }
-.promo-codigo, .promo-reloj { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 10px; border-radius: 14px; border: 1px dashed rgba(234, 224, 197, 0.28); background: rgba(255, 255, 255, 0.025); }
-.promo-reloj { border-style: solid; border-color: rgba(234, 224, 197, 0.12); }
+.promo-fila { margin-top: 20px; }
+.promo-codigo { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 10px; border-radius: 14px; border: 1px dashed rgba(234, 224, 197, 0.28); background: rgba(255, 255, 255, 0.025); }
 .promo-et { font-family: var(--mono); font-size: 9px; letter-spacing: 0.25em; color: var(--greige); }
-.promo-codigo b, .promo-reloj b { font-family: var(--mono); font-size: 18px; font-weight: 500; letter-spacing: 0.12em; color: var(--hueso); font-variant-numeric: tabular-nums; }
+.promo-codigo b { font-family: var(--mono); font-size: 18px; font-weight: 500; letter-spacing: 0.12em; color: var(--hueso); font-variant-numeric: tabular-nums; }
 .promo-copiar { padding: 2px 6px; border: 0; background: none; color: var(--greige); font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.2em; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .promo-copiar:hover { color: var(--hueso); }
 .promo-usar { display: flex; align-items: center; justify-content: center; gap: 12px; min-height: 52px; margin-top: 16px; border-radius: 14px; background: var(--hueso); color: var(--fondo); font-family: var(--mono); font-size: 12px; font-weight: 500; letter-spacing: 0.26em; text-decoration: none; transition: transform 0.25s var(--ease), background 0.25s ease; }

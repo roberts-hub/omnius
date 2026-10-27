@@ -88,14 +88,6 @@ const CODIGO = (() => {
 })();
 const conCodigo = (u) => (CODIGO && u && u.includes("buy.stripe.com") ? u + (u.includes("?") ? "&" : "?") + "prefilled_promo_code=" + encodeURIComponent(CODIGO) : u);
 const urlDe = (b) => conCodigo(conOrigen(conIdioma(CHECKOUT_URLS[b.dataset.checkout || edicion])));
-// aviso debajo del botón de compra: el código ya va puesto en el pago
-const ctaCompra = document.getElementById("cta-comprar");
-if (CODIGO && ctaCompra) {
-  const aviso = document.createElement("p");
-  aviso.className = "codigo-aplicado";
-  aviso.textContent = IDIOMA_PAGO === "es" ? `✓ CÓDIGO ${CODIGO} · SE APLICA AL PAGAR` : `✓ CODE ${CODIGO} · APPLIED AT CHECKOUT`;
-  ctaCompra.after(aviso);
-}
 // el clic en "comprar" también lleva la fuente en Umami (embudo por canal)
 if (ORIGEN) botonesCheckout.forEach((b) => b.setAttribute("data-umami-event-origen", ORIGEN.replace(/^src_/, "")));
 // y un evento por canal ("checkout-youtube", "checkout-directo") para el embudo por canal del tablero
