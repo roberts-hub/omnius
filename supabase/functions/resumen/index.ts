@@ -55,7 +55,8 @@ Deno.serve(async (req) => {
     // Mientras el secreto REVIEWS_ACTIVAS no sea "1" no devuelve a nadie (así se prueba sin escribirle a clientes).
     if (params.get("reviews") === "invitar") {
       if (Deno.env.get("REVIEWS_ACTIVAS") !== "1") return Response.json({ activas: false, invitar: [] });
-      const invitar = await leer("/rest/v1/rpc/reviews_por_invitar", { method: "POST", body: "{}" });
+      // por ahora todos en inglés (pedido de Roberto el 2026-11-05); quitar el map para volver al idioma del país
+      const invitar = (await leer("/rest/v1/rpc/reviews_por_invitar", { method: "POST", body: "{}" })).map((c: any) => ({ ...c, idioma: "en" }));
       return Response.json({ activas: true, invitar });
     }
     // ?reviews=enviada&token=… (POST): el correo ya salió
