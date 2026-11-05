@@ -24,7 +24,13 @@
   <script>
     (function () {
       var q = new URLSearchParams(location.search);
-      window.SPECTRE_REVIEW = { t: q.get("t") || "", l: q.get("l") || "", e: Number(q.get("e")) || 0 };
+      var r = { t: q.get("t") || "", l: q.get("l") || "", e: Number(q.get("e")) || 0 };
+      // si la pestaña se recarga (en el celular pasa al cambiar de app) el token ya no está en la barra: se recupera de la pestaña
+      try {
+        if (r.t) sessionStorage.setItem("spectre-review", JSON.stringify({ t: r.t, l: r.l }));
+        else { var g = JSON.parse(sessionStorage.getItem("spectre-review") || "null"); if (g) { r.t = g.t || ""; r.l = r.l || g.l || ""; } }
+      } catch (_) {}
+      window.SPECTRE_REVIEW = r;
       if (q.has("t")) history.replaceState(null, "", location.pathname);
     })();
   </script>
@@ -146,6 +152,6 @@
   </footer>
 
   <script src="js/cuentas-config.js?v=20261022190029"></script>
-  <script src="js/review.js?v=20261026154821" defer></script>
+  <script src="js/review.js?v=20261105111933" defer></script>
 </body>
 </html>

@@ -11,7 +11,7 @@
     es: {
       volver: "← VOLVER A SPECTRE", kicker: "COMPRADOR VERIFICADO", cargando: "Cargando…",
       titulo: "¿Qué tal te ha ido con SPECTRE?",
-      intro: (p, n) => `${n ? n + ", ya" : "Ya"} llevas una semana con ${p}. Cuéntanos cómo te ha funcionado en tus videos y proyectos: nos ayuda a mejorar y a que otros creadores sepan qué esperar.`,
+      intro: (p, n) => `${n ? n + ", c" : "C"}uéntanos cómo te ha funcionado ${p} en tus videos y proyectos: nos ayuda a mejorar y a que otros creadores sepan qué esperar.`,
       editar: "Ya nos dejaste tu review. Si quieres, puedes cambiarlo aquí.",
       estrellas: "TU CALIFICACIÓN", texto: "TU REVIEW", nombre: "TU NOMBRE (COMO QUIERES APARECER)", instagram: "TU INSTAGRAM (OPCIONAL)",
       placeholder: "Qué te gustó, en qué proyectos lo usaste, qué cámara usas…", igPh: "@tuusuario",
@@ -31,7 +31,7 @@
     en: {
       volver: "← BACK TO SPECTRE", kicker: "VERIFIED BUYER", cargando: "Loading…",
       titulo: "How has SPECTRE been?",
-      intro: (p, n) => `${n ? n + ", you've" : "You've"} had ${p} for a week now. Tell us how it's working in your videos and projects: it helps us improve and helps other creators know what to expect.`,
+      intro: (p, n) => `${n ? n + ", tell" : "Tell"} us how ${p} is working in your videos and projects: it helps us improve and helps other creators know what to expect.`,
       editar: "You already left your review. You can change it here if you want.",
       estrellas: "YOUR RATING", texto: "YOUR REVIEW", nombre: "YOUR NAME (AS IT WILL APPEAR)", instagram: "YOUR INSTAGRAM (OPTIONAL)",
       placeholder: "What you liked, which projects you used it on, what camera you shoot with…", igPh: "@yourusername",
