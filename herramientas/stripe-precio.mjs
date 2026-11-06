@@ -23,7 +23,7 @@ const CODIGOS = [
 // 28 oct 2026 19:53 hora de México; cupón O19NSVlo). Link: spectrecolor.com/get?codigo=EARLY-20 (js/main.js lo pone en el pago).
 // TWOWAVES70: 70% para proveedores de Two Waves, Full System y LUT Pack, sin límite de usos ni vencimiento (creado a mano el
 // 27 oct 2026; cupón j6iq6Rlx). Link: spectrecolor.com/get?codigo=TWOWAVES70.
-// WF30: 30%, Full System y LUT Pack, 10 usos, sin vencimiento (creado a mano el 29 oct 2026; cupón Rorj9vm9).
+// WF30: 30%, Full System y LUT Pack, sin vencimiento (cupón Rorj9vm9). 29 oct: 10 usos (3 usados); 5 nov: +10 → código nuevo promo_1UYePaFethND82y0GtufNQ2N con 17 usos, el viejo desactivado.
 
 function preguntar(texto) {
   return new Promise((ok) => {
